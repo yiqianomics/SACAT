@@ -261,6 +261,7 @@ count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
 
 count_log_hy_adaptive_R <- count_log_hy_adaptive
 
+# Use the compiled kernel for production evaluations.
 count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
                                   return_nodes = FALSE) {
     if (isTRUE(return_nodes)) {
@@ -395,6 +396,8 @@ cauchy_combination <- function(ps) {
     if (!key %in% names(labels)) return("unrecognized termination status")
     unname(labels[[key]])
 }
+
+# Marginal likelihood, derivatives, and stable linear algebra.
 
 .dasra_abundance_log1mexp <- function(log_x) {
     log_x <- as.numeric(log_x)
@@ -729,16 +732,36 @@ cauchy_combination <- function(ps) {
     )
 }
 
+# Evaluate count marginals and include posterior moments when requested.
 .dasra_abundance_marginal <- function(
         y, N, eta, sigma, gh, need_moments = TRUE) {
+    y <- as.numeric(y)
+    N <- as.numeric(N)
+    eta <- as.numeric(eta)
+    sigma <- as.numeric(sigma)
+    node <- as.numeric(gh$node)
+    log_raw_weight <- as.numeric(gh$log_raw_weight)
+    if (!isTRUE(need_moments)) {
+        return(list(log_h = dasra_count_log_hy_adaptive_cpp(
+            y = y,
+            N = N,
+            eta = eta,
+            sigma = sigma,
+            node = node,
+            log_raw_weight = log_raw_weight,
+            iterations = 80L,
+            score_tolerance = 1e-12,
+            bracket_tolerance = 1e-12
+        )))
+    }
     dasra_count_moments_adaptive_cpp(
-        y = as.numeric(y),
-        N = as.numeric(N),
-        eta = as.numeric(eta),
-        sigma = as.numeric(sigma),
-        node = as.numeric(gh$node),
-        log_raw_weight = as.numeric(gh$log_raw_weight),
-        need_moments = isTRUE(need_moments),
+        y = y,
+        N = N,
+        eta = eta,
+        sigma = sigma,
+        node = node,
+        log_raw_weight = log_raw_weight,
+        need_moments = TRUE,
         iterations = 80L,
         score_tolerance = 1e-12,
         bracket_tolerance = 1e-12
@@ -806,6 +829,8 @@ cauchy_combination <- function(ps) {
     upper[layout$zeta] <- 5
     list(lower = lower, upper = upper)
 }
+
+# Taxon-level estimating equations and deterministic starting values.
 
 .dasra_abundance_state <- function(theta, data, gh, return_psi = TRUE) {
     layout <- data$layout
@@ -1101,6 +1126,8 @@ cauchy_combination <- function(ps) {
     )
 }
 
+# Solve and validate the estimating equations for one taxon.
+
 .dasra_abundance_fit_taxon <- function(
         y, N, group, z, gh_fit, gh_effect, control) {
     y <- as.numeric(y)
@@ -1136,6 +1163,16 @@ cauchy_combination <- function(ps) {
         qr(design$X_full[positive, , drop = FALSE])$rank <
             ncol(design$X_full)) {
         return(.dasra_abundance_empty_fit("rank_deficient_design", n))
+    }
+    if (sum(positive) <= ncol(design$X_full) + 1L) {
+        return(.dasra_abundance_empty_fit(
+            "positive_mark_initialization_failed", n
+        ))
+    }
+    if (all(positive)) {
+        return(.dasra_abundance_empty_fit(
+            "no_observed_zeros_structural_nuisance_boundary", n
+        ))
     }
 
     layout <- .dasra_abundance_layout(design$X_b, design$X_rho)
@@ -1217,7 +1254,9 @@ cauchy_combination <- function(ps) {
         sum(value^2) / 2
     }
 
+    # Candidate vectors and their equations share a stable index.
     candidates <- list()
+    candidate_equations <- list()
     candidate_source <- character()
     candidate_solver_status <- character()
     add_candidate <- function(theta, source, term_code = NA_integer_) {
@@ -1237,9 +1276,11 @@ cauchy_combination <- function(ps) {
         }
         value <- equation_mean(theta)
         if (any(!is.finite(value))) return(invisible(FALSE))
-        candidates[[length(candidates) + 1L]] <<- theta
-        candidate_source[[length(candidate_source) + 1L]] <<- source
-        candidate_solver_status[[length(candidate_solver_status) + 1L]] <<-
+        candidate_index <- length(candidates) + 1L
+        candidates[[candidate_index]] <<- theta
+        candidate_equations[[candidate_index]] <<- value
+        candidate_source[[candidate_index]] <<- source
+        candidate_solver_status[[candidate_index]] <<-
             .dasra_solver_status(term_code)
         invisible(TRUE)
     }
@@ -1275,17 +1316,16 @@ cauchy_combination <- function(ps) {
     }
 
     candidate_metrics <- function() {
-        values <- lapply(candidates, equation_mean)
         denominator <- equation_scale +
             control$absolute_root_tolerance /
             control$scaled_root_tolerance
-        raw <- vapply(values, function(value) {
+        raw <- vapply(candidate_equations, function(value) {
             max(abs(value))
         }, numeric(1))
-        scaled <- vapply(values, function(value) {
+        scaled <- vapply(candidate_equations, function(value) {
             max(abs(value) / denominator)
         }, numeric(1))
-        solver_scaled <- vapply(values, function(value) {
+        solver_scaled <- vapply(candidate_equations, function(value) {
             max(abs(value) / equation_scale)
         }, numeric(1))
         list(raw = raw, scaled = scaled, solver_scaled = solver_scaled)
@@ -1421,15 +1461,19 @@ cauchy_combination <- function(ps) {
         max(abs(left - right) /
             (1 + pmax(abs(left), abs(right))))
     }
+    # Numerical root information is immutable for a stored candidate.
+    root_information_cache <- list()
     root_information_for <- function(index) {
+        cache_key <- as.character(index)
+        cached <- root_information_cache[[cache_key]]
+        if (!is.null(cached)) return(cached)
+
         theta <- candidates[[index]]
         jacobian <- tryCatch(
             .dasra_abundance_numeric_jacobian(theta, equation_mean),
             error = function(e) NULL
         )
-        equation_at_theta <- tryCatch(
-            equation_mean(theta), error = function(e) NULL
-        )
+        equation_at_theta <- candidate_equations[[index]]
         linear_solve <- if (is.null(jacobian) ||
             any(!is.finite(jacobian)) || is.null(equation_at_theta) ||
             any(!is.finite(equation_at_theta))) {
@@ -1480,7 +1524,7 @@ cauchy_combination <- function(ps) {
         } else {
             max(abs(raw_correction) / (1 + abs(theta)))
         }
-        list(
+        information <- list(
             index = index,
             theta = theta,
             jacobian = jacobian,
@@ -1516,6 +1560,8 @@ cauchy_combination <- function(ps) {
                     )
                 )
         )
+        root_information_cache[[cache_key]] <<- information
+        information
     }
 
     for (refinement_round in seq_len(3L)) {
@@ -2074,6 +2120,8 @@ cauchy_combination <- function(ps) {
     mean(ordered[best:(best + h - 1L)])
 }
 
+# Center taxon effects against a robust cross-taxon reference.
+
 .dasra_abundance_correct <- function(
         fits, taxa, n_samples, keep_diagnostics) {
     p_taxa <- length(fits)
@@ -2262,6 +2310,11 @@ cauchy_combination <- function(ps) {
         )
     }
     names(fits) <- taxa
+    numerical_warning <- vapply(
+        fits,
+        function(x) paste(x$numerical_warning, collapse = ";"),
+        character(1)
+    )
     warned <- vapply(
         fits,
         function(x) isTRUE(x$available) && length(x$numerical_warning) > 0L,
@@ -2272,24 +2325,29 @@ cauchy_combination <- function(ps) {
             sprintf(
                 paste(
                     "%d relative-abundance fit(s) passed inference checks",
-                    "with numerical warnings; inspect full-output diagnostics."
+                    "with numerical warnings; inspect",
+                    "diagnostics$warning_relative_abundance."
                 ),
                 sum(warned)
             ),
             call. = FALSE
         )
     }
-    .dasra_abundance_correct(
+    result <- .dasra_abundance_correct(
         fits = fits,
         taxa = taxa,
         n_samples = n_samples,
         keep_diagnostics = keep_diagnostics
     )
+    result$warning <- numerical_warning
+    result
 }
 
 # --------------------------------------------------------------------------
 # Structural-absence score engine
 # --------------------------------------------------------------------------
+
+# Finite-difference rules and quadrature derivatives.
 
 zt_log1mexp <- function(log_x) {
     log_x <- as.numeric(log_x)
@@ -2507,6 +2565,8 @@ zt_central_hessian_fixed <- function(
     }
     (answer + t(answer)) / 2
 }
+
+# Conditional-present likelihood and nuisance estimation.
 
 zt_beta_components <- function(beta, y, N, X_eta, gh) {
     p_eta <- ncol(X_eta)
@@ -2906,6 +2966,8 @@ zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L,
     )
 }
 
+# Structural-absence nuisance estimation and exact boundary handling.
+
 zt_stable_softplus <- function(x) pmax(x, 0) + log1p(exp(-abs(x)))
 
 zt_detection_state_from_components <- function(alpha, y, X_rho, comp) {
@@ -3188,6 +3250,8 @@ zt_no_zero_test <- function(n, diagnostics) {
         diagnostics = diagnostics
     )
 }
+
+# Nuisance-adjusted score construction and stability checks.
 
 zt_structural_linearization <- function(
         beta, alpha, y, N, g, X_rho, X_eta, gh,
@@ -4310,17 +4374,21 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
         }
         U / sqrt(V)
     }, numeric(1))
-    warning_taxa <- vapply(fits, function(x) {
-        isTRUE(x$tested) &&
-            length(x$diagnostics$numerical_warnings) > 0L
-    }, logical(1))
+    numerical_warning <- vapply(
+        fits,
+        function(x) paste(
+            x$diagnostics$numerical_warnings, collapse = ";"
+        ),
+        character(1)
+    )
+    warning_taxa <- formed & nzchar(numerical_warning)
     if (any(warning_taxa)) {
         warning(
             sprintf(
                 paste(
-                    "Structural-absence inference formed with numerical",
-                    "warnings for %d taxon/taxa; use full_output = TRUE",
-                    "to inspect the diagnostics."
+                    "Structural-absence inference returned with numerical",
+                    "warnings for %d taxon/taxa; inspect",
+                    "diagnostics$warning_structural_absence."
                 ),
                 sum(warning_taxa)
             ),
@@ -4333,6 +4401,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
         regular = regular,
         reason = reason,
         score_z = score_z,
+        warning = numerical_warning,
         diagnostics = if (keep_diagnostics) fits else NULL
     )
 }
@@ -4369,16 +4438,26 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' retained taxon remains in each requested family; an unavailable component is
 #' assigned a conservative p-value of one.
 #'
-#' If a retained taxon has no observed zeros, the observed absence indicator
-#' has no variation. DASRA reports a conservative degenerate structural result
-#' with p-value one; the regular score statistic is undefined.
-#' The primary omnibus retains every formed component, including this
-#' conservative structural result. The Cauchy sensitivity omnibus combines
-#' only regular component tests. The returned component-use columns record the
-#' components entering each omnibus calculation.
+#' Two structural outcomes are nonregular. A taxon with no observed zeros has
+#' no variation in its absence indicator (`no_observed_zeros`). An
+#' intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
+#' exact solution at the zero structural-absence boundary
+#' (`structural_absence_boundary_at_zero`). Both outcomes return a conservative
+#' p-value of one, remain in the primary Bonferroni family, and are excluded
+#' from the Cauchy sensitivity combination. Their signed score statistic is
+#' undefined. For an otherwise supported all-positive taxon, the
+#' relative-abundance full system has a structural-nuisance boundary and is
+#' reported as unavailable with reason
+#' `no_observed_zeros_structural_nuisance_boundary`.
+#' The returned component-use columns record the components entering each
+#' omnibus calculation.
 #' Numerical warnings identify fitted roots that passed the stated residual,
 #' rank, stability, and backward-error checks but remain weakly identified or
-#' sensitive to the numerical path.
+#' sensitive to the numerical path. Requested components return lightweight
+#' warning codes even when `full_output = FALSE`. Structural analyses include
+#' `warning_structural_absence` and `nonregular_structural_absence`; abundance
+#' analyses include `warning_relative_abundance`. Setting `full_output = TRUE`
+#' additionally retains the detailed fitted objects.
 #'
 #' @param counts Raw non-negative integer counts in a matrix or data frame.
 #' @param metadata Sample metadata in a data frame. Row names must contain all
@@ -4411,7 +4490,9 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'
 #' @return An object of class `dasra` with elements:
 #'   \describe{
-#'     \item{results}{A taxon-level table for the requested analyses.}
+#'     \item{results}{A taxon-level table for the requested analyses. Adjusted
+#'       p-values use the `p_adj_` prefix and the method recorded in
+#'       `settings$p_adjust_method`.}
 #'     \item{diagnostics}{Taxon retention, support counts, component-formation
 #'       status, documented formation reasons, and numerical warnings.}
 #'     \item{settings}{The fitted contrast and analysis settings.}
@@ -4700,6 +4781,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
             regular = rep(FALSE, J),
             reason = rep("fewer_than_three_positive_samples", J),
             score_z = rep(NA_real_, J),
+            warning = rep("", J),
             diagnostics = NULL
         )
     }
@@ -4713,6 +4795,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
             estimate = rep(NA_real_, J),
             se = rep(NA_real_, J),
             z = rep(NA_real_, J),
+            warning = rep("", J),
             diagnostics = NULL
         )
     }
@@ -4730,6 +4813,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
             structural$regular[retained] <- structural_retained$regular
             structural$reason[retained] <- structural_retained$reason
             structural$score_z[retained] <- structural_retained$score_z
+            structural$warning[retained] <- structural_retained$warning
             structural$diagnostics <- structural_retained$diagnostics
         }
 
@@ -4743,6 +4827,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
             abundance$estimate[retained] <- abundance_retained$estimate
             abundance$se[retained] <- abundance_retained$se
             abundance$z[retained] <- abundance_retained$z
+            abundance$warning[retained] <- abundance_retained$warning
             abundance$diagnostics <- abundance_retained$diagnostics
         }
     }
@@ -4828,22 +4913,22 @@ dasra <- function(counts, metadata, formula, group, library_size,
             )
         )
         results$p_omnibus <- p_omnibus
-        results$q_omnibus <- adjust_family(p_omnibus)
+        results$p_adj_omnibus <- adjust_family(p_omnibus)
         results$p_omnibus_cauchy <- p_omnibus_cauchy
-        results$q_omnibus_cauchy <- adjust_family(p_omnibus_cauchy)
+        results$p_adj_omnibus_cauchy <- adjust_family(p_omnibus_cauchy)
         results$components_used <- components_used
         results$components_used_cauchy <- components_used_cauchy
     }
 
     if (run_structural) {
         results$p_structural_absence <- structural$p
-        results$q_structural_absence <- adjust_family(structural$p)
+        results$p_adj_structural_absence <- adjust_family(structural$p)
         results$z_structural_absence <- structural$score_z
     }
 
     if (run_abundance) {
         results$p_relative_abundance <- abundance$p
-        results$q_relative_abundance <- adjust_family(abundance$p)
+        results$p_adj_relative_abundance <- adjust_family(abundance$p)
         results$estimate_relative_abundance <- abundance$estimate
         results$se_relative_abundance <- abundance$se
         results$z_relative_abundance <- abundance$z
@@ -4862,11 +4947,15 @@ dasra <- function(counts, metadata, formula, group, library_size,
     if (run_structural) {
         diagnostics$formed_structural_absence <- structural$formed
         diagnostics$regular_structural_absence <- structural$regular
+        diagnostics$nonregular_structural_absence <-
+            structural$formed & !structural$regular
         diagnostics$reason_structural_absence <- structural$reason
+        diagnostics$warning_structural_absence <- structural$warning
     }
     if (run_abundance) {
         diagnostics$formed_relative_abundance <- abundance$formed
         diagnostics$reason_relative_abundance <- abundance$reason
+        diagnostics$warning_relative_abundance <- abundance$warning
     }
     if (run_omnibus) {
         diagnostics$formed_omnibus <-
@@ -4944,10 +5033,12 @@ dasra <- function(counts, metadata, formula, group, library_size,
 print.dasra <- function(x, ...) {
     contrast <- x$settings$contrast
     retained_n <- sum(x$diagnostics$retained)
-    adjustment_label <- if (identical(x$settings$p_adjust_method, "BH")) {
-        "BH q"
+    adjustment_label <- if (identical(
+        x$settings$p_adjust_method, "none"
+    )) {
+        "unadjusted p"
     } else {
-        paste0(x$settings$p_adjust_method, " adjusted p")
+        paste0(x$settings$p_adjust_method, "-adjusted p")
     }
 
     cat(
@@ -4967,14 +5058,23 @@ print.dasra <- function(x, ...) {
     )
 
     if ("formed_structural_absence" %in% names(x$diagnostics)) {
-        formed <- sum(x$diagnostics$formed_structural_absence)
+        returned <- sum(x$diagnostics$formed_structural_absence)
+        regular <- sum(x$diagnostics$regular_structural_absence)
+        nonregular <- sum(
+            x$diagnostics$formed_structural_absence &
+                !x$diagnostics$regular_structural_absence
+        )
         discoveries <- sum(
-            x$results$q_structural_absence <= 0.05,
+            x$results$p_adj_structural_absence <= 0.05,
             na.rm = TRUE
         )
         cat(
-            sprintf("  Structural-absence tests formed: %d/%d\n",
-                    formed, retained_n),
+            sprintf("  Structural results returned: %d/%d\n",
+                    returned, retained_n),
+            sprintf("  Regular structural score tests: %d/%d\n",
+                    regular, retained_n),
+            sprintf("  Conservative nonregular results: %d/%d\n",
+                    nonregular, retained_n),
             sprintf("  Structural-absence discoveries (%s <= 0.05): %d\n",
                     adjustment_label, discoveries),
             sep = ""
@@ -4984,7 +5084,7 @@ print.dasra <- function(x, ...) {
     if ("formed_relative_abundance" %in% names(x$diagnostics)) {
         formed <- sum(x$diagnostics$formed_relative_abundance)
         discoveries <- sum(
-            x$results$q_relative_abundance <= 0.05,
+            x$results$p_adj_relative_abundance <= 0.05,
             na.rm = TRUE
         )
         cat(
@@ -4997,7 +5097,9 @@ print.dasra <- function(x, ...) {
     }
 
     if ("formed_omnibus" %in% names(x$diagnostics)) {
-        discoveries <- sum(x$results$q_omnibus <= 0.05, na.rm = TRUE)
+        discoveries <- sum(
+            x$results$p_adj_omnibus <= 0.05, na.rm = TRUE
+        )
         cat(sprintf("  Omnibus discoveries (%s <= 0.05): %d\n",
                     adjustment_label, discoveries))
     }

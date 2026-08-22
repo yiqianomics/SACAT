@@ -61,7 +61,9 @@ the full bank immediately. Only \code{1L} and \code{5L} are supported.}
 \value{
 An object of class \code{dasra} with elements:
 \describe{
-\item{results}{A taxon-level table for the requested analyses.}
+\item{results}{A taxon-level table for the requested analyses. Adjusted
+p-values use the \code{p_adj_} prefix and the method recorded in
+\code{settings$p_adjust_method}.}
 \item{diagnostics}{Taxon retention, support counts, component-formation
 status, documented formation reasons, and numerical warnings.}
 \item{settings}{The fitted contrast and analysis settings.}
@@ -101,16 +103,26 @@ component fitting and omitted from the multiple-testing families. Every
 retained taxon remains in each requested family; an unavailable component is
 assigned a conservative p-value of one.
 
-If a retained taxon has no observed zeros, the observed absence indicator
-has no variation. DASRA reports a conservative degenerate structural result
-with p-value one; the regular score statistic is undefined.
-The primary omnibus retains every formed component, including this
-conservative structural result. The Cauchy sensitivity omnibus combines
-only regular component tests. The returned component-use columns record the
-components entering each omnibus calculation.
+Two structural outcomes are nonregular. A taxon with no observed zeros has
+no variation in its absence indicator (\code{no_observed_zeros}). An
+intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
+exact solution at the zero structural-absence boundary
+(\code{structural_absence_boundary_at_zero}). Both outcomes return a conservative
+p-value of one, remain in the primary Bonferroni family, and are excluded
+from the Cauchy sensitivity combination. Their signed score statistic is
+undefined. For an otherwise supported all-positive taxon, the
+relative-abundance full system has a structural-nuisance boundary and is
+reported as unavailable with reason
+\code{no_observed_zeros_structural_nuisance_boundary}.
+The returned component-use columns record the components entering each
+omnibus calculation.
 Numerical warnings identify fitted roots that passed the stated residual,
 rank, stability, and backward-error checks but remain weakly identified or
-sensitive to the numerical path.
+sensitive to the numerical path. Requested components return lightweight
+warning codes even when \code{full_output = FALSE}. Structural analyses include
+\code{warning_structural_absence} and \code{nonregular_structural_absence}; abundance
+analyses include \code{warning_relative_abundance}. Setting \code{full_output = TRUE}
+additionally retains the detailed fitted objects.
 }
 \examples{
 \donttest{

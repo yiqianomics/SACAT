@@ -348,7 +348,9 @@ run_dasra <- function(counts, metadata, configuration, formulas,
             structural_available,
             structural_reason,
             statistic = names_by_taxon(results$z_structural_absence),
-            native_q_value = names_by_taxon(results$q_structural_absence),
+            native_q_value = names_by_taxon(
+                results$p_adj_structural_absence
+            ),
             effect_definition = paste(
                 "score z; positive values indicate greater structural",
                 "absence in the comparison group"
@@ -362,7 +364,9 @@ run_dasra <- function(counts, metadata, configuration, formulas,
             abundance_reason,
             estimate = names_by_taxon(results$estimate_relative_abundance),
             statistic = names_by_taxon(results$z_relative_abundance),
-            native_q_value = names_by_taxon(results$q_relative_abundance),
+            native_q_value = names_by_taxon(
+                results$p_adj_relative_abundance
+            ),
             effect_definition = paste(
                 "comparison-minus-reference present-conditional log-relative",
                 "abundance contrast against the shared compositional background"
@@ -373,7 +377,7 @@ run_dasra <- function(counts, metadata, configuration, formulas,
             names_by_taxon(results$p_omnibus),
             combined_available,
             combined_reason,
-            native_q_value = names_by_taxon(results$q_omnibus),
+            native_q_value = names_by_taxon(results$p_adj_omnibus),
             effect_definition = "Bonferroni minimum-p combination",
             components_used = names_by_taxon(results$components_used)
         )

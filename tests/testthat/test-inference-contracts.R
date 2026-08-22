@@ -137,6 +137,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
                 regular = selected$structural_regular,
                 reason = rep("controlled_test_state", ncol(Y)),
                 score_z = rep(NA_real_, ncol(Y)),
+                warning = rep("", ncol(Y)),
                 diagnostics = NULL
             )
         },
@@ -149,6 +150,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
                 estimate = rep(NA_real_, ncol(Y)),
                 se = rep(NA_real_, ncol(Y)),
                 z = rep(NA_real_, ncol(Y)),
+                warning = rep("", ncol(Y)),
                 diagnostics = NULL
             )
         },

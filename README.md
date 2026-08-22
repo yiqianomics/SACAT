@@ -93,10 +93,28 @@ For the comparison-minus-reference contrast:
 - `p_omnibus` is the Bonferroni minimum-p combination of the two component tests; and
 - `p_omnibus_cauchy` is an equal-weight Cauchy sensitivity combination.
 
+Adjusted p-value columns use the `p_adj_` prefix. The adjustment method is
+recorded in `fit$settings$p_adjust_method`.
+
 Taxa with fewer than three positive counts are not retained. A requested component that cannot be formed for a retained taxon enters its multiplicity family with p-value one, and the reason is recorded in `fit$diagnostics`.
 
-When a retained taxon has no observed zeros, DASRA reports a conservative
-structural-absence p-value of one; the regular score statistic is undefined.
-The primary Bonferroni omnibus retains this conservative component, whereas
-the Cauchy sensitivity omnibus combines only regular component tests. The
-corresponding component-use columns in `fit$results` record these choices.
+Two structural outcomes are nonregular. A taxon with no observed zeros has no
+variation in its absence indicator (`no_observed_zeros`). When the
+intercept-only structural nuisance equation has $C_0 \leq 0$, its exact
+solution lies at zero structural-absence probability
+(`structural_absence_boundary_at_zero`). Both outcomes return a conservative
+p-value of one, remain in the primary Bonferroni family, and are excluded from
+the Cauchy sensitivity combination. Their signed score statistic is undefined.
+
+For an otherwise supported all-positive taxon, the full relative-abundance
+estimating system has a structural-nuisance boundary. The relative-abundance
+component is unavailable with reason
+`no_observed_zeros_structural_nuisance_boundary`. Component-use columns in
+`fit$results` distinguish the formed components used by the primary omnibus
+from the regular components used by the Cauchy sensitivity omnibus.
+Requested components return lightweight warning codes even when
+`full_output = FALSE`. Structural analyses include
+`fit$diagnostics$warning_structural_absence` and
+`fit$diagnostics$nonregular_structural_absence`; abundance analyses include
+`fit$diagnostics$warning_relative_abundance`. Setting `full_output = TRUE`
+additionally retains detailed fitted objects.
