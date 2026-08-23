@@ -14,5 +14,5 @@ Analysis/RealDataAnalysis/*/processed/
 Analysis/RealDataAnalysis/*/work/
 Analysis/RealDataAnalysis/R_lib/
 
-# Local negative-control analysis
-Analysis/NegativeControlAnalysis/
+# Local negative-control data-maintenance script
+Analysis/NegativeControlAnalysis/prepare_public_data.R

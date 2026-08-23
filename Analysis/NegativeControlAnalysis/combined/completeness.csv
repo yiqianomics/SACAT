@@ -1,0 +1,91 @@
+"dataset","dataset_label","scenario","method","n_records","n_replicates","n_taxa","expected_records","complete"
+"BaxterE_2016","Baxter 2016","balanced","DASRA",3000,100,30,3000,TRUE
+"BaxterE_2016","Baxter 2016","fourfold","DASRA",3000,100,30,3000,TRUE
+"BaxterE_2016","Baxter 2016","balanced","ZINQ",3000,100,30,3000,TRUE
+"BaxterE_2016","Baxter 2016","fourfold","ZINQ",3000,100,30,3000,TRUE
+"BaxterE_2016","Baxter 2016","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"BaxterE_2016","Baxter 2016","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"SchirmerM_2016","Schirmer 2016","balanced","DASRA",3000,100,30,3000,TRUE
+"SchirmerM_2016","Schirmer 2016","fourfold","DASRA",3000,100,30,3000,TRUE
+"SchirmerM_2016","Schirmer 2016","balanced","ZINQ",3000,100,30,3000,TRUE
+"SchirmerM_2016","Schirmer 2016","fourfold","ZINQ",3000,100,30,3000,TRUE
+"SchirmerM_2016","Schirmer 2016","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"SchirmerM_2016","Schirmer 2016","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"JieZ_2017","Jie 2017","balanced","DASRA",3000,100,30,3000,TRUE
+"JieZ_2017","Jie 2017","fourfold","DASRA",3000,100,30,3000,TRUE
+"JieZ_2017","Jie 2017","balanced","ZINQ",3000,100,30,3000,TRUE
+"JieZ_2017","Jie 2017","fourfold","ZINQ",3000,100,30,3000,TRUE
+"JieZ_2017","Jie 2017","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"JieZ_2017","Jie 2017","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"NielsenHB_2014","Nielsen 2014","balanced","DASRA",3000,100,30,3000,TRUE
+"NielsenHB_2014","Nielsen 2014","fourfold","DASRA",3000,100,30,3000,TRUE
+"NielsenHB_2014","Nielsen 2014","balanced","ZINQ",3000,100,30,3000,TRUE
+"NielsenHB_2014","Nielsen 2014","fourfold","ZINQ",3000,100,30,3000,TRUE
+"NielsenHB_2014","Nielsen 2014","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"NielsenHB_2014","Nielsen 2014","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"LeChatelierE_2013","Le Chatelier 2013","balanced","DASRA",3000,100,30,3000,TRUE
+"LeChatelierE_2013","Le Chatelier 2013","fourfold","DASRA",3000,100,30,3000,TRUE
+"LeChatelierE_2013","Le Chatelier 2013","balanced","ZINQ",3000,100,30,3000,TRUE
+"LeChatelierE_2013","Le Chatelier 2013","fourfold","ZINQ",3000,100,30,3000,TRUE
+"LeChatelierE_2013","Le Chatelier 2013","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"LeChatelierE_2013","Le Chatelier 2013","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"LiJ_2014","Li 2014","balanced","DASRA",3000,100,30,3000,TRUE
+"LiJ_2014","Li 2014","fourfold","DASRA",3000,100,30,3000,TRUE
+"LiJ_2014","Li 2014","balanced","ZINQ",3000,100,30,3000,TRUE
+"LiJ_2014","Li 2014","fourfold","ZINQ",3000,100,30,3000,TRUE
+"LiJ_2014","Li 2014","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"LiJ_2014","Li 2014","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"Atlas1006","HITChip Atlas 1006","balanced","DASRA",3000,100,30,3000,TRUE
+"Atlas1006","HITChip Atlas 1006","fourfold","DASRA",3000,100,30,3000,TRUE
+"Atlas1006","HITChip Atlas 1006","balanced","ZINQ",3000,100,30,3000,TRUE
+"Atlas1006","HITChip Atlas 1006","fourfold","ZINQ",3000,100,30,3000,TRUE
+"Atlas1006","HITChip Atlas 1006","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"Atlas1006","HITChip Atlas 1006","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"NogueraJulianHIV","Noguera-Julian HIV","balanced","DASRA",3000,100,30,3000,TRUE
+"NogueraJulianHIV","Noguera-Julian HIV","fourfold","DASRA",3000,100,30,3000,TRUE
+"NogueraJulianHIV","Noguera-Julian HIV","balanced","ZINQ",3000,100,30,3000,TRUE
+"NogueraJulianHIV","Noguera-Julian HIV","fourfold","ZINQ",3000,100,30,3000,TRUE
+"NogueraJulianHIV","Noguera-Julian HIV","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"NogueraJulianHIV","Noguera-Julian HIV","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"HMPV35Throat","HMP V35 throat","balanced","DASRA",3000,100,30,3000,TRUE
+"HMPV35Throat","HMP V35 throat","fourfold","DASRA",3000,100,30,3000,TRUE
+"HMPV35Throat","HMP V35 throat","balanced","ZINQ",3000,100,30,3000,TRUE
+"HMPV35Throat","HMP V35 throat","fourfold","ZINQ",3000,100,30,3000,TRUE
+"HMPV35Throat","HMP V35 throat","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"HMPV35Throat","HMP V35 throat","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"Qiita11993Colombia","Colombia Westernization","balanced","DASRA",3000,100,30,3000,TRUE
+"Qiita11993Colombia","Colombia Westernization","fourfold","DASRA",3000,100,30,3000,TRUE
+"Qiita11993Colombia","Colombia Westernization","balanced","ZINQ",3000,100,30,3000,TRUE
+"Qiita11993Colombia","Colombia Westernization","fourfold","ZINQ",3000,100,30,3000,TRUE
+"Qiita11993Colombia","Colombia Westernization","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"Qiita11993Colombia","Colombia Westernization","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"Qiita13631ASD","ASD Dan 2020","balanced","DASRA",3000,100,30,3000,TRUE
+"Qiita13631ASD","ASD Dan 2020","fourfold","DASRA",3000,100,30,3000,TRUE
+"Qiita13631ASD","ASD Dan 2020","balanced","ZINQ",3000,100,30,3000,TRUE
+"Qiita13631ASD","ASD Dan 2020","fourfold","ZINQ",3000,100,30,3000,TRUE
+"Qiita13631ASD","ASD Dan 2020","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"Qiita13631ASD","ASD Dan 2020","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"NHANESOral_2009_2010","NHANES Oral 2009-2010","balanced","DASRA",3000,100,30,3000,TRUE
+"NHANESOral_2009_2010","NHANES Oral 2009-2010","fourfold","DASRA",3000,100,30,3000,TRUE
+"NHANESOral_2009_2010","NHANES Oral 2009-2010","balanced","ZINQ",3000,100,30,3000,TRUE
+"NHANESOral_2009_2010","NHANES Oral 2009-2010","fourfold","ZINQ",3000,100,30,3000,TRUE
+"NHANESOral_2009_2010","NHANES Oral 2009-2010","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"NHANESOral_2009_2010","NHANES Oral 2009-2010","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"NHANESOral_2011_2012","NHANES Oral 2011-2012","balanced","DASRA",3000,100,30,3000,TRUE
+"NHANESOral_2011_2012","NHANES Oral 2011-2012","fourfold","DASRA",3000,100,30,3000,TRUE
+"NHANESOral_2011_2012","NHANES Oral 2011-2012","balanced","ZINQ",3000,100,30,3000,TRUE
+"NHANESOral_2011_2012","NHANES Oral 2011-2012","fourfold","ZINQ",3000,100,30,3000,TRUE
+"NHANESOral_2011_2012","NHANES Oral 2011-2012","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"NHANESOral_2011_2012","NHANES Oral 2011-2012","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"ORIGINS_2022_Healthy_Plaque","ORIGINS 2022 healthy-site plaque","balanced","DASRA",3000,100,30,3000,TRUE
+"ORIGINS_2022_Healthy_Plaque","ORIGINS 2022 healthy-site plaque","fourfold","DASRA",3000,100,30,3000,TRUE
+"ORIGINS_2022_Healthy_Plaque","ORIGINS 2022 healthy-site plaque","balanced","ZINQ",3000,100,30,3000,TRUE
+"ORIGINS_2022_Healthy_Plaque","ORIGINS 2022 healthy-site plaque","fourfold","ZINQ",3000,100,30,3000,TRUE
+"ORIGINS_2022_Healthy_Plaque","ORIGINS 2022 healthy-site plaque","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"ORIGINS_2022_Healthy_Plaque","ORIGINS 2022 healthy-site plaque","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"ArtPrize_2015_Forehead","ArtPrize 2015 forehead","balanced","DASRA",3000,100,30,3000,TRUE
+"ArtPrize_2015_Forehead","ArtPrize 2015 forehead","fourfold","DASRA",3000,100,30,3000,TRUE
+"ArtPrize_2015_Forehead","ArtPrize 2015 forehead","balanced","ZINQ",3000,100,30,3000,TRUE
+"ArtPrize_2015_Forehead","ArtPrize 2015 forehead","fourfold","ZINQ",3000,100,30,3000,TRUE
+"ArtPrize_2015_Forehead","ArtPrize 2015 forehead","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"ArtPrize_2015_Forehead","ArtPrize 2015 forehead","fourfold","MaAsLin3",3000,100,30,3000,TRUE
