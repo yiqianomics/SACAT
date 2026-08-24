@@ -129,7 +129,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
     local_mocked_bindings(
         .dasra_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
-                conditional_present_starts = 1L) {
+                conditional_present_starts = 1L, ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
             list(
                 p = selected$structural_p,
@@ -141,7 +141,8 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
                 diagnostics = NULL
             )
         },
-        .dasra_abundance_arm = function(Y, N, g, z, keep_diagnostics) {
+        .dasra_abundance_arm = function(
+                Y, N, g, z, keep_diagnostics, ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
             list(
                 p = selected$abundance_p,

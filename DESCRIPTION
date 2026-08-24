@@ -1,7 +1,7 @@
 Package: DASRA
 Type: Package
 Title: Depth-Aware Structural-Absence and Relative-Abundance Analysis
-Version: 0.4.1
+Version: 0.5.0
 Authors@R:
     c(
         person("Yiqian", "Zhang", email = "zhang.16383@osu.edu",
@@ -13,13 +13,15 @@ Description: Provides depth-aware taxon-level inference for microbiome count
     data. The method separates group differences in structural-absence
     probability from differences in relative abundance conditional on taxon
     presence, accounts for finite-depth nondetection through a latent-state
-    count model, and corrects the abundance component for a shared
-    compositional background across taxa.
+    count model, uses a nuisance-orthogonalized estimating-function test for
+    regular structural inference, estimates present-conditional abundance with
+    a zero-truncated conditional-mark likelihood, and corrects the abundance
+    component for a shared compositional background across taxa.
 License: GPL (>= 3)
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports:
-    nleqslv,
+    parallel,
     Rcpp,
     statmod,
     stats
@@ -30,3 +32,4 @@ Suggests:
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 NeedsCompilation: yes
+Config/roxygen2/version: 8.1.0

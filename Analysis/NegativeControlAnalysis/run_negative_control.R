@@ -17,8 +17,9 @@ minimum_depth <- 300L
 maximum_depth <- 30000L
 minimum_source_prevalence <- 0.10
 minimum_mean_abundance <- 1e-5
-checkpoint_schema_version <- 4L
-checkpoint_contract <- "balanced_fourfold_public_or_v2"
+required_dasra_version <- "0.4.1"
+checkpoint_schema_version <- 5L
+checkpoint_contract <- "balanced_fourfold_public_or_v3_dasra_0.4.1"
 
 `%||%` <- function(x, y) {
     if (is.null(x) || !length(x)) y else x
@@ -804,7 +805,7 @@ checkpoint_is_current <- function(path, analysis_input, scenario, replicate) {
     !is.null(object) &&
         identical(object$schema_version, checkpoint_schema_version) &&
         identical(object$analysis_contract, checkpoint_contract) &&
-        identical(object$DASRA_version, "0.4.0") &&
+        identical(object$DASRA_version, required_dasra_version) &&
         identical(object$dataset_id, analysis_input$dataset_id) &&
         identical(object$evaluation_taxa, analysis_input$evaluation_taxa) &&
         identical(object$scenario, scenario) &&
@@ -968,9 +969,13 @@ run_negative_control <- function(dataset_directory, workers = 7L,
         )
     }
     if (!identical(
-        as.character(utils::packageVersion("DASRA")), "0.4.0"
+        as.character(utils::packageVersion("DASRA")),
+        required_dasra_version
     )) {
-        stop("This analysis requires DASRA 0.4.0.", call. = FALSE)
+        stop(
+            "This analysis requires DASRA ", required_dasra_version, ".",
+            call. = FALSE
+        )
     }
 
     dataset_directory <- normalizePath(dataset_directory)

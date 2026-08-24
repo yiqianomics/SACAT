@@ -10,12 +10,16 @@
 #' @import stats
 #' @importFrom Rcpp evalCpp
 #' @useDynLib DASRA, .registration = TRUE
-#' @noRd
 "_PACKAGE"
 
 # --------------------------------------------------------------------------
 # Internal numerical engine
 # --------------------------------------------------------------------------
+
+# Internal names follow the computation they support: count_* functions are
+# count-model and quadrature primitives, zt_* functions form the shared
+# zero-truncated count and structural engine, and .dasra_* functions coordinate
+# the package-level analysis. None of these helpers is exported.
 
 count_clamp <- function(x, lo, hi) {
     pmin(pmax(x, lo), hi)
@@ -33,6 +37,35 @@ count_clamp <- function(x, lo, hi) {
         )
     }
     as.integer(round(starts))
+}
+
+.dasra_resolve_conditional_present_starts <- function(starts) {
+    if (is.numeric(starts) && !is.logical(starts)) {
+        count <- .dasra_validate_conditional_present_starts(starts)
+        return(list(
+            mode = if (count == 1L) "adaptive" else "full",
+            count = count
+        ))
+    }
+    if (!is.character(starts) || anyNA(starts)) {
+        stop(
+            "`conditional_present_starts` must be \"adaptive\" or \"full\".",
+            call. = FALSE
+        )
+    }
+    mode <- match.arg(starts, c("adaptive", "full"))
+    list(mode = mode, count = if (mode == "adaptive") 1L else 5L)
+}
+
+.dasra_validate_positive_integer <- function(value, name, minimum = 1L) {
+    valid <- is.numeric(value) && !is.logical(value) &&
+        length(value) == 1L && !is.na(value) && is.finite(value) &&
+        abs(value - round(value)) <= 1e-8 && value >= minimum
+    if (!valid) {
+        stop(sprintf("`%s` must be one integer at least %d.", name, minimum),
+             call. = FALSE)
+    }
+    as.integer(round(value))
 }
 
 .dasra_select_conditional_present_starts <- function(bank, starts) {
@@ -138,9 +171,6 @@ make_structural_gh_rule <- function(Q = 1001L) {
         return(get(cache_key, envir = .dasra_structural_gh_cache,
                    inherits = FALSE))
     }
-    if (!requireNamespace("statmod", quietly = TRUE)) {
-        stop("Package 'statmod' is required for structural quadrature.")
-    }
     package_rule <- statmod::gauss.quad(Q, kind = "hermite")
     node <- as.numeric(package_rule$nodes)
     if (length(node) != Q || any(!is.finite(node)) ||
@@ -214,8 +244,8 @@ count_latent_mode <- function(y, N, eta, sigma, iterations = 80L,
          bracket_width = upper - lower)
 }
 
-count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
-                                  return_nodes = FALSE) {
+count_log_hy_adaptive_ref <- function(y, N, eta, sigma, gh,
+                                      return_nodes = FALSE) {
     y <- as.numeric(y)
     N <- as.numeric(N)
     eta <- as.numeric(eta)
@@ -259,13 +289,11 @@ count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
          x_node = x_node, mode = mode, curvature = curvature)
 }
 
-count_log_hy_adaptive_R <- count_log_hy_adaptive
-
 # Use the compiled kernel for production evaluations.
 count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
                                   return_nodes = FALSE) {
     if (isTRUE(return_nodes)) {
-        return(count_log_hy_adaptive_R(
+        return(count_log_hy_adaptive_ref(
             y = y, N = N, eta = eta, sigma = sigma, gh = gh,
             return_nodes = TRUE
         ))
@@ -366,117 +394,15 @@ cauchy_combination <- function(ps) {
     list(
         quadrature_Q = 41L,
         effect_quadrature_Q = 41L,
-        root_tolerance = 1e-5,
-        absolute_root_tolerance = 1e-8,
-        scaled_root_tolerance = 1e-7,
-        root_step_tolerance = 1e-6,
-        root_step_limit = 5e-2,
-        root_cluster_tolerance = 1e-4,
-        parameter_boundary_tolerance = 1e-5,
-        bound_expansion_factor = 2,
-        max_bound_expansions = 4L,
+        derivative_base = 1e-4,
+        derivative_reference_n = 120L,
+        score_tolerance = 1e-8,
         jacobian_condition_warning = 1e8,
         jacobian_condition_limit = 1e12
     )
 }
 
-.dasra_solver_status <- function(code) {
-    if (length(code) != 1L || is.na(code)) return("not run")
-    labels <- c(
-        "1" = "function criterion near zero",
-        "2" = "step size within tolerance",
-        "3" = "no better point found",
-        "4" = "iteration limit exceeded",
-        "5" = "Jacobian too ill-conditioned",
-        "6" = "Jacobian singular",
-        "7" = "Jacobian unusable",
-        "-10" = "supplied Jacobian inconsistent"
-    )
-    key <- as.character(as.integer(code))
-    if (!key %in% names(labels)) return("unrecognized termination status")
-    unname(labels[[key]])
-}
-
-# Marginal likelihood, derivatives, and stable linear algebra.
-
-.dasra_abundance_log1mexp <- function(log_x) {
-    log_x <- as.numeric(log_x)
-    if (any(log_x > 1e-12, na.rm = TRUE)) {
-        stop("The log probability must not exceed zero.")
-    }
-    log_x <- pmin(log_x, 0)
-    cutoff <- -log(2)
-    output <- numeric(length(log_x))
-    near_zero <- log_x > cutoff
-    output[near_zero] <- log(-expm1(log_x[near_zero]))
-    output[!near_zero] <- log1p(-exp(log_x[!near_zero]))
-    output
-}
-
-.dasra_abundance_numeric_gradient <- function(
-        par, fn, lower = rep(-Inf, length(par)),
-        upper = rep(Inf, length(par))) {
-    as.numeric(.dasra_abundance_numeric_derivative(
-        par = par, fn = function(theta) as.numeric(fn(theta)),
-        lower = lower, upper = upper
-    ))
-}
-
-.dasra_abundance_numeric_jacobian <- function(
-        par, fn, lower = rep(-Inf, length(par)),
-        upper = rep(Inf, length(par))) {
-    .dasra_abundance_numeric_derivative(
-        par = par, fn = function(theta) as.numeric(fn(theta)),
-        lower = lower, upper = upper
-    )
-}
-
-.dasra_abundance_numeric_derivative <- function(
-        par, fn, lower = rep(-Inf, length(par)),
-        upper = rep(Inf, length(par))) {
-    par <- as.numeric(par)
-    f0 <- as.numeric(fn(par))
-    derivative <- matrix(NA_real_, nrow = length(f0), ncol = length(par))
-    for (k in seq_along(par)) {
-        step <- 1e-3 * (1 + abs(par[k]))
-        half_step <- step / 2
-        left_ok <- par[k] - step > lower[k]
-        right_ok <- par[k] + step < upper[k]
-        if (left_ok && right_ok) {
-            left_1 <- right_1 <- left_2 <- right_2 <- par
-            left_1[k] <- par[k] - step
-            right_1[k] <- par[k] + step
-            left_2[k] <- par[k] - half_step
-            right_2[k] <- par[k] + half_step
-            coarse <- (as.numeric(fn(right_1)) -
-                as.numeric(fn(left_1))) / (2 * step)
-            fine <- (as.numeric(fn(right_2)) -
-                as.numeric(fn(left_2))) / (2 * half_step)
-            derivative[, k] <- (4 * fine - coarse) / 3
-        } else if (par[k] + 2 * step < upper[k]) {
-            right_1 <- right_2 <- right_half <- par
-            right_1[k] <- par[k] + step
-            right_2[k] <- par[k] + 2 * step
-            right_half[k] <- par[k] + half_step
-            coarse <- (-3 * f0 + 4 * as.numeric(fn(right_1)) -
-                as.numeric(fn(right_2))) / (2 * step)
-            fine <- (-3 * f0 + 4 * as.numeric(fn(right_half)) -
-                as.numeric(fn(right_1))) / (2 * half_step)
-            derivative[, k] <- (4 * fine - coarse) / 3
-        } else if (par[k] - 2 * step > lower[k]) {
-            left_1 <- left_2 <- left_half <- par
-            left_1[k] <- par[k] - step
-            left_2[k] <- par[k] - 2 * step
-            left_half[k] <- par[k] - half_step
-            coarse <- (3 * f0 - 4 * as.numeric(fn(left_1)) +
-                as.numeric(fn(left_2))) / (2 * step)
-            fine <- (3 * f0 - 4 * as.numeric(fn(left_half)) +
-                as.numeric(fn(left_1))) / (2 * half_step)
-            derivative[, k] <- (4 * fine - coarse) / 3
-        }
-    }
-    derivative
-}
+# Stable linear algebra for the mark-likelihood sandwich.
 
 .dasra_abundance_condition_number <- function(x) {
     singular_values <- tryCatch(
@@ -670,104 +596,6 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_raw_solve <- function(
-        A, rhs, condition_limit = 1e12, backward_tolerance = 1e-8) {
-    if (!is.matrix(A) || nrow(A) != ncol(A) || !nrow(A) ||
-        any(!is.finite(A)) || !is.numeric(rhs) || any(!is.finite(rhs))) {
-        return(list(
-            ok = FALSE, condition = Inf, backward_error = Inf
-        ))
-    }
-    rhs_was_matrix <- is.matrix(rhs)
-    rhs_matrix <- if (rhs_was_matrix) rhs else matrix(rhs, ncol = 1L)
-    if (nrow(rhs_matrix) != nrow(A) || !ncol(rhs_matrix)) {
-        return(list(
-            ok = FALSE, condition = Inf, backward_error = Inf
-        ))
-    }
-    condition <- .dasra_abundance_condition_number(A)
-    if (!is.finite(condition) || condition > condition_limit) {
-        return(list(
-            ok = FALSE, condition = condition, backward_error = Inf
-        ))
-    }
-    solution_matrix <- tryCatch(
-        qr.solve(A, rhs_matrix, tol = 1 / condition_limit),
-        error = function(e) NULL
-    )
-    if (is.null(solution_matrix) || any(!is.finite(solution_matrix))) {
-        return(list(
-            ok = FALSE, condition = condition, backward_error = Inf
-        ))
-    }
-    solution_matrix <- matrix(
-        solution_matrix, nrow = ncol(A), ncol = ncol(rhs_matrix)
-    )
-    residual <- A %*% solution_matrix - rhs_matrix
-    residual_size <- apply(abs(residual), 2L, max)
-    denominator <- apply(abs(rhs_matrix), 2L, max) +
-        max(abs(A)) * apply(abs(solution_matrix), 2L, max)
-    backward_error_by_rhs <- residual_size /
-        pmax(denominator, .Machine$double.xmin)
-    backward_error <- max(backward_error_by_rhs)
-    if (!is.finite(backward_error) ||
-        backward_error > backward_tolerance) {
-        return(list(
-            ok = FALSE,
-            condition = condition,
-            backward_error = backward_error,
-            backward_error_by_rhs = backward_error_by_rhs
-        ))
-    }
-    list(
-        ok = TRUE,
-        solution = if (rhs_was_matrix) {
-            solution_matrix
-        } else {
-            as.numeric(solution_matrix)
-        },
-        condition = condition,
-        backward_error = backward_error,
-        backward_error_by_rhs = backward_error_by_rhs
-    )
-}
-
-# Evaluate count marginals and include posterior moments when requested.
-.dasra_abundance_marginal <- function(
-        y, N, eta, sigma, gh, need_moments = TRUE) {
-    y <- as.numeric(y)
-    N <- as.numeric(N)
-    eta <- as.numeric(eta)
-    sigma <- as.numeric(sigma)
-    node <- as.numeric(gh$node)
-    log_raw_weight <- as.numeric(gh$log_raw_weight)
-    if (!isTRUE(need_moments)) {
-        return(list(log_h = dasra_count_log_hy_adaptive_cpp(
-            y = y,
-            N = N,
-            eta = eta,
-            sigma = sigma,
-            node = node,
-            log_raw_weight = log_raw_weight,
-            iterations = 80L,
-            score_tolerance = 1e-12,
-            bracket_tolerance = 1e-12
-        )))
-    }
-    dasra_count_moments_adaptive_cpp(
-        y = y,
-        N = N,
-        eta = eta,
-        sigma = sigma,
-        node = node,
-        log_raw_weight = log_raw_weight,
-        need_moments = TRUE,
-        iterations = 80L,
-        score_tolerance = 1e-12,
-        bracket_tolerance = 1e-12
-    )
-}
-
 .dasra_abundance_mean_log_relative <- function(location, sigma, gh) {
     dasra_mean_log_relative_cpp(
         location = as.numeric(location),
@@ -791,297 +619,16 @@ cauchy_combination <- function(ps) {
     if (!ncol(z)) {
         X_b <- matrix(1, nrow = n, ncol = 1L,
                       dimnames = list(NULL, "Intercept"))
-        X_rho <- cbind(Intercept = 1, Group = group)
+        X_eta <- cbind(Intercept = 1, Group = group)
     } else {
         X_b <- cbind(Intercept = 1, z)
         colnames(X_b) <- c("Intercept", paste0("z", seq_len(ncol(z))))
-        X_rho <- cbind(Intercept = 1, Group = group, z)
-        colnames(X_rho) <- c(
+        X_eta <- cbind(Intercept = 1, Group = group, z)
+        colnames(X_eta) <- c(
             "Intercept", "Group", paste0("z", seq_len(ncol(z)))
         )
     }
-    list(X_b = X_b, X_rho = X_rho, X_full = X_rho)
-}
-
-.dasra_abundance_layout <- function(X_b, X_rho) {
-    nb <- ncol(X_b)
-    na <- ncol(X_rho)
-    list(
-        nb = nb,
-        na = na,
-        b = seq_len(nb),
-        omega = nb + 1L,
-        a = nb + 1L + seq_len(na),
-        zeta = nb + na + 2L,
-        dimension = nb + na + 2L
-    )
-}
-
-.dasra_abundance_bounds <- function(layout) {
-    lower <- upper <- rep(NA_real_, layout$dimension)
-    lower[layout$b] <- c(-20, rep(-5, layout$nb - 1L))
-    upper[layout$b] <- c(5, rep(5, layout$nb - 1L))
-    lower[layout$omega] <- log(0.15)
-    upper[layout$omega] <- log(4)
-    lower[layout$a] <- -10
-    upper[layout$a] <- 10
-    lower[layout$zeta] <- -5
-    upper[layout$zeta] <- 5
-    list(lower = lower, upper = upper)
-}
-
-# Taxon-level estimating equations and deterministic starting values.
-
-.dasra_abundance_state <- function(theta, data, gh, return_psi = TRUE) {
-    layout <- data$layout
-    b <- theta[layout$b]
-    omega <- theta[layout$omega]
-    a <- theta[layout$a]
-    zeta <- theta[layout$zeta]
-
-    sigma <- exp(omega)
-    eta <- as.numeric(data$X_b %*% b + zeta * data$group)
-    lp_rho <- as.numeric(data$X_rho %*% a)
-    rho <- plogis(lp_rho)
-
-    positive <- data$y > 0
-    marginal_0 <- .dasra_abundance_marginal(
-        y = rep(0, length(data$y)), N = data$N, eta = eta,
-        sigma = sigma, gh = gh, need_moments = TRUE
-    )
-    marginal_y <- marginal_0
-    if (any(positive)) {
-        marginal_positive <- .dasra_abundance_marginal(
-            y = data$y[positive], N = data$N[positive],
-            eta = eta[positive], sigma = sigma,
-            gh = gh, need_moments = TRUE
-        )
-        for (name in names(marginal_y)) {
-            marginal_y[[name]][positive] <- marginal_positive[[name]]
-        }
-    }
-
-    log_h0 <- as.numeric(marginal_0$log_h)
-    if (any(!is.finite(log_h0)) || any(log_h0 > 1e-10)) {
-        stop("The zero-count marginal probability is invalid.")
-    }
-    log_h0 <- pmin(log_h0, -.Machine$double.eps)
-    log_r <- .dasra_abundance_log1mexp(log_h0)
-    if (any(!is.finite(log_r))) {
-        stop("The conditional detection probability is numerically degenerate.")
-    }
-    h0 <- exp(log_h0)
-    r <- exp(log_r)
-
-    gamma <- numeric(length(data$y))
-    zero <- !positive
-    if (any(zero)) {
-        gamma[zero] <- plogis(lp_rho[zero] - log_h0[zero])
-    }
-    presence_weight <- rep(1, length(data$y))
-    if (any(zero)) {
-        presence_weight[zero] <- plogis(
-            log_h0[zero] - lp_rho[zero]
-        )
-    }
-
-    base <- list(
-        eta = eta,
-        sigma = sigma,
-        rho = rho,
-        gamma = gamma,
-        presence_weight = presence_weight,
-        h0 = h0,
-        r = r,
-        marginal_y = marginal_y,
-        marginal_0 = marginal_0
-    )
-    if (!isTRUE(return_psi)) return(base)
-
-    n <- length(data$y)
-    mark_eta <- numeric(n)
-    mark_omega <- numeric(n)
-    if (any(positive)) {
-        ratio <- exp(log_h0[positive] - log_r[positive])
-        mark_eta[positive] <- marginal_y$score_eta[positive] +
-            ratio * marginal_0$score_eta[positive]
-        mark_omega[positive] <- marginal_y$score_omega[positive] +
-            ratio * marginal_0$score_omega[positive]
-    }
-
-    psi_b <- data$X_b * mark_eta
-    psi_omega <- mark_omega
-    detection_residual <- -rho
-    if (any(zero)) {
-        log_detection_residual <- lp_rho[zero] + log_r[zero] -
-            count_logspace_add(log_h0[zero], lp_rho[zero]) -
-            count_softplus(lp_rho[zero])
-        detection_residual[zero] <- exp(log_detection_residual)
-    }
-    psi_a <- data$X_rho * detection_residual
-    psi_zeta <- data$group * presence_weight * marginal_y$score_eta
-    base$psi <- cbind(psi_b, omega = psi_omega, psi_a, zeta = psi_zeta)
-    base
-}
-
-.dasra_abundance_initial_mark <- function(data, gh) {
-    positive <- data$y > 0
-    if (sum(positive) <= ncol(data$X_full) + 1L ||
-        qr(data$X_full[positive, , drop = FALSE])$rank <
-            ncol(data$X_full)) {
-        return(NULL)
-    }
-
-    X <- data$X_full
-    y <- data$y
-    N <- data$N
-    objective <- function(par) {
-        coefficient <- par[seq_len(ncol(X))]
-        sigma <- exp(par[ncol(X) + 1L])
-        eta <- as.numeric(X %*% coefficient)
-        marginal_y <- .dasra_abundance_marginal(
-            y[positive], N[positive], eta[positive], sigma, gh,
-            need_moments = FALSE
-        )
-        marginal_0 <- .dasra_abundance_marginal(
-            rep(0, sum(positive)), N[positive], eta[positive], sigma, gh,
-            need_moments = FALSE
-        )
-        if (any(marginal_0$log_h >= -1e-12)) return(1e8)
-        log_r <- .dasra_abundance_log1mexp(marginal_0$log_h)
-        value <- -mean(marginal_y$log_h - log_r)
-        if (is.finite(value)) value else 1e8
-    }
-
-    observed_logit <- qlogis(count_clamp(
-        (y[positive] + 0.5) / (N[positive] + 1),
-        1e-8, 1 - 1e-8
-    ))
-    coefficient_start <- tryCatch(
-        as.numeric(qr.solve(
-            data$X_full[positive, , drop = FALSE], observed_logit
-        )),
-        error = function(e) rep(0, ncol(data$X_full))
-    )
-    coefficient_start[!is.finite(coefficient_start)] <- 0
-    coefficient_start[1L] <- count_clamp(coefficient_start[1L], -20, 5)
-    if (length(coefficient_start) > 1L) {
-        coefficient_start[-1L] <- count_clamp(
-            coefficient_start[-1L], -5, 5
-        )
-    }
-
-    residual <- observed_logit -
-        as.numeric(data$X_full[positive, , drop = FALSE] %*%
-                       coefficient_start)
-    sigma_start <- count_clamp(stats::sd(residual), 0.3, 2)
-    if (!is.finite(sigma_start)) sigma_start <- 1
-
-    starts <- lapply(c(0.5, sigma_start, 1, 1.5), function(s) {
-        c(coefficient_start, log(s))
-    })
-    starts[[length(starts) + 1L]] <- c(
-        c(mean(observed_logit), rep(0, ncol(X) - 1L)), log(1)
-    )
-    lower <- c(-20, rep(-5, ncol(X) - 1L), log(0.15))
-    upper <- c(5, rep(5, ncol(X) - 1L), log(4))
-
-    fits <- lapply(starts, function(start) {
-        start <- count_clamp(start, lower, upper)
-        tryCatch(
-            optim(
-                start, objective, method = "L-BFGS-B",
-                lower = lower, upper = upper,
-                control = list(maxit = 300L, factr = 1e7)
-            ),
-            error = function(e) NULL
-        )
-    })
-    valid <- vapply(fits, function(fit) {
-        !is.null(fit) && is.finite(fit$value) && all(is.finite(fit$par))
-    }, logical(1))
-    if (!any(valid)) return(NULL)
-    candidates <- fits[valid]
-    candidates[[which.min(vapply(candidates, `[[`, numeric(1), "value"))]]
-}
-
-.dasra_abundance_initial_detection <- function(
-        data, b, omega, zeta, gh) {
-    sigma <- exp(omega)
-    eta <- as.numeric(data$X_b %*% b + zeta * data$group)
-    marginal_0 <- .dasra_abundance_marginal(
-        rep(0, length(data$y)), data$N, eta, sigma, gh,
-        need_moments = FALSE
-    )
-    if (any(marginal_0$log_h >= -1e-12)) return(NULL)
-    log_r <- .dasra_abundance_log1mexp(marginal_0$log_h)
-    detected <- as.numeric(data$y > 0)
-
-    objective <- function(a) {
-        lp_rho <- as.numeric(data$X_rho %*% a)
-        log_q <- pmin(log_r - count_softplus(lp_rho), 0)
-        log_one_minus_q <- .dasra_abundance_log1mexp(log_q)
-        log_likelihood <- ifelse(
-            detected == 1, log_q, log_one_minus_q
-        )
-        value <- -mean(log_likelihood)
-        if (is.finite(value)) value else 1e8
-    }
-    gradient <- function(a) {
-        lp_rho <- as.numeric(data$X_rho %*% a)
-        rho <- plogis(lp_rho)
-        log_q <- pmin(log_r - count_softplus(lp_rho), 0)
-        log_one_minus_q <- .dasra_abundance_log1mexp(log_q)
-        detection_score <- -rho
-        zero <- detected == 0
-        if (any(zero)) {
-            detection_score[zero] <- exp(
-                -count_softplus(-lp_rho[zero]) + log_q[zero] -
-                    log_one_minus_q[zero]
-            )
-        }
-        -colMeans(data$X_rho * detection_score)
-    }
-
-    observed_zero <- mean(data$y == 0)
-    starts <- lapply(c(0.10, 0.30, 0.50, 0.70), function(multiplier) {
-        probability <- count_clamp(
-            multiplier * max(observed_zero, 0.05), 0.01, 0.90
-        )
-        c(qlogis(probability), rep(0, ncol(data$X_rho) - 1L))
-    })
-    fits <- lapply(starts, function(start) {
-        tryCatch(
-            optim(
-                start, objective, gr = gradient, method = "L-BFGS-B",
-                lower = rep(-10, length(start)),
-                upper = rep(10, length(start)),
-                control = list(maxit = 300L, factr = 1e7)
-            ),
-            error = function(e) NULL
-        )
-    })
-    valid <- vapply(fits, function(fit) {
-        !is.null(fit) && is.finite(fit$value) && all(is.finite(fit$par))
-    }, logical(1))
-    if (!any(valid)) return(NULL)
-    candidates <- fits[valid]
-    candidates[[which.min(vapply(candidates, `[[`, numeric(1), "value"))]]
-}
-
-.dasra_abundance_effect <- function(theta, data, gh_effect) {
-    layout <- data$layout
-    b <- theta[layout$b]
-    sigma <- exp(theta[layout$omega])
-    zeta <- theta[layout$zeta]
-    baseline <- as.numeric(data$X_b %*% b)
-    mean(
-        .dasra_abundance_mean_log_relative(
-            baseline + zeta, sigma, gh_effect
-        ) - .dasra_abundance_mean_log_relative(
-            baseline, sigma, gh_effect
-        )
-    )
+    list(X_b = X_b, X_eta = X_eta)
 }
 
 .dasra_abundance_empty_fit <- function(status, n = 0L,
@@ -1126,31 +673,234 @@ cauchy_combination <- function(ps) {
     )
 }
 
-# Solve and validate the estimating equations for one taxon.
+# Fit the zero-truncated conditional mark model for one taxon.
+
+.dasra_abundance_mark_effect <- function(beta, X_b, gh_effect) {
+    p_eta <- ncol(X_b) + 1L
+    coefficient <- beta[seq_len(p_eta)]
+    sigma <- exp(beta[p_eta + 1L])
+    baseline_coefficient <- c(
+        coefficient[1L],
+        if (ncol(X_b) > 1L) coefficient[-c(1L, 2L)] else numeric()
+    )
+    baseline <- as.numeric(X_b %*% baseline_coefficient)
+    group_effect <- coefficient[2L]
+    mean(
+        .dasra_abundance_mean_log_relative(
+            baseline + group_effect, sigma, gh_effect
+        ) - .dasra_abundance_mean_log_relative(
+            baseline, sigma, gh_effect
+        )
+    )
+}
+
+.dasra_abundance_mark_linearization <- function(
+        beta, y, N, X_eta, gh, lower, upper, control) {
+    step_info <- zt_inference_steps(
+        beta, length(y), lower, upper,
+        base = control$derivative_base,
+        reference_n = control$derivative_reference_n
+    )
+    if (is.null(step_info)) {
+        return(list(
+            ok = FALSE,
+            reason = "conditional_present_derivative_step_unavailable"
+        ))
+    }
+
+    loglik_by_sample <- function(value) {
+        zt_beta_loglik_by_sample_inference(value, y, N, X_eta, gh)
+    }
+    linearization <- zt_beta_linearization(
+        beta = beta,
+        loglik_by_sample = loglik_by_sample,
+        step = step_info$step,
+        scheme = step_info$scheme
+    )
+    if (!isTRUE(linearization$ok)) return(linearization)
+
+    eigenvalues <- tryCatch(
+        eigen(
+            linearization$information,
+            symmetric = TRUE,
+            only.values = TRUE
+        )$values,
+        error = function(e) numeric()
+    )
+    if (length(eigenvalues) != length(beta) ||
+        any(!is.finite(eigenvalues)) || min(eigenvalues) <= 0) {
+        return(list(
+            ok = FALSE,
+            reason = "conditional_present_information_nonpositive",
+            score = linearization$score,
+            information = linearization$information,
+            information_eigenvalues = eigenvalues,
+            step_info = step_info
+        ))
+    }
+
+    list(
+        ok = TRUE,
+        reason = "ok",
+        score = linearization$score,
+        information = linearization$information,
+        information_eigenvalues = eigenvalues,
+        information_condition = max(eigenvalues) / min(eigenvalues),
+        step_info = step_info
+    )
+}
+
+.dasra_abundance_polish_mark_root <- function(
+        beta, linearization, beta_fit, y, N, X_eta, gh, control,
+        max_iterations = 4L) {
+    positive_count <- sum(y > 0)
+    initial_beta <- beta
+    current_nll <- beta_fit$nll(beta)
+    history <- vector("list", max_iterations)
+
+    for (iteration in seq_len(max_iterations)) {
+        score_sum <- colSums(linearization$score)
+        score_mean_max <- max(abs(score_sum)) / positive_count
+        if (is.finite(score_mean_max) &&
+            score_mean_max <= control$score_tolerance) {
+            return(list(
+                ok = TRUE,
+                reason = "ok",
+                beta = beta,
+                linearization = linearization,
+                iterations = iteration - 1L,
+                displacement = beta - initial_beta,
+                score_mean_max = score_mean_max,
+                history = history[seq_len(iteration - 1L)]
+            ))
+        }
+
+        root_solve <- .dasra_abundance_equilibrated_solve(
+            linearization$information,
+            score_sum,
+            condition_limit = control$jacobian_condition_limit,
+            backward_tolerance = 1e-8
+        )
+        if (!isTRUE(root_solve$ok)) {
+            return(list(
+                ok = FALSE,
+                reason = "conditional_present_root_polish_solve_failed",
+                beta = beta,
+                linearization = linearization,
+                iterations = iteration - 1L,
+                displacement = beta - initial_beta,
+                score_mean_max = score_mean_max,
+                history = history[seq_len(iteration - 1L)]
+            ))
+        }
+
+        newton_step <- as.numeric(root_solve$solution)
+        accepted <- FALSE
+        for (line_factor in 2^-(0:8)) {
+            trial_beta <- beta + line_factor * newton_step
+            if (any(trial_beta <= beta_fit$lower) ||
+                any(trial_beta >= beta_fit$upper)) {
+                next
+            }
+            trial_nll <- beta_fit$nll(trial_beta)
+            objective_tolerance <- sqrt(.Machine$double.eps) * max(
+                1, abs(current_nll), abs(trial_nll)
+            )
+            if (!is.finite(trial_nll) ||
+                trial_nll > current_nll + objective_tolerance) {
+                next
+            }
+            trial_linearization <- .dasra_abundance_mark_linearization(
+                trial_beta, y, N, X_eta, gh,
+                beta_fit$lower, beta_fit$upper, control
+            )
+            if (!isTRUE(trial_linearization$ok)) next
+            trial_score_mean_max <- max(abs(colSums(
+                trial_linearization$score
+            ))) / positive_count
+            if (!is.finite(trial_score_mean_max) ||
+                trial_score_mean_max >= score_mean_max) {
+                next
+            }
+            history[[iteration]] <- list(
+                nll = trial_nll,
+                line_factor = line_factor,
+                step_max_scaled = max(
+                    abs(line_factor * newton_step) /
+                        pmax(1, abs(beta))
+                ),
+                score_mean_before = score_mean_max,
+                score_mean_after = trial_score_mean_max,
+                solve_raw_condition = root_solve$raw_condition,
+                solve_equilibrated_condition =
+                    root_solve$equilibrated_condition,
+                solve_backward_error = root_solve$backward_error
+            )
+            beta <- trial_beta
+            linearization <- trial_linearization
+            current_nll <- trial_nll
+            accepted <- TRUE
+            break
+        }
+        if (!accepted) {
+            return(list(
+                ok = FALSE,
+                reason = "conditional_present_root_polish_no_descent",
+                beta = beta,
+                linearization = linearization,
+                iterations = iteration - 1L,
+                displacement = beta - initial_beta,
+                score_mean_max = score_mean_max,
+                history = history[seq_len(iteration - 1L)]
+            ))
+        }
+    }
+
+    score_mean_max <- max(abs(colSums(linearization$score))) /
+        positive_count
+    list(
+        ok = is.finite(score_mean_max) &&
+            score_mean_max <= control$score_tolerance,
+        reason = if (
+            is.finite(score_mean_max) &&
+            score_mean_max <= control$score_tolerance
+        ) "ok" else "conditional_present_root_polish_not_closed",
+        beta = beta,
+        linearization = linearization,
+        iterations = max_iterations,
+        displacement = beta - initial_beta,
+        score_mean_max = score_mean_max,
+        history = history
+    )
+}
 
 .dasra_abundance_fit_taxon <- function(
-        y, N, group, z, gh_fit, gh_effect, control) {
+        y, N, group, z, gh_fit, gh_effect, control,
+        min_positive_samples = 3L) {
     y <- as.numeric(y)
     N <- as.numeric(N)
     group <- as.numeric(group)
     n <- length(y)
-    if (is.null(z)) {
-        z <- matrix(numeric(), nrow = n, ncol = 0L)
+    z <- if (is.null(z)) {
+        matrix(numeric(), nrow = n, ncol = 0L)
     } else {
-        z <- as.matrix(z)
+        as.matrix(z)
     }
 
     if (length(N) != n || length(group) != n || nrow(z) != n ||
-        any(!is.finite(y)) || any(!is.finite(N)) ||
-        any(y < 0) || any(N <= 0) || any(y > N)) {
+        any(!is.finite(c(y, N, group, z))) || any(y < 0) ||
+        any(N <= 0) || any(y > N)) {
         return(.dasra_abundance_empty_fit("invalid_input", n))
     }
 
     design <- .dasra_abundance_designs(group, z)
+    X_eta <- design$X_eta
     positive <- y > 0
-    if (sum(positive) < 3L) {
+    positive_count <- sum(positive)
+    parameter_count <- ncol(X_eta) + 1L
+    if (positive_count < min_positive_samples) {
         return(.dasra_abundance_empty_fit(
-            "fewer_than_three_positive_counts", n
+            "insufficient_positive_support", n
         ))
     }
     if (length(unique(group[positive])) < 2L) {
@@ -1158,946 +908,196 @@ cauchy_combination <- function(ps) {
             "positive_counts_in_one_group_only", n
         ))
     }
-    if (qr(design$X_full)$rank < ncol(design$X_full) ||
-        qr(design$X_rho)$rank < ncol(design$X_rho) ||
-        qr(design$X_full[positive, , drop = FALSE])$rank <
-            ncol(design$X_full)) {
-        return(.dasra_abundance_empty_fit("rank_deficient_design", n))
-    }
-    if (sum(positive) <= ncol(design$X_full) + 1L) {
+    if (qr(X_eta[positive, , drop = FALSE])$rank < ncol(X_eta)) {
         return(.dasra_abundance_empty_fit(
-            "positive_mark_initialization_failed", n
+            "rank_deficient_positive_mark_design", n
         ))
     }
-    if (all(positive)) {
+    if (positive_count <= parameter_count) {
         return(.dasra_abundance_empty_fit(
-            "no_observed_zeros_structural_nuisance_boundary", n
+            "insufficient_positive_mark_information", n
         ))
     }
 
-    layout <- .dasra_abundance_layout(design$X_b, design$X_rho)
-    bounds <- .dasra_abundance_bounds(layout)
-    data <- list(
+    beta_fit <- zt_fit_beta(
         y = y,
         N = N,
-        group = group,
-        X_b = design$X_b,
-        X_rho = design$X_rho,
-        X_full = design$X_full,
-        layout = layout
+        X_eta = X_eta,
+        gh = gh_fit,
+        conditional_present_starts = 5L
     )
-
-    mark_fit <- .dasra_abundance_initial_mark(data, gh_fit)
-    if (is.null(mark_fit)) {
+    if (!isTRUE(beta_fit$ok) || any(!is.finite(beta_fit$par))) {
         return(.dasra_abundance_empty_fit(
-            "positive_mark_initialization_failed", n
+            beta_fit$reason, n,
+            list(solver_diagnostics = list(beta_fit = beta_fit))
         ))
     }
 
-    full_coefficient <- mark_fit$par[seq_len(ncol(design$X_full))]
-    b_start <- c(full_coefficient[1L], full_coefficient[-c(1L, 2L)])
-    if (ncol(design$X_full) == 2L) b_start <- full_coefficient[1L]
-    zeta_start <- full_coefficient[2L]
-    omega_start <- mark_fit$par[ncol(design$X_full) + 1L]
-
-    detection_fit <- .dasra_abundance_initial_detection(
-        data = data, b = b_start, omega = omega_start,
-        zeta = zeta_start, gh = gh_fit
+    beta <- beta_fit$par
+    linearization <- .dasra_abundance_mark_linearization(
+        beta, y, N, X_eta, gh_fit,
+        beta_fit$lower, beta_fit$upper, control
     )
-    if (is.null(detection_fit)) {
+    if (!isTRUE(linearization$ok)) {
         return(.dasra_abundance_empty_fit(
-            "detection_initialization_failed", n
+            linearization$reason, n,
+            list(solver_diagnostics = list(
+                beta_fit = beta_fit,
+                linearization = linearization
+            ))
         ))
     }
 
-    theta_start <- numeric(layout$dimension)
-    theta_start[layout$b] <- b_start
-    theta_start[layout$omega] <- omega_start
-    theta_start[layout$a] <- detection_fit$par
-    theta_start[layout$zeta] <- zeta_start
-    theta_start <- count_clamp(theta_start, bounds$lower, bounds$upper)
-
-    initial_state <- tryCatch(
-        .dasra_abundance_state(
-            theta_start, data, gh_fit, return_psi = TRUE
-        ),
-        error = function(e) NULL
+    root_polish <- .dasra_abundance_polish_mark_root(
+        beta, linearization, beta_fit, y, N, X_eta, gh_fit, control
     )
-    if (is.null(initial_state)) {
+    if (!isTRUE(root_polish$ok)) {
         return(.dasra_abundance_empty_fit(
-            "initial_estimating_equations_failed", n
-        ))
-    }
-    equation_scale <- sqrt(colMeans(initial_state$psi^2))
-    finite_scale <- is.finite(equation_scale) & equation_scale > 0
-    scale_reference <- max(c(equation_scale[finite_scale], 1))
-    scale_floor <- sqrt(.Machine$double.eps) * scale_reference
-    equation_scale[!finite_scale | equation_scale < scale_floor] <-
-        scale_floor
-
-    equation_mean <- function(theta) {
-        state <- tryCatch(
-            .dasra_abundance_state(
-                theta, data, gh_fit, return_psi = TRUE
-            ),
-            error = function(e) NULL
-        )
-        if (is.null(state) || any(!is.finite(state$psi))) {
-            return(1e6 * equation_scale)
-        }
-        colMeans(state$psi)
-    }
-    equation_scaled <- function(theta) equation_mean(theta) / equation_scale
-    score_objective <- function(theta) {
-        value <- equation_scaled(theta)
-        if (any(!is.finite(value))) return(1e12)
-        sum(value^2) / 2
-    }
-
-    # Candidate vectors and their equations share a stable index.
-    candidates <- list()
-    candidate_equations <- list()
-    candidate_source <- character()
-    candidate_solver_status <- character()
-    add_candidate <- function(theta, source, term_code = NA_integer_) {
-        theta <- as.numeric(theta)
-        if (length(theta) != layout$dimension || any(!is.finite(theta))) {
-            return(invisible(FALSE))
-        }
-        if (length(candidates) && any(vapply(
-            candidates,
-            function(existing) {
-                max(abs(theta - existing) /
-                    (1 + pmax(abs(theta), abs(existing)))) <= 1e-12
-            },
-            logical(1)
-        ))) {
-            return(invisible(FALSE))
-        }
-        value <- equation_mean(theta)
-        if (any(!is.finite(value))) return(invisible(FALSE))
-        candidate_index <- length(candidates) + 1L
-        candidates[[candidate_index]] <<- theta
-        candidate_equations[[candidate_index]] <<- value
-        candidate_source[[candidate_index]] <<- source
-        candidate_solver_status[[candidate_index]] <<-
-            .dasra_solver_status(term_code)
-        invisible(TRUE)
-    }
-    run_root <- function(start, method, global, allow_singular) {
-        tryCatch(
-            nleqslv::nleqslv(
-                start, equation_scaled, method = method, global = global,
-                xscalm = "auto",
-                control = list(
-                    ftol = 1e-10, xtol = 1e-10, maxit = 200L,
-                    allowSingular = allow_singular
-                )
-            ),
-            error = function(e) NULL
-        )
-    }
-    add_candidate(theta_start, "initial")
-    root_1 <- run_root(
-        theta_start, method = "Broyden", global = "dbldog",
-        allow_singular = FALSE
-    )
-    if (!is.null(root_1)) {
-        add_candidate(root_1$x, "Broyden-dbldog", root_1$termcd)
-        root_1_refined <- run_root(
-            root_1$x, method = "Newton", global = "hook",
-            allow_singular = TRUE
-        )
-        if (!is.null(root_1_refined)) {
-            add_candidate(
-                root_1_refined$x, "Newton-hook", root_1_refined$termcd
-            )
-        }
-    }
-
-    candidate_metrics <- function() {
-        denominator <- equation_scale +
-            control$absolute_root_tolerance /
-            control$scaled_root_tolerance
-        raw <- vapply(candidate_equations, function(value) {
-            max(abs(value))
-        }, numeric(1))
-        scaled <- vapply(candidate_equations, function(value) {
-            max(abs(value) / denominator)
-        }, numeric(1))
-        solver_scaled <- vapply(candidate_equations, function(value) {
-            max(abs(value) / equation_scale)
-        }, numeric(1))
-        list(raw = raw, scaled = scaled, solver_scaled = solver_scaled)
-    }
-    metrics <- candidate_metrics()
-    best_index <- which.min(metrics$scaled)
-    best_theta <- candidates[[best_index]]
-    needs_rescue <- metrics$scaled[best_index] >
-        control$scaled_root_tolerance ||
-        metrics$raw[best_index] > control$root_tolerance ||
-        any(best_theta < bounds$lower | best_theta > bounds$upper)
-
-    working_lower <- bounds$lower
-    working_upper <- bounds$upper
-    safe_lower <- rep(-200, layout$dimension)
-    safe_upper <- rep(200, layout$dimension)
-    safe_lower[layout$omega] <- -12
-    safe_upper[layout$omega] <- 12
-    bound_expansions <- 0L
-    boundary_following <- FALSE
-    if (needs_rescue) {
-        repeat {
-            metrics <- candidate_metrics()
-            best_theta <- candidates[[which.min(metrics$scaled)]]
-            optimization_start <- count_clamp(
-                best_theta, working_lower, working_upper
-            )
-            squared_fit <- tryCatch(
-                optim(
-                    optimization_start, score_objective,
-                    method = "L-BFGS-B", lower = working_lower,
-                    upper = working_upper,
-                    control = list(maxit = 750L, factr = 1e7)
-                ),
-                error = function(e) NULL
-            )
-            fitted_on_boundary <- rep(FALSE, layout$dimension)
-            boundary_point <- optimization_start
-            if (!is.null(squared_fit) && is.finite(squared_fit$value) &&
-                all(is.finite(squared_fit$par))) {
-                boundary_point <- squared_fit$par
-                add_candidate(
-                    squared_fit$par,
-                    paste0("bounded-score-", bound_expansions)
-                )
-                root_2 <- run_root(
-                    squared_fit$par, method = "Newton", global = "hook",
-                    allow_singular = TRUE
-                )
-                if (!is.null(root_2)) {
-                    add_candidate(
-                        root_2$x,
-                        paste0("bounded-Newton-", bound_expansions),
-                        root_2$termcd
-                    )
-                }
-                boundary_distance <- pmin(
-                    squared_fit$par - working_lower,
-                    working_upper - squared_fit$par
-                )
-                fitted_on_boundary <- boundary_distance <=
-                    control$parameter_boundary_tolerance *
-                    (1 + abs(squared_fit$par))
-            }
-
-            metrics <- candidate_metrics()
-            best_theta <- candidates[[which.min(metrics$scaled)]]
-            below <- best_theta < working_lower
-            above <- best_theta > working_upper
-            if (!any(fitted_on_boundary | below | above)) break
-            if (bound_expansions >= control$max_bound_expansions) {
-                boundary_following <- TRUE
-                break
-            }
-
-            width <- working_upper - working_lower
-            lower_face <- fitted_on_boundary &
-                abs(boundary_point - working_lower) <=
-                abs(working_upper - boundary_point)
-            upper_face <- fitted_on_boundary & !lower_face
-            expand_lower <- below | lower_face
-            expand_upper <- above | upper_face
-            proposed_lower <- working_lower
-            proposed_upper <- working_upper
-            proposed_lower[expand_lower] <-
-                working_lower[expand_lower] -
-                (control$bound_expansion_factor - 1) * width[expand_lower]
-            proposed_upper[expand_upper] <-
-                working_upper[expand_upper] +
-                (control$bound_expansion_factor - 1) * width[expand_upper]
-            proposed_lower <- pmax(proposed_lower, safe_lower)
-            proposed_upper <- pmin(proposed_upper, safe_upper)
-            if (identical(proposed_lower, working_lower) &&
-                identical(proposed_upper, working_upper)) {
-                boundary_following <- TRUE
-                break
-            }
-            working_lower <- proposed_lower
-            working_upper <- proposed_upper
-            bound_expansions <- bound_expansions + 1L
-        }
-    }
-
-    metrics <- candidate_metrics()
-    residual_candidates <- which(
-        is.finite(metrics$raw) & is.finite(metrics$scaled) &
-        metrics$raw <= control$root_tolerance &
-        metrics$scaled <= control$scaled_root_tolerance
-    )
-    best_index <- which.min(metrics$scaled)
-    base_diagnostics <- list(
-        score_residue = metrics$raw[best_index],
-        scaled_score_residue = metrics$scaled[best_index],
-        bound_expansions = bound_expansions,
-        solver_diagnostics = list(
-            source = candidate_source,
-            solver_status = candidate_solver_status,
-            raw_residue = metrics$raw,
-            scaled_residue = metrics$scaled,
-            solver_scaled_residue = metrics$solver_scaled
-        )
-    )
-    if (!length(residual_candidates)) {
-        return(.dasra_abundance_empty_fit(
-            "estimating_equation_residue", n, base_diagnostics
-        ))
-    }
-
-    residual_candidates <- residual_candidates[
-        order(metrics$scaled[residual_candidates])
-    ]
-    root_distance <- function(left, right) {
-        max(abs(left - right) /
-            (1 + pmax(abs(left), abs(right))))
-    }
-    # Numerical root information is immutable for a stored candidate.
-    root_information_cache <- list()
-    root_information_for <- function(index) {
-        cache_key <- as.character(index)
-        cached <- root_information_cache[[cache_key]]
-        if (!is.null(cached)) return(cached)
-
-        theta <- candidates[[index]]
-        jacobian <- tryCatch(
-            .dasra_abundance_numeric_jacobian(theta, equation_mean),
-            error = function(e) NULL
-        )
-        equation_at_theta <- candidate_equations[[index]]
-        linear_solve <- if (is.null(jacobian) ||
-            any(!is.finite(jacobian)) || is.null(equation_at_theta) ||
-            any(!is.finite(equation_at_theta))) {
+            root_polish$reason, n,
             list(
-                ok = FALSE,
-                raw_condition = Inf,
-                equilibrated_condition = Inf,
-                backward_error = Inf,
-                rank = 0L
-            )
-        } else {
-            .dasra_abundance_equilibrated_solve(
-                jacobian, equation_at_theta,
-                condition_limit = control$jacobian_condition_limit,
-                backward_tolerance = 1e-8
-            )
-        }
-        raw_solve <- if (is.null(jacobian) ||
-            any(!is.finite(jacobian)) || is.null(equation_at_theta) ||
-            any(!is.finite(equation_at_theta))) {
-            list(ok = FALSE, condition = Inf, backward_error = Inf)
-        } else {
-            .dasra_abundance_raw_solve(
-                jacobian, equation_at_theta,
-                condition_limit = control$jacobian_condition_limit,
-                backward_tolerance = 1e-8
-            )
-        }
-        correction <- if (isTRUE(linear_solve$ok)) {
-            linear_solve$solution
-        } else {
-            NULL
-        }
-        root_step <- if (is.null(correction) ||
-            any(!is.finite(correction))) {
-            Inf
-        } else {
-            max(abs(correction) / (1 + abs(theta)))
-        }
-        raw_correction <- if (isTRUE(raw_solve$ok)) {
-            raw_solve$solution
-        } else {
-            NULL
-        }
-        raw_root_step <- if (is.null(raw_correction) ||
-            any(!is.finite(raw_correction))) {
-            Inf
-        } else {
-            max(abs(raw_correction) / (1 + abs(theta)))
-        }
-        information <- list(
-            index = index,
-            theta = theta,
-            jacobian = jacobian,
-            condition = linear_solve$raw_condition,
-            equilibrated_condition =
-                linear_solve$equilibrated_condition,
-            backward_error = linear_solve$backward_error,
-            rank = linear_solve$rank,
-            raw_correction = raw_correction,
-            raw_root_step = raw_root_step,
-            raw_backward_error = raw_solve$backward_error,
-            correction = correction,
-            root_step = root_step,
-            strict_root = is.finite(root_step) &&
-                root_step <= control$root_step_tolerance,
-            plateau_root = is.finite(root_step) &&
-                root_step <= control$root_step_limit &&
-                metrics$scaled[index] <= 1e-9,
-            original_scale_strict_root = is.finite(raw_root_step) &&
-                raw_root_step <= control$root_step_tolerance,
-            original_scale_plateau_root = is.finite(raw_root_step) &&
-                raw_root_step <= control$root_step_limit &&
-                metrics$scaled[index] <= 1e-9,
-            valid = is.finite(linear_solve$equilibrated_condition) &&
-                linear_solve$equilibrated_condition <=
-                    control$jacobian_condition_limit &&
-                is.finite(root_step) &&
-                (
-                    root_step <= control$root_step_tolerance ||
-                    (
-                        root_step <= control$root_step_limit &&
-                        metrics$scaled[index] <= 1e-9
-                    )
+                score_residue = positive_count *
+                    root_polish$score_mean_max,
+                scaled_score_residue = root_polish$score_mean_max,
+                solver_diagnostics = list(
+                    beta_fit = beta_fit,
+                    root_polish = root_polish
                 )
-        )
-        root_information_cache[[cache_key]] <<- information
-        information
-    }
-
-    for (refinement_round in seq_len(3L)) {
-        provisional <- lapply(residual_candidates, root_information_for)
-        if (any(vapply(
-            provisional, function(x) isTRUE(x$valid), logical(1)
-        ))) break
-        refine <- which(vapply(provisional, function(x) {
-            is.finite(x$equilibrated_condition) &&
-                x$equilibrated_condition <=
-                    control$jacobian_condition_limit &&
-                is.finite(x$root_step) &&
-                x$root_step > control$root_step_tolerance &&
-                x$root_step <= control$root_step_limit &&
-                metrics$scaled[x$index] <=
-                    control$scaled_root_tolerance
-        }, logical(1)))
-        if (!length(refine)) break
-        refine <- refine[order(
-            vapply(provisional[refine], function(x) {
-                metrics$scaled[x$index]
-            }, numeric(1)),
-            vapply(provisional[refine], function(x) {
-                x$equilibrated_condition
-            }, numeric(1)),
-            vapply(provisional[refine], function(x) {
-                x$root_step
-            }, numeric(1)),
-            refine
-        )[1L]]
-
-        candidates_before <- length(candidates)
-        for (position in refine) {
-            information <- provisional[[position]]
-            shifted <- information$theta - information$correction
-            added <- add_candidate(
-                shifted,
-                paste0("independent-Newton-shift-", refinement_round)
             )
-            if (isTRUE(added)) {
-                refined <- run_root(
-                    shifted, method = "Newton", global = "hook",
-                    allow_singular = TRUE
-                )
-                if (!is.null(refined)) {
-                    add_candidate(
-                        refined$x,
-                        paste0(
-                            "independent-Newton-refine-", refinement_round
-                        ),
-                        refined$termcd
-                    )
-                }
-            }
-        }
-        if (length(candidates) == candidates_before) break
-        metrics <- candidate_metrics()
-        residual_candidates <- which(
-            is.finite(metrics$raw) & is.finite(metrics$scaled) &
-            metrics$raw <= control$root_tolerance &
-            metrics$scaled <= control$scaled_root_tolerance
-        )
-        residual_candidates <- residual_candidates[
-            order(metrics$scaled[residual_candidates])
-        ]
-        if (!length(residual_candidates)) break
-    }
-
-    best_index <- which.min(metrics$scaled)
-    base_diagnostics <- list(
-        score_residue = metrics$raw[best_index],
-        scaled_score_residue = metrics$scaled[best_index],
-        bound_expansions = bound_expansions,
-        solver_diagnostics = list(
-            source = candidate_source,
-            solver_status = candidate_solver_status,
-            raw_residue = metrics$raw,
-            scaled_residue = metrics$scaled,
-            solver_scaled_residue = metrics$solver_scaled
-        )
-    )
-    if (!length(residual_candidates)) {
-        return(.dasra_abundance_empty_fit(
-            "estimating_equation_residue", n, base_diagnostics
         ))
     }
+    beta <- root_polish$beta
+    linearization <- root_polish$linearization
 
-    root_representatives <- integer()
-    for (index in residual_candidates) {
-        if (!length(root_representatives) || all(vapply(
-            root_representatives,
-            function(reference) root_distance(
-                candidates[[index]], candidates[[reference]]
-            ) > control$root_cluster_tolerance,
-            logical(1)
-        ))) {
-            root_representatives <- c(root_representatives, index)
-        }
-    }
-    root_information <- lapply(root_representatives, root_information_for)
-    numerically_eligible <- vapply(root_information, function(x) {
-        is.finite(x$equilibrated_condition) &&
-            x$equilibrated_condition <= control$jacobian_condition_limit
-    }, logical(1))
-    strict_roots <- which(numerically_eligible & vapply(
-        root_information, function(x) isTRUE(x$strict_root), logical(1)
-    ))
-    plateau_roots <- which(numerically_eligible & vapply(
-        root_information, function(x) isTRUE(x$plateau_root), logical(1)
-    ))
-    equilibrated_selection_roots <- if (length(strict_roots)) {
-        strict_roots
-    } else {
-        plateau_roots
-    }
-    equilibrated_valid_roots <- sort(unique(c(strict_roots, plateau_roots)))
-    original_scale_eligible <- vapply(
-        root_information, function(x) {
-            is.finite(x$condition) &&
-                x$condition <= control$jacobian_condition_limit &&
-                is.finite(x$raw_backward_error) &&
-                x$raw_backward_error <= 1e-8
-        }, logical(1)
-    )
-    original_scale_strict_roots <- which(
-        original_scale_eligible & vapply(
-            root_information,
-            function(x) isTRUE(x$original_scale_strict_root), logical(1)
-        )
-    )
-    original_scale_plateau_roots <- which(
-        original_scale_eligible & vapply(
-            root_information,
-            function(x) isTRUE(x$original_scale_plateau_root), logical(1)
-        )
-    )
-    original_scale_roots <- if (length(original_scale_strict_roots)) {
-        original_scale_strict_roots
-    } else {
-        original_scale_plateau_roots
-    }
-    if (!length(original_scale_roots) &&
-        !length(equilibrated_selection_roots)) {
-        raw_condition <- vapply(
-            root_information, function(x) x$condition, numeric(1)
-        )
-        equilibrated_condition <- vapply(
-            root_information,
-            function(x) x$equilibrated_condition,
-            numeric(1)
-        )
-        backward_error <- vapply(
-            root_information, function(x) x$backward_error, numeric(1)
-        )
-        numerical_rank <- vapply(
-            root_information, function(x) x$rank, integer(1)
-        )
-        base_diagnostics$jacobian_condition <- min(raw_condition)
-        base_diagnostics$equilibrated_jacobian_condition <-
-            min(equilibrated_condition)
-        base_diagnostics$jacobian_backward_error <- min(backward_error)
-        base_diagnostics$jacobian_rank <- max(numerical_rank)
-        base_diagnostics$root_step <- min(vapply(
-            root_information, function(x) x$root_step, numeric(1)
-        ))
-        reason <- if (all(!is.finite(equilibrated_condition)) ||
-            min(equilibrated_condition) >
-                control$jacobian_condition_limit) {
-            "singular_or_ill_conditioned_jacobian"
-        } else {
-            "estimating_equation_root_step"
-        }
-        return(.dasra_abundance_empty_fit(reason, n, base_diagnostics))
-    }
-
-    valid_information <- root_information[equilibrated_valid_roots]
-    if (length(original_scale_roots)) {
-        selection_information <- root_information[original_scale_roots]
-        selection_method <- "raw-coordinate-compatible"
-        selected_order <- order(
-            vapply(selection_information, function(x) {
-                metrics$scaled[x$index]
-            }, numeric(1)),
-            vapply(selection_information, function(x) {
-                x$condition
-            }, numeric(1)),
-            vapply(selection_information, function(x) {
-                root_distance(x$theta, theta_start)
-            }, numeric(1))
-        )
-    } else {
-        selection_information <-
-            root_information[equilibrated_selection_roots]
-        selection_method <- "equilibrated-extension"
-        selected_order <- order(
-            vapply(selection_information, function(x) {
-                metrics$scaled[x$index]
-            }, numeric(1)),
-            vapply(selection_information, function(x) {
-                x$equilibrated_condition
-            }, numeric(1)),
-            vapply(selection_information, function(x) {
-                x$condition
-            }, numeric(1)),
-            vapply(selection_information, function(x) {
-                root_distance(x$theta, theta_start)
-            }, numeric(1))
-        )
-    }
-    selected <- selection_information[[selected_order[1L]]]
-    theta_hat <- selected$theta
-    jacobian_mean <- selected$jacobian
-    condition <- selected$condition
-    equilibrated_condition <- selected$equilibrated_condition
-    jacobian_backward_error <- selected$backward_error
-    jacobian_rank <- selected$rank
-    residue <- metrics$raw[selected$index]
-    scaled_residue <- metrics$scaled[selected$index]
-    root_step <- if (identical(
-        selection_method, "raw-coordinate-compatible"
-    )) {
-        selected$raw_root_step
-    } else {
-        selected$root_step
-    }
-    root_effects <- vapply(valid_information, function(x) {
-        tryCatch(
-            .dasra_abundance_effect(x$theta, data, gh_effect),
-            error = function(e) NA_real_
-        )
-    }, numeric(1))
-    finite_root_effects <- root_effects[is.finite(root_effects)]
-    root_effect_spread <- if (length(finite_root_effects) > 1L) {
-        diff(range(finite_root_effects))
-    } else {
-        0
-    }
-    base_diagnostics$root_count <- length(valid_information)
-    base_diagnostics$root_step <- root_step
-    base_diagnostics$jacobian_condition <- condition
-    base_diagnostics$equilibrated_jacobian_condition <-
-        equilibrated_condition
-    base_diagnostics$jacobian_backward_error <- jacobian_backward_error
-    base_diagnostics$jacobian_rank <- jacobian_rank
-    base_diagnostics$solver_diagnostics$selected_source <-
-        candidate_source[selected$index]
-    base_diagnostics$solver_diagnostics$selected_solver_status <-
-        candidate_solver_status[selected$index]
-    base_diagnostics$solver_diagnostics$selection_method <-
-        selection_method
-    base_diagnostics$solver_diagnostics$root_effects <- root_effects
-    base_diagnostics$solver_diagnostics$root_effect_spread <-
-        root_effect_spread
-    base_diagnostics$solver_diagnostics$selected_theta <- theta_hat
-    base_diagnostics$solver_diagnostics$working_lower <- working_lower
-    base_diagnostics$solver_diagnostics$working_upper <- working_upper
-    base_diagnostics$solver_diagnostics$safe_lower <- safe_lower
-    base_diagnostics$solver_diagnostics$safe_upper <- safe_upper
-    base_diagnostics$solver_diagnostics$boundary_following <-
-        boundary_following
-
-    outside_safety_region <-
-        theta_hat <= safe_lower | theta_hat >= safe_upper
-    selected_inside_working_region <- all(
-        theta_hat >= working_lower & theta_hat <= working_upper
-    )
-    selected_boundary_distance <- pmin(
-        theta_hat - working_lower,
-        working_upper - theta_hat
-    )
-    selected_follows_boundary <-
-        boundary_following && selected_inside_working_region && any(
-            selected_boundary_distance <=
-                control$parameter_boundary_tolerance * (1 + abs(theta_hat))
-        )
-    if (any(outside_safety_region)) {
-        return(.dasra_abundance_empty_fit(
-            "root_outside_numerical_safety_region", n, base_diagnostics
-        ))
-    }
-    if (selected_follows_boundary) {
-        return(.dasra_abundance_empty_fit(
-            "persistent_numerical_boundary", n, base_diagnostics
-        ))
-    }
-    root_effect_disagreement <-
-        length(finite_root_effects) > 1L &&
-        is.finite(root_effect_spread) &&
-        root_effect_spread > 1e-4 *
-            (1 + max(abs(finite_root_effects)))
-    if (root_effect_disagreement) {
-        return(.dasra_abundance_empty_fit(
-            "multiple_root_effect_disagreement", n, base_diagnostics
-        ))
-    }
-
-    warning_codes <- character()
-    if (any(theta_hat < bounds$lower | theta_hat > bounds$upper)) {
-        warning_codes <- c(warning_codes, "expanded_numerical_bounds")
-    }
-    if (condition > control$jacobian_condition_warning) {
-        warning_codes <- c(warning_codes, "ill_conditioned_jacobian")
-    }
-    if (identical(selection_method, "equilibrated-extension")) {
-        warning_codes <- c(
-            warning_codes, "equilibrated_jacobian_extension"
-        )
-    }
-    if (root_step > control$root_step_tolerance) {
-        warning_codes <- c(
-            warning_codes,
-            "weakly_identified_root_plateau"
-        )
-    }
-    if (length(valid_information) > 1L) {
-        warning_codes <- c(warning_codes, "multiple_numerical_roots")
-    }
-    fitted_state <- tryCatch(
-        .dasra_abundance_state(
-            theta_hat, data, gh_fit, return_psi = TRUE
-        ),
-        error = function(e) NULL
-    )
-    if (is.null(fitted_state) || any(!is.finite(fitted_state$psi))) {
-        return(.dasra_abundance_empty_fit(
-            "fitted_state_failed", n, base_diagnostics
-        ))
-    }
-    fitted_lp_rho <- as.numeric(data$X_rho %*% theta_hat[layout$a])
-    if (max(abs(fitted_lp_rho)) > qlogis(1 - 1e-8)) {
-        warning_codes <- c(warning_codes, "weak_identification")
-    }
-    warning_codes <- unique(warning_codes)
-
-    delta_hat <- tryCatch(
-        .dasra_abundance_effect(theta_hat, data, gh_effect),
+    effect <- tryCatch(
+        .dasra_abundance_mark_effect(beta, design$X_b, gh_effect),
         error = function(e) NA_real_
     )
-    delta_gradient <- tryCatch(
-        .dasra_abundance_numeric_gradient(
-            theta_hat,
-            function(theta) .dasra_abundance_effect(
-                theta, data, gh_effect
-            )
-        ),
+    effect_gradient <- tryCatch(
+        as.numeric(zt_central_derivative_matrix_fixed(
+            function(value) {
+                .dasra_abundance_mark_effect(
+                    value, design$X_b, gh_effect
+                )
+            },
+            beta,
+            linearization$step_info$step,
+            f0 = effect,
+            scheme = linearization$step_info$scheme
+        )),
         error = function(e) NULL
     )
-    if (!is.finite(delta_hat) || is.null(delta_gradient) ||
-        any(!is.finite(delta_gradient))) {
-        base_diagnostics$jacobian_condition <- condition
-        base_diagnostics$equilibrated_jacobian_condition <-
-            equilibrated_condition
-        base_diagnostics$jacobian_backward_error <-
-            jacobian_backward_error
-        base_diagnostics$jacobian_rank <- jacobian_rank
-        base_diagnostics$root_step <- root_step
-        base_diagnostics$root_count <- length(valid_information)
-        base_diagnostics$numerical_warning <- warning_codes
+    if (!is.finite(effect) || is.null(effect_gradient) ||
+        any(!is.finite(effect_gradient))) {
         return(.dasra_abundance_empty_fit(
-            "effect_gradient_failed", n, base_diagnostics
+            "conditional_present_effect_gradient_failed", n
         ))
     }
 
-    A_sum <- n * jacobian_mean
     influence_solve <- .dasra_abundance_equilibrated_solve(
-        A_sum, t(fitted_state$psi),
+        linearization$information,
+        t(linearization$score),
         condition_limit = control$jacobian_condition_limit,
         backward_tolerance = 1e-8
     )
-    parameter_contribution <- if (isTRUE(influence_solve$ok)) {
-        influence_solve$solution
-    } else {
-        NULL
-    }
-    if (is.null(parameter_contribution) ||
-        any(!is.finite(parameter_contribution))) {
-        base_diagnostics$jacobian_condition <- condition
-        base_diagnostics$equilibrated_jacobian_condition <-
-            equilibrated_condition
-        base_diagnostics$jacobian_backward_error <-
-            jacobian_backward_error
-        base_diagnostics$jacobian_rank <- jacobian_rank
-        base_diagnostics$root_step <- root_step
-        base_diagnostics$root_count <- length(valid_information)
-        base_diagnostics$numerical_warning <- warning_codes
+    if (!isTRUE(influence_solve$ok)) {
+        reason <- if (identical(
+            influence_solve$reason, "linear_solve_unstable"
+        )) {
+            "conditional_present_influence_solve_unstable"
+        } else {
+            "conditional_present_influence_solve_failed"
+        }
         return(.dasra_abundance_empty_fit(
-            if (identical(
-                influence_solve$reason, "linear_solve_unstable"
-            )) {
-                "influence_solve_unstable"
-            } else {
-                "influence_solve_failed"
-            },
-            n, base_diagnostics
-        ))
-    }
-    influence_backward_error <- influence_solve$backward_error
-    if (!is.finite(influence_backward_error) ||
-        influence_backward_error > 1e-8) {
-        base_diagnostics$jacobian_condition <- condition
-        base_diagnostics$equilibrated_jacobian_condition <-
-            equilibrated_condition
-        base_diagnostics$jacobian_backward_error <-
-            jacobian_backward_error
-        base_diagnostics$jacobian_rank <- jacobian_rank
-        base_diagnostics$root_step <- root_step
-        base_diagnostics$root_count <- length(valid_information)
-        base_diagnostics$numerical_warning <- warning_codes
-        return(.dasra_abundance_empty_fit(
-            "influence_solve_unstable", n, base_diagnostics
+            reason, n,
+            list(
+                jacobian_condition = influence_solve$raw_condition,
+                equilibrated_jacobian_condition =
+                    influence_solve$equilibrated_condition,
+                jacobian_backward_error = influence_solve$backward_error,
+                jacobian_rank = influence_solve$rank,
+                solver_diagnostics = list(
+                    beta_fit = beta_fit,
+                    linearization = linearization,
+                    influence_solve = influence_solve
+                )
+            )
         ))
     }
 
-    phi <- -as.numeric(delta_gradient %*% parameter_contribution)
+    parameter_contribution <- influence_solve$solution
+    phi <- as.numeric(effect_gradient %*% parameter_contribution)
+    phi <- phi - mean(phi)
     raw_variance <- sum(phi^2)
-    if (!is.finite(raw_variance) || raw_variance <= 0) {
-        base_diagnostics$jacobian_condition <- condition
-        base_diagnostics$equilibrated_jacobian_condition <-
-            equilibrated_condition
-        base_diagnostics$jacobian_backward_error <-
-            jacobian_backward_error
-        base_diagnostics$jacobian_rank <- jacobian_rank
-        base_diagnostics$root_step <- root_step
-        base_diagnostics$root_count <- length(valid_information)
-        base_diagnostics$numerical_warning <- warning_codes
+    if (any(!is.finite(phi)) || !is.finite(raw_variance) ||
+        raw_variance <= 0) {
         return(.dasra_abundance_empty_fit(
-            "nonpositive_raw_variance", n, base_diagnostics
+            "conditional_present_nonpositive_variance", n
         ))
     }
 
+    score_sum <- colSums(linearization$score)
+    final_root_correction <- rowSums(parameter_contribution)
+    root_step <- max(
+        abs(final_root_correction) / pmax(1, abs(beta))
+    )
+    score_residue <- max(abs(score_sum))
+    scaled_score_residue <- score_residue / positive_count
     raw_se <- sqrt(raw_variance)
-    raw_z <- delta_hat / raw_se
-    raw_p <- 2 * pnorm(-abs(raw_z))
+    raw_z <- effect / raw_se
+    numerical_warning <- unique(c(
+        beta_fit$numerical_warnings,
+        if (beta_fit$bound_expansions > 0L) {
+            "expanded_numerical_bounds"
+        } else {
+            character()
+        },
+        if (is.finite(influence_solve$raw_condition) &&
+            influence_solve$raw_condition >
+                control$jacobian_condition_warning) {
+            "ill_conditioned_information"
+        } else {
+            character()
+        }
+    ))
+
     list(
         available = TRUE,
         status = "ok",
-        theta = theta_hat,
-        raw_delta = delta_hat,
+        theta = beta,
+        raw_delta = effect,
         raw_se = raw_se,
-        raw_p = raw_p,
+        raw_p = 2 * pnorm(-abs(raw_z)),
         phi = phi,
-        score_residue = residue,
-        scaled_score_residue = scaled_residue,
+        score_residue = score_residue,
+        scaled_score_residue = scaled_score_residue,
         root_step = root_step,
-        root_count = length(valid_information),
-        bound_expansions = bound_expansions,
-        numerical_warning = warning_codes,
-        jacobian_condition = condition,
-        equilibrated_jacobian_condition = equilibrated_condition,
-        jacobian_backward_error = jacobian_backward_error,
-        jacobian_rank = jacobian_rank,
-        mean_presence_weight = mean(fitted_state$presence_weight),
-        mean_zero_presence_weight = if (any(y == 0)) {
-            mean(fitted_state$presence_weight[y == 0])
-        } else {
-            NA_real_
-        },
-        solver_diagnostics = c(
-            base_diagnostics$solver_diagnostics,
-            list(
-                selected_source = candidate_source[selected$index],
-                selected_solver_status =
-                    candidate_solver_status[selected$index],
-                selection_method = selection_method,
-                root_step = root_step,
-                root_count = length(valid_information),
-                root_effects = root_effects,
-                root_effect_spread = root_effect_spread,
-                root_source = vapply(
-                    valid_information,
-                    function(x) candidate_source[x$index], character(1)
-                ),
-                root_solver_status = vapply(
-                    valid_information,
-                    function(x) candidate_solver_status[x$index], character(1)
-                ),
-                root_strict = vapply(
-                    valid_information,
-                    function(x) isTRUE(x$strict_root), logical(1)
-                ),
-                root_plateau = vapply(
-                    valid_information,
-                    function(x) isTRUE(x$plateau_root), logical(1)
-                ),
-                root_raw_residue = vapply(
-                    valid_information,
-                    function(x) metrics$raw[x$index], numeric(1)
-                ),
-                root_scaled_residue = vapply(
-                    valid_information,
-                    function(x) metrics$scaled[x$index], numeric(1)
-                ),
-                root_equilibrated_step = vapply(
-                    valid_information,
-                    function(x) x$root_step, numeric(1)
-                ),
-                root_raw_step = vapply(
-                    valid_information,
-                    function(x) x$raw_root_step, numeric(1)
-                ),
-                root_raw_condition = vapply(
-                    valid_information,
-                    function(x) x$condition, numeric(1)
-                ),
-                root_equilibrated_condition = vapply(
-                    valid_information,
-                    function(x) x$equilibrated_condition, numeric(1)
-                ),
-                root_raw_backward_error = vapply(
-                    valid_information,
-                    function(x) x$raw_backward_error, numeric(1)
-                ),
-                root_equilibrated_backward_error = vapply(
-                    valid_information,
-                    function(x) x$backward_error, numeric(1)
-                ),
-                root_distance_to_pilot = vapply(
-                    valid_information,
-                    function(x) root_distance(x$theta, theta_start),
-                    numeric(1)
-                ),
-                root_theta = lapply(
-                    valid_information, function(x) x$theta
-                ),
-                raw_jacobian_condition = condition,
-                equilibrated_jacobian_condition =
-                    equilibrated_condition,
-                jacobian_backward_error = jacobian_backward_error,
-                jacobian_rank = jacobian_rank,
-                influence_raw_jacobian_condition =
-                    influence_solve$raw_condition,
-                influence_equilibrated_jacobian_condition =
-                    influence_solve$equilibrated_condition,
-                influence_backward_error = influence_backward_error,
-                warning = warning_codes
-            )
+        root_count = 1L,
+        bound_expansions = beta_fit$bound_expansions,
+        numerical_warning = numerical_warning,
+        jacobian_condition = influence_solve$raw_condition,
+        equilibrated_jacobian_condition =
+            influence_solve$equilibrated_condition,
+        jacobian_backward_error = influence_solve$backward_error,
+        jacobian_rank = influence_solve$rank,
+        mean_presence_weight = NA_real_,
+        mean_zero_presence_weight = NA_real_,
+        solver_diagnostics = list(
+            estimator = "zero_truncated_conditional_mark",
+            positive_count = positive_count,
+            parameter_count = parameter_count,
+            X_eta = X_eta,
+            beta_fit = beta_fit,
+            root_polish = root_polish,
+            derivative_step = linearization$step_info,
+            information_eigenvalues =
+                linearization$information_eigenvalues,
+            information_condition =
+                linearization$information_condition,
+            effect_gradient = effect_gradient,
+            score = linearization$score,
+            information = linearization$information,
+            final_root_correction = final_root_correction,
+            centered_influence = TRUE
         )
     )
 }
@@ -2235,7 +1235,11 @@ cauchy_combination <- function(ps) {
 # Center taxon effects against a robust cross-taxon reference.
 
 .dasra_abundance_correct <- function(
-        fits, taxa, n_samples, keep_diagnostics) {
+        fits, taxa, n_samples, keep_diagnostics,
+        min_reference_taxa = 4L) {
+    min_reference_taxa <- .dasra_validate_positive_integer(
+        min_reference_taxa, "min_reference_taxa", minimum = 3L
+    )
     p_taxa <- length(fits)
     raw_delta <- vapply(fits, function(x) x$raw_delta, numeric(1))
     raw_se <- vapply(fits, function(x) x$raw_se, numeric(1))
@@ -2254,23 +1258,21 @@ cauchy_combination <- function(ps) {
     reason <- fit_status
     background_size <- rep(NA_integer_, p_taxa)
     background_pilot <- background_estimate <- rep(NA_real_, p_taxa)
+    background_bandwidth <- background_relative_curvature <-
+        rep(NA_real_, p_taxa)
+    background_iterations <- rep(NA_integer_, p_taxa)
     reference_taxa <- vector("list", p_taxa)
 
     eligible <- which(
         available & is.finite(raw_delta) & is.finite(raw_se) & raw_se > 0
     )
-    if (length(eligible) < 5L) {
-        reason[eligible] <- "fewer_than_five_eligible_taxa"
+    if (length(eligible) < min_reference_taxa + 1L) {
+        reason[eligible] <- "insufficient_eligible_reference_taxa"
     } else {
         phi_matrix <- matrix(NA_real_, nrow = n_samples, ncol = p_taxa)
         for (j in eligible) phi_matrix[, j] <- fits[[j]]$phi
         for (j in eligible) {
             others <- setdiff(eligible, j)
-            if (length(others) < 3L) {
-                reason[j] <- "fewer_than_three_candidate_reference_taxa"
-                next
-            }
-
             background_fit <- .dasra_abundance_background(
                 values = raw_delta[others],
                 standard_errors = raw_se[others],
@@ -2287,6 +1289,7 @@ cauchy_combination <- function(ps) {
                     background_fit$influence_weight
             )
             corrected_phi <- phi_matrix[, j] - phi_background
+            corrected_phi <- corrected_phi - mean(corrected_phi)
             variance <- sum(corrected_phi^2)
             if (!is.finite(variance) || variance <= 0) {
                 reason[j] <- "nonpositive_corrected_variance"
@@ -2311,6 +1314,10 @@ cauchy_combination <- function(ps) {
             background_size[j] <- length(others)
             background_pilot[j] <- background_fit$pilot
             background_estimate[j] <- background_fit$estimate
+            background_bandwidth[j] <- background_fit$bandwidth
+            background_relative_curvature[j] <-
+                background_fit$relative_curvature
+            background_iterations[j] <- background_fit$iterations
             reference_taxa[[j]] <- taxa[others]
         }
     }
@@ -2330,6 +1337,10 @@ cauchy_combination <- function(ps) {
             background_size = background_size,
             background_pilot = background_pilot,
             background_estimate = background_estimate,
+            background_bandwidth = background_bandwidth,
+            background_relative_curvature =
+                background_relative_curvature,
+            background_iterations = background_iterations,
             score_residue = vapply(
                 fits, function(x) x$score_residue, numeric(1)
             ),
@@ -2389,15 +1400,37 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_arm <- function(Y, N, g, z, keep_diagnostics) {
+.dasra_taxon_lapply <- function(index, fit_one, cluster = NULL) {
+    if (is.null(cluster)) {
+        lapply(index, fit_one)
+    } else {
+        parallel::parLapply(cluster, index, fit_one)
+    }
+}
+
+.dasra_progress <- function(verbose, ...) {
+    if (isTRUE(verbose)) message(...)
+}
+
+.dasra_abundance_arm <- function(
+        Y, N, g, z, keep_diagnostics,
+        min_positive_samples = 3L, min_reference_taxa = 4L,
+        cluster = NULL, verbose = FALSE) {
     taxa <- colnames(Y)
     n_samples <- nrow(Y)
     control <- .dasra_abundance_control()
     gh_fit <- make_count_gh_rule(control$quadrature_Q)
     gh_effect <- make_count_gh_rule(control$effect_quadrature_Q)
-    fits <- vector("list", ncol(Y))
-    for (j in seq_len(ncol(Y))) {
-        fits[[j]] <- tryCatch(
+    worker_count <- if (is.null(cluster)) 1L else length(cluster)
+    .dasra_progress(
+        verbose,
+        sprintf(
+            "Relative-abundance arm: fitting %d taxa with %d worker%s.",
+            ncol(Y), worker_count, if (worker_count == 1L) "" else "s"
+        )
+    )
+    fit_one <- function(j) {
+        tryCatch(
             .dasra_abundance_fit_taxon(
                 y = as.numeric(Y[, j]),
                 N = N,
@@ -2405,7 +1438,8 @@ cauchy_combination <- function(ps) {
                 z = z,
                 gh_fit = gh_fit,
                 gh_effect = gh_effect,
-                control = control
+                control = control,
+                min_positive_samples = min_positive_samples
             ),
             error = function(e) {
                 .dasra_abundance_empty_fit(
@@ -2418,6 +1452,9 @@ cauchy_combination <- function(ps) {
             }
         )
     }
+    fits <- .dasra_taxon_lapply(
+        seq_len(ncol(Y)), fit_one, cluster = cluster
+    )
     names(fits) <- taxa
     numerical_warning <- vapply(
         fits,
@@ -2446,9 +1483,17 @@ cauchy_combination <- function(ps) {
         fits = fits,
         taxa = taxa,
         n_samples = n_samples,
-        keep_diagnostics = keep_diagnostics
+        keep_diagnostics = keep_diagnostics,
+        min_reference_taxa = min_reference_taxa
     )
     result$warning <- numerical_warning
+    .dasra_progress(
+        verbose,
+        sprintf(
+            "Relative-abundance arm complete: %d of %d tests formed.",
+            sum(result$formed), length(result$formed)
+        )
+    )
     result
 }
 
@@ -2735,6 +1780,52 @@ zt_beta_loglik_by_sample_inference <- function(beta, y, N, X_eta, gh) {
     pos <- y > 0
     out[pos] <- comp$log_hy[pos] - comp$log_r[pos]
     out
+}
+
+zt_beta_linearization <- function(
+        beta, loglik_by_sample, step, scheme) {
+    loglik_base <- as.numeric(loglik_by_sample(beta))
+    if (any(!is.finite(loglik_base))) {
+        return(list(
+            ok = FALSE,
+            reason = "conditional_present_loglik_failed"
+        ))
+    }
+    score <- tryCatch(
+        zt_central_derivative_matrix_fixed(
+            loglik_by_sample, beta, step,
+            f0 = loglik_base, scheme = scheme
+        ),
+        error = function(e) NULL
+    )
+    if (is.null(score) || any(!is.finite(score))) {
+        return(list(
+            ok = FALSE,
+            reason = "conditional_present_score_failed"
+        ))
+    }
+    hessian <- tryCatch(
+        zt_central_hessian_fixed(
+            function(value) sum(loglik_by_sample(value)),
+            beta, step, f0 = sum(loglik_base), scheme = scheme
+        ),
+        error = function(e) NULL
+    )
+    if (is.null(hessian) || any(!is.finite(hessian))) {
+        return(list(
+            ok = FALSE,
+            reason = "conditional_present_score_jacobian_failed"
+        ))
+    }
+    hessian <- (hessian + t(hessian)) / 2
+    list(
+        ok = TRUE,
+        reason = "ok",
+        score = score,
+        jacobian = hessian,
+        information = -hessian,
+        loglik_by_sample = loglik_base
+    )
 }
 
 zt_beta_nll <- function(beta, y, N, X_eta, gh) {
@@ -3187,6 +2278,43 @@ zt_intercept_alpha_boundary <- function(log_r, y) {
     )
 }
 
+zt_structural_zero_limit_nll <- function(log_r, y) {
+    log_r <- as.numeric(log_r)
+    y <- as.numeric(y)
+    if (length(log_r) != length(y) || any(!is.finite(log_r)) ||
+        any(log_r > 0) || any(!is.finite(y))) {
+        stop("Invalid structural zero-limit inputs.")
+    }
+    detected <- y > 0
+    log_likelihood <- numeric(length(y))
+    log_likelihood[detected] <- log_r[detected]
+    log_likelihood[!detected] <- zt_log1mexp(log_r[!detected])
+    -sum(log_likelihood)
+}
+
+zt_structural_zero_limit_audit <- function(
+        finite_nll, log_r, y,
+        relative_tolerance = sqrt(.Machine$double.eps)) {
+    finite_nll <- as.numeric(finite_nll)
+    if (length(finite_nll) != 1L || !is.finite(finite_nll) ||
+        length(relative_tolerance) != 1L ||
+        !is.finite(relative_tolerance) || relative_tolerance <= 0) {
+        stop("Invalid structural objective-audit inputs.")
+    }
+    zero_limit_nll <- zt_structural_zero_limit_nll(log_r, y)
+    tolerance <- relative_tolerance * max(
+        1, abs(finite_nll), abs(zero_limit_nll)
+    )
+    improvement <- finite_nll - zero_limit_nll
+    list(
+        dominated = isTRUE(improvement > tolerance),
+        finite_nll = finite_nll,
+        zero_limit_nll = zero_limit_nll,
+        improvement = improvement,
+        tolerance = tolerance
+    )
+}
+
 zt_fit_alpha <- function(beta, y, N, X_rho, X_eta, gh, maxit = 500L,
                          conditional_present = NULL) {
     p_alpha <- ncol(X_rho)
@@ -3360,7 +2488,7 @@ zt_no_zero_test <- function(n, diagnostics) {
     )
 }
 
-# Nuisance-adjusted score construction and stability checks.
+# Nuisance-orthogonalized estimating-function construction and stability checks.
 
 zt_structural_linearization <- function(
         beta, alpha, y, N, g, X_rho, X_eta, gh,
@@ -3659,9 +2787,12 @@ zt_structural_inference_candidate <- function(
     influence <- linearization$target - as.numeric(
         linearization$psi %*% projection$adjustment
     )
-    U <- sum(linearization$target)
+    U_raw <- sum(linearization$target)
+    U <- sum(influence)
+    nuisance_score_correction <- U_raw - U
     V <- sum(influence^2)
-    if (any(!is.finite(influence)) || !is.finite(U) ||
+    if (any(!is.finite(influence)) || !is.finite(U_raw) ||
+        !is.finite(U) || !is.finite(nuisance_score_correction) ||
         !is.finite(V) || V <= 0) {
         return(list(
             ok = FALSE, reason = "nonpositive_robust_variance",
@@ -3670,9 +2801,11 @@ zt_structural_inference_candidate <- function(
         ))
     }
     score_z <- U / sqrt(V)
+    score_z_raw <- U_raw / sqrt(V)
     statistic <- U^2 / V
     p <- pchisq(statistic, 1, lower.tail = FALSE)
-    if (!is.finite(score_z) || !is.finite(statistic) || !is.finite(p)) {
+    if (!is.finite(score_z) || !is.finite(score_z_raw) ||
+        !is.finite(statistic) || !is.finite(p)) {
         return(list(
             ok = FALSE, reason = "nonfinite_p_value",
             multiplier = multiplier, step_info = step_info,
@@ -3683,7 +2816,10 @@ zt_structural_inference_candidate <- function(
         ok = TRUE, reason = "ok", multiplier = multiplier,
         step_info = step_info, linearization = linearization,
         projection = projection, influence = influence,
-        U = U, V = V, statistic = statistic, score_z = score_z, p = p
+        U_raw = U_raw,
+        nuisance_score_correction = nuisance_score_correction,
+        U = U, V = V, statistic = statistic,
+        score_z = score_z, score_z_raw = score_z_raw, p = p
     )
 }
 
@@ -3731,6 +2867,16 @@ zt_structural_candidate_summary <- function(candidates) {
             } else {
                 candidate$error
             },
+            U_raw = if (isTRUE(candidate$ok)) {
+                candidate$U_raw
+            } else {
+                NA_real_
+            },
+            nuisance_score_correction = if (isTRUE(candidate$ok)) {
+                candidate$nuisance_score_correction
+            } else {
+                NA_real_
+            },
             U = if (isTRUE(candidate$ok)) candidate$U else NA_real_,
             V = if (isTRUE(candidate$ok)) candidate$V else NA_real_,
             statistic = if (isTRUE(candidate$ok)) {
@@ -3740,6 +2886,11 @@ zt_structural_candidate_summary <- function(candidates) {
             },
             score_z = if (isTRUE(candidate$ok)) {
                 candidate$score_z
+            } else {
+                NA_real_
+            },
+            score_z_raw = if (isTRUE(candidate$ok)) {
+                candidate$score_z_raw
             } else {
                 NA_real_
             },
@@ -4130,6 +3281,37 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
                               base_diag))
     }
 
+    finite_structural_nll <- zt_detection_nll_from_components(
+        alpha, y, X_rho, detection_component
+    )
+    zero_limit_audit <- zt_structural_zero_limit_audit(
+        finite_structural_nll, detection_component$log_r, y
+    )
+    if (isTRUE(zero_limit_audit$dominated)) {
+        details <- c(base_diag, list(
+            structural_absence_finite_nll =
+                zero_limit_audit$finite_nll,
+            structural_absence_zero_limit_nll =
+                zero_limit_audit$zero_limit_nll,
+            structural_absence_zero_limit_improvement =
+                zero_limit_audit$improvement,
+            structural_absence_objective_tolerance =
+                zero_limit_audit$tolerance
+        ))
+        if (keep_fit) {
+            details$fit <- list(
+                conditional_present = beta_fit,
+                structural_absence = alpha_fit,
+                X_rho = X_rho,
+                X_eta = X_eta,
+                quadrature = gh
+            )
+        }
+        return(zt_unavailable(
+            "structural_absence_nonoptimal_nuisance_fit", n, details
+        ))
+    }
+
     p_beta <- length(beta)
     p_alpha <- length(alpha)
     p_theta <- p_beta + p_alpha
@@ -4207,6 +3389,12 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
     ))
     diagnostics <- c(base_diag, list(
         U = U,
+        U_raw = selected_inference$U_raw,
+        score_z_raw = selected_inference$score_z_raw,
+        nuisance_score_correction =
+            selected_inference$nuisance_score_correction,
+        standardized_nuisance_score_correction =
+            selected_inference$nuisance_score_correction / sqrt(V),
         V = V,
         statistic = statistic,
         score_z = U / sqrt(V),
@@ -4228,9 +3416,18 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
         ),
         numerical_warnings = numerical_warnings
     ))
+    diagnostics$structural_absence_finite_nll <-
+        zero_limit_audit$finite_nll
+    diagnostics$structural_absence_zero_limit_nll <-
+        zero_limit_audit$zero_limit_nll
+    diagnostics$structural_absence_zero_limit_improvement <-
+        zero_limit_audit$improvement
+    diagnostics$structural_absence_objective_tolerance <-
+        zero_limit_audit$tolerance
 
-    if (keep_fit && is.finite(fitted_sigma) && fitted_sigma > 2) {
-        comparison_Q <- max(2001L, as.integer(Q))
+    if (keep_fit && is.finite(fitted_sigma) &&
+        (fitted_sigma > 2 || as.integer(Q) != 1001L)) {
+        comparison_Q <- max(2001L, 2L * as.integer(Q) - 1L)
         quadrature_diagnostic <- tryCatch(
             {
                 high_gh <- make_structural_gh_rule(comparison_Q)
@@ -4292,6 +3489,8 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
             target_derivative = M,
             nuisance_adjustment = adjustment,
             estimating_functions = psi,
+            target_score = target,
+            nuisance_score_sum = colSums(psi),
             adjusted_score = influence,
             derivative_step = theta_step,
             derivative_scheme = theta_scheme,
@@ -4421,20 +3620,32 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 
 # Numerical failures are recorded at the taxon level so that other taxa can
 # still be analyzed.
-.dasra_structural_arm <- function(Y, N, g, z, keep_diagnostics,
-                                  conditional_present_starts = 1L) {
+.dasra_structural_arm <- function(
+        Y, N, g, z, keep_diagnostics,
+        conditional_present_starts = 1L,
+        min_positive_samples = 3L,
+        quadrature_points = 1001L,
+        cluster = NULL,
+        verbose = FALSE) {
     J <- ncol(Y)
     n_samples <- nrow(Y)
-    fits <- vector("list", J)
-    for (j in seq_len(J)) {
-        fits[[j]] <- tryCatch(
+    worker_count <- if (is.null(cluster)) 1L else length(cluster)
+    .dasra_progress(
+        verbose,
+        sprintf(
+            "Structural-absence arm: fitting %d taxa with %d worker%s.",
+            J, worker_count, if (worker_count == 1L) "" else "s"
+        )
+    )
+    fit_one <- function(j) {
+        tryCatch(
             zt_count_structural_test(
                 y = as.numeric(Y[, j]),
                 N = N,
                 g = g,
                 z = z,
-                Q = 1001L,
-                min_positive_samples = 3L,
+                Q = quadrature_points,
+                min_positive_samples = min_positive_samples,
                 derivative_base = 1e-4,
                 derivative_reference_n = 120L,
                 keep_fit = keep_diagnostics,
@@ -4448,6 +3659,9 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
             }
         )
     }
+    fits <- .dasra_taxon_lapply(
+        seq_len(J), fit_one, cluster = cluster
+    )
     names(fits) <- colnames(Y)
     p <- vapply(fits, function(x) as.numeric(x$p)[1L], numeric(1))
     formed <- vapply(fits, function(x) {
@@ -4504,7 +3718,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
             call. = FALSE
         )
     }
-    list(
+    result <- list(
         p = p,
         formed = formed,
         regular = regular,
@@ -4513,6 +3727,14 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
         warning = numerical_warning,
         diagnostics = if (keep_diagnostics) fits else NULL
     )
+    .dasra_progress(
+        verbose,
+        sprintf(
+            "Structural-absence arm complete: %d of %d results returned.",
+            sum(formed), length(formed)
+        )
+    )
+    result
 }
 
 #' Depth-Aware Structural-Absence and Relative-Abundance Analysis
@@ -4525,39 +3747,59 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'
 #' The structural-absence component estimates the conditional-present count
 #' distribution from positive counts, estimates structural-absence nuisance
-#' parameters from the detection indicators, and evaluates a nuisance-adjusted
-#' score for the group effect. Positive `z_structural_absence` values indicate
-#' greater structural absence in the comparison group.
+#' parameters from the detection indicators, and evaluates a
+#' nuisance-orthogonalized estimating-function statistic for the group effect
+#' with a matching empirical sandwich variance. At an exact finite interior
+#' nuisance root, its numerator equals the restricted target score. Positive
+#' `z_structural_absence` values indicate greater structural absence in the
+#' comparison group.
 #'
 #' The relative-abundance component estimates a covariate-standardized
 #' comparison-minus-reference difference in mean log relative abundance
-#' conditional on taxon presence. Zero-count samples enter its estimating
-#' equations through their posterior probability of presence and their
-#' posterior latent-abundance score. The taxon-specific effects are centered
-#' against a target-excluded robust cross-taxon reference background, with
-#' sample-aligned influence contributions used for the corrected standard error.
+#' conditional on taxon presence. Every taxon is fitted with the same
+#' zero-truncated conditional-mark likelihood. Under the model's separable
+#' structural-presence gate, conditioning on a positive count cancels the
+#' structural-presence probability exactly, so the abundance fit does not
+#' estimate or switch on a structural-absence nuisance parameter.
+#' Zero counts have zero mark score, while all samples still contribute their
+#' covariate values to the fixed observed-design sample-standardized effect.
+#' The taxon-specific
+#' effects are centered against a target-excluded cross-taxon reference, with
+#' centered, sample-aligned influence contributions used for the corrected
+#' sandwich standard error and a first-order normal Wald test.
 #' A positive `estimate_relative_abundance` means that the target taxon's
 #' present-conditional log-relative-abundance contrast exceeds this shared
-#' compositional background. This correction is designed for analyses in which
-#' a strict majority of eligible taxa share a common compositional background;
-#' the reported abundance effect is a reference-centered relative contrast.
+#' compositional background. The reference correction has a pointwise
+#' fixed-taxon justification when the fixed-design mark estimator has a unique
+#' regular interior solution with positive information and, after excluding
+#' each target, a separated strict majority of stably eligible taxa share one
+#' common background and the fitted kernel mode is stable, isolated, and has
+#' positive curvature. A count majority alone is not a
+#' finite-sample guarantee: many same-direction effects can overlap the
+#' reference mode and bias the corrected abundance test. The reported abundance
+#' effect is therefore a reference-centered relative contrast.
 #'
-#' Taxa with positive counts in fewer than three samples are excluded before
-#' component fitting and omitted from the multiple-testing families. Every
-#' retained taxon remains in each requested family; an unavailable component is
-#' assigned a conservative p-value of one.
+#' Taxa with positive counts in fewer than `min_positive_samples` samples are
+#' excluded before component fitting and omitted from the multiple-testing
+#' families. Every retained taxon remains in each requested family; an
+#' unavailable component is assigned an operational conservative value of one.
 #'
 #' Two structural outcomes are nonregular. A taxon with no observed zeros has
 #' no variation in its absence indicator (`no_observed_zeros`). An
 #' intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
 #' exact solution at the zero structural-absence boundary
-#' (`structural_absence_boundary_at_zero`). Both outcomes return a conservative
-#' p-value of one, remain in the primary Bonferroni family, and are excluded
-#' from the Cauchy sensitivity combination. Their signed score statistic is
-#' undefined. For an otherwise supported all-positive taxon, the
-#' relative-abundance full system has a structural-nuisance boundary and is
-#' reported as unavailable with reason
-#' `no_observed_zeros_structural_nuisance_boundary`.
+#' (`structural_absence_boundary_at_zero`). Both outcomes use one as an
+#' operational conservative value in the primary Bonferroni family and are
+#' excluded from the Cauchy sensitivity combination; this value is not a
+#' calibrated boundary p-value. Their signed statistic is undefined. A finite
+#' covariate-adjusted structural nuisance fit is unavailable with reason
+#' `structural_absence_nonoptimal_nuisance_fit` when the exact zero
+#' structural-absence-probability limit has a strictly lower detection
+#' objective. This audit proves
+#' that the returned fit cannot be the optimizing finite regular nuisance fit;
+#' it does not classify the global optimum as a boundary solution. An
+#' otherwise supported all-positive taxon can still enter the abundance
+#' conditional-mark fit because that fit has no structural nuisance parameter.
 #' The returned component-use columns record the components entering each
 #' omnibus calculation.
 #' Numerical warnings identify fitted roots that passed the stated residual,
@@ -4570,7 +3812,10 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'
 #' @param counts Raw non-negative integer counts in a matrix or data frame.
 #' @param metadata Sample metadata in a data frame. Row names must contain all
-#'   sample names in `counts`.
+#'   sample names in `counts`. Variables used by `formula`, `group`, or a
+#'   metadata-based `library_size` must be complete; samples are not removed
+#'   automatically. Missing values should be handled before calling `dasra()`
+#'   while keeping counts, metadata, and any named depth vector aligned.
 #' @param formula A one-sided formula containing `group` as an additive main
 #'   effect and any adjustment terms, for example `~ disease + age + sex`.
 #'   Interactions involving `group`, offsets, and random-effect terms are not
@@ -4585,17 +3830,40 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   first level by default; logical and numeric 0/1 groups use `FALSE` or 0.
 #'   Character groups and other numeric codings require an explicit reference.
 #' @param p_adjust_method Method passed to [stats::p.adjust()] separately for
-#'   each requested component and omnibus family.
+#'   each requested component and omnibus family. The usual assumptions of the
+#'   selected adjustment method still apply.
 #' @param component Analysis to run. `"all"` fits both components and reports
 #'   the omnibus analyses. `"structural_absence"` fits the structural-absence
 #'   component. `"relative_abundance"` fits the relative-abundance component.
 #' @param full_output Logical. If `TRUE`, the returned object includes detailed
-#'   fits for the requested components.
-#' @param conditional_present_starts Number of deterministic starts for the
-#'   structural-absence conditional-present count fit. The default `1L` begins
-#'   with the prespecified primary start and uses the full five-start bank when
-#'   the primary fit does not satisfy the formation checks. Setting `5L` uses
-#'   the full bank immediately. Only `1L` and `5L` are supported.
+#'   fits for the requested components. Structural fits may also report the
+#'   maximum discrepancy from a strictly higher-order quadrature rule; this is
+#'   a numerical sensitivity diagnostic, not an error bound. Detailed abundance
+#'   output includes the fitted reference bandwidth, relative mode curvature,
+#'   and iteration count.
+#' @param conditional_present_starts Start strategy for the structural arm's
+#'   conditional-present count fit. `"adaptive"` first uses the prespecified
+#'   primary start and retries with the full five-start bank if formation checks
+#'   fail. `"full"` uses all five starts immediately. Legacy values `1L` and
+#'   `5L` are accepted with the corresponding meanings.
+#' @param min_positive_samples Minimum number of samples with a positive count
+#'   required to retain a taxon before fitting. The default is `3L`. This
+#'   preliminary filter does not replace the positive-mark design-rank and
+#'   information checks.
+#'   Because it changes the retained multiplicity and reference families, it
+#'   should be chosen before inspecting results.
+#' @param min_reference_taxa Minimum number of eligible target-excluded taxa
+#'   required to form an abundance reference. The default `4L` preserves the
+#'   original formation rule; values below `3L` are not supported.
+#' @param structural_quadrature_points Number of Gauss-Hermite nodes used by the
+#'   structural arm. The validated default is `1001L`. Smaller values trade
+#'   numerical accuracy for speed and should be assessed with `full_output =
+#'   TRUE` before use.
+#' @param workers Number of parallel worker processes. The default `1L` runs
+#'   sequentially. Values above one use an ordered, cross-platform PSOCK
+#'   cluster and do not change the taxon order.
+#' @param verbose Logical. If `TRUE`, report arm-level start and completion
+#'   messages.
 #'
 #' @return An object of class `dasra` with elements:
 #'   \describe{
@@ -4670,7 +3938,13 @@ dasra <- function(counts, metadata, formula, group, library_size,
                   p_adjust_method = "BH",
                   component = c("all", "structural_absence",
                                 "relative_abundance"),
-                  full_output = FALSE, conditional_present_starts = 1L) {
+                  full_output = FALSE,
+                  conditional_present_starts = c("adaptive", "full"),
+                  min_positive_samples = 3L,
+                  min_reference_taxa = 4L,
+                  structural_quadrature_points = 1001L,
+                  workers = 1L,
+                  verbose = FALSE) {
     call <- match.call()
     component <- match.arg(component)
     raw_counts <- as.matrix(counts)
@@ -4871,16 +4145,91 @@ dasra <- function(counts, metadata, formula, group, library_size,
         stop("`full_output` must be TRUE or FALSE.", call. = FALSE)
     }
     full_output <- isTRUE(full_output)
-    conditional_present_starts <-
-        .dasra_validate_conditional_present_starts(
-            conditional_present_starts
-        )
+    start_info <- .dasra_resolve_conditional_present_starts(
+        conditional_present_starts
+    )
+    min_positive_samples <- .dasra_validate_positive_integer(
+        min_positive_samples, "min_positive_samples"
+    )
+    min_reference_taxa <- .dasra_validate_positive_integer(
+        min_reference_taxa, "min_reference_taxa", minimum = 3L
+    )
+    structural_quadrature_points <- .dasra_validate_positive_integer(
+        structural_quadrature_points,
+        "structural_quadrature_points",
+        minimum = 3L
+    )
+    workers <- .dasra_validate_positive_integer(workers, "workers")
+    if (length(verbose) != 1L || is.na(verbose) || !is.logical(verbose)) {
+        stop("`verbose` must be TRUE or FALSE.", call. = FALSE)
+    }
+    verbose <- isTRUE(verbose)
     run_structural <- component %in% c("all", "structural_absence")
     run_abundance <- component %in% c("all", "relative_abundance")
     run_omnibus <- identical(component, "all")
 
     J <- ncol(Y)
-    retained <- colSums(Y > 0) >= 3L
+    retained <- colSums(Y > 0) >= min_positive_samples
+    retained_count <- sum(retained)
+    worker_count <- if (retained_count) {
+        min(workers, retained_count)
+    } else {
+        0L
+    }
+    cluster <- NULL
+    if (worker_count > 1L) {
+        cluster <- tryCatch(
+            parallel::makePSOCKcluster(worker_count),
+            error = function(e) {
+                stop(
+                    sprintf(
+                        "Could not start parallel workers: %s",
+                        conditionMessage(e)
+                    ),
+                    call. = FALSE
+                )
+            }
+        )
+        on.exit(
+            try(parallel::stopCluster(cluster), silent = TRUE),
+            add = TRUE
+        )
+        library_paths <- .libPaths()
+        initialize_worker <- function(paths) {
+            .libPaths(paths)
+            loadNamespace("DASRA")
+            as.character(utils::packageVersion("DASRA"))
+        }
+        environment(initialize_worker) <- baseenv()
+        tryCatch({
+            worker_versions <- parallel::clusterCall(
+                cluster,
+                initialize_worker,
+                library_paths
+            )
+            main_version <- as.character(utils::packageVersion("DASRA"))
+            if (any(vapply(
+                worker_versions, function(value) !identical(value, main_version),
+                logical(1)
+            ))) {
+                stop(sprintf(
+                    "Parallel workers loaded a different DASRA version than %s.",
+                    main_version
+                ))
+            }
+            invisible(worker_versions)
+        },
+            error = function(e) {
+                stop(
+                    sprintf(
+                        "Could not initialize parallel workers: %s",
+                        conditionMessage(e)
+                    ),
+                    call. = FALSE
+                )
+            }
+        )
+    }
 
     structural <- NULL
     if (run_structural) {
@@ -4888,7 +4237,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
             p = rep(NA_real_, J),
             formed = rep(FALSE, J),
             regular = rep(FALSE, J),
-            reason = rep("fewer_than_three_positive_samples", J),
+            reason = rep("insufficient_positive_support", J),
             score_z = rep(NA_real_, J),
             warning = rep("", J),
             diagnostics = NULL
@@ -4900,7 +4249,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
         abundance <- list(
             p = rep(NA_real_, J),
             formed = rep(FALSE, J),
-            reason = rep("fewer_than_three_positive_samples", J),
+            reason = rep("insufficient_positive_support", J),
             estimate = rep(NA_real_, J),
             se = rep(NA_real_, J),
             z = rep(NA_real_, J),
@@ -4915,7 +4264,11 @@ dasra <- function(counts, metadata, formula, group, library_size,
         if (run_structural) {
             structural_retained <- .dasra_structural_arm(
                 Y_retained, N, g, z, full_output,
-                conditional_present_starts = conditional_present_starts
+                conditional_present_starts = start_info$count,
+                min_positive_samples = min_positive_samples,
+                quadrature_points = structural_quadrature_points,
+                cluster = cluster,
+                verbose = verbose
             )
             structural$p[retained] <- structural_retained$p
             structural$formed[retained] <- structural_retained$formed
@@ -4928,7 +4281,11 @@ dasra <- function(counts, metadata, formula, group, library_size,
 
         if (run_abundance) {
             abundance_retained <- .dasra_abundance_arm(
-                Y_retained, N, g, z, full_output
+                Y_retained, N, g, z, full_output,
+                min_positive_samples = min_positive_samples,
+                min_reference_taxa = min_reference_taxa,
+                cluster = cluster,
+                verbose = verbose
             )
             abundance$p[retained] <- abundance_retained$p
             abundance$formed[retained] <- abundance_retained$formed
@@ -5085,29 +4442,38 @@ dasra <- function(counts, metadata, formula, group, library_size,
         library_size_source = library_size_source,
         p_adjust_method = p_adjust_method,
         component = component,
-        conditional_present_starts = conditional_present_starts,
-        min_positive_samples_retained = 3L
+        conditional_present_starts = start_info$mode,
+        min_positive_samples_retained = min_positive_samples,
+        min_reference_taxa = min_reference_taxa,
+        workers_requested = workers,
+        workers_used = worker_count
     )
     if (run_structural) {
         settings$structural_method <- paste(
-            "two-stage zero-truncated/detection stacked score",
-            "with adaptive Gauss-Hermite quadrature"
+            "two-stage zero-truncated/detection stacked estimating-function",
+            "test with nuisance orthogonalization and adaptive",
+            "Gauss-Hermite quadrature"
         )
-        settings$structural_quadrature_Q <- 1001L
+        settings$structural_quadrature_Q <- structural_quadrature_points
         settings$structural_derivative_base <- 1e-4
         settings$structural_derivative_reference_n <- 120L
     }
     if (run_abundance) {
         settings$relative_abundance_method <- paste(
-            "depth-aware present-conditional mean-log-relative-abundance estimation",
+            "zero-truncated conditional-mark estimation of the",
+            "depth-aware present-conditional mean-log-relative-abundance",
             "with target-excluded robust compositional correction"
         )
         settings$abundance_quadrature_Q <- 41L
         settings$abundance_effect_quadrature_Q <- 41L
-        settings$abundance_root_tolerance <- 1e-5
-        settings$abundance_absolute_root_tolerance <- 1e-8
-        settings$abundance_scaled_root_tolerance <- 1e-7
+        settings$abundance_conditional_present_starts <- 5L
+        settings$abundance_derivative_base <- 1e-4
+        settings$abundance_derivative_reference_n <- 120L
+        settings$abundance_score_tolerance <- 1e-8
         settings$abundance_jacobian_condition_limit <- 1e12
+        settings$abundance_variance <- "centered HC0 sandwich"
+        settings$abundance_reference_distribution <-
+            "standard normal first-order approximation"
         settings$abundance_reference_method <- paste(
             "target-excluded least-trimmed-squares-initialized",
             "Gaussian kernel mode"

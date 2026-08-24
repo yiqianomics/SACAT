@@ -18,9 +18,9 @@ Analysis/RealDataAnalysis/R_lib/
 Analysis/NegativeControlAnalysis/prepare_public_data.R
 
 # Local SparseDOSSA2 simulation intermediates
-/Analysis/SparseDOSSA2Simulation/results/raw/
-/Analysis/SparseDOSSA2Simulation/checkpoints/
-/Analysis/SparseDOSSA2Simulation/logs/
-/Analysis/SparseDOSSA2Simulation/tmp/
-/Analysis/SparseDOSSA2Simulation/summary/replication_metrics.csv
+/Analysis/SparseDOSSA2Simulation/**/results/raw/
+/Analysis/SparseDOSSA2Simulation/**/checkpoints/
+/Analysis/SparseDOSSA2Simulation/**/logs/
+/Analysis/SparseDOSSA2Simulation/**/tmp/
+/Analysis/SparseDOSSA2Simulation/**/summary/replication_metrics.csv
 /Analysis/SparseDOSSA2Simulation/**/*.tmp_*

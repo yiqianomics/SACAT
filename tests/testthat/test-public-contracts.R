@@ -24,7 +24,7 @@
         ),
         .dasra_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
-                conditional_present_starts = 1L) {
+                conditional_present_starts = 1L, ...) {
             encoded <<- g
             list(
                 p = rep(0.5, ncol(Y)),
@@ -55,7 +55,7 @@
         "expanded_numerical_bounds", "", "", "weak_identification"
     )
     abundance_warning <- c(
-        "", "multiple_numerical_roots", "", ""
+        "", "ill_conditioned_information", "", ""
     )
     names(structural_warning) <- names(abundance_warning) <-
         rownames(scenario)
@@ -63,7 +63,7 @@
     local_mocked_bindings(
         .dasra_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
-                conditional_present_starts = 1L) {
+                conditional_present_starts = 1L, ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
             list(
                 p = selected$structural_p,
@@ -75,7 +75,8 @@
                 diagnostics = NULL
             )
         },
-        .dasra_abundance_arm = function(Y, N, g, z, keep_diagnostics) {
+        .dasra_abundance_arm = function(
+                Y, N, g, z, keep_diagnostics, ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
             list(
                 p = selected$abundance_p,
@@ -190,7 +191,7 @@ test_that("lightweight warnings and nonregular status are returned by default", 
     )
     expect_identical(
         fit$diagnostics$warning_relative_abundance,
-        c("", "multiple_numerical_roots", "", "", "")
+        c("", "ill_conditioned_information", "", "", "")
     )
     expect_identical(
         fit$diagnostics$nonregular_structural_absence,
@@ -299,4 +300,146 @@ test_that("print separates regular and conservative structural results", {
         "Conservative nonregular results: 2/4", output, fixed = TRUE
     )))
     expect_true(any(grepl("holm-adjusted p", output, fixed = TRUE)))
+})
+
+test_that("public numerical and formation controls have stable defaults", {
+    defaults <- formals(DASRA::dasra)
+
+    expect_identical(
+        eval(defaults$conditional_present_starts),
+        c("adaptive", "full")
+    )
+    expect_identical(eval(defaults$min_positive_samples), 3L)
+    expect_identical(eval(defaults$min_reference_taxa), 4L)
+    expect_identical(eval(defaults$structural_quadrature_points), 1001L)
+    expect_identical(eval(defaults$workers), 1L)
+    expect_identical(eval(defaults$verbose), FALSE)
+    expect_identical(getNamespaceExports("DASRA"), "dasra")
+})
+
+test_that("public controls are validated and recorded", {
+    samples <- paste0("Sample_", seq_len(8L))
+    counts <- matrix(
+        2L,
+        nrow = 5L,
+        ncol = length(samples),
+        dimnames = list(paste0("Taxon_", 1:5), samples)
+    )
+    metadata <- data.frame(
+        group = factor(rep(c("reference", "comparison"), each = 4L)),
+        reads = rep(100L, length(samples)),
+        row.names = samples
+    )
+    captured <- NULL
+
+    fit <- with_mocked_bindings(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            component = "structural_absence",
+            conditional_present_starts = "full",
+            min_positive_samples = 2L,
+            min_reference_taxa = 3L,
+            structural_quadrature_points = 31L
+        ),
+        .dasra_structural_arm = function(
+                Y, N, g, z, keep_diagnostics,
+                conditional_present_starts, min_positive_samples,
+                quadrature_points, cluster, verbose) {
+            captured <<- list(
+                starts = conditional_present_starts,
+                minimum = min_positive_samples,
+                Q = quadrature_points,
+                cluster = cluster,
+                verbose = verbose
+            )
+            list(
+                p = rep(0.5, ncol(Y)),
+                formed = rep(TRUE, ncol(Y)),
+                regular = rep(TRUE, ncol(Y)),
+                reason = rep("ok", ncol(Y)),
+                score_z = rep(0, ncol(Y)),
+                warning = rep("", ncol(Y)),
+                diagnostics = NULL
+            )
+        },
+        .package = "DASRA"
+    )
+
+    expect_identical(captured$starts, 5L)
+    expect_identical(captured$minimum, 2L)
+    expect_identical(captured$Q, 31L)
+    expect_null(captured$cluster)
+    expect_false(captured$verbose)
+    expect_identical(fit$settings$conditional_present_starts, "full")
+    expect_identical(fit$settings$min_positive_samples_retained, 2L)
+    expect_identical(fit$settings$min_reference_taxa, 3L)
+    expect_identical(fit$settings$structural_quadrature_Q, 31L)
+    expect_identical(fit$settings$workers_used, 1L)
+
+    expect_error(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            min_positive_samples = 0L
+        ),
+        "min_positive_samples"
+    )
+    expect_error(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            min_reference_taxa = 2L
+        ),
+        "min_reference_taxa"
+    )
+    expect_error(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            structural_quadrature_points = 2L
+        ),
+        "structural_quadrature_points"
+    )
+})
+
+test_that("only metadata used by the analysis must be complete", {
+    samples <- paste0("Sample_", seq_len(8L))
+    counts <- matrix(
+        2L,
+        nrow = 5L,
+        ncol = length(samples),
+        dimnames = list(paste0("Taxon_", 1:5), samples)
+    )
+    metadata <- data.frame(
+        group = factor(rep(c("reference", "comparison"), each = 4L)),
+        age = seq(20, 55, by = 5),
+        unused = c(NA, rep(1, 7L)),
+        reads = rep(100L, length(samples)),
+        row.names = samples
+    )
+
+    expect_no_error(with_mocked_bindings(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            component = "structural_absence"
+        ),
+        .dasra_structural_arm = function(Y, ...) {
+            list(
+                p = rep(0.5, ncol(Y)),
+                formed = rep(TRUE, ncol(Y)),
+                regular = rep(TRUE, ncol(Y)),
+                reason = rep("ok", ncol(Y)),
+                score_z = rep(0, ncol(Y)),
+                warning = rep("", ncol(Y)),
+                diagnostics = NULL
+            )
+        },
+        .package = "DASRA"
+    ))
+
+    metadata$age[2L] <- NA
+    expect_error(
+        dasra(
+            counts, metadata, ~ group + age, "group", "reads",
+            component = "structural_absence"
+        ),
+        "Could not construct the model"
+    )
 })

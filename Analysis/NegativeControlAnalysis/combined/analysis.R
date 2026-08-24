@@ -8,23 +8,30 @@ scenario_labels <- c(
     fourfold = "Fourfold depth difference"
 )
 method_order <- c("DASRA", "ZINQ", "MaAsLin3")
+required_dasra_version <- "0.4.1"
 dataset_order <- c(
+    "NogueraJulianHIV",
     "BaxterE_2016",
-    "SchirmerM_2016",
-    "JieZ_2017",
-    "NielsenHB_2014",
+    "HMPV35Throat",
+    "Qiita13631ASD",
+    "ArtPrize_2015_Forehead",
+    "MehtaRS_2018",
+    "VatanenT_2016",
     "LeChatelierE_2013",
+    "ORIGINS_2022_Healthy_Plaque",
+    "NHANESOral_2011_2012",
+    "NielsenHB_2014",
+    "NHANESOral_2009_2010",
+    "JieZ_2017",
+    "Qiita11993Colombia",
     "LiJ_2014",
     "Atlas1006",
-    "NogueraJulianHIV",
-    "HMPV35Throat",
-    "Qiita11993Colombia",
-    "Qiita13631ASD",
-    "NHANESOral_2009_2010",
-    "NHANESOral_2011_2012",
-    "ORIGINS_2022_Healthy_Plaque",
-    "ArtPrize_2015_Forehead"
+    "SchirmerM_2016",
+    "ZeeviD_2015",
+    "VilaAV_2018",
+    "QinJ_2012"
 )
+dataset_count <- length(dataset_order)
 alpha <- 0.05
 replicates <- 100L
 taxa_per_replicate <- 30L
@@ -78,9 +85,9 @@ read_dataset_catalog <- function(root) {
         )
     })
     catalog <- do.call(rbind, rows)
-    if (nrow(catalog) != 15L || anyDuplicated(catalog$dataset) ||
+    if (nrow(catalog) != dataset_count || anyDuplicated(catalog$dataset) ||
         anyDuplicated(catalog$label) || anyDuplicated(catalog$dataset_index)) {
-        stop("The 15 analysis inputs must have unique dataset metadata.",
+        stop("The analysis inputs must have unique dataset metadata.",
              call. = FALSE)
     }
     rownames(catalog) <- NULL
@@ -364,7 +371,8 @@ validate_dataset_audit <- function(dataset, result, catalog_entry, root) {
         !identical(as.character(manifest$scenarios), "balanced | fourfold") ||
         !identical(as.character(manifest$DASRA_omnibus_contract),
                    "p_omnibus with formed_omnibus") ||
-        !identical(as.character(manifest$DASRA_version), "0.4.0")) {
+        !identical(as.character(manifest$DASRA_version),
+                   required_dasra_version)) {
         stop("The run manifest is inconsistent for ", dataset, ".",
              call. = FALSE)
     }
@@ -603,7 +611,7 @@ draw_figure <- function(summary, catalog, output_directory) {
     ggplot2::ggsave(
         file.path(output_directory, "negative_control_type1_error.pdf"),
         figure, device = grDevices::cairo_pdf,
-        width = 10.4, height = 7.8, units = "in", bg = "white"
+        width = 10.4, height = 9.8, units = "in", bg = "white"
     )
     invisible(figure)
 }
@@ -638,11 +646,13 @@ main <- function() {
     dataset_summary <- make_dataset_summary(replicate_summary, catalog)
     availability_summary <- make_availability_summary(result, catalog)
     completeness_summary <- make_completeness_summary(result, catalog)
-    if (nrow(formal_support) != 450L ||
-        nrow(replicate_summary) != 9000L ||
-        nrow(dataset_summary) != 90L ||
-        nrow(availability_summary) != 90L ||
-        nrow(completeness_summary) != 90L ||
+    expected_dataset_summaries <-
+        dataset_count * length(scenario_order) * length(method_order)
+    if (nrow(formal_support) != dataset_count * taxa_per_replicate ||
+        nrow(replicate_summary) != expected_dataset_summaries * replicates ||
+        nrow(dataset_summary) != expected_dataset_summaries ||
+        nrow(availability_summary) != expected_dataset_summaries ||
+        nrow(completeness_summary) != expected_dataset_summaries ||
         any(!completeness_summary$complete)) {
         stop("The combined summaries are incomplete.", call. = FALSE)
     }
@@ -668,7 +678,7 @@ main <- function() {
         file.path(output_directory, "completeness.csv")
     )
     draw_figure(dataset_summary, catalog, output_directory)
-    message("All 15 datasets were validated and summarized.")
+    message("All ", dataset_count, " datasets were validated and summarized.")
 }
 
 tryCatch(

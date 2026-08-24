@@ -40,63 +40,29 @@
     })
 }
 
-test_that("all-positive abundance taxa stop at the nuisance boundary", {
-    y <- c(3, 5, 4, 6, 7, 4, 8, 5)
-    group <- rep(c(0, 1), each = 4L)
-    depth <- rep(100L, length(y))
-    gh <- DASRA:::make_count_gh_rule(3L)
-    solver_entered <- FALSE
-
-    fit <- with_mocked_bindings(
-        DASRA:::.dasra_abundance_fit_taxon(
-            y = y,
-            N = depth,
-            group = group,
-            z = NULL,
-            gh_fit = gh,
-            gh_effect = gh,
-            control = DASRA:::.dasra_abundance_control()
-        ),
-        .dasra_abundance_initial_mark = function(...) {
-            solver_entered <<- TRUE
-            stop("The solver should not be entered.")
-        },
-        .package = "DASRA"
-    )
-
-    expect_false(solver_entered)
-    expect_false(fit$available)
-    expect_identical(
-        fit$status,
-        "no_observed_zeros_structural_nuisance_boundary"
-    )
-    expect_equal(fit$phi, rep(NA_real_, length(y)))
-
-    corrected <- DASRA:::.dasra_abundance_correct(
-        fits = list(fit),
-        taxa = "Taxon_1",
-        n_samples = length(y),
-        keep_diagnostics = FALSE
-    )
-    expect_false(corrected$formed[1L])
-    expect_equal(corrected$p[1L], 1)
-    expect_identical(
-        corrected$reason[1L],
-        "no_observed_zeros_structural_nuisance_boundary"
-    )
-})
-
-test_that("public all-positive results preserve both omnibus contracts", {
-    n <- 8L
-    samples <- paste0("Sample_", seq_len(n))
-    counts <- matrix(
-        seq_len(6L * n), nrow = 6L,
-        dimnames = list(paste0("Taxon_", 1:6), samples)
-    )
+test_that("public all-positive data retain abundance but not regular structure", {
+    set.seed(802)
+    n <- 80L
+    p <- 6L
+    group <- rep(0:1, each = n / 2L)
+    depth <- sample(5000:9000, n, replace = TRUE)
+    probability <- sapply(seq_len(p), function(index) {
+        plogis(
+            -5 + 0.1 * index +
+                c(0.15, -0.10, rep(0, p - 2L))[index] * group +
+                rnorm(n, sd = 0.35)
+        )
+    })
+    count_by_sample <- sapply(seq_len(p), function(index) {
+        pmax(1L, rbinom(n, depth, probability[, index]))
+    })
+    counts <- t(count_by_sample)
+    rownames(counts) <- paste0("Taxon_", seq_len(p))
+    colnames(counts) <- paste0("Sample_", seq_len(n))
     metadata <- data.frame(
-        group = factor(rep(c("reference", "comparison"), each = n / 2L)),
-        reads = rep(1000L, n),
-        row.names = samples
+        group = factor(group, labels = c("reference", "comparison")),
+        reads = depth,
+        row.names = colnames(counts)
     )
 
     fit <- dasra(
@@ -105,88 +71,14 @@ test_that("public all-positive results preserve both omnibus contracts", {
 
     expect_true(all(fit$diagnostics$formed_structural_absence))
     expect_true(all(fit$diagnostics$nonregular_structural_absence))
-    expect_false(any(fit$diagnostics$formed_relative_abundance))
-    expect_true(all(
-        fit$diagnostics$reason_relative_abundance ==
-            "no_observed_zeros_structural_nuisance_boundary"
-    ))
-    expect_equal(fit$results$p_omnibus, rep(1, 6L))
-    expect_identical(
-        fit$results$components_used,
-        rep("structural_absence", 6L)
-    )
-    expect_equal(fit$results$p_omnibus_cauchy, rep(1, 6L))
+    expect_true(all(fit$diagnostics$formed_relative_abundance))
+    expect_true(all(fit$diagnostics$reason_relative_abundance == "ok"))
+    expect_identical(fit$results$components_used, rep("both", p))
     expect_identical(
         fit$results$components_used_cauchy,
-        rep("none", 6L)
+        rep("relative_abundance", p)
     )
-})
-
-test_that("one observed zero continues to the abundance solver", {
-    y <- c(3, 5, 4, 6, 7, 4, 8, 0)
-    group <- rep(c(0, 1), each = 4L)
-    gh <- DASRA:::make_count_gh_rule(3L)
-    initialization_entered <- FALSE
-
-    fit <- with_mocked_bindings(
-        DASRA:::.dasra_abundance_fit_taxon(
-            y = y,
-            N = rep(100L, length(y)),
-            group = group,
-            z = NULL,
-            gh_fit = gh,
-            gh_effect = gh,
-            control = DASRA:::.dasra_abundance_control()
-        ),
-        .dasra_abundance_initial_mark = function(...) {
-            initialization_entered <<- TRUE
-            NULL
-        },
-        .package = "DASRA"
-    )
-
-    expect_true(initialization_entered)
-    expect_identical(fit$status, "positive_mark_initialization_failed")
-})
-
-test_that("abundance support failures take priority over the boundary", {
-    gh <- DASRA:::make_count_gh_rule(3L)
-    solver_entered <- FALSE
-    run_case <- function(y, group, z = NULL) {
-        with_mocked_bindings(
-            DASRA:::.dasra_abundance_fit_taxon(
-                y = y,
-                N = rep(100L, length(y)),
-                group = group,
-                z = z,
-                gh_fit = gh,
-                gh_effect = gh,
-                control = DASRA:::.dasra_abundance_control()
-            ),
-            .dasra_abundance_initial_mark = function(...) {
-                solver_entered <<- TRUE
-                stop("The solver should not be entered.")
-            },
-            .package = "DASRA"
-        )
-    }
-
-    insufficient <- run_case(c(2, 3), c(0, 1))
-    insufficient_mark_support <- run_case(c(2, 3, 4), c(0, 0, 1))
-    one_group <- run_case(rep(2, 6L), rep(0, 6L))
-    group <- rep(c(0, 1), each = 4L)
-    rank_deficient <- run_case(rep(2, 8L), group, z = matrix(group))
-
-    expect_identical(
-        insufficient$status, "fewer_than_three_positive_counts"
-    )
-    expect_identical(
-        insufficient_mark_support$status,
-        "positive_mark_initialization_failed"
-    )
-    expect_identical(one_group$status, "positive_counts_in_one_group_only")
-    expect_identical(rank_deficient$status, "rank_deficient_design")
-    expect_false(solver_entered)
+    expect_true(all(is.finite(fit$results$p_relative_abundance)))
 })
 
 test_that("cross-taxon correction uses sample-aligned covariance", {
@@ -247,8 +139,9 @@ test_that("cross-taxon correction uses sample-aligned covariance", {
         "taxon", "raw_estimate", "raw_standard_error", "raw_p_value",
         "corrected_estimate", "corrected_standard_error",
         "corrected_p_value", "formed", "reason", "background_size",
-        "background_pilot", "background_estimate", "score_residue",
-        "scaled_score_residue", "root_step", "root_count",
+        "background_pilot", "background_estimate", "background_bandwidth",
+        "background_relative_curvature", "background_iterations",
+        "score_residue", "scaled_score_residue", "root_step", "root_count",
         "bound_expansions", "numerical_warning", "jacobian_condition",
         "equilibrated_jacobian_condition", "jacobian_backward_error",
         "jacobian_rank", "mean_presence_weight",
@@ -415,6 +308,31 @@ test_that("target exclusion leaves its background unchanged", {
     )$diagnostics)
 })
 
+test_that("the public reference threshold has a target-excluded meaning", {
+    fits <- .make_abundance_correction_fits()[1:4]
+    taxa <- paste0("Taxon_", seq_along(fits))
+    default <- DASRA:::.dasra_abundance_correct(
+        fits, taxa, length(fits[[1L]]$phi), keep_diagnostics = FALSE
+    )
+    minimum <- DASRA:::.dasra_abundance_correct(
+        fits, taxa, length(fits[[1L]]$phi), keep_diagnostics = FALSE,
+        min_reference_taxa = 3L
+    )
+
+    expect_false(any(default$formed))
+    expect_true(all(
+        default$reason == "insufficient_eligible_reference_taxa"
+    ))
+    expect_true(all(minimum$formed))
+    expect_error(
+        DASRA:::.dasra_abundance_correct(
+            fits, taxa, length(fits[[1L]]$phi), FALSE,
+            min_reference_taxa = 2L
+        ),
+        "at least 3"
+    )
+})
+
 test_that("full correction is shift and sign equivariant", {
     fits <- .make_abundance_correction_fits()
     taxa <- paste0("Taxon_", seq_along(fits))
@@ -501,26 +419,4 @@ test_that("count kernels return the same marginal log likelihood", {
     expect_named(without_moments, "log_h")
     expect_equal(without_moments$log_h, log_only, tolerance = 1e-12)
     expect_equal(with_moments$log_h, log_only, tolerance = 1e-12)
-})
-
-test_that("no-moment marginal evaluations use the log-only kernel", {
-    gh <- DASRA:::make_count_gh_rule(3L)
-    log_only_called <- FALSE
-    result <- with_mocked_bindings(
-        DASRA:::.dasra_abundance_marginal(
-            y = c(0, 1), N = c(100, 100), eta = c(-5, -4),
-            sigma = 0.8, gh = gh, need_moments = FALSE
-        ),
-        dasra_count_log_hy_adaptive_cpp = function(...) {
-            log_only_called <<- TRUE
-            c(-0.2, -1.1)
-        },
-        dasra_count_moments_adaptive_cpp = function(...) {
-            stop("The moments kernel should not be called.")
-        },
-        .package = "DASRA"
-    )
-
-    expect_true(log_only_called)
-    expect_identical(result, list(log_h = c(-0.2, -1.1)))
 })

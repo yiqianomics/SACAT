@@ -1,317 +1,230 @@
-.abundance_optimization_inputs <- function() {
-    n <- 8L
-    list(
-        y = c(1, 2, 0, 1, 0, 2, 0, 1),
-        N = rep(100, n),
-        group = rep(c(0, 1), each = n / 2L)
-    )
-}
-
-.abundance_expansion_input <- function() {
-    n <- 72L
-    group <- rep(c(0, 1), each = n / 2L)
-    depth <- rep(10000L, n)
-    index <- seq_len(n)
-    y <- as.integer(round(exp(
-        log(35) + 0.5 * sin(index * 1.7) + 0.1 * group
-    )))
-    y[index %% 9L == 0L] <- 0L
-    list(y = y, N = depth, group = group)
-}
-
-.run_abundance_classification_case <- function(mode) {
-    stopifnot(mode %in% c(
-        "strict_first", "plateau_only", "reject",
-        "effect_disagreement"
-    ))
-    input <- .abundance_optimization_inputs()
-    control <- DASRA:::.dasra_abundance_control()
-    gh <- DASRA:::make_count_gh_rule(3L)
-    start_first <- switch(
-        mode,
-        strict_first = 0,
-        effect_disagreement = 0,
-        plateau_only = 1,
-        reject = 2
-    )
-
-    mock_mark <- function(data, gh) {
-        list(par = c(start_first, 0, 0), value = 0)
-    }
-    mock_detection <- function(data, b, omega, zeta, gh) {
-        list(par = c(0, 0), value = 0)
-    }
-    mock_state <- function(theta, data, gh, return_psi = TRUE) {
-        centered <- rep(c(-1, 1), length.out = length(data$y))
-        centered <- centered - mean(centered)
-        equation_mean <- if (abs(theta[1L]) < 0.25) {
-            5e-8
-        } else if (abs(theta[1L] - 1) < 0.25) {
-            1e-12
-        } else {
-            1e-10
-        }
-        psi <- matrix(
-            0,
-            nrow = length(data$y),
-            ncol = data$layout$dimension
-        )
-        psi[, 1L] <- centered + equation_mean
-        psi[, data$layout$zeta] <- centered
-        list(
-            psi = psi,
-            presence_weight = rep(0.5, length(data$y))
-        )
-    }
-    mock_jacobian <- function(theta, fn, ...) {
-        jacobian <- diag(length(theta))
-        jacobian[1L, 1L] <- if (abs(theta[1L]) < 0.25) {
-            1
-        } else if (abs(theta[1L] - 1) < 0.25) {
-            1e-8
-        } else {
-            5e-10
-        }
-        jacobian
-    }
-    mock_gradient <- function(theta, fn, ...) {
-        gradient <- numeric(length(theta))
-        gradient[length(theta)] <- 1
-        gradient
-    }
-    mock_effect <- if (identical(mode, "effect_disagreement")) {
-        function(theta, data, gh_effect) 0.25 + theta[1L]
+.make_mark_fit_fixture <- function(all_positive = FALSE, with_covariate = TRUE) {
+    set.seed(801)
+    n <- 80L
+    group <- rep(0:1, each = n / 2L)
+    depth <- rep(c(3000L, 8000L), length.out = n)
+    covariate <- as.numeric(scale(seq_len(n)))
+    latent <- -4.8 + 0.30 * group + 0.15 * covariate +
+        rnorm(n, sd = 0.45)
+    y <- rbinom(n, depth, plogis(latent))
+    if (all_positive) {
+        y <- pmax(y, 1L)
     } else {
-        function(theta, data, gh_effect) {
-            0.25 + theta[data$layout$zeta]
-        }
+        y[c(3L, 9L, 44L, 58L)] <- 0L
     }
-    mock_nleqslv <- function(x, fn, ...) {
-        if (mode %in% c("strict_first", "effect_disagreement") &&
-            abs(x[1L]) < 0.25) {
-            x[1L] <- 1
-        }
-        list(x = x, termcd = 1L)
-    }
-
-    with_mocked_bindings(
-        with_mocked_bindings(
-            DASRA:::.dasra_abundance_fit_taxon(
-                y = input$y,
-                N = input$N,
-                group = input$group,
-                z = NULL,
-                gh_fit = gh,
-                gh_effect = gh,
-                control = control
-            ),
-            nleqslv = mock_nleqslv,
-            .package = "nleqslv"
-        ),
-        .dasra_abundance_initial_mark = mock_mark,
-        .dasra_abundance_initial_detection = mock_detection,
-        .dasra_abundance_state = mock_state,
-        .dasra_abundance_numeric_jacobian = mock_jacobian,
-        .dasra_abundance_numeric_gradient = mock_gradient,
-        .dasra_abundance_effect = mock_effect,
-        .package = "DASRA"
+    list(
+        y = y,
+        N = depth,
+        group = group,
+        z = if (with_covariate) matrix(covariate, ncol = 1L) else NULL
     )
 }
 
-.run_persistent_boundary_case <- function() {
-    input <- .abundance_optimization_inputs()
+.fit_mark_fixture <- function(all_positive = FALSE, with_covariate = TRUE) {
+    input <- .make_mark_fit_fixture(all_positive, with_covariate)
     control <- DASRA:::.dasra_abundance_control()
-    control$max_bound_expansions <- 1L
-    gh <- DASRA:::make_count_gh_rule(3L)
-    design <- DASRA:::.dasra_abundance_designs(input$group, NULL)
-    layout <- DASRA:::.dasra_abundance_layout(
-        design$X_b, design$X_rho
+    gh_fit <- DASRA:::make_count_gh_rule(control$quadrature_Q)
+    gh_effect <- DASRA:::make_count_gh_rule(control$effect_quadrature_Q)
+    fit <- DASRA:::.dasra_abundance_fit_taxon(
+        y = input$y,
+        N = input$N,
+        group = input$group,
+        z = input$z,
+        gh_fit = gh_fit,
+        gh_effect = gh_effect,
+        control = control
     )
-    bounds <- DASRA:::.dasra_abundance_bounds(layout)
-    target <- numeric(layout$dimension)
-    target[layout$b[1L]] <- bounds$upper[layout$b[1L]] +
-        bounds$upper[layout$b[1L]] - bounds$lower[layout$b[1L]]
-
-    mock_mark <- function(data, gh) list(par = c(0, 0, 0), value = 0)
-    mock_detection <- function(data, b, omega, zeta, gh) {
-        list(par = c(0, 0), value = 0)
-    }
-    mock_state <- function(theta, data, gh, return_psi = TRUE) {
-        psi <- matrix(
-            rep(theta - target, each = length(data$y)),
-            nrow = length(data$y)
-        )
-        list(
-            psi = psi,
-            presence_weight = rep(0.5, length(data$y))
-        )
-    }
-    mock_jacobian <- function(theta, fn, ...) diag(length(theta))
-    mock_nleqslv <- function(x, fn, ...) list(x = x, termcd = 1L)
-    mock_optim <- function(par, fn, method, lower, upper, control, ...) {
-        point <- pmin(pmax(target, lower), upper)
-        list(par = point, value = fn(point), convergence = 0L)
-    }
-
-    with_mocked_bindings(
-        with_mocked_bindings(
-            DASRA:::.dasra_abundance_fit_taxon(
-                y = input$y,
-                N = input$N,
-                group = input$group,
-                z = NULL,
-                gh_fit = gh,
-                gh_effect = gh,
-                control = control
-            ),
-            nleqslv = mock_nleqslv,
-            .package = "nleqslv"
-        ),
-        .dasra_abundance_initial_mark = mock_mark,
-        .dasra_abundance_initial_detection = mock_detection,
-        .dasra_abundance_state = mock_state,
-        .dasra_abundance_numeric_jacobian = mock_jacobian,
-        optim = mock_optim,
-        .package = "DASRA"
-    )
+    list(input = input, fit = fit, gh_fit = gh_fit, gh_effect = gh_effect)
 }
 
-test_that("a finite root outside initial bounds is recovered by expansion", {
-    input <- .abundance_expansion_input()
-    control <- DASRA:::.dasra_abundance_control()
-    gh <- DASRA:::make_count_gh_rule(control$quadrature_Q)
-    original_bounds <- DASRA:::.dasra_abundance_bounds
-    narrow_bounds <- function(layout) {
-        bounds <- original_bounds(layout)
-        bounds$lower[layout$b[1L]] <- -5.4
-        bounds$upper[layout$b[1L]] <- -4.0
-        bounds
-    }
+test_that("the conditional-mark likelihood cancels structural presence", {
+    y <- c(0, 2, 5, 0, 7, 3)
+    N <- c(100, 120, 150, 200, 250, 300)
+    group <- rep(0:1, each = 3L)
+    X_eta <- cbind(Intercept = 1, Group = group)
+    beta <- c(-4.5, 0.25, log(0.7))
+    gh <- DASRA:::make_count_gh_rule(31L)
 
-    fit <- with_mocked_bindings(
-        DASRA:::.dasra_abundance_fit_taxon(
-            y = input$y,
-            N = input$N,
-            group = input$group,
-            z = NULL,
-            gh_fit = gh,
-            gh_effect = gh,
-            control = control
-        ),
-        .dasra_abundance_bounds = narrow_bounds,
-        .package = "DASRA"
+    component <- DASRA:::zt_beta_components(beta, y, N, X_eta, gh)
+    conditional <- DASRA:::zt_beta_loglik_by_sample_inference(
+        beta, y, N, X_eta, gh
     )
+    positive <- y > 0
+    expected <- numeric(length(y))
+    expected[positive] <- component$log_hy[positive] -
+        component$log_r[positive]
+
+    expect_equal(conditional, expected, tolerance = 1e-13)
+    expect_equal(conditional[!positive], rep(0, sum(!positive)))
+
+    rho <- c(0, 0.20, 0.95, 0.35)
+    joint_positive <- log1p(-rho) + component$log_hy[positive]
+    detection_positive <- log1p(-rho) + component$log_r[positive]
+    expect_equal(
+        joint_positive - detection_positive,
+        conditional[positive],
+        tolerance = 1e-13
+    )
+})
+
+test_that("the mark fit closes one likelihood and one influence calculation", {
+    result <- .fit_mark_fixture()
+    input <- result$input
+    fit <- result$fit
 
     expect_true(fit$available)
     expect_identical(fit$status, "ok")
-    expect_gte(fit$bound_expansions, 1L)
-    expect_true("expanded_numerical_bounds" %in% fit$numerical_warning)
-    expect_true(fit$theta[1L] < -5.4 || fit$theta[1L] > -4.0)
-    expect_lt(fit$solver_diagnostics$working_lower[1L], -5.4)
+    expect_identical(
+        fit$solver_diagnostics$estimator,
+        "zero_truncated_conditional_mark"
+    )
+    expect_equal(
+        fit$solver_diagnostics$positive_count,
+        sum(input$y > 0)
+    )
+    expect_equal(
+        fit$solver_diagnostics$score[input$y == 0, , drop = FALSE],
+        matrix(
+            0,
+            nrow = sum(input$y == 0),
+            ncol = length(fit$theta)
+        )
+    )
+    expect_lte(fit$scaled_score_residue, 1e-8)
+    expect_lte(fit$root_step, 1e-7)
+    expect_equal(mean(fit$phi), 0, tolerance = 1e-15)
+    expect_equal(fit$raw_se^2, sum(fit$phi^2), tolerance = 1e-14)
+    expect_equal(
+        fit$raw_p,
+        2 * pnorm(-abs(fit$raw_delta / fit$raw_se)),
+        tolerance = 1e-15
+    )
     expect_true(all(
-        fit$theta >= fit$solver_diagnostics$working_lower &
-            fit$theta <= fit$solver_diagnostics$working_upper
+        fit$solver_diagnostics$information_eigenvalues > 0
     ))
-    expect_false(isTRUE(fit$solver_diagnostics$boundary_following))
+    expect_lte(fit$jacobian_backward_error, 1e-8)
 })
 
-test_that("a candidate that follows the final boundary is rejected", {
-    fit <- .run_persistent_boundary_case()
+test_that("the mark influence matches a case-weight perturbation", {
+    result <- .fit_mark_fixture()
+    input <- result$input
+    fit <- result$fit
+    index <- which(input$y > 0)[17L]
+    step <- fit$solver_diagnostics$derivative_step
+    X_eta <- fit$solver_diagnostics$X_eta
+    X_b <- DASRA:::.dasra_abundance_designs(
+        input$group, input$z
+    )$X_b
 
-    expect_false(fit$available)
-    expect_identical(fit$status, "persistent_numerical_boundary")
-    expect_true(isTRUE(fit$solver_diagnostics$boundary_following))
-    expect_identical(fit$bound_expansions, 1L)
-    expect_gte(fit$root_count, 1L)
-    distance <- pmin(
-        fit$solver_diagnostics$selected_theta -
-            fit$solver_diagnostics$working_lower,
-        fit$solver_diagnostics$working_upper -
-            fit$solver_diagnostics$selected_theta
-    )
-    expect_true(any(distance <= 1e-12))
+    refitted_effect <- function(case_weight) {
+        weight <- rep(1, length(input$y))
+        weight[index] <- weight[index] + case_weight
+        beta <- fit$theta
+        for (iteration in seq_len(8L)) {
+            weighted_loglik <- function(value) {
+                weight * DASRA:::zt_beta_loglik_by_sample_inference(
+                    value, input$y, input$N, X_eta, result$gh_fit
+                )
+            }
+            linearization <- DASRA:::zt_beta_linearization(
+                beta, weighted_loglik, step$step, step$scheme
+            )
+            score_sum <- colSums(linearization$score)
+            if (max(abs(score_sum)) < 1e-10) break
+            beta <- beta + as.numeric(solve(
+                linearization$information, score_sum
+            ))
+        }
+        DASRA:::.dasra_abundance_mark_effect(
+            beta, X_b, result$gh_effect
+        )
+    }
+
+    epsilon <- 1e-3
+    derivative <- (
+        refitted_effect(epsilon) - refitted_effect(-epsilon)
+    ) / (2 * epsilon)
+    expect_equal(derivative, fit$phi[index], tolerance = 5e-6)
 })
 
-test_that("strict roots take priority and plateau-only roots are bounded", {
-    strict_first <- .run_abundance_classification_case("strict_first")
-    strict_repeat <- .run_abundance_classification_case("strict_first")
-    plateau_only <- .run_abundance_classification_case("plateau_only")
-    plateau_repeat <- .run_abundance_classification_case("plateau_only")
-    rejected <- .run_abundance_classification_case("reject")
+test_that("all-positive taxa use the same conditional-mark estimator", {
+    result <- .fit_mark_fixture(all_positive = TRUE)
+    fit <- result$fit
 
-    expect_true(strict_first$available)
-    expect_true(any(strict_first$solver_diagnostics$root_strict))
-    expect_true(any(
-        !strict_first$solver_diagnostics$root_strict &
-            strict_first$solver_diagnostics$root_plateau
-    ))
-    expect_gt(
-        min(strict_first$solver_diagnostics$root_raw_residue[
-            strict_first$solver_diagnostics$root_strict
-        ]),
-        min(strict_first$solver_diagnostics$root_raw_residue[
-            !strict_first$solver_diagnostics$root_strict &
-                strict_first$solver_diagnostics$root_plateau
-        ])
-    )
-    expect_equal(strict_first$theta[1L], 0)
-    expect_false(
-        "weakly_identified_root_plateau" %in%
-            strict_first$numerical_warning
-    )
+    expect_true(all(result$input$y > 0))
+    expect_true(fit$available)
+    expect_identical(fit$status, "ok")
     expect_identical(
-        strict_first$solver_diagnostics$root_strict,
-        strict_repeat$solver_diagnostics$root_strict
+        fit$solver_diagnostics$estimator,
+        "zero_truncated_conditional_mark"
     )
-    expect_identical(
-        strict_first$solver_diagnostics$root_plateau,
-        strict_repeat$solver_diagnostics$root_plateau
+    expect_equal(
+        fit$solver_diagnostics$positive_count,
+        length(result$input$y)
     )
-
-    expect_true(plateau_only$available)
-    expect_false(any(plateau_only$solver_diagnostics$root_strict))
-    expect_true(any(plateau_only$solver_diagnostics$root_plateau))
-    expect_true(
-        "weakly_identified_root_plateau" %in%
-            plateau_only$numerical_warning
-    )
-    expect_identical(
-        plateau_only$solver_diagnostics$root_strict,
-        plateau_repeat$solver_diagnostics$root_strict
-    )
-    expect_identical(
-        plateau_only$solver_diagnostics$root_plateau,
-        plateau_repeat$solver_diagnostics$root_plateau
-    )
-
-    expect_false(rejected$available)
-    expect_identical(rejected$status, "estimating_equation_root_step")
-    root_step_limit <- DASRA:::.dasra_abundance_control()$root_step_limit
-    expect_gt(rejected$root_step, root_step_limit)
+    expect_true(all(is.finite(c(
+        fit$raw_delta, fit$raw_se, fit$raw_p
+    ))))
 })
 
-test_that("disagreeing multiple-root effects leave the test unformed", {
-    fit <- .run_abundance_classification_case("effect_disagreement")
+test_that("mark formation reports the mathematical support failures", {
+    control <- DASRA:::.dasra_abundance_control()
+    gh <- DASRA:::make_count_gh_rule(control$quadrature_Q)
+    run_case <- function(y, group, z = NULL, minimum = 3L) {
+        DASRA:::.dasra_abundance_fit_taxon(
+            y = y,
+            N = rep(1000L, length(y)),
+            group = group,
+            z = z,
+            gh_fit = gh,
+            gh_effect = gh,
+            control = control,
+            min_positive_samples = minimum
+        )
+    }
 
-    expect_false(fit$available)
-    expect_identical(fit$status, "multiple_root_effect_disagreement")
-    expect_gte(fit$root_count, 2L)
-    effects <- fit$solver_diagnostics$root_effects
-    expect_gt(
-        diff(range(effects)),
-        1e-4 * (1 + max(abs(effects)))
+    insufficient <- run_case(c(2, 0, 0, 3), c(0, 0, 1, 1))
+    one_group <- run_case(
+        c(2, 3, 4, 5, 0, 0, 0, 0),
+        rep(0:1, each = 4L)
+    )
+    information <- run_case(c(2, 3, 4, 0), c(0, 0, 1, 1))
+    group <- rep(0:1, each = 4L)
+    rank_deficient <- run_case(
+        rep(2, 8L), group, z = matrix(group, ncol = 1L)
     )
 
-    corrected <- DASRA:::.dasra_abundance_correct(
-        fits = list(fit),
-        taxa = "Taxon_1",
-        n_samples = length(fit$phi),
-        keep_diagnostics = FALSE
-    )
-    expect_false(corrected$formed[1L])
-    expect_equal(corrected$p[1L], 1)
+    expect_identical(insufficient$status, "insufficient_positive_support")
+    expect_identical(one_group$status, "positive_counts_in_one_group_only")
     expect_identical(
-        corrected$reason[1L],
-        "multiple_root_effect_disagreement"
+        information$status,
+        "insufficient_positive_mark_information"
+    )
+    expect_identical(
+        rank_deficient$status,
+        "rank_deficient_positive_mark_design"
+    )
+})
+
+test_that("descriptive structural start modes preserve legacy meanings", {
+    expect_identical(
+        DASRA:::.dasra_resolve_conditional_present_starts("adaptive"),
+        list(mode = "adaptive", count = 1L)
+    )
+    expect_identical(
+        DASRA:::.dasra_resolve_conditional_present_starts("full"),
+        list(mode = "full", count = 5L)
+    )
+    expect_identical(
+        DASRA:::.dasra_resolve_conditional_present_starts(1L),
+        list(mode = "adaptive", count = 1L)
+    )
+    expect_identical(
+        DASRA:::.dasra_resolve_conditional_present_starts(5L),
+        list(mode = "full", count = 5L)
+    )
+    expect_error(
+        DASRA:::.dasra_resolve_conditional_present_starts("primary"),
+        "adaptive.*full"
     )
 })

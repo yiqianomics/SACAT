@@ -8,7 +8,7 @@ test_that("Rcpp adaptive abundance marginals agree with the R implementation", {
     cpp <- DASRA:::dasra_count_moments_adaptive_cpp(
         y, N, eta, sigma, gh$node, gh$log_raw_weight, TRUE
     )
-    r <- DASRA:::count_log_hy_adaptive_R(
+    r <- DASRA:::count_log_hy_adaptive_ref(
         y, N, eta, sigma, gh, return_nodes = TRUE
     )
     weight <- exp(r$log_terms - r$log_term_normalizer)

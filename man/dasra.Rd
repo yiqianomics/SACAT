@@ -15,14 +15,22 @@ dasra(
   p_adjust_method = "BH",
   component = c("all", "structural_absence", "relative_abundance"),
   full_output = FALSE,
-  conditional_present_starts = 1L
+  conditional_present_starts = c("adaptive", "full"),
+  min_positive_samples = 3L,
+  min_reference_taxa = 4L,
+  structural_quadrature_points = 1001L,
+  workers = 1L,
+  verbose = FALSE
 )
 }
 \arguments{
 \item{counts}{Raw non-negative integer counts in a matrix or data frame.}
 
 \item{metadata}{Sample metadata in a data frame. Row names must contain all
-sample names in \code{counts}.}
+sample names in \code{counts}. Variables used by \code{formula}, \code{group}, or a
+metadata-based \code{library_size} must be complete; samples are not removed
+automatically. Missing values should be handled before calling \code{dasra()}
+while keeping counts, metadata, and any named depth vector aligned.}
 
 \item{formula}{A one-sided formula containing \code{group} as an additive main
 effect and any adjustment terms, for example \code{~ disease + age + sex}.
@@ -43,20 +51,47 @@ first level by default; logical and numeric 0/1 groups use \code{FALSE} or 0.
 Character groups and other numeric codings require an explicit reference.}
 
 \item{p_adjust_method}{Method passed to \code{\link[stats:p.adjust]{stats::p.adjust()}} separately for
-each requested component and omnibus family.}
+each requested component and omnibus family. The usual assumptions of the
+selected adjustment method still apply.}
 
 \item{component}{Analysis to run. \code{"all"} fits both components and reports
 the omnibus analyses. \code{"structural_absence"} fits the structural-absence
 component. \code{"relative_abundance"} fits the relative-abundance component.}
 
 \item{full_output}{Logical. If \code{TRUE}, the returned object includes detailed
-fits for the requested components.}
+fits for the requested components. Structural fits may also report the
+maximum discrepancy from a strictly higher-order quadrature rule; this is
+a numerical sensitivity diagnostic, not an error bound. Detailed abundance
+output includes the fitted reference bandwidth, relative mode curvature,
+and iteration count.}
 
-\item{conditional_present_starts}{Number of deterministic starts for the
-structural-absence conditional-present count fit. The default \code{1L} begins
-with the prespecified primary start and uses the full five-start bank when
-the primary fit does not satisfy the formation checks. Setting \code{5L} uses
-the full bank immediately. Only \code{1L} and \code{5L} are supported.}
+\item{conditional_present_starts}{Start strategy for the structural arm's
+conditional-present count fit. \code{"adaptive"} first uses the prespecified
+primary start and retries with the full five-start bank if formation checks
+fail. \code{"full"} uses all five starts immediately. Legacy values \code{1L} and
+\code{5L} are accepted with the corresponding meanings.}
+
+\item{min_positive_samples}{Minimum number of samples with a positive count
+required to retain a taxon before fitting. The default is \code{3L}. This
+preliminary filter does not replace the positive-mark design-rank and
+information checks.
+Because it changes the retained multiplicity and reference families, it
+should be chosen before inspecting results.}
+
+\item{min_reference_taxa}{Minimum number of eligible target-excluded taxa
+required to form an abundance reference. The default \code{4L} preserves the
+original formation rule; values below \code{3L} are not supported.}
+
+\item{structural_quadrature_points}{Number of Gauss-Hermite nodes used by the
+structural arm. The validated default is \code{1001L}. Smaller values trade
+numerical accuracy for speed and should be assessed with \code{full_output = TRUE} before use.}
+
+\item{workers}{Number of parallel worker processes. The default \code{1L} runs
+sequentially. Values above one use an ordered, cross-platform PSOCK
+cluster and do not change the taxon order.}
+
+\item{verbose}{Logical. If \code{TRUE}, report arm-level start and completion
+messages.}
 }
 \value{
 An object of class \code{dasra} with elements:
@@ -81,39 +116,59 @@ and nondetection across samples.
 \details{
 The structural-absence component estimates the conditional-present count
 distribution from positive counts, estimates structural-absence nuisance
-parameters from the detection indicators, and evaluates a nuisance-adjusted
-score for the group effect. Positive \code{z_structural_absence} values indicate
-greater structural absence in the comparison group.
+parameters from the detection indicators, and evaluates a
+nuisance-orthogonalized estimating-function statistic for the group effect
+with a matching empirical sandwich variance. At an exact finite interior
+nuisance root, its numerator equals the restricted target score. Positive
+\code{z_structural_absence} values indicate greater structural absence in the
+comparison group.
 
 The relative-abundance component estimates a covariate-standardized
 comparison-minus-reference difference in mean log relative abundance
-conditional on taxon presence. Zero-count samples enter its estimating
-equations through their posterior probability of presence and their
-posterior latent-abundance score. The taxon-specific effects are centered
-against a target-excluded robust cross-taxon reference background, with
-sample-aligned influence contributions used for the corrected standard error.
+conditional on taxon presence. Every taxon is fitted with the same
+zero-truncated conditional-mark likelihood. Under the model's separable
+structural-presence gate, conditioning on a positive count cancels the
+structural-presence probability exactly, so the abundance fit does not
+estimate or switch on a structural-absence nuisance parameter.
+Zero counts have zero mark score, while all samples still contribute their
+covariate values to the fixed observed-design sample-standardized effect.
+The taxon-specific
+effects are centered against a target-excluded cross-taxon reference, with
+centered, sample-aligned influence contributions used for the corrected
+sandwich standard error and a first-order normal Wald test.
 A positive \code{estimate_relative_abundance} means that the target taxon's
 present-conditional log-relative-abundance contrast exceeds this shared
-compositional background. This correction is designed for analyses in which
-a strict majority of eligible taxa share a common compositional background;
-the reported abundance effect is a reference-centered relative contrast.
+compositional background. The reference correction has a pointwise
+fixed-taxon justification when the fixed-design mark estimator has a unique
+regular interior solution with positive information and, after excluding
+each target, a separated strict majority of stably eligible taxa share one
+common background and the fitted kernel mode is stable, isolated, and has
+positive curvature. A count majority alone is not a
+finite-sample guarantee: many same-direction effects can overlap the
+reference mode and bias the corrected abundance test. The reported abundance
+effect is therefore a reference-centered relative contrast.
 
-Taxa with positive counts in fewer than three samples are excluded before
-component fitting and omitted from the multiple-testing families. Every
-retained taxon remains in each requested family; an unavailable component is
-assigned a conservative p-value of one.
+Taxa with positive counts in fewer than \code{min_positive_samples} samples are
+excluded before component fitting and omitted from the multiple-testing
+families. Every retained taxon remains in each requested family; an
+unavailable component is assigned an operational conservative value of one.
 
 Two structural outcomes are nonregular. A taxon with no observed zeros has
 no variation in its absence indicator (\code{no_observed_zeros}). An
 intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
 exact solution at the zero structural-absence boundary
-(\code{structural_absence_boundary_at_zero}). Both outcomes return a conservative
-p-value of one, remain in the primary Bonferroni family, and are excluded
-from the Cauchy sensitivity combination. Their signed score statistic is
-undefined. For an otherwise supported all-positive taxon, the
-relative-abundance full system has a structural-nuisance boundary and is
-reported as unavailable with reason
-\code{no_observed_zeros_structural_nuisance_boundary}.
+(\code{structural_absence_boundary_at_zero}). Both outcomes use one as an
+operational conservative value in the primary Bonferroni family and are
+excluded from the Cauchy sensitivity combination; this value is not a
+calibrated boundary p-value. Their signed statistic is undefined. A finite
+covariate-adjusted structural nuisance fit is unavailable with reason
+\code{structural_absence_nonoptimal_nuisance_fit} when the exact zero
+structural-absence-probability limit has a strictly lower detection
+objective. This audit proves
+that the returned fit cannot be the optimizing finite regular nuisance fit;
+it does not classify the global optimum as a boundary solution. An
+otherwise supported all-positive taxon can still enter the abundance
+conditional-mark fit because that fit has no structural nuisance parameter.
 The returned component-use columns record the components entering each
 omnibus calculation.
 Numerical warnings identify fitted roots that passed the stated residual,

@@ -1,0 +1,35 @@
+"setting_id","method","component","status","n","warning_nonempty","proportion","warning_nonempty_proportion"
+"NULL_BALANCED","DASRA","structural_absence","ok",4941,4842,0.9882,0.979963570127505
+"NULL_BALANCED","MaAsLin 3","observed_prevalence","ok",5000,0,1,0
+"NULL_BALANCED","DASRA","present_conditional_abundance","estimating_equation_residue",229,229,0.0458,1
+"NULL_BALANCED","ZINQ","observed_prevalence","ok",5000,0,1,0
+"NULL_BALANCED","ZINQ","detected_quantile_abundance","ok",5000,0,1,0
+"NULL_BALANCED","MaAsLin 3","detected_log_abundance","ok",5000,0,1,0
+"NULL_BALANCED","DASRA","present_conditional_abundance","ok",4715,4616,0.943,0.979003181336161
+"NULL_BALANCED","DASRA","present_conditional_abundance","multiple_root_effect_disagreement",45,44,0.009,0.977777777777778
+"NULL_BALANCED_LOW","DASRA","structural_absence","structural_absence_persistent_boundary",142,142,0.0284,1
+"NULL_BALANCED_LOW","MaAsLin 3","observed_prevalence","ok",5000,0,1,0
+"NULL_BALANCED_LOW","DASRA","present_conditional_abundance","estimating_equation_residue",504,504,0.1008,1
+"NULL_BALANCED_LOW","ZINQ","observed_prevalence","ok",5000,0,1,0
+"NULL_BALANCED_LOW","ZINQ","detected_quantile_abundance","ok",5000,0,1,0
+"NULL_BALANCED_LOW","MaAsLin 3","detected_log_abundance","ok",5000,0,1,0
+"NULL_BALANCED_LOW","DASRA","structural_absence","ok",4856,4856,0.9712,1
+"NULL_BALANCED_LOW","DASRA","present_conditional_abundance","ok",4393,4393,0.8786,1
+"NULL_FOURFOLD","DASRA","structural_absence","ok",4911,4861,0.9822,0.989818774180411
+"NULL_FOURFOLD","MaAsLin 3","observed_prevalence","ok",5000,0,1,0
+"NULL_FOURFOLD","DASRA","present_conditional_abundance","estimating_equation_residue",329,326,0.0658,0.990881458966565
+"NULL_FOURFOLD","ZINQ","observed_prevalence","ok",5000,0,1,0
+"NULL_FOURFOLD","ZINQ","detected_quantile_abundance","ok",5000,0,1,0
+"NULL_FOURFOLD","MaAsLin 3","detected_log_abundance","ok",5000,0,1,0
+"NULL_FOURFOLD","DASRA","present_conditional_abundance","ok",4620,4574,0.924,0.99004329004329
+"NULL_BALANCED","DASRA","structural_absence","structural_absence_persistent_boundary",59,58,0.0118,0.983050847457627
+"NULL_BALANCED_LOW","DASRA","present_conditional_abundance","estimating_equation_root_step",13,13,0.0026,1
+"NULL_BALANCED_LOW","DASRA","present_conditional_abundance","multiple_root_effect_disagreement",65,65,0.013,1
+"NULL_FOURFOLD","DASRA","present_conditional_abundance","multiple_root_effect_disagreement",34,34,0.0068,1
+"NULL_FOURFOLD","DASRA","structural_absence","structural_absence_persistent_boundary",89,89,0.0178,1
+"NULL_BALANCED_LOW","DASRA","present_conditional_abundance","root_outside_numerical_safety_region",25,25,0.005,1
+"NULL_FOURFOLD","DASRA","present_conditional_abundance","estimating_equation_root_step",9,9,0.0018,1
+"NULL_BALANCED_LOW","DASRA","structural_absence","conditional_present_gradient",2,2,4e-04,1
+"NULL_FOURFOLD","DASRA","present_conditional_abundance","root_outside_numerical_safety_region",8,7,0.0016,0.875
+"NULL_BALANCED","DASRA","present_conditional_abundance","root_outside_numerical_safety_region",8,8,0.0016,1
+"NULL_BALANCED","DASRA","present_conditional_abundance","estimating_equation_root_step",3,3,6e-04,1
