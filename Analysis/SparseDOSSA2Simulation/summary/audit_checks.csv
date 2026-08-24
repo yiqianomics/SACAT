@@ -1,0 +1,8 @@
+"check","status","detail"
+"frozen raw cohort","PASS","exactly replications 1 through 100"
+"runner validation","PASS","100 raw records and 1,000 frozen datasets validated by simulation.R"
+"frozen design signature","PASS","ee80e19c66721f71b18a9cadd51dfcce0eccee1d7ffc17193a076974232a8e36"
+"fixed method-component family","PASS","50 taxa for every setting x method x component family"
+"Monte Carlo unit","PASS","replication; cluster t intervals for rates, power, and FDP"
+"common BH","PASS","fixed 50-taxon family; all-null FDR/FWER uses Wilson interval"
+"estimand separation","PASS","observed prevalence, DASRA structural absence, and abundance components separated"

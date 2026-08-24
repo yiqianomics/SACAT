@@ -2102,13 +2102,21 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_lts_pilot <- function(values) {
+.dasra_abundance_lts_reference <- function(
+        values, order_key = seq_along(values)) {
     values <- as.numeric(values)
-    values <- values[is.finite(values)]
-    m <- length(values)
-    if (m < 3L) return(NA_real_)
+    finite <- which(is.finite(values))
+    m <- length(finite)
+    if (m < 3L) {
+        return(list(index = integer(), pilot = NA_real_))
+    }
+
     h <- floor(m / 2L) + 1L
-    ordered <- sort(values)
+    ordered_index <- finite[order(
+        values[finite], as.character(order_key[finite]), method = "radix"
+    )]
+    ordered <- values[ordered_index]
+    ordered <- ordered - ordered[ceiling(m / 2L)]
     cumulative <- c(0, cumsum(ordered))
     cumulative_square <- c(0, cumsum(ordered^2))
     starts <- seq_len(m - h + 1L)
@@ -2117,7 +2125,111 @@ cauchy_combination <- function(ps) {
         cumulative_square[starts]
     sse <- sums_square - sums^2 / h
     best <- starts[which.min(sse)]
-    mean(ordered[best:(best + h - 1L)])
+    window <- ordered_index[best:(best + h - 1L)]
+    lower <- min(values[window])
+    upper <- max(values[window])
+    index <- finite[values[finite] >= lower & values[finite] <= upper]
+    list(index = index, pilot = mean(values[window]))
+}
+
+.dasra_abundance_lts_pilot <- function(values) {
+    .dasra_abundance_lts_reference(values)$pilot
+}
+
+.dasra_abundance_kernel_mode <- function(
+        values, initial, bandwidth, max_iterations = 500L) {
+    background <- initial
+    converged <- FALSE
+    iteration <- 0L
+
+    if (!is.finite(bandwidth) || bandwidth <= 0) {
+        return(list(
+            formed = FALSE,
+            reason = "background_bandwidth_unavailable"
+        ))
+    }
+
+    for (iteration in seq_len(max_iterations)) {
+        residual <- values - background
+        kernel_weight <- exp(-0.5 * (residual / bandwidth)^2)
+        total_weight <- sum(kernel_weight)
+        if (!is.finite(total_weight) || total_weight <= 0) break
+
+        next_background <- sum(kernel_weight * values) / total_weight
+        if (!is.finite(next_background)) break
+        if (abs(next_background - background) <=
+                1e-10 * max(1, bandwidth)) {
+            background <- next_background
+            converged <- TRUE
+            break
+        }
+        background <- next_background
+    }
+
+    if (!converged) {
+        return(list(formed = FALSE, reason = "background_mode_not_converged"))
+    }
+
+    residual <- values - background
+    kernel_weight <- exp(-0.5 * (residual / bandwidth)^2)
+    # Differentiate the mode equation to propagate sample-level influence.
+    derivative_weight <- kernel_weight *
+        (1 - (residual / bandwidth)^2)
+    curvature <- sum(derivative_weight)
+    if (!is.finite(curvature) || curvature <= 0) {
+        return(list(
+            formed = FALSE,
+            reason = "background_mode_nonpositive_curvature"
+        ))
+    }
+
+    list(
+        formed = TRUE,
+        reason = "ok",
+        estimate = background,
+        kernel_weight = kernel_weight,
+        influence_weight = derivative_weight / curvature,
+        relative_curvature = curvature / sum(kernel_weight),
+        iterations = iteration
+    )
+}
+
+.dasra_abundance_background <- function(
+        values, standard_errors, n_samples, order_key) {
+    ordering <- order(as.character(order_key), method = "radix")
+    ordered_values <- values[ordering]
+    ordered_se <- standard_errors[ordering]
+    ordered_key <- order_key[ordering]
+
+    lts <- .dasra_abundance_lts_reference(ordered_values, ordered_key)
+    if (!is.finite(lts$pilot)) {
+        return(list(formed = FALSE, reason = "background_pilot_unavailable"))
+    }
+
+    bandwidth <- median(ordered_se[lts$index]) *
+        sqrt(2 * log(log(max(n_samples, 4L))))
+    mode <- .dasra_abundance_kernel_mode(
+        values = ordered_values,
+        initial = lts$pilot,
+        bandwidth = bandwidth
+    )
+    if (!mode$formed) return(mode)
+
+    kernel_weight <- influence_weight <- numeric(length(values))
+    kernel_weight[ordering] <- mode$kernel_weight
+    influence_weight[ordering] <- mode$influence_weight
+
+    list(
+        formed = TRUE,
+        reason = "ok",
+        estimate = mode$estimate,
+        pilot = lts$pilot,
+        bandwidth = bandwidth,
+        kernel_weight = kernel_weight,
+        influence_weight = influence_weight,
+        relative_curvature = mode$relative_curvature,
+        iterations = mode$iterations
+    )
 }
 
 # Center taxon effects against a robust cross-taxon reference.
@@ -2152,30 +2264,27 @@ cauchy_combination <- function(ps) {
     } else {
         phi_matrix <- matrix(NA_real_, nrow = n_samples, ncol = p_taxa)
         for (j in eligible) phi_matrix[, j] <- fits[[j]]$phi
-        threshold <- sqrt(2 * log(max(n_samples * length(eligible), 3)))
-
         for (j in eligible) {
             others <- setdiff(eligible, j)
             if (length(others) < 3L) {
                 reason[j] <- "fewer_than_three_candidate_reference_taxa"
                 next
             }
-            pilot <- .dasra_abundance_lts_pilot(raw_delta[others])
-            if (!is.finite(pilot)) {
-                reason[j] <- "background_pilot_unavailable"
-                next
-            }
-            studentized <- abs(raw_delta[others] - pilot) /
-                pmax(raw_se[others], 1e-10)
-            reference <- others[studentized <= threshold]
-            if (length(reference) < 3L) {
-                reason[j] <- "fewer_than_three_reference_taxa"
+
+            background_fit <- .dasra_abundance_background(
+                values = raw_delta[others],
+                standard_errors = raw_se[others],
+                n_samples = n_samples,
+                order_key = taxa[others]
+            )
+            if (!background_fit$formed) {
+                reason[j] <- background_fit$reason
                 next
             }
 
-            background <- mean(raw_delta[reference])
-            phi_background <- rowMeans(
-                phi_matrix[, reference, drop = FALSE]
+            phi_background <- as.numeric(
+                phi_matrix[, others, drop = FALSE] %*%
+                    background_fit$influence_weight
             )
             corrected_phi <- phi_matrix[, j] - phi_background
             variance <- sum(corrected_phi^2)
@@ -2184,7 +2293,7 @@ cauchy_combination <- function(ps) {
                 next
             }
 
-            corrected <- raw_delta[j] - background
+            corrected <- raw_delta[j] - background_fit$estimate
             se <- sqrt(variance)
             z_value <- corrected / se
             p_value <- 2 * pnorm(-abs(z_value))
@@ -2199,10 +2308,10 @@ cauchy_combination <- function(ps) {
             corrected_z[j] <- z_value
             formed[j] <- TRUE
             reason[j] <- "ok"
-            background_size[j] <- length(reference)
-            background_pilot[j] <- pilot
-            background_estimate[j] <- background
-            reference_taxa[[j]] <- taxa[reference]
+            background_size[j] <- length(others)
+            background_pilot[j] <- background_fit$pilot
+            background_estimate[j] <- background_fit$estimate
+            reference_taxa[[j]] <- taxa[others]
         }
     }
 
@@ -5000,8 +5109,8 @@ dasra <- function(counts, metadata, formula, group, library_size,
         settings$abundance_scaled_root_tolerance <- 1e-7
         settings$abundance_jacobian_condition_limit <- 1e12
         settings$abundance_reference_method <- paste(
-            "target-excluded intercept-only least-trimmed-squares pilot",
-            "with studentized reference expansion"
+            "target-excluded least-trimmed-squares-initialized",
+            "Gaussian kernel mode"
         )
     }
     if (run_omnibus) {
