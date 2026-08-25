@@ -4047,6 +4047,12 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   used by the structural arm. With `full_output = TRUE`, nondefault rules and
 #'   fitted scales above two trigger a fixed-fit higher-order sensitivity
 #'   comparison without refitting the model or changing primary inference.
+#' @param store_plot_data Logical. If `TRUE`, prepare and retain the small set of
+#'   group-standardized summaries used by `plot.dasra()`. This option requires
+#'   `component = "all"`. It adds descriptive companion calculations after the
+#'   primary analyses but does not change their estimates, standard errors, or
+#'   p-values. The default `FALSE` preserves the original fitted path and object
+#'   size.
 #'
 #' @return An object of class `dasra` with elements:
 #'   \describe{
@@ -4057,6 +4063,8 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'       status, documented formation reasons, and numerical warnings.}
 #'     \item{settings}{The fitted contrast and analysis settings.}
 #'     \item{call}{The matched function call.}
+#'     \item{plot_data}{Compact group-standardized plotting summaries when
+#'       `store_plot_data = TRUE`.}
 #'     \item{fits}{Detailed component fits when `full_output = TRUE`.}
 #'   }
 #'
@@ -4129,7 +4137,8 @@ dasra <- function(counts, metadata, formula, group, library_size,
                   structural_quadrature_points = 1001L,
                   workers = 1L,
                   verbose = FALSE,
-                  abundance_quadrature_points = 41L) {
+                  abundance_quadrature_points = 41L,
+                  store_plot_data = FALSE) {
     call <- match.call()
     component <- match.arg(component)
     raw_counts <- as.matrix(counts)
@@ -4354,9 +4363,21 @@ dasra <- function(counts, metadata, formula, group, library_size,
         stop("`verbose` must be TRUE or FALSE.", call. = FALSE)
     }
     verbose <- isTRUE(verbose)
+    if (length(store_plot_data) != 1L || is.na(store_plot_data) ||
+        !is.logical(store_plot_data)) {
+        stop("`store_plot_data` must be TRUE or FALSE.", call. = FALSE)
+    }
+    store_plot_data <- isTRUE(store_plot_data)
+    if (store_plot_data && !identical(component, "all")) {
+        stop(
+            "`store_plot_data = TRUE` requires `component = \"all\"`.",
+            call. = FALSE
+        )
+    }
     run_structural <- component %in% c("all", "structural_absence")
     run_abundance <- component %in% c("all", "relative_abundance")
     run_omnibus <- identical(component, "all")
+    keep_component_details <- full_output || store_plot_data
 
     J <- ncol(Y)
     retained <- colSums(Y > 0) >= min_positive_samples
@@ -4453,7 +4474,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
 
         if (run_structural) {
             structural_retained <- .dasra_structural_arm(
-                Y_retained, N, g, z, full_output,
+                Y_retained, N, g, z, keep_component_details,
                 conditional_present_starts = start_info$count,
                 min_positive_samples = min_positive_samples,
                 quadrature_points = structural_quadrature_points,
@@ -4471,7 +4492,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
 
         if (run_abundance) {
             abundance_retained <- .dasra_abundance_arm(
-                Y_retained, N, g, z, full_output,
+                Y_retained, N, g, z, keep_component_details,
                 min_positive_samples = min_positive_samples,
                 min_reference_taxa = min_reference_taxa,
                 quadrature_points = abundance_quadrature_points,
@@ -4680,6 +4701,20 @@ dasra <- function(counts, metadata, formula, group, library_size,
         settings = settings,
         call = call
     )
+    if (store_plot_data) {
+        object$plot_data <- .dasra_prepare_plot_data(
+            Y = Y,
+            N = N,
+            results = results,
+            structural_fits = structural$diagnostics,
+            abundance_fits = abundance$diagnostics,
+            contrast = c(
+                reference = group_info$reference,
+                comparison = group_info$comparison
+            )
+        )
+        object$settings$plot_data_stored <- TRUE
+    }
     if (full_output) {
         object$fits <- list()
         if (run_structural) {

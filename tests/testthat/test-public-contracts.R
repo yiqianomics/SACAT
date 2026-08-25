@@ -320,7 +320,38 @@ test_that("public numerical and formation controls have stable defaults", {
     expect_identical(eval(defaults$abundance_quadrature_points), 41L)
     expect_identical(eval(defaults$workers), 1L)
     expect_identical(eval(defaults$verbose), FALSE)
+    expect_identical(eval(defaults$store_plot_data), FALSE)
     expect_identical(getNamespaceExports("DASRA"), "dasra")
+})
+
+test_that("plot summaries are an explicit dual-component opt-in", {
+    samples <- paste0("Sample_", seq_len(8L))
+    counts <- matrix(
+        2L,
+        nrow = 5L,
+        ncol = length(samples),
+        dimnames = list(paste0("Taxon_", 1:5), samples)
+    )
+    metadata <- data.frame(
+        group = factor(rep(c("reference", "comparison"), each = 4L)),
+        reads = rep(100L, length(samples)),
+        row.names = samples
+    )
+
+    expect_error(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            component = "structural_absence", store_plot_data = TRUE
+        ),
+        "requires `component = \"all\"`"
+    )
+    expect_error(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            store_plot_data = 1L
+        ),
+        "store_plot_data"
+    )
 })
 
 test_that("public controls are validated and recorded", {

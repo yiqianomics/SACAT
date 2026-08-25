@@ -1,3 +1,20 @@
+# DASRA 0.6.0
+
+- `plot.dasra()` provides a publication-oriented dual-component association
+  profile. Structural-absence and present-conditional abundance evidence share
+  an aligned signed-statistic axis, while group-standardized model summaries
+  retain the fitted reference and comparison labels.
+- `store_plot_data = TRUE` prepares the compact descriptive summaries needed
+  by the profile without storing the original count matrix or changing the
+  primary estimates, standard errors, or p-values. The default remains
+  `FALSE`, so existing fitted paths and lightweight objects are unchanged.
+- Feature labels use only the space required by the displayed names. Component
+  adjusted p-values use a shared adaptive `-log10(p)` color scale from one to a
+  rounded lower endpoint, with an explicit numeric range available when plots
+  need a fixed cross-study scale.
+- The plot follows standard R conventions: `plot(fit)` draws to the active
+  device, and the `file` argument writes PDF, PNG, or SVG output directly.
+
 # DASRA 0.5.2
 
 - The README and reference manual now present the relative-abundance method as

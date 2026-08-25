@@ -21,7 +21,8 @@ dasra(
   structural_quadrature_points = 1001L,
   workers = 1L,
   verbose = FALSE,
-  abundance_quadrature_points = 41L
+  abundance_quadrature_points = 41L,
+  store_plot_data = FALSE
 )
 }
 \arguments{
@@ -104,6 +105,13 @@ fitted procedure exactly. Nondefault values use the stable log-domain rule
 used by the structural arm. With \code{full_output = TRUE}, nondefault rules and
 fitted scales above two trigger a fixed-fit higher-order sensitivity
 comparison without refitting the model or changing primary inference.}
+
+\item{store_plot_data}{Logical. If \code{TRUE}, prepare and retain the small set of
+group-standardized summaries used by \code{plot.dasra()}. This option requires
+\code{component = "all"}. It adds descriptive companion calculations after the
+primary analyses but does not change their estimates, standard errors, or
+p-values. The default \code{FALSE} preserves the original fitted path and object
+size.}
 }
 \value{
 An object of class \code{dasra} with elements:
@@ -115,6 +123,8 @@ p-values use the \code{p_adj_} prefix and the method recorded in
 status, documented formation reasons, and numerical warnings.}
 \item{settings}{The fitted contrast and analysis settings.}
 \item{call}{The matched function call.}
+\item{plot_data}{Compact group-standardized plotting summaries when
+\code{store_plot_data = TRUE}.}
 \item{fits}{Detailed component fits when \code{full_output = TRUE}.}
 }
 }
