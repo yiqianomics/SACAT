@@ -289,7 +289,7 @@ run_dasra <- function(counts, metadata, taxa) {
         p_adjust_method = "BH",
         component = "all",
         full_output = FALSE,
-        conditional_present_starts = 1L
+        structural_conditional_present_starts = 1L
     ))
     if (inherits(outcome$value, "error")) {
         failure_reason <- paste(

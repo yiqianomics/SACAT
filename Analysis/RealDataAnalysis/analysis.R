@@ -300,7 +300,7 @@ run_dasra <- function(counts, metadata, configuration, formulas,
         p_adjust_method = "BH",
         component = "all",
         full_output = FALSE,
-        conditional_present_starts = 1L
+        structural_conditional_present_starts = 1L
     )
 
     results <- fit$results[match(taxa, fit$results$taxon), , drop = FALSE]

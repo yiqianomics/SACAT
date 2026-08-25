@@ -305,13 +305,19 @@ test_that("print separates regular and conservative structural results", {
 test_that("public numerical and formation controls have stable defaults", {
     defaults <- formals(DASRA::dasra)
 
+    expect_false("conditional_present_starts" %in% names(defaults))
     expect_identical(
-        eval(defaults$conditional_present_starts),
+        names(defaults)[11L],
+        "structural_conditional_present_starts"
+    )
+    expect_identical(
+        eval(defaults$structural_conditional_present_starts),
         c("adaptive", "full")
     )
     expect_identical(eval(defaults$min_positive_samples), 3L)
     expect_identical(eval(defaults$min_reference_taxa), 4L)
     expect_identical(eval(defaults$structural_quadrature_points), 1001L)
+    expect_identical(eval(defaults$abundance_quadrature_points), 41L)
     expect_identical(eval(defaults$workers), 1L)
     expect_identical(eval(defaults$verbose), FALSE)
     expect_identical(getNamespaceExports("DASRA"), "dasra")
@@ -336,7 +342,7 @@ test_that("public controls are validated and recorded", {
         dasra(
             counts, metadata, ~ group, "group", "reads",
             component = "structural_absence",
-            conditional_present_starts = "full",
+            structural_conditional_present_starts = "full",
             min_positive_samples = 2L,
             min_reference_taxa = 3L,
             structural_quadrature_points = 31L
@@ -370,7 +376,10 @@ test_that("public controls are validated and recorded", {
     expect_identical(captured$Q, 31L)
     expect_null(captured$cluster)
     expect_false(captured$verbose)
-    expect_identical(fit$settings$conditional_present_starts, "full")
+    expect_identical(
+        fit$settings$structural_conditional_present_starts, "full"
+    )
+    expect_false("conditional_present_starts" %in% names(fit$settings))
     expect_identical(fit$settings$min_positive_samples_retained, 2L)
     expect_identical(fit$settings$min_reference_taxa, 3L)
     expect_identical(fit$settings$structural_quadrature_Q, 31L)
@@ -397,6 +406,64 @@ test_that("public controls are validated and recorded", {
         ),
         "structural_quadrature_points"
     )
+    expect_error(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            abundance_quadrature_points = 2L
+        ),
+        "abundance_quadrature_points"
+    )
+    expect_error(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            conditional_present_starts = "full"
+        ),
+        "unused argument.*conditional_present_starts"
+    )
+})
+
+test_that("the abundance quadrature control is passed and recorded", {
+    samples <- paste0("Sample_", seq_len(8L))
+    counts <- matrix(
+        2L,
+        nrow = 5L,
+        ncol = length(samples),
+        dimnames = list(paste0("Taxon_", 1:5), samples)
+    )
+    metadata <- data.frame(
+        group = factor(rep(c("reference", "comparison"), each = 4L)),
+        reads = rep(100L, length(samples)),
+        row.names = samples
+    )
+    captured_Q <- NULL
+
+    fit <- with_mocked_bindings(
+        dasra(
+            counts, metadata, ~ group, "group", "reads",
+            component = "relative_abundance",
+            abundance_quadrature_points = 31L
+        ),
+        .dasra_abundance_arm = function(
+                Y, N, g, z, keep_diagnostics,
+                min_positive_samples, min_reference_taxa,
+                quadrature_points, cluster, verbose) {
+            captured_Q <<- quadrature_points
+            list(
+                p = rep(0.5, ncol(Y)),
+                formed = rep(TRUE, ncol(Y)),
+                reason = rep("ok", ncol(Y)),
+                estimate = rep(0, ncol(Y)),
+                se = rep(1, ncol(Y)),
+                z = rep(0, ncol(Y)),
+                warning = rep("", ncol(Y)),
+                diagnostics = NULL
+            )
+        },
+        .package = "DASRA"
+    )
+
+    expect_identical(captured_Q, 31L)
+    expect_identical(fit$settings$abundance_quadrature_Q, 31L)
 })
 
 test_that("only metadata used by the analysis must be complete", {

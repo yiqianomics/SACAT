@@ -66,9 +66,12 @@ The main analysis controls are:
   count required by the preliminary retention rule;
 - `min_reference_taxa = 4L`, the number of target-excluded taxa required to
   form an abundance reference;
-- `conditional_present_starts = "adaptive"`, with `"full"` available for an
-  immediate five-start structural fit;
+- `structural_conditional_present_starts = "adaptive"`, with `"full"`
+  available for an immediate five-start structural fit; the abundance arm
+  always uses its full five-start bank;
 - `structural_quadrature_points = 1001L`, the validated structural quadrature
+  default;
+- `abundance_quadrature_points = 41L`, the validated abundance quadrature
   default; and
 - `workers = 1L` and `verbose = FALSE`. Increasing `workers` uses an ordered,
   cross-platform process cluster, while `verbose = TRUE` reports arm-level
@@ -76,9 +79,14 @@ The main analysis controls are:
 
 The retention and reference thresholds change the tested families and should
 be selected before inspecting results. Lower quadrature orders trade numerical
-accuracy for speed; with `full_output = TRUE`, DASRA reports comparison with a
-strictly higher-order rule as a sensitivity diagnostic rather than an error
-bound.
+accuracy for speed. The two arms expose separate controls because their
+validated numerical paths use different orders and start strategies. With
+`full_output = TRUE`, DASRA can reevaluate a fitted parameter under a strictly
+higher-order rule. This fixed-fit comparison is a sensitivity diagnostic, not
+an error bound, and it does not refit the model or alter inference.
+For abundance fits, the detailed taxon table records whether the comparison
+was performed and succeeded, the two quadrature orders, and the absolute
+conditional-log-likelihood and effect discrepancies.
 
 ## Example
 

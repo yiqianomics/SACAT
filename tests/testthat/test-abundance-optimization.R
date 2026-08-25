@@ -23,8 +23,10 @@
 .fit_mark_fixture <- function(all_positive = FALSE, with_covariate = TRUE) {
     input <- .make_mark_fit_fixture(all_positive, with_covariate)
     control <- DASRA:::.dasra_abundance_control()
-    gh_fit <- DASRA:::make_count_gh_rule(control$quadrature_Q)
-    gh_effect <- DASRA:::make_count_gh_rule(control$effect_quadrature_Q)
+    gh_fit <- DASRA:::.dasra_make_abundance_gh_rule(
+        control$quadrature_Q
+    )
+    gh_effect <- gh_fit
     fit <- DASRA:::.dasra_abundance_fit_taxon(
         y = input$y,
         N = input$N,
@@ -103,6 +105,9 @@ test_that("the mark fit closes one likelihood and one influence calculation", {
         fit$solver_diagnostics$information_eigenvalues > 0
     ))
     expect_lte(fit$jacobian_backward_error, 1e-8)
+    expect_identical(fit$quadrature_Q, 41L)
+    expect_false(fit$quadrature_checked)
+    expect_identical(fit$quadrature_check_succeeded, NA)
 })
 
 test_that("the mark influence matches a case-weight perturbation", {
@@ -206,25 +211,113 @@ test_that("mark formation reports the mathematical support failures", {
     )
 })
 
-test_that("descriptive structural start modes preserve legacy meanings", {
+test_that("structural start modes have explicit public meanings", {
     expect_identical(
-        DASRA:::.dasra_resolve_conditional_present_starts("adaptive"),
+        DASRA:::.dasra_resolve_structural_conditional_present_starts(
+            "adaptive"
+        ),
         list(mode = "adaptive", count = 1L)
     )
     expect_identical(
-        DASRA:::.dasra_resolve_conditional_present_starts("full"),
+        DASRA:::.dasra_resolve_structural_conditional_present_starts(
+            "full"
+        ),
         list(mode = "full", count = 5L)
     )
     expect_identical(
-        DASRA:::.dasra_resolve_conditional_present_starts(1L),
+        DASRA:::.dasra_resolve_structural_conditional_present_starts(1L),
         list(mode = "adaptive", count = 1L)
     )
     expect_identical(
-        DASRA:::.dasra_resolve_conditional_present_starts(5L),
+        DASRA:::.dasra_resolve_structural_conditional_present_starts(5L),
         list(mode = "full", count = 5L)
     )
     expect_error(
-        DASRA:::.dasra_resolve_conditional_present_starts("primary"),
+        DASRA:::.dasra_resolve_structural_conditional_present_starts(
+            "primary"
+        ),
         "adaptive.*full"
+    )
+})
+
+test_that("abundance quadrature preserves its default numerical rule", {
+    expect_identical(
+        DASRA:::.dasra_make_abundance_gh_rule(41L),
+        DASRA:::make_count_gh_rule(41L)
+    )
+
+    stable <- DASRA:::.dasra_make_abundance_gh_rule(81L)
+    expect_identical(stable$Q, 81L)
+    expect_true(all(is.finite(stable$node)))
+    expect_true(all(is.finite(stable$log_raw_weight)))
+    expect_false(is.unsorted(stable$node, strictly = TRUE))
+    expect_equal(sum(exp(stable$log_weight)), 1, tolerance = 1e-12)
+
+    expect_identical(
+        vapply(
+            c(41L, 1001L, 1002L, 2001L),
+            DASRA:::.dasra_higher_order_quadrature_points,
+            integer(1)
+        ),
+        c(2001L, 2001L, 2003L, 4001L)
+    )
+})
+
+test_that("abundance quadrature sensitivity is a fixed-fit diagnostic", {
+    y <- c(0, 1, 2, 1, 3, 0, 2, 4)
+    N <- c(40, 60, 80, 100, 40, 60, 80, 100)
+    group <- rep(0:1, each = 4L)
+    X_eta <- cbind(Intercept = 1, Group = group)
+    X_b <- matrix(1, nrow = length(y), ncol = 1L)
+    beta <- c(-8, 0.25, log(8))
+    gh <- DASRA:::.dasra_make_abundance_gh_rule(41L)
+    effect <- DASRA:::.dasra_abundance_mark_effect(beta, X_b, gh)
+
+    diagnostic <- DASRA:::.dasra_abundance_quadrature_diagnostic(
+        beta, y, N, X_eta, X_b, gh, effect,
+        check_quadrature = TRUE
+    )
+    expect_true(diagnostic$quadrature_checked)
+    expect_true(diagnostic$quadrature_check_succeeded)
+    expect_identical(diagnostic$quadrature_comparison_Q, 2001L)
+    expect_true(all(is.finite(c(
+        diagnostic$quadrature_conditional_max_abs,
+        diagnostic$quadrature_effect_abs
+    ))))
+    expect_gte(diagnostic$quadrature_conditional_max_abs, 0)
+    expect_gte(diagnostic$quadrature_effect_abs, 0)
+
+    failed <- with_mocked_bindings(
+        .dasra_abundance_quadrature_diagnostic(
+            beta, y, N, X_eta, X_b, gh, effect,
+            check_quadrature = TRUE
+        ),
+        make_structural_gh_rule = function(...) stop("controlled failure"),
+        .package = "DASRA"
+    )
+    expect_true(failed$quadrature_checked)
+    expect_false(failed$quadrature_check_succeeded)
+    expect_match(failed$quadrature_check_error, "controlled failure")
+
+    boundary_beta <- c(-38.3, 0, log(3))
+    boundary_y <- c(0, 1)
+    boundary_N <- c(5, 5)
+    boundary_group <- 0:1
+    boundary_X_eta <- cbind(Intercept = 1, Group = boundary_group)
+    boundary_X_b <- matrix(1, nrow = 2L, ncol = 1L)
+    boundary_effect <- DASRA:::.dasra_abundance_mark_effect(
+        boundary_beta, boundary_X_b, gh
+    )
+    boundary_diagnostic <-
+        DASRA:::.dasra_abundance_quadrature_diagnostic(
+            boundary_beta, boundary_y, boundary_N,
+            boundary_X_eta, boundary_X_b, gh, boundary_effect,
+            check_quadrature = TRUE
+        )
+    expect_true(boundary_diagnostic$quadrature_checked)
+    expect_false(boundary_diagnostic$quadrature_check_succeeded)
+    expect_match(
+        boundary_diagnostic$quadrature_check_error,
+        "non-finite"
     )
 })

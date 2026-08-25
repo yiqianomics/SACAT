@@ -1,3 +1,19 @@
+# DASRA 0.5.1
+
+- The structural fitting control is now named
+  `structural_conditional_present_starts`, making its scope explicit. This is a
+  clean public-interface rename; the fitted structural procedure, argument
+  position, and defaults are unchanged. Named calls using the previous argument
+  must be updated to the new name.
+- `abundance_quadrature_points` makes the relative-abundance quadrature order
+  explicit while preserving the validated 41-node default exactly. Detailed
+  output can report a fixed-fit comparison with a strictly higher-order rule;
+  this is a numerical sensitivity diagnostic, not an error bound and does not
+  alter inference.
+- The `utils` namespace used for parallel-worker version checks is now declared
+  explicitly in `Imports`. The canonical `GPL (>= 3)` license declaration is
+  unchanged and does not require a separate `LICENSE` file.
+
 # DASRA 0.5.0
 
 - The relative-abundance arm now uses one zero-truncated conditional-mark

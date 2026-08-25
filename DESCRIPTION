@@ -1,7 +1,7 @@
 Package: DASRA
 Type: Package
 Title: Depth-Aware Structural-Absence and Relative-Abundance Analysis
-Version: 0.5.0
+Version: 0.5.1
 Authors@R:
     c(
         person("Yiqian", "Zhang", email = "zhang.16383@osu.edu",
@@ -24,7 +24,8 @@ Imports:
     parallel,
     Rcpp,
     statmod,
-    stats
+    stats,
+    utils
 LinkingTo:
     Rcpp
 Suggests:

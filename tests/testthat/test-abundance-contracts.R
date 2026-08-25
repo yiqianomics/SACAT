@@ -144,7 +144,10 @@ test_that("cross-taxon correction uses sample-aligned covariance", {
         "score_residue", "scaled_score_residue", "root_step", "root_count",
         "bound_expansions", "numerical_warning", "jacobian_condition",
         "equilibrated_jacobian_condition", "jacobian_backward_error",
-        "jacobian_rank", "mean_presence_weight",
+        "jacobian_rank", "quadrature_Q", "quadrature_checked",
+        "quadrature_check_succeeded", "quadrature_check_error",
+        "quadrature_comparison_Q", "quadrature_conditional_max_abs",
+        "quadrature_effect_abs", "mean_presence_weight",
         "mean_zero_presence_weight", "reference_taxa"
     ))
 })

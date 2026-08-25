@@ -25,23 +25,26 @@ count_clamp <- function(x, lo, hi) {
     pmin(pmax(x, lo), hi)
 }
 
-.dasra_validate_conditional_present_starts <- function(starts) {
+.dasra_validate_conditional_present_starts <- function(
+        starts, argument = "conditional_present_starts") {
     valid <- is.numeric(starts) && !is.logical(starts) &&
         length(starts) == 1L && !is.na(starts) && is.finite(starts) &&
         abs(starts - round(starts)) <= 1e-8 &&
         as.integer(round(starts)) %in% c(1L, 5L)
     if (!valid) {
         stop(
-            "`conditional_present_starts` must be either 1L or 5L.",
+            sprintf("`%s` must be either 1L or 5L.", argument),
             call. = FALSE
         )
     }
     as.integer(round(starts))
 }
 
-.dasra_resolve_conditional_present_starts <- function(starts) {
+.dasra_resolve_structural_conditional_present_starts <- function(starts) {
     if (is.numeric(starts) && !is.logical(starts)) {
-        count <- .dasra_validate_conditional_present_starts(starts)
+        count <- .dasra_validate_conditional_present_starts(
+            starts, "structural_conditional_present_starts"
+        )
         return(list(
             mode = if (count == 1L) "adaptive" else "full",
             count = count
@@ -49,7 +52,10 @@ count_clamp <- function(x, lo, hi) {
     }
     if (!is.character(starts) || anyNA(starts)) {
         stop(
-            "`conditional_present_starts` must be \"adaptive\" or \"full\".",
+            paste(
+                "`structural_conditional_present_starts` must be",
+                "\"adaptive\" or \"full\"."
+            ),
             call. = FALSE
         )
     }
@@ -60,7 +66,8 @@ count_clamp <- function(x, lo, hi) {
 .dasra_validate_positive_integer <- function(value, name, minimum = 1L) {
     valid <- is.numeric(value) && !is.logical(value) &&
         length(value) == 1L && !is.na(value) && is.finite(value) &&
-        abs(value - round(value)) <= 1e-8 && value >= minimum
+        abs(value - round(value)) <= 1e-8 && value >= minimum &&
+        value <= .Machine$integer.max
     if (!valid) {
         stop(sprintf("`%s` must be one integer at least %d.", name, minimum),
              call. = FALSE)
@@ -193,6 +200,31 @@ make_structural_gh_rule <- function(Q = 1001L) {
     )
     assign(cache_key, rule, envir = .dasra_structural_gh_cache)
     rule
+}
+
+.dasra_make_abundance_gh_rule <- function(Q = 41L) {
+    Q <- .dasra_validate_positive_integer(
+        Q, "abundance_quadrature_points", minimum = 3L
+    )
+    if (identical(Q, 41L)) {
+        return(make_count_gh_rule(41L))
+    }
+    make_structural_gh_rule(Q)
+}
+
+.dasra_higher_order_quadrature_points <- function(Q) {
+    Q <- .dasra_validate_positive_integer(
+        Q, "quadrature_points", minimum = 3L
+    )
+    comparison_Q <- max(2001, 2 * as.double(Q) - 1)
+    if (!is.finite(comparison_Q) ||
+        comparison_Q > .Machine$integer.max) {
+        stop(
+            "A strictly higher-order quadrature rule cannot be represented.",
+            call. = FALSE
+        )
+    }
+    as.integer(comparison_Q)
 }
 
 count_latent_mode <- function(y, N, eta, sigma, iterations = 80L,
@@ -390,10 +422,9 @@ cauchy_combination <- function(ps) {
 # Relative-abundance engine
 # --------------------------------------------------------------------------
 
-.dasra_abundance_control <- function() {
+.dasra_abundance_control <- function(quadrature_Q = 41L) {
     list(
-        quadrature_Q = 41L,
-        effect_quadrature_Q = 41L,
+        quadrature_Q = as.integer(quadrature_Q),
         derivative_base = 1e-4,
         derivative_reference_n = 120L,
         score_tolerance = 1e-8,
@@ -665,6 +696,25 @@ cauchy_combination <- function(ps) {
             "jacobian_backward_error", NA_real_
         ),
         jacobian_rank = diagnostic_value("jacobian_rank", NA_integer_),
+        quadrature_Q = diagnostic_value("quadrature_Q", NA_integer_),
+        quadrature_checked = diagnostic_value(
+            "quadrature_checked", FALSE
+        ),
+        quadrature_check_succeeded = diagnostic_value(
+            "quadrature_check_succeeded", NA
+        ),
+        quadrature_check_error = diagnostic_value(
+            "quadrature_check_error", NA_character_
+        ),
+        quadrature_comparison_Q = diagnostic_value(
+            "quadrature_comparison_Q", NA_integer_
+        ),
+        quadrature_conditional_max_abs = diagnostic_value(
+            "quadrature_conditional_max_abs", NA_real_
+        ),
+        quadrature_effect_abs = diagnostic_value(
+            "quadrature_effect_abs", NA_real_
+        ),
         mean_presence_weight = NA_real_,
         mean_zero_presence_weight = NA_real_,
         solver_diagnostics = diagnostic_value(
@@ -692,6 +742,75 @@ cauchy_combination <- function(ps) {
             baseline, sigma, gh_effect
         )
     )
+}
+
+.dasra_abundance_quadrature_diagnostic <- function(
+        beta, y, N, X_eta, X_b, gh, fitted_effect,
+        check_quadrature = FALSE) {
+    Q <- as.integer(gh$Q)
+    result <- list(
+        quadrature_Q = Q,
+        quadrature_checked = FALSE,
+        quadrature_check_succeeded = NA,
+        quadrature_check_error = NA_character_,
+        quadrature_comparison_Q = NA_integer_,
+        quadrature_conditional_max_abs = NA_real_,
+        quadrature_effect_abs = NA_real_
+    )
+    fitted_sigma <- exp(beta[length(beta)])
+    should_check <- isTRUE(check_quadrature) &&
+        is.finite(fitted_sigma) &&
+        (fitted_sigma > 2 || Q != 41L)
+    if (!should_check) return(result)
+
+    comparison_Q <- tryCatch(
+        .dasra_higher_order_quadrature_points(Q),
+        error = function(e) NA_integer_
+    )
+    result$quadrature_checked <- TRUE
+    result$quadrature_comparison_Q <- comparison_Q
+    comparison <- tryCatch(
+        {
+            if (!is.finite(comparison_Q)) {
+                stop("The higher-order quadrature order is unavailable.")
+            }
+            high_gh <- make_structural_gh_rule(comparison_Q)
+            base_conditional <- zt_beta_loglik_by_sample_inference(
+                beta, y, N, X_eta, gh
+            )
+            high_conditional <- zt_beta_loglik_by_sample_inference(
+                beta, y, N, X_eta, high_gh
+            )
+            high_effect <- .dasra_abundance_mark_effect(
+                beta, X_b, high_gh
+            )
+            differences <- c(
+                conditional = max(abs(
+                    base_conditional - high_conditional
+                )),
+                effect = abs(fitted_effect - high_effect)
+            )
+            if (any(!is.finite(differences))) {
+                stop("The higher-order quadrature differences are non-finite.")
+            }
+            list(ok = TRUE, differences = differences,
+                 error = NA_character_)
+        },
+        error = function(e) {
+            list(
+                ok = FALSE,
+                differences = c(conditional = NA_real_, effect = NA_real_),
+                error = conditionMessage(e)
+            )
+        }
+    )
+    result$quadrature_check_succeeded <- comparison$ok
+    result$quadrature_check_error <- comparison$error
+    result$quadrature_conditional_max_abs <-
+        unname(comparison$differences["conditional"])
+    result$quadrature_effect_abs <-
+        unname(comparison$differences["effect"])
+    result
 }
 
 .dasra_abundance_mark_linearization <- function(
@@ -876,11 +995,19 @@ cauchy_combination <- function(ps) {
 
 .dasra_abundance_fit_taxon <- function(
         y, N, group, z, gh_fit, gh_effect, control,
-        min_positive_samples = 3L) {
+        min_positive_samples = 3L, check_quadrature = FALSE) {
     y <- as.numeric(y)
     N <- as.numeric(N)
     group <- as.numeric(group)
     n <- length(y)
+    quadrature_Q <- if (
+        is.list(gh_fit) && length(gh_fit$Q) == 1L &&
+        is.finite(gh_fit$Q)
+    ) as.integer(gh_fit$Q) else NA_integer_
+    empty_fit <- function(status, diagnostics = list()) {
+        diagnostics$quadrature_Q <- quadrature_Q
+        .dasra_abundance_empty_fit(status, n, diagnostics)
+    }
     z <- if (is.null(z)) {
         matrix(numeric(), nrow = n, ncol = 0L)
     } else {
@@ -890,7 +1017,7 @@ cauchy_combination <- function(ps) {
     if (length(N) != n || length(group) != n || nrow(z) != n ||
         any(!is.finite(c(y, N, group, z))) || any(y < 0) ||
         any(N <= 0) || any(y > N)) {
-        return(.dasra_abundance_empty_fit("invalid_input", n))
+        return(empty_fit("invalid_input"))
     }
 
     design <- .dasra_abundance_designs(group, z)
@@ -899,23 +1026,23 @@ cauchy_combination <- function(ps) {
     positive_count <- sum(positive)
     parameter_count <- ncol(X_eta) + 1L
     if (positive_count < min_positive_samples) {
-        return(.dasra_abundance_empty_fit(
-            "insufficient_positive_support", n
+        return(empty_fit(
+            "insufficient_positive_support"
         ))
     }
     if (length(unique(group[positive])) < 2L) {
-        return(.dasra_abundance_empty_fit(
-            "positive_counts_in_one_group_only", n
+        return(empty_fit(
+            "positive_counts_in_one_group_only"
         ))
     }
     if (qr(X_eta[positive, , drop = FALSE])$rank < ncol(X_eta)) {
-        return(.dasra_abundance_empty_fit(
-            "rank_deficient_positive_mark_design", n
+        return(empty_fit(
+            "rank_deficient_positive_mark_design"
         ))
     }
     if (positive_count <= parameter_count) {
-        return(.dasra_abundance_empty_fit(
-            "insufficient_positive_mark_information", n
+        return(empty_fit(
+            "insufficient_positive_mark_information"
         ))
     }
 
@@ -927,8 +1054,8 @@ cauchy_combination <- function(ps) {
         conditional_present_starts = 5L
     )
     if (!isTRUE(beta_fit$ok) || any(!is.finite(beta_fit$par))) {
-        return(.dasra_abundance_empty_fit(
-            beta_fit$reason, n,
+        return(empty_fit(
+            beta_fit$reason,
             list(solver_diagnostics = list(beta_fit = beta_fit))
         ))
     }
@@ -939,8 +1066,8 @@ cauchy_combination <- function(ps) {
         beta_fit$lower, beta_fit$upper, control
     )
     if (!isTRUE(linearization$ok)) {
-        return(.dasra_abundance_empty_fit(
-            linearization$reason, n,
+        return(empty_fit(
+            linearization$reason,
             list(solver_diagnostics = list(
                 beta_fit = beta_fit,
                 linearization = linearization
@@ -952,8 +1079,8 @@ cauchy_combination <- function(ps) {
         beta, linearization, beta_fit, y, N, X_eta, gh_fit, control
     )
     if (!isTRUE(root_polish$ok)) {
-        return(.dasra_abundance_empty_fit(
-            root_polish$reason, n,
+        return(empty_fit(
+            root_polish$reason,
             list(
                 score_residue = positive_count *
                     root_polish$score_mean_max,
@@ -988,8 +1115,8 @@ cauchy_combination <- function(ps) {
     )
     if (!is.finite(effect) || is.null(effect_gradient) ||
         any(!is.finite(effect_gradient))) {
-        return(.dasra_abundance_empty_fit(
-            "conditional_present_effect_gradient_failed", n
+        return(empty_fit(
+            "conditional_present_effect_gradient_failed"
         ))
     }
 
@@ -1007,8 +1134,8 @@ cauchy_combination <- function(ps) {
         } else {
             "conditional_present_influence_solve_failed"
         }
-        return(.dasra_abundance_empty_fit(
-            reason, n,
+        return(empty_fit(
+            reason,
             list(
                 jacobian_condition = influence_solve$raw_condition,
                 equilibrated_jacobian_condition =
@@ -1030,8 +1157,8 @@ cauchy_combination <- function(ps) {
     raw_variance <- sum(phi^2)
     if (any(!is.finite(phi)) || !is.finite(raw_variance) ||
         raw_variance <= 0) {
-        return(.dasra_abundance_empty_fit(
-            "conditional_present_nonpositive_variance", n
+        return(empty_fit(
+            "conditional_present_nonpositive_variance"
         ))
     }
 
@@ -1059,6 +1186,16 @@ cauchy_combination <- function(ps) {
             character()
         }
     ))
+    quadrature_diagnostic <- .dasra_abundance_quadrature_diagnostic(
+        beta = beta,
+        y = y,
+        N = N,
+        X_eta = X_eta,
+        X_b = design$X_b,
+        gh = gh_fit,
+        fitted_effect = effect,
+        check_quadrature = check_quadrature
+    )
 
     list(
         available = TRUE,
@@ -1079,6 +1216,18 @@ cauchy_combination <- function(ps) {
             influence_solve$equilibrated_condition,
         jacobian_backward_error = influence_solve$backward_error,
         jacobian_rank = influence_solve$rank,
+        quadrature_Q = quadrature_diagnostic$quadrature_Q,
+        quadrature_checked = quadrature_diagnostic$quadrature_checked,
+        quadrature_check_succeeded =
+            quadrature_diagnostic$quadrature_check_succeeded,
+        quadrature_check_error =
+            quadrature_diagnostic$quadrature_check_error,
+        quadrature_comparison_Q =
+            quadrature_diagnostic$quadrature_comparison_Q,
+        quadrature_conditional_max_abs =
+            quadrature_diagnostic$quadrature_conditional_max_abs,
+        quadrature_effect_abs =
+            quadrature_diagnostic$quadrature_effect_abs,
         mean_presence_weight = NA_real_,
         mean_zero_presence_weight = NA_real_,
         solver_diagnostics = list(
@@ -1375,6 +1524,31 @@ cauchy_combination <- function(ps) {
             jacobian_rank = vapply(
                 fits, function(x) x$jacobian_rank, integer(1)
             ),
+            quadrature_Q = vapply(
+                fits, function(x) x$quadrature_Q, integer(1)
+            ),
+            quadrature_checked = vapply(
+                fits, function(x) x$quadrature_checked, logical(1)
+            ),
+            quadrature_check_succeeded = vapply(
+                fits,
+                function(x) x$quadrature_check_succeeded,
+                logical(1)
+            ),
+            quadrature_check_error = vapply(
+                fits, function(x) x$quadrature_check_error, character(1)
+            ),
+            quadrature_comparison_Q = vapply(
+                fits, function(x) x$quadrature_comparison_Q, integer(1)
+            ),
+            quadrature_conditional_max_abs = vapply(
+                fits,
+                function(x) x$quadrature_conditional_max_abs,
+                numeric(1)
+            ),
+            quadrature_effect_abs = vapply(
+                fits, function(x) x$quadrature_effect_abs, numeric(1)
+            ),
             mean_presence_weight = vapply(
                 fits, function(x) x$mean_presence_weight, numeric(1)
             ),
@@ -1415,12 +1589,13 @@ cauchy_combination <- function(ps) {
 .dasra_abundance_arm <- function(
         Y, N, g, z, keep_diagnostics,
         min_positive_samples = 3L, min_reference_taxa = 4L,
+        quadrature_points = 41L,
         cluster = NULL, verbose = FALSE) {
     taxa <- colnames(Y)
     n_samples <- nrow(Y)
-    control <- .dasra_abundance_control()
-    gh_fit <- make_count_gh_rule(control$quadrature_Q)
-    gh_effect <- make_count_gh_rule(control$effect_quadrature_Q)
+    control <- .dasra_abundance_control(quadrature_points)
+    gh_fit <- .dasra_make_abundance_gh_rule(control$quadrature_Q)
+    gh_effect <- gh_fit
     worker_count <- if (is.null(cluster)) 1L else length(cluster)
     .dasra_progress(
         verbose,
@@ -1439,7 +1614,8 @@ cauchy_combination <- function(ps) {
                 gh_fit = gh_fit,
                 gh_effect = gh_effect,
                 control = control,
-                min_positive_samples = min_positive_samples
+                min_positive_samples = min_positive_samples,
+                check_quadrature = keep_diagnostics
             ),
             error = function(e) {
                 .dasra_abundance_empty_fit(
@@ -1447,7 +1623,8 @@ cauchy_combination <- function(ps) {
                         "relative_abundance_fit_error: ",
                         conditionMessage(e)
                     ),
-                    n_samples
+                    n_samples,
+                    list(quadrature_Q = control$quadrature_Q)
                 )
             }
         )
@@ -3427,9 +3604,10 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 
     if (keep_fit && is.finite(fitted_sigma) &&
         (fitted_sigma > 2 || as.integer(Q) != 1001L)) {
-        comparison_Q <- max(2001L, 2L * as.integer(Q) - 1L)
+        comparison_Q <- NA_integer_
         quadrature_diagnostic <- tryCatch(
             {
+                comparison_Q <- .dasra_higher_order_quadrature_points(Q)
                 high_gh <- make_structural_gh_rule(comparison_Q)
                 base_conditional <- zt_beta_loglik_by_sample(
                     beta, y, N, X_eta, gh
@@ -3839,13 +4017,17 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   fits for the requested components. Structural fits may also report the
 #'   maximum discrepancy from a strictly higher-order quadrature rule; this is
 #'   a numerical sensitivity diagnostic, not an error bound. Detailed abundance
-#'   output includes the fitted reference bandwidth, relative mode curvature,
-#'   and iteration count.
-#' @param conditional_present_starts Start strategy for the structural arm's
-#'   conditional-present count fit. `"adaptive"` first uses the prespecified
-#'   primary start and retries with the full five-start bank if formation checks
-#'   fail. `"full"` uses all five starts immediately. Legacy values `1L` and
-#'   `5L` are accepted with the corresponding meanings.
+#'   output likewise reports a fixed-fit comparison under a strictly
+#'   higher-order rule when the fitted scale is large or a nondefault rule is
+#'   requested. The comparison does not refit the model or alter inference.
+#'   Its status, comparison order, conditional-log-likelihood discrepancy, and
+#'   effect discrepancy are recorded in the detailed abundance taxon table.
+#' @param structural_conditional_present_starts Start strategy for the
+#'   structural arm's conditional-present count fit. `"adaptive"` first uses
+#'   the prespecified primary start and retries with the full five-start bank if
+#'   formation checks fail. `"full"` uses all five starts immediately. Numeric
+#'   values `1L` and `5L` are accepted with the corresponding meanings. The
+#'   abundance arm always uses its full five-start bank.
 #' @param min_positive_samples Minimum number of samples with a positive count
 #'   required to retain a taxon before fitting. The default is `3L`. This
 #'   preliminary filter does not replace the positive-mark design-rank and
@@ -3864,6 +4046,12 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   cluster and do not change the taxon order.
 #' @param verbose Logical. If `TRUE`, report arm-level start and completion
 #'   messages.
+#' @param abundance_quadrature_points Number of Gauss-Hermite nodes used by the
+#'   relative-abundance arm. The validated default `41L` preserves the original
+#'   fitted procedure exactly. Nondefault values use the stable log-domain rule
+#'   used by the structural arm. With `full_output = TRUE`, nondefault rules and
+#'   fitted scales above two trigger a fixed-fit higher-order sensitivity
+#'   comparison; it is not an integration-error bound.
 #'
 #' @return An object of class `dasra` with elements:
 #'   \describe{
@@ -3939,12 +4127,14 @@ dasra <- function(counts, metadata, formula, group, library_size,
                   component = c("all", "structural_absence",
                                 "relative_abundance"),
                   full_output = FALSE,
-                  conditional_present_starts = c("adaptive", "full"),
+                  structural_conditional_present_starts =
+                      c("adaptive", "full"),
                   min_positive_samples = 3L,
                   min_reference_taxa = 4L,
                   structural_quadrature_points = 1001L,
                   workers = 1L,
-                  verbose = FALSE) {
+                  verbose = FALSE,
+                  abundance_quadrature_points = 41L) {
     call <- match.call()
     component <- match.arg(component)
     raw_counts <- as.matrix(counts)
@@ -4145,8 +4335,8 @@ dasra <- function(counts, metadata, formula, group, library_size,
         stop("`full_output` must be TRUE or FALSE.", call. = FALSE)
     }
     full_output <- isTRUE(full_output)
-    start_info <- .dasra_resolve_conditional_present_starts(
-        conditional_present_starts
+    start_info <- .dasra_resolve_structural_conditional_present_starts(
+        structural_conditional_present_starts
     )
     min_positive_samples <- .dasra_validate_positive_integer(
         min_positive_samples, "min_positive_samples"
@@ -4157,6 +4347,11 @@ dasra <- function(counts, metadata, formula, group, library_size,
     structural_quadrature_points <- .dasra_validate_positive_integer(
         structural_quadrature_points,
         "structural_quadrature_points",
+        minimum = 3L
+    )
+    abundance_quadrature_points <- .dasra_validate_positive_integer(
+        abundance_quadrature_points,
+        "abundance_quadrature_points",
         minimum = 3L
     )
     workers <- .dasra_validate_positive_integer(workers, "workers")
@@ -4284,6 +4479,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
                 Y_retained, N, g, z, full_output,
                 min_positive_samples = min_positive_samples,
                 min_reference_taxa = min_reference_taxa,
+                quadrature_points = abundance_quadrature_points,
                 cluster = cluster,
                 verbose = verbose
             )
@@ -4442,7 +4638,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
         library_size_source = library_size_source,
         p_adjust_method = p_adjust_method,
         component = component,
-        conditional_present_starts = start_info$mode,
+        structural_conditional_present_starts = start_info$mode,
         min_positive_samples_retained = min_positive_samples,
         min_reference_taxa = min_reference_taxa,
         workers_requested = workers,
@@ -4464,8 +4660,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
             "depth-aware present-conditional mean-log-relative-abundance",
             "with target-excluded robust compositional correction"
         )
-        settings$abundance_quadrature_Q <- 41L
-        settings$abundance_effect_quadrature_Q <- 41L
+        settings$abundance_quadrature_Q <- abundance_quadrature_points
         settings$abundance_conditional_present_starts <- 5L
         settings$abundance_derivative_base <- 1e-4
         settings$abundance_derivative_reference_n <- 120L

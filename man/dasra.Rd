@@ -15,12 +15,13 @@ dasra(
   p_adjust_method = "BH",
   component = c("all", "structural_absence", "relative_abundance"),
   full_output = FALSE,
-  conditional_present_starts = c("adaptive", "full"),
+  structural_conditional_present_starts = c("adaptive", "full"),
   min_positive_samples = 3L,
   min_reference_taxa = 4L,
   structural_quadrature_points = 1001L,
   workers = 1L,
-  verbose = FALSE
+  verbose = FALSE,
+  abundance_quadrature_points = 41L
 )
 }
 \arguments{
@@ -62,14 +63,18 @@ component. \code{"relative_abundance"} fits the relative-abundance component.}
 fits for the requested components. Structural fits may also report the
 maximum discrepancy from a strictly higher-order quadrature rule; this is
 a numerical sensitivity diagnostic, not an error bound. Detailed abundance
-output includes the fitted reference bandwidth, relative mode curvature,
-and iteration count.}
+output likewise reports a fixed-fit comparison under a strictly
+higher-order rule when the fitted scale is large or a nondefault rule is
+requested. The comparison does not refit the model or alter inference.
+Its status, comparison order, conditional-log-likelihood discrepancy, and
+effect discrepancy are recorded in the detailed abundance taxon table.}
 
-\item{conditional_present_starts}{Start strategy for the structural arm's
-conditional-present count fit. \code{"adaptive"} first uses the prespecified
-primary start and retries with the full five-start bank if formation checks
-fail. \code{"full"} uses all five starts immediately. Legacy values \code{1L} and
-\code{5L} are accepted with the corresponding meanings.}
+\item{structural_conditional_present_starts}{Start strategy for the
+structural arm's conditional-present count fit. \code{"adaptive"} first uses
+the prespecified primary start and retries with the full five-start bank if
+formation checks fail. \code{"full"} uses all five starts immediately. Numeric
+values \code{1L} and \code{5L} are accepted with the corresponding meanings. The
+abundance arm always uses its full five-start bank.}
 
 \item{min_positive_samples}{Minimum number of samples with a positive count
 required to retain a taxon before fitting. The default is \code{3L}. This
@@ -92,6 +97,13 @@ cluster and do not change the taxon order.}
 
 \item{verbose}{Logical. If \code{TRUE}, report arm-level start and completion
 messages.}
+
+\item{abundance_quadrature_points}{Number of Gauss-Hermite nodes used by the
+relative-abundance arm. The validated default \code{41L} preserves the original
+fitted procedure exactly. Nondefault values use the stable log-domain rule
+used by the structural arm. With \code{full_output = TRUE}, nondefault rules and
+fitted scales above two trigger a fixed-fit higher-order sensitivity
+comparison; it is not an integration-error bound.}
 }
 \value{
 An object of class \code{dasra} with elements:
