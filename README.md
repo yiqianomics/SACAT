@@ -6,21 +6,23 @@
 - a **relative-abundance component**, which tests the covariate-adjusted group difference in mean log relative abundance conditional on taxon presence.
 
 Finite sequencing depth is incorporated through a latent-state binomial count
-model. The abundance arm conditions on a positive count and fits the resulting
-zero-truncated mark likelihood to every taxon. Under the model's separable
-structural-presence gate, the structural-presence probability cancels from this
-likelihood exactly, so zero counts carry zero abundance score and no
-structural-nuisance estimate or data-dependent switch is needed. The fixed
-observed-design abundance effect is then centered against a target-excluded
-cross-taxon reference background to account for compositional closure.
+model. Within the fitted conditional factorization, conditioning on a positive
+count removes the structural-presence probability from the abundance
+likelihood. Every retained taxon is therefore analyzed with one zero-truncated
+present-conditional model: zero counts carry no abundance score, and the
+abundance fit does not require a structural-nuisance estimate or a
+data-dependent model switch. The fixed observed-design abundance effect is
+then centered against a target-excluded cross-taxon reference background to
+account for compositional closure.
 
-The reference correction has a pointwise fixed-taxon justification when each
-target-excluded reference set contains a separated strict majority sharing one
-common background and the selected kernel mode is stable and isolated. The
-reported effect is therefore a reference-centered, present-conditional relative
-contrast. A count majority by itself is not a finite-sample guarantee: many
-same-direction changes can overlap and shift the reference mode. This is the
-main practical limitation of the abundance arm.
+The two components answer complementary questions. The structural-absence
+component concerns the probability of taxon absence, whereas the
+relative-abundance component concerns the covariate-standardized mean log
+relative abundance among samples in which the taxon is present. The reported
+abundance effect is the target taxon's contrast relative to a target-excluded
+shared background, rather than an absolute-abundance change. Reference
+centering is intended for analyses in which the eligible taxa provide a stable,
+clearly separated common-background cluster.
 
 For a finite regular interior structural nuisance solution, the structural test
 uses the sum of nuisance-orthogonalized per-sample estimating-function
@@ -77,16 +79,15 @@ The main analysis controls are:
   cross-platform process cluster, while `verbose = TRUE` reports arm-level
   progress.
 
-The retention and reference thresholds change the tested families and should
-be selected before inspecting results. Lower quadrature orders trade numerical
-accuracy for speed. The two arms expose separate controls because their
-validated numerical paths use different orders and start strategies. With
-`full_output = TRUE`, DASRA can reevaluate a fitted parameter under a strictly
-higher-order rule. This fixed-fit comparison is a sensitivity diagnostic, not
-an error bound, and it does not refit the model or alter inference.
-For abundance fits, the detailed taxon table records whether the comparison
-was performed and succeeded, the two quadrature orders, and the absolute
-conditional-log-likelihood and effect discrepancies.
+The retention and reference thresholds define the tested families and should
+be selected before inspecting results. The two arms expose separate numerical
+controls because their validated paths use different quadrature orders and
+start strategies. With `full_output = TRUE`, DASRA records fixed-fit
+higher-order comparisons and detailed numerical diagnostics without refitting
+the model or changing primary inference. For abundance fits, the detailed
+taxon table records whether the comparison was performed and succeeded, the
+two quadrature orders, and the absolute conditional-log-likelihood and effect
+discrepancies.
 
 ## Example
 
@@ -157,33 +158,55 @@ For the comparison-minus-reference contrast:
 Adjusted p-value columns use the `p_adj_` prefix. The adjustment method is
 recorded in `fit$settings$p_adjust_method`.
 
-Taxa with fewer positive counts than `min_positive_samples` are not retained. A
-requested component that cannot be formed for a retained taxon enters its
-multiplicity family with p-value one, and the reason is recorded in
-`fit$diagnostics`.
+Begin interpretation with `fit$diagnostics`. The columns
+`n_positive_reference` and `n_positive_comparison` summarize the observed
+positive-count support in the two groups. The `formed_*`, `reason_*`, and
+`warning_*` columns show whether each requested result was produced and record
+its numerical status.
 
-Two structural outcomes are nonregular. A taxon with no observed zeros has no
-variation in its absence indicator (`no_observed_zeros`). When the
+Taxa with fewer positive counts than `min_positive_samples` are not retained.
+A retained taxon whose requested component cannot be formed remains in that
+testing family with an operational p-value of one. Use the formation indicator
+and reason to identify this family-bookkeeping value; it is not evidence of no
+association.
+
+Two structural statuses are recorded as nonregular. A taxon with no observed
+zeros has no variation in its absence indicator (`no_observed_zeros`). When the
 intercept-only structural nuisance equation has $C_0 \leq 0$, its exact
 solution lies at zero structural-absence probability
-(`structural_absence_boundary_at_zero`). Both outcomes use one as an
-operational conservative value in the primary Bonferroni family and are
-excluded from the Cauchy sensitivity combination; this value is not a
-calibrated boundary p-value. Their signed statistic is undefined. A returned
-finite covariate-adjusted structural nuisance fit is unavailable with reason
-`structural_absence_nonoptimal_nuisance_fit` if the exact zero
-structural-absence-probability limit has a strictly lower detection objective.
+(`structural_absence_boundary_at_zero`). Their signed statistic is undefined,
+and they are excluded from the Cauchy sensitivity combination. A finite
+covariate-adjusted nuisance fit is not used when the exact zero-limit detection
+objective is lower (`structural_absence_nonoptimal_nuisance_fit`). An otherwise
+supported all-positive taxon can still enter the abundance arm because its
+conditional-mark likelihood has no structural-nuisance parameter.
 
-An otherwise supported all-positive taxon can enter the abundance arm because
-the conditional-mark likelihood has no structural-nuisance parameter. The
-abundance standard error is a centered, sample-aligned HC0 sandwich estimate,
-and its p-value uses a first-order normal Wald approximation rather than a
-claimed exact small-sample pivot. Component-use columns in `fit$results`
-distinguish the formed components used by the primary omnibus from the regular
-components used by the Cauchy sensitivity omnibus.
-Requested components return lightweight warning codes even when
-`full_output = FALSE`. Structural analyses include
-`fit$diagnostics$warning_structural_absence` and
-`fit$diagnostics$nonregular_structural_absence`; abundance analyses include
-`fit$diagnostics$warning_relative_abundance`. Setting `full_output = TRUE`
-additionally retains detailed fitted objects.
+The abundance standard error is a centered, sample-aligned HC0 sandwich
+estimate, and its two-sided p-value uses a first-order standard-normal Wald
+reference. Component-use columns in `fit$results` distinguish the components
+used by the primary and Cauchy omnibus analyses. Requested components return
+lightweight warning codes even when `full_output = FALSE`; setting
+`full_output = TRUE` additionally retains detailed fitted objects.
+
+## Recommended abundance workflow
+
+For a reportable abundance analysis:
+
+1. State the estimand as a present-conditional, reference-centered relative
+   contrast, and identify the comparison and reference groups from
+   `fit$settings$contrast`.
+2. Report group-specific positive-count support together with component
+   formation, reason, and warning fields from `fit$diagnostics`.
+3. With `full_output = TRUE`, inspect
+   `fit$fits$relative_abundance$taxon`. This table separates the raw taxon
+   estimate, target-excluded background estimate, and corrected estimate, and
+   records reference size, bandwidth, curvature, convergence, and quadrature
+   diagnostics.
+4. When coordinated community-wide changes are scientifically plausible,
+   present the cross-taxon raw-effect distribution and reference summaries
+   alongside the corrected results. Use these quantities for transparent
+   interpretation rather than as outcome-dependent filtering thresholds.
+
+The raw and corrected quantities answer different reference questions; the
+raw p-value is a diagnostic companion rather than a replacement for the
+reported reference-centered test.

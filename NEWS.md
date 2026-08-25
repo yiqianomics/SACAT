@@ -1,3 +1,12 @@
+# DASRA 0.5.2
+
+- The README and reference manual now present the relative-abundance method as
+  a tutorial workflow: define the present-conditional reference-centered
+  estimand, review formation and support fields, and use detailed reference and
+  numerical diagnostics when needed.
+- This is a documentation-only release. Functions, arguments, defaults, output
+  schemas, fitted procedures, and numerical results are unchanged.
+
 # DASRA 0.5.1
 
 - The structural fitting control is now named

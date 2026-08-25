@@ -3935,58 +3935,53 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' The relative-abundance component estimates a covariate-standardized
 #' comparison-minus-reference difference in mean log relative abundance
 #' conditional on taxon presence. Every taxon is fitted with the same
-#' zero-truncated conditional-mark likelihood. Under the model's separable
-#' structural-presence gate, conditioning on a positive count cancels the
-#' structural-presence probability exactly, so the abundance fit does not
-#' estimate or switch on a structural-absence nuisance parameter.
-#' Zero counts have zero mark score, while all samples still contribute their
-#' covariate values to the fixed observed-design sample-standardized effect.
-#' The taxon-specific
-#' effects are centered against a target-excluded cross-taxon reference, with
-#' centered, sample-aligned influence contributions used for the corrected
-#' sandwich standard error and a first-order normal Wald test.
+#' zero-truncated conditional-mark likelihood. Within the fitted conditional
+#' factorization, conditioning on a positive count removes the
+#' structural-presence probability from this likelihood, so the abundance fit
+#' does not require a structural-absence nuisance estimate or a data-dependent
+#' model switch. Zero counts have zero mark score, while all samples still
+#' contribute their covariate values to the fixed observed-design
+#' sample-standardized effect.
+#'
+#' Taxon-specific effects are centered against a target-excluded cross-taxon
+#' reference. The corrected standard error uses centered, sample-aligned
+#' influence contributions with a first-order standard-normal Wald reference.
 #' A positive `estimate_relative_abundance` means that the target taxon's
-#' present-conditional log-relative-abundance contrast exceeds this shared
-#' compositional background. The reference correction has a pointwise
-#' fixed-taxon justification when the fixed-design mark estimator has a unique
-#' regular interior solution with positive information and, after excluding
-#' each target, a separated strict majority of stably eligible taxa share one
-#' common background and the fitted kernel mode is stable, isolated, and has
-#' positive curvature. A count majority alone is not a
-#' finite-sample guarantee: many same-direction effects can overlap the
-#' reference mode and bias the corrected abundance test. The reported abundance
-#' effect is therefore a reference-centered relative contrast.
+#' present-conditional contrast exceeds the shared compositional background;
+#' the reported quantity is therefore a reference-centered relative contrast,
+#' not an absolute-abundance effect. This interpretation is intended for
+#' settings in which, after excluding each target, a separated strict majority
+#' of stably eligible taxa shares a common background and the selected kernel
+#' mode is stable, isolated, and has positive curvature. With `full_output =
+#' TRUE`, the detailed abundance table records the raw taxon estimate and the
+#' reference quantities used to construct the corrected contrast.
 #'
 #' Taxa with positive counts in fewer than `min_positive_samples` samples are
 #' excluded before component fitting and omitted from the multiple-testing
-#' families. Every retained taxon remains in each requested family; an
-#' unavailable component is assigned an operational conservative value of one.
+#' families. Every retained taxon remains in each requested family. If a
+#' component cannot be formed, an operational value of one retains the taxon in
+#' that family; the formation indicator and reason distinguish this bookkeeping
+#' value from a formed test result.
 #'
 #' Two structural outcomes are nonregular. A taxon with no observed zeros has
 #' no variation in its absence indicator (`no_observed_zeros`). An
 #' intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
 #' exact solution at the zero structural-absence boundary
-#' (`structural_absence_boundary_at_zero`). Both outcomes use one as an
-#' operational conservative value in the primary Bonferroni family and are
-#' excluded from the Cauchy sensitivity combination; this value is not a
-#' calibrated boundary p-value. Their signed statistic is undefined. A finite
-#' covariate-adjusted structural nuisance fit is unavailable with reason
-#' `structural_absence_nonoptimal_nuisance_fit` when the exact zero
-#' structural-absence-probability limit has a strictly lower detection
-#' objective. This audit proves
-#' that the returned fit cannot be the optimizing finite regular nuisance fit;
-#' it does not classify the global optimum as a boundary solution. An
-#' otherwise supported all-positive taxon can still enter the abundance
-#' conditional-mark fit because that fit has no structural nuisance parameter.
-#' The returned component-use columns record the components entering each
+#' (`structural_absence_boundary_at_zero`). Both statuses use the documented
+#' operational value in the primary family and are excluded from the Cauchy
+#' sensitivity combination; their signed statistic is undefined. The reason
+#' `structural_absence_nonoptimal_nuisance_fit` records that a returned finite
+#' nuisance fit was not used because the exact zero-limit detection objective
+#' was lower. An otherwise supported all-positive taxon can still enter the
+#' abundance conditional-mark fit because that fit has no structural nuisance
+#' parameter. The component-use columns record the components entering each
 #' omnibus calculation.
-#' Numerical warnings identify fitted roots that passed the stated residual,
-#' rank, stability, and backward-error checks but remain weakly identified or
-#' sensitive to the numerical path. Requested components return lightweight
-#' warning codes even when `full_output = FALSE`. Structural analyses include
+#'
+#' Requested components return lightweight warning codes even when
+#' `full_output = FALSE`. Structural analyses include
 #' `warning_structural_absence` and `nonregular_structural_absence`; abundance
 #' analyses include `warning_relative_abundance`. Setting `full_output = TRUE`
-#' additionally retains the detailed fitted objects.
+#' additionally retains detailed fitted objects and reference diagnostics.
 #'
 #' @param counts Raw non-negative integer counts in a matrix or data frame.
 #' @param metadata Sample metadata in a data frame. Row names must contain all
@@ -4015,8 +4010,8 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   component. `"relative_abundance"` fits the relative-abundance component.
 #' @param full_output Logical. If `TRUE`, the returned object includes detailed
 #'   fits for the requested components. Structural fits may also report the
-#'   maximum discrepancy from a strictly higher-order quadrature rule; this is
-#'   a numerical sensitivity diagnostic, not an error bound. Detailed abundance
+#'   maximum discrepancy from a strictly higher-order quadrature rule as a
+#'   fixed-fit numerical sensitivity summary. Detailed abundance
 #'   output likewise reports a fixed-fit comparison under a strictly
 #'   higher-order rule when the fitted scale is large or a nondefault rule is
 #'   requested. The comparison does not refit the model or alter inference.
@@ -4051,7 +4046,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   fitted procedure exactly. Nondefault values use the stable log-domain rule
 #'   used by the structural arm. With `full_output = TRUE`, nondefault rules and
 #'   fitted scales above two trigger a fixed-fit higher-order sensitivity
-#'   comparison; it is not an integration-error bound.
+#'   comparison without refitting the model or changing primary inference.
 #'
 #' @return An object of class `dasra` with elements:
 #'   \describe{
