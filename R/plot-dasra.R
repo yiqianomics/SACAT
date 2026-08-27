@@ -507,9 +507,41 @@
 
 # Grid drawing -------------------------------------------------------------
 
-.dasra_plot_format_power <- function(value) {
-    exponent <- round(log10(value))
-    if (exponent == 0) "1" else paste0("10^", exponent)
+.dasra_plot_format_abundance_tick <- function(exponent) {
+    if (exponent >= -2L && exponent <= 2L) {
+        return(paste0(
+            format(10 ^ exponent, scientific = FALSE, trim = TRUE),
+            "%"
+        ))
+    }
+    paste0("10^", exponent, "*'%'")
+}
+
+.dasra_plot_abundance_scale <- function(values, max_ticks = 4L) {
+    values <- values[is.finite(values) & values > 0]
+    limits <- if (length(values)) {
+        c(floor(log10(min(values))), ceiling(log10(max(values))))
+    } else {
+        c(-6, 0)
+    }
+    if (limits[[1L]] == limits[[2L]]) {
+        limits[[1L]] <- limits[[1L]] - 1
+    }
+    tick_step <- max(
+        1L,
+        ceiling(diff(limits) / (max_ticks - 1L))
+    )
+    ticks <- seq(limits[[1L]], limits[[2L]], by = tick_step)
+    domain <- limits + c(-1, 1) * 0.035 * diff(limits)
+
+    list(
+        limits = limits,
+        domain = domain,
+        ticks = ticks,
+        labels = vapply(
+            ticks, .dasra_plot_format_abundance_tick, character(1)
+        )
+    )
 }
 
 .dasra_plot_axis <- function(at, labels, reversed = FALSE,
@@ -558,38 +590,54 @@
 
 .dasra_plot_header_groups <- function(title, contrast, colors, gp_title,
                                       gp_small) {
-    group_width <- max(vapply(contrast, function(label) {
+    label_widths <- vapply(contrast, function(label) {
         grid::convertWidth(
             grid::grobWidth(grid::textGrob(label, gp = gp_small)),
             "npc",
             valueOnly = TRUE
         )
-    }, numeric(1)))
+    }, numeric(1))
+    key_width <- 0.07
+    key_gap <- 0.025
+    entry_gap <- 0.06
+    fixed_width <- length(contrast) * (key_width + key_gap) +
+        (length(contrast) - 1L) * entry_gap
     group_gp <- gp_small
-    if (is.finite(group_width) && group_width > 0.86) {
+    available_label_width <- 0.94 - fixed_width
+    if (is.finite(sum(label_widths)) &&
+        sum(label_widths) > available_label_width) {
+        scale <- available_label_width / sum(label_widths)
         group_gp <- grid::gpar(
             col = gp_small$col,
-            fontsize = gp_small$fontsize * 0.86 / group_width
+            fontsize = gp_small$fontsize * scale
         )
+        label_widths <- label_widths * scale
     }
     grid::grid.text(
-        title, x = grid::unit(0, "npc"), y = grid::unit(0.79, "npc"),
+        title, x = grid::unit(0, "npc"), y = grid::unit(0.78, "npc"),
         just = "left", gp = gp_title
     )
-    grid::grid.segments(
-        x0 = grid::unit(c(0, 0), "npc"),
-        x1 = grid::unit(c(0.09, 0.09), "npc"),
-        y0 = grid::unit(c(0.38, 0.15), "npc"),
-        y1 = grid::unit(c(0.38, 0.15), "npc"),
-        gp = grid::gpar(col = colors, lwd = 3, lineend = "butt")
-    )
-    grid::grid.text(
-        contrast,
-        x = grid::unit(c(0.12, 0.12), "npc"),
-        y = grid::unit(c(0.38, 0.15), "npc"),
-        just = "left",
-        gp = group_gp
-    )
+    cursor <- 0
+    for (i in seq_along(contrast)) {
+        grid::grid.segments(
+            x0 = grid::unit(cursor, "npc"),
+            x1 = grid::unit(cursor + key_width, "npc"),
+            y0 = grid::unit(0.20, "npc"),
+            y1 = grid::unit(0.20, "npc"),
+            gp = grid::gpar(
+                col = colors[[i]], lwd = 2.6, lineend = "butt"
+            )
+        )
+        label_x <- cursor + key_width + key_gap
+        grid::grid.text(
+            contrast[[i]],
+            x = grid::unit(label_x, "npc"),
+            y = grid::unit(0.20, "npc"),
+            just = "left",
+            gp = group_gp
+        )
+        cursor <- label_x + label_widths[[i]] + entry_gap
+    }
 }
 
 .dasra_plot_draw_header <- function(spec, columns, gp_title, gp_small,
@@ -607,7 +655,7 @@
         layout.pos.row = 1L, layout.pos.col = columns[[2L]]
     ))
     .dasra_plot_header_groups(
-        "Structural absence", spec$contrast, spec$group_colors,
+        "Structural-absence\nprobability", spec$contrast, spec$group_colors,
         gp_title, gp_small
     )
     grid::popViewport()
@@ -615,56 +663,94 @@
     grid::pushViewport(grid::viewport(
         layout.pos.row = 1L, layout.pos.col = columns[[3L]]
     ))
-    grid::grid.text("Signed evidence", y = 0.80, gp = gp_title)
+    grid::grid.text("Signed evidence", y = 0.82, gp = gp_title)
     grid::grid.points(
-        x = grid::unit(c(0.28, 0.57), "npc"),
-        y = grid::unit(c(0.50, 0.50), "npc"),
+        x = grid::unit(c(0.24, 0.55), "npc"),
+        y = grid::unit(c(0.54, 0.54), "npc"),
         pch = c(24, 21),
-        size = grid::unit(1.7, "mm"),
+        size = grid::unit(c(1.55, 1.45), "mm"),
         gp = grid::gpar(col = "#1A1C1F", fill = "white", lwd = 0.7)
     )
     grid::grid.text(
         parse(text = c("Z[j]^SA", "Z[j]^RA")),
-        x = grid::unit(c(0.32, 0.61), "npc"),
-        y = grid::unit(c(0.50, 0.50), "npc"),
+        x = grid::unit(c(0.28, 0.59), "npc"),
+        y = grid::unit(c(0.54, 0.54), "npc"),
         just = "left",
         gp = gp_small
     )
-    ramp_x <- seq(0.40, 0.68, length.out = length(spec$evidence_palette) + 1L)
-    for (i in seq_along(spec$evidence_palette)) {
+    ramp_left <- 0.43
+    ramp_right <- 0.78
+    ramp_colors <- grDevices::colorRampPalette(
+        spec$evidence_palette, space = "Lab"
+    )(48L)
+    ramp_x <- seq(
+        ramp_left, ramp_right, length.out = length(ramp_colors) + 1L
+    )
+    for (i in seq_along(ramp_colors)) {
         grid::grid.rect(
             x = mean(ramp_x[c(i, i + 1L)]),
-            y = 0.17,
+            y = 0.18,
             width = diff(ramp_x[c(i, i + 1L)]),
-            height = 0.08,
+            height = 0.075,
             gp = grid::gpar(
-                col = NA, fill = spec$evidence_palette[[i]]
+                col = NA, fill = ramp_colors[[i]]
             )
         )
     }
     grid::grid.text(
-        spec$adjustment_label,
-        x = 0.36, y = 0.17, just = "right", gp = gp_tiny
+        paste("Component", spec$adjustment_label),
+        x = 0.39, y = 0.18, just = "right", gp = gp_tiny
     )
-    grid::grid.text(
-        format.pval(
-            spec$color_limits[["upper"]], digits = 1, eps = 0
-        ),
-        x = 0.40, y = 0.04, just = "centre", gp = gp_tiny
+    legend_p <- c(
+        spec$color_limits[["upper"]],
+        if (spec$color_limits[["lower"]] < 0.05 &&
+            spec$color_limits[["upper"]] > 0.05) 0.05 else numeric(),
+        spec$color_limits[["lower"]]
     )
-    grid::grid.text(
-        format.pval(
-            spec$color_limits[["lower"]], digits = 1, eps = 0
-        ),
-        x = 0.68, y = 0.04, just = "centre", gp = gp_tiny
+    legend_fraction <- (
+        -log10(legend_p) + log10(spec$color_limits[["upper"]])
+    ) / (
+        -log10(spec$color_limits[["lower"]]) +
+            log10(spec$color_limits[["upper"]])
     )
+    legend_x <- ramp_left + legend_fraction * (ramp_right - ramp_left)
+    legend_labels <- vapply(legend_p, function(p) {
+        if (abs(p - 0.05) < .Machine$double.eps ^ 0.5) {
+            ".05"
+        } else {
+            format.pval(p, digits = 1, eps = 0)
+        }
+    }, character(1))
+    grid::grid.segments(
+        x0 = grid::unit(legend_x, "npc"),
+        x1 = grid::unit(legend_x, "npc"),
+        y0 = grid::unit(0.125, "npc"),
+        y1 = grid::unit(0.235, "npc"),
+        gp = grid::gpar(col = "#6F7479", lwd = 0.35)
+    )
+    for (i in seq_along(legend_x)) {
+        horizontal_justification <- if (i == 1L) {
+            "left"
+        } else if (i == length(legend_x)) {
+            "right"
+        } else {
+            "centre"
+        }
+        grid::grid.text(
+            legend_labels[[i]],
+            x = grid::unit(legend_x[[i]], "npc"),
+            y = grid::unit(0.035, "npc"),
+            just = horizontal_justification,
+            gp = gp_tiny
+        )
+    }
     grid::popViewport()
 
     grid::pushViewport(grid::viewport(
         layout.pos.row = 1L, layout.pos.col = columns[[4L]]
     ))
     .dasra_plot_header_groups(
-        "Present-conditional\nabundance (%)", spec$contrast,
+        "Present-conditional\nrelative abundance", spec$contrast,
         spec$group_colors, gp_title, gp_small
     )
     grid::popViewport()
@@ -676,16 +762,16 @@
     n <- nrow(data)
     ink <- "#1A1C1F"
     muted <- "#73777C"
-    rule <- "#DDE0E3"
-    faint <- "#ECEEEF"
-    gp_title <- grid::gpar(col = ink, fontsize = 9, fontface = "plain")
-    gp_label <- grid::gpar(col = ink, fontsize = 7.6)
-    gp_small <- grid::gpar(col = ink, fontsize = 7)
-    gp_tiny <- grid::gpar(col = muted, fontsize = 6.3)
+    rule <- "#D9DDE0"
+    faint <- "#ECEFF1"
+    gp_title <- grid::gpar(col = ink, fontsize = 8.3, fontface = "bold")
+    gp_label <- grid::gpar(col = ink, fontsize = 7.2)
+    gp_small <- grid::gpar(col = ink, fontsize = 6.6)
+    gp_tiny <- grid::gpar(col = muted, fontsize = 6.6)
     gp_axis <- grid::gpar(col = muted, fontsize = 6.6)
-    gp_rule <- grid::gpar(col = rule, lwd = 0.55)
+    gp_rule <- grid::gpar(col = rule, lwd = 0.45)
 
-    star_gp <- grid::gpar(col = ink, fontsize = 6.5, fontface = "bold")
+    star_gp <- grid::gpar(col = ink, fontsize = 6.4, fontface = "bold")
     label_widths <- lapply(seq_len(n), function(i) {
         width <- grid::grobWidth(grid::textGrob(
             data$feature_label[[i]], gp = gp_label
@@ -707,18 +793,18 @@
         ncol = 7L,
         widths = grid::unit.c(
             feature_width,
-            grid::unit(4, "mm"),
-            grid::unit(1.0, "null"),
-            grid::unit(4, "mm"),
-            grid::unit(1.62, "null"),
-            grid::unit(4, "mm"),
-            grid::unit(1.12, "null")
+            grid::unit(2.7, "mm"),
+            grid::unit(1.05, "null"),
+            grid::unit(2.7, "mm"),
+            grid::unit(1.72, "null"),
+            grid::unit(2.7, "mm"),
+            grid::unit(1.18, "null")
         ),
         heights = grid::unit.c(
-            grid::unit(15, "mm"),
-            grid::unit(8, "mm"),
+            grid::unit(14, "mm"),
+            grid::unit(7.5, "mm"),
             rep(grid::unit(1, "null"), n),
-            grid::unit(4, "mm")
+            grid::unit(3.8, "mm")
         )
     )
     columns <- c(1L, 3L, 5L, 7L)
@@ -737,43 +823,15 @@
     structural_domain <- c(-0.035, 1.035)
     z_values <- c(data$z_structural, data$z_abundance)
     z_values <- z_values[is.finite(z_values)]
-    z_limit <- max(2, ceiling(max(abs(z_values))))
-    z_ticks <- seq(-z_limit, z_limit, length.out = 5L)
+    z_step <- max(1, ceiling(max(abs(z_values)) / 2))
+    z_limit <- 2 * z_step
+    z_ticks <- seq(-z_limit, z_limit, by = z_step)
     z_domain <- c(-1.035, 1.035) * z_limit
-    abundance_values <- c(
+    abundance_scale <- .dasra_plot_abundance_scale(c(
         data$abundance_reference,
         data$abundance_comparison
-    )
-    abundance_values <- abundance_values[
-        is.finite(abundance_values) & abundance_values > 0
-    ]
-    abundance_limits <- if (length(abundance_values)) {
-        c(
-            floor(log10(min(abundance_values))),
-            ceiling(log10(max(abundance_values)))
-        )
-    } else {
-        c(-6, 0)
-    }
-    if (diff(abundance_limits) < 1) {
-        abundance_limits <- abundance_limits + c(-0.5, 0.5)
-    }
-    abundance_domain <- abundance_limits +
-        c(-1, 1) * 0.035 * diff(abundance_limits)
-    exponent_ticks <- seq(
-        ceiling(abundance_limits[[1L]]),
-        floor(abundance_limits[[2L]])
-    )
-    tick_step <- max(1L, ceiling((length(exponent_ticks) - 1L) / 4L))
-    exponent_ticks <- exponent_ticks[
-        seq(1L, length(exponent_ticks), by = tick_step)
-    ]
-    if (utils::tail(exponent_ticks, 1L) !=
-        floor(abundance_limits[[2L]])) {
-        exponent_ticks <- c(
-            exponent_ticks, floor(abundance_limits[[2L]])
-        )
-    }
+    ))
+    abundance_domain <- abundance_scale$domain
 
     grid::pushViewport(grid::viewport(
         layout.pos.row = 2L, layout.pos.col = columns[[2L]]
@@ -798,17 +856,28 @@
         gp_text = gp_axis,
         gp_line = gp_rule
     )
+    grid::grid.text(
+        paste(spec$contrast[[2L]], "lower"),
+        x = 0, y = 0.88, just = "left", gp = gp_tiny
+    )
+    grid::grid.text(
+        paste(spec$contrast[[2L]], "higher"),
+        x = 1, y = 0.88, just = "right", gp = gp_tiny
+    )
     grid::popViewport()
 
     grid::pushViewport(grid::viewport(
         layout.pos.row = 2L, layout.pos.col = columns[[4L]]
     ))
     .dasra_plot_axis(
-        exponent_ticks,
-        vapply(10 ^ exponent_ticks, .dasra_plot_format_power, character(1)),
+        abundance_scale$ticks,
+        abundance_scale$labels,
         domain = abundance_domain,
         gp_text = gp_axis,
         gp_line = gp_rule
+    )
+    grid::grid.text(
+        "log scale", x = 1, y = 0.88, just = "right", gp = gp_tiny
     )
     grid::popViewport()
 
@@ -820,7 +889,7 @@
             ))
             grid::grid.segments(
                 x0 = 0, x1 = 1, y0 = 0, y1 = 0,
-                gp = grid::gpar(col = faint, lwd = 0.5)
+                gp = grid::gpar(col = faint, lwd = 0.35)
             )
             grid::popViewport()
         }
@@ -837,7 +906,7 @@
             grid::grid.text(
                 data$stars[[i]],
                 x = grid::grobWidth(label) + grid::unit(1, "pt"),
-                y = 0.67,
+                y = 0.68,
                 just = "left",
                 gp = star_gp
             )
@@ -862,7 +931,7 @@
                 y0 = y, y1 = y,
                 gp = grid::gpar(
                     col = spec$group_colors,
-                    lwd = 4,
+                    lwd = 2.8,
                     lineend = "round"
                 )
             )
@@ -870,7 +939,7 @@
                 x = grid::unit(plotted_profile, "native"),
                 y = y,
                 pch = 21,
-                size = grid::unit(1.15, "mm"),
+                size = grid::unit(1.0, "mm"),
                 gp = grid::gpar(
                     col = spec$group_colors,
                     fill = spec$group_colors,
@@ -894,7 +963,7 @@
                 y0 = 0, y1 = 1,
                 gp = grid::gpar(
                     col = if (tick == 0) "#8A8D91" else faint,
-                    lwd = if (tick == 0) 0.75 else 0.45,
+                    lwd = if (tick == 0) 0.65 else 0.30,
                     lty = if (tick == 0) 2 else 1
                 )
             )
@@ -904,13 +973,13 @@
                 x0 = grid::unit(0, "native"),
                 x1 = grid::unit(data$z_structural[[i]], "native"),
                 y0 = 0.64, y1 = 0.64,
-                gp = grid::gpar(col = "#AEB2B5", lwd = 0.6)
+                gp = grid::gpar(col = "#B8BDC1", lwd = 0.48)
             )
             grid::grid.points(
                 x = grid::unit(data$z_structural[[i]], "native"),
                 y = 0.64,
                 pch = 24,
-                size = grid::unit(1.8, "mm"),
+                size = grid::unit(1.65, "mm"),
                 gp = grid::gpar(
                     col = ink,
                     fill = data$color_structural[[i]],
@@ -923,13 +992,13 @@
                 x0 = grid::unit(0, "native"),
                 x1 = grid::unit(data$z_abundance[[i]], "native"),
                 y0 = 0.36, y1 = 0.36,
-                gp = grid::gpar(col = "#AEB2B5", lwd = 0.6)
+                gp = grid::gpar(col = "#B8BDC1", lwd = 0.48)
             )
             grid::grid.points(
                 x = grid::unit(data$z_abundance[[i]], "native"),
                 y = 0.36,
                 pch = 21,
-                size = grid::unit(1.65, "mm"),
+                size = grid::unit(1.52, "mm"),
                 gp = grid::gpar(
                     col = ink,
                     fill = data$color_abundance[[i]],
@@ -951,14 +1020,14 @@
         if (all(is.finite(abundance_profile)) &&
             all(abundance_profile > 0)) {
             transformed <- log10(abundance_profile)
-            y <- c(0.64, 0.36)
+            y <- c(0.56, 0.44)
             grid::grid.segments(
-                x0 = grid::unit(abundance_limits[[1L]], "native"),
-                x1 = grid::unit(transformed, "native"),
-                y0 = y, y1 = y,
+                x0 = grid::unit(transformed[[1L]], "native"),
+                x1 = grid::unit(transformed[[2L]], "native"),
+                y0 = y[[1L]], y1 = y[[2L]],
                 gp = grid::gpar(
-                    col = spec$group_colors,
-                    lwd = 4,
+                    col = "#B8BDC1",
+                    lwd = 0.62,
                     lineend = "round"
                 )
             )
@@ -966,11 +1035,11 @@
                 x = grid::unit(transformed, "native"),
                 y = y,
                 pch = 21,
-                size = grid::unit(1.15, "mm"),
+                size = grid::unit(if (n > 12L) 1.08 else 1.25, "mm"),
                 gp = grid::gpar(
-                    col = spec$group_colors,
+                    col = "#50555A",
                     fill = spec$group_colors,
-                    lwd = 0.5
+                    lwd = 0.45
                 )
             )
         } else {
@@ -1031,8 +1100,15 @@
 #' The structural side panel is a descriptive unrestricted companion fit; the
 #' prespecified structural inference remains the central score statistic. The
 #' abundance side panel displays standardized present-conditional geometric
-#' mean relative abundance from the fitted mark model; the central abundance
-#' statistic retains the target-excluded reference correction used by DASRA.
+#' mean relative abundance, expressed as a percentage on a log scale, from the
+#' fitted mark model. Its paired points avoid implying a zero baseline on the
+#' log scale. The central abundance statistic retains the target-excluded
+#' reference correction used by DASRA.
+#' Side-panel segments are descriptive fitted group summaries, not effect
+#' estimates or confidence intervals; the abundance connector only links its
+#' two fitted group means. Component inference is carried by the central signed
+#' statistics. An omitted central marker or `--` denotes an unavailable
+#' component or side summary, not a zero effect.
 #'
 #' @param x A `dasra` object fitted with `component = "all"` and
 #'   `store_plot_data = TRUE`.
@@ -1048,18 +1124,24 @@
 #'   nonsignificant features.
 #' @param alpha Adjusted-p threshold used by `selection = "significant"`.
 #' @param p_color_limits Either `"adaptive"` or numeric `c(lower, upper)` with
-#'   `0 < lower < upper <= 1`. The adaptive red endpoint is the smallest finite
-#'   component adjusted p-value among the displayed markers rounded down to a
-#'   power of ten; the blue endpoint is one. Colors are interpolated on the
-#'   `-log10(p)` scale and values outside the range are clamped.
-#' @param evidence_palette Colors from weak to strong evidence. The default is
-#'   `c("#6090c1", "#acd2e5", "#fef9b7", "#fee395", "#f2724d",
-#'   "#d7312d")`.
+#'   `0 < lower < upper <= 1`. The adaptive strong-evidence endpoint is derived
+#'   from the smallest positive finite component adjusted p-value among the
+#'   displayed markers and rounded down to a power of ten; the weak-evidence
+#'   endpoint is one. Degenerate all-zero or all-one displays use a finite
+#'   fallback. Colors are interpolated on the `-log10(p)` scale and values
+#'   outside the range are clamped.
+#' @param evidence_palette Colors from weak to strong component evidence. The
+#'   default is a sequential gray-plum scale chosen to remain distinct from
+#'   the reference/comparison group colors.
 #' @param group_colors Two colors for the reference and comparison groups.
+#' @param group_labels Optional two-element character vector used only as the
+#'   displayed reference and comparison labels. The fitted contrast is used by
+#'   default. This does not change the analysis or group ordering.
 #' @param file Optional output filename ending in `.pdf`, `.png`, or `.svg`.
 #'   When `NULL`, the current graphics device is used.
 #' @param width,height Output dimensions in inches when `file` is supplied.
-#'   Defaults are chosen from the number of displayed features.
+#'   Defaults use a 180-mm manuscript width and a height chosen from the number
+#'   of displayed features.
 #' @param dpi Resolution for PNG output.
 #' @param ... Reserved for future graphical options.
 #'
@@ -1088,14 +1170,15 @@ plot.dasra <- function(
         alpha = 0.05,
         p_color_limits = "adaptive",
         evidence_palette = c(
-            "#6090c1", "#acd2e5", "#fef9b7",
-            "#fee395", "#f2724d", "#d7312d"
+            "#e8ecef", "#d6cdd5", "#c0acba",
+            "#a7879c", "#89617c", "#673b5c"
         ),
         group_colors = c("#6090c1", "#f28e4b"),
         file = NULL,
         width = NULL,
         height = NULL,
         dpi = 300,
+        group_labels = NULL,
         ...) {
     selection <- match.arg(selection)
     spec <- .dasra_plot_build_spec(
@@ -1109,13 +1192,24 @@ plot.dasra <- function(
         group_colors = group_colors
     )
 
+    if (!is.null(group_labels)) {
+        if (!is.character(group_labels) || length(group_labels) != 2L ||
+            anyNA(group_labels) || any(!nzchar(group_labels))) {
+            stop("`group_labels` must contain two non-empty labels.",
+                 call. = FALSE)
+        }
+        spec$contrast <- unname(group_labels)
+    }
+
     if (!is.null(file)) {
         if (!is.character(file) || length(file) != 1L || is.na(file) ||
             !nzchar(file)) {
             stop("`file` must be one non-empty filename.", call. = FALSE)
         }
-        if (is.null(width)) width <- 7.2
-        if (is.null(height)) height <- max(3.2, 1.3 + 0.22 * nrow(spec$data))
+        if (is.null(width)) width <- 180 / 25.4
+        if (is.null(height)) {
+            height <- max(2.8, 1.15 + 0.215 * nrow(spec$data))
+        }
         if (!is.numeric(width) || length(width) != 1L ||
             !is.finite(width) || width <= 0 ||
             !is.numeric(height) || length(height) != 1L ||

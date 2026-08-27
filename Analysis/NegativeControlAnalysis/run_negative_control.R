@@ -17,9 +17,9 @@ minimum_depth <- 300L
 maximum_depth <- 30000L
 minimum_source_prevalence <- 0.10
 minimum_mean_abundance <- 1e-5
-required_dasra_version <- "0.4.1"
+required_dasra_version <- "0.6.0"
 checkpoint_schema_version <- 5L
-checkpoint_contract <- "balanced_fourfold_public_or_v3_dasra_0.4.1"
+checkpoint_contract <- "balanced_fourfold_public_or_v3_dasra_0.6.0"
 
 `%||%` <- function(x, y) {
     if (is.null(x) || !length(x)) y else x

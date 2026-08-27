@@ -3,7 +3,7 @@
 "reference samples","152"
 "comparison samples","91"
 "tested taxa","88"
-"normalization taxa","89"
+"normalization rows including Other_unmodeled","89"
 "median retained fraction of original reads","0.92304"
 "minimum retained fraction of original reads","0.40748"
 "multiplicity family","88 prespecified taxa per result set"

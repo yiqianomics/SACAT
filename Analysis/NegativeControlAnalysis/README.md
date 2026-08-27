@@ -60,7 +60,7 @@ Randomization and count-generation seeds are deterministic functions of the data
 
 ## Software requirements
 
-The analysis requires R, DASRA 0.4.1, ZINQ, maaslin3, and ggplot2.
+The analysis requires R, DASRA 0.6.0, ZINQ, maaslin3, and ggplot2.
 
 ## Running the analyses
 

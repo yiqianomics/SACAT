@@ -287,10 +287,10 @@ formulas_for_dataset <- function(configuration) {
 }
 
 run_dasra <- function(counts, metadata, configuration, formulas,
-                      evaluation_taxa) {
+                      evaluation_taxa, figure_directory) {
     taxa <- evaluation_taxa
     fit <- DASRA::dasra(
-        counts = counts,
+        counts = counts[taxa, , drop = FALSE],
         metadata = metadata,
         formula = formulas$full,
         group = "group",
@@ -300,6 +300,7 @@ run_dasra <- function(counts, metadata, configuration, formulas,
         p_adjust_method = "BH",
         component = "all",
         full_output = FALSE,
+        store_plot_data = TRUE,
         structural_conditional_present_starts = 1L
     )
 
@@ -382,6 +383,46 @@ run_dasra <- function(counts, metadata, configuration, formulas,
             components_used = names_by_taxon(results$components_used)
         )
     )
+
+    plot_rows <- rows[
+        rows$method == "DASRA combined" & rows$significant,
+        ,
+        drop = FALSE
+    ]
+    if (!nrow(plot_rows)) {
+        plot_rows <- rows[
+            rows$method == "DASRA combined" & rows$available,
+            ,
+            drop = FALSE
+        ]
+    }
+    plot_rows <- plot_rows[order(
+        plot_rows$q_value,
+        plot_rows$p_value,
+        plot_rows$taxon,
+        method = "radix"
+    ), , drop = FALSE]
+    plot_rows <- utils::head(plot_rows, if (any(plot_rows$significant)) {
+        24L
+    } else {
+        10L
+    })
+    if (!nrow(plot_rows)) {
+        stop("DASRA returned no formed combined result to plot.",
+             call. = FALSE)
+    }
+    dasra_figure_file <- file.path(
+        figure_directory,
+        paste0(configuration$output_prefix, "_dasra_profile.pdf")
+    )
+    graphics::plot(
+        fit,
+        features = plot_rows$taxon,
+        p_color_limits = c(1e-7, 1),
+        file = dasra_figure_file
+    )
+    message("Saved ", dasra_figure_file)
+
     list(
         rows = rows,
         note = paste(
@@ -1588,7 +1629,8 @@ run_dataset <- function(configuration, plot_only = FALSE) {
         execute_family(
             "DASRA", evaluation_taxa, "DASRA",
             function() run_dasra(
-                counts, metadata, configuration, formulas, evaluation_taxa
+                counts, metadata, configuration, formulas, evaluation_taxa,
+                figure_directory
             )
         ),
         execute_family(
@@ -1685,7 +1727,7 @@ run_dataset <- function(configuration, plot_only = FALSE) {
     input_summary <- data.frame(
         item = c(
             "dataset", "reference samples", "comparison samples",
-            "tested taxa", "normalization taxa",
+            "tested taxa", "normalization rows including Other_unmodeled",
             "median retained fraction of original reads",
             "minimum retained fraction of original reads",
             "multiplicity family", "significance threshold"

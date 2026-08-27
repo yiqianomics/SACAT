@@ -20,7 +20,7 @@
 "MehtaRS_2018","Mehta 2018",4,"balanced","DASRA",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",4,"balanced","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",4,"balanced","MaAsLin3",30,29,0.966666666666667,2,0.0666666666666667
-"MehtaRS_2018","Mehta 2018",4,"fourfold","DASRA",30,30,1,1,0.0333333333333333
+"MehtaRS_2018","Mehta 2018",4,"fourfold","DASRA",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",4,"fourfold","ZINQ",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",4,"fourfold","MaAsLin3",30,29,0.966666666666667,0,0
 "MehtaRS_2018","Mehta 2018",5,"balanced","DASRA",30,30,1,0,0
@@ -38,7 +38,7 @@
 "MehtaRS_2018","Mehta 2018",7,"balanced","DASRA",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",7,"balanced","ZINQ",30,30,1,3,0.1
 "MehtaRS_2018","Mehta 2018",7,"balanced","MaAsLin3",30,29,0.966666666666667,3,0.1
-"MehtaRS_2018","Mehta 2018",7,"fourfold","DASRA",30,30,1,3,0.1
+"MehtaRS_2018","Mehta 2018",7,"fourfold","DASRA",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",7,"fourfold","ZINQ",30,30,1,3,0.1
 "MehtaRS_2018","Mehta 2018",7,"fourfold","MaAsLin3",30,29,0.966666666666667,3,0.1
 "MehtaRS_2018","Mehta 2018",8,"balanced","DASRA",30,30,1,1,0.0333333333333333
@@ -68,7 +68,7 @@
 "MehtaRS_2018","Mehta 2018",12,"balanced","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",12,"balanced","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",12,"balanced","MaAsLin3",30,29,0.966666666666667,0,0
-"MehtaRS_2018","Mehta 2018",12,"fourfold","DASRA",30,30,1,2,0.0666666666666667
+"MehtaRS_2018","Mehta 2018",12,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",12,"fourfold","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",12,"fourfold","MaAsLin3",30,29,0.966666666666667,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",13,"balanced","DASRA",30,30,1,1,0.0333333333333333
@@ -80,7 +80,7 @@
 "MehtaRS_2018","Mehta 2018",14,"balanced","DASRA",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",14,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",14,"balanced","MaAsLin3",30,29,0.966666666666667,1,0.0333333333333333
-"MehtaRS_2018","Mehta 2018",14,"fourfold","DASRA",30,30,1,1,0.0333333333333333
+"MehtaRS_2018","Mehta 2018",14,"fourfold","DASRA",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",14,"fourfold","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",14,"fourfold","MaAsLin3",30,29,0.966666666666667,3,0.1
 "MehtaRS_2018","Mehta 2018",15,"balanced","DASRA",30,30,1,0,0
@@ -206,10 +206,10 @@
 "MehtaRS_2018","Mehta 2018",35,"balanced","DASRA",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",35,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",35,"balanced","MaAsLin3",30,29,0.966666666666667,0,0
-"MehtaRS_2018","Mehta 2018",35,"fourfold","DASRA",30,30,1,0,0
+"MehtaRS_2018","Mehta 2018",35,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",35,"fourfold","ZINQ",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",35,"fourfold","MaAsLin3",30,29,0.966666666666667,1,0.0333333333333333
-"MehtaRS_2018","Mehta 2018",36,"balanced","DASRA",30,30,1,2,0.0666666666666667
+"MehtaRS_2018","Mehta 2018",36,"balanced","DASRA",30,30,1,3,0.1
 "MehtaRS_2018","Mehta 2018",36,"balanced","ZINQ",30,30,1,3,0.1
 "MehtaRS_2018","Mehta 2018",36,"balanced","MaAsLin3",30,29,0.966666666666667,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",36,"fourfold","DASRA",30,30,1,2,0.0666666666666667
@@ -314,10 +314,10 @@
 "MehtaRS_2018","Mehta 2018",53,"balanced","DASRA",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",53,"balanced","ZINQ",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",53,"balanced","MaAsLin3",30,29,0.966666666666667,0,0
-"MehtaRS_2018","Mehta 2018",53,"fourfold","DASRA",30,30,1,1,0.0333333333333333
+"MehtaRS_2018","Mehta 2018",53,"fourfold","DASRA",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",53,"fourfold","ZINQ",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",53,"fourfold","MaAsLin3",30,29,0.966666666666667,2,0.0666666666666667
-"MehtaRS_2018","Mehta 2018",54,"balanced","DASRA",30,30,1,2,0.0666666666666667
+"MehtaRS_2018","Mehta 2018",54,"balanced","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",54,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",54,"balanced","MaAsLin3",30,29,0.966666666666667,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",54,"fourfold","DASRA",30,30,1,2,0.0666666666666667
@@ -350,7 +350,7 @@
 "MehtaRS_2018","Mehta 2018",59,"balanced","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",59,"balanced","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",59,"balanced","MaAsLin3",30,29,0.966666666666667,1,0.0333333333333333
-"MehtaRS_2018","Mehta 2018",59,"fourfold","DASRA",30,30,1,0,0
+"MehtaRS_2018","Mehta 2018",59,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",59,"fourfold","ZINQ",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",59,"fourfold","MaAsLin3",30,29,0.966666666666667,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",60,"balanced","DASRA",30,30,1,0,0
@@ -386,7 +386,7 @@
 "MehtaRS_2018","Mehta 2018",65,"balanced","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",65,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",65,"balanced","MaAsLin3",30,29,0.966666666666667,1,0.0333333333333333
-"MehtaRS_2018","Mehta 2018",65,"fourfold","DASRA",30,30,1,0,0
+"MehtaRS_2018","Mehta 2018",65,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",65,"fourfold","ZINQ",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",65,"fourfold","MaAsLin3",30,29,0.966666666666667,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",66,"balanced","DASRA",30,30,1,2,0.0666666666666667
@@ -398,7 +398,7 @@
 "MehtaRS_2018","Mehta 2018",67,"balanced","DASRA",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",67,"balanced","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",67,"balanced","MaAsLin3",30,29,0.966666666666667,0,0
-"MehtaRS_2018","Mehta 2018",67,"fourfold","DASRA",30,30,1,3,0.1
+"MehtaRS_2018","Mehta 2018",67,"fourfold","DASRA",30,30,1,4,0.133333333333333
 "MehtaRS_2018","Mehta 2018",67,"fourfold","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",67,"fourfold","MaAsLin3",30,29,0.966666666666667,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",68,"balanced","DASRA",30,30,1,2,0.0666666666666667
@@ -413,7 +413,7 @@
 "MehtaRS_2018","Mehta 2018",69,"fourfold","DASRA",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",69,"fourfold","ZINQ",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",69,"fourfold","MaAsLin3",30,29,0.966666666666667,1,0.0333333333333333
-"MehtaRS_2018","Mehta 2018",70,"balanced","DASRA",30,30,1,3,0.1
+"MehtaRS_2018","Mehta 2018",70,"balanced","DASRA",30,30,1,4,0.133333333333333
 "MehtaRS_2018","Mehta 2018",70,"balanced","ZINQ",30,30,1,3,0.1
 "MehtaRS_2018","Mehta 2018",70,"balanced","MaAsLin3",30,29,0.966666666666667,5,0.166666666666667
 "MehtaRS_2018","Mehta 2018",70,"fourfold","DASRA",30,30,1,2,0.0666666666666667
@@ -428,7 +428,7 @@
 "MehtaRS_2018","Mehta 2018",72,"balanced","DASRA",30,30,1,3,0.1
 "MehtaRS_2018","Mehta 2018",72,"balanced","ZINQ",30,30,1,3,0.1
 "MehtaRS_2018","Mehta 2018",72,"balanced","MaAsLin3",30,29,0.966666666666667,3,0.1
-"MehtaRS_2018","Mehta 2018",72,"fourfold","DASRA",30,30,1,2,0.0666666666666667
+"MehtaRS_2018","Mehta 2018",72,"fourfold","DASRA",30,30,1,3,0.1
 "MehtaRS_2018","Mehta 2018",72,"fourfold","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",72,"fourfold","MaAsLin3",30,29,0.966666666666667,0,0
 "MehtaRS_2018","Mehta 2018",73,"balanced","DASRA",30,30,1,2,0.0666666666666667
@@ -488,7 +488,7 @@
 "MehtaRS_2018","Mehta 2018",82,"balanced","DASRA",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",82,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",82,"balanced","MaAsLin3",30,29,0.966666666666667,0,0
-"MehtaRS_2018","Mehta 2018",82,"fourfold","DASRA",30,30,1,0,0
+"MehtaRS_2018","Mehta 2018",82,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "MehtaRS_2018","Mehta 2018",82,"fourfold","ZINQ",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",82,"fourfold","MaAsLin3",30,29,0.966666666666667,0,0
 "MehtaRS_2018","Mehta 2018",83,"balanced","DASRA",30,30,1,1,0.0333333333333333
@@ -506,7 +506,7 @@
 "MehtaRS_2018","Mehta 2018",85,"balanced","DASRA",30,30,1,4,0.133333333333333
 "MehtaRS_2018","Mehta 2018",85,"balanced","ZINQ",30,30,1,0,0
 "MehtaRS_2018","Mehta 2018",85,"balanced","MaAsLin3",30,29,0.966666666666667,2,0.0666666666666667
-"MehtaRS_2018","Mehta 2018",85,"fourfold","DASRA",30,30,1,1,0.0333333333333333
+"MehtaRS_2018","Mehta 2018",85,"fourfold","DASRA",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",85,"fourfold","ZINQ",30,30,1,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",85,"fourfold","MaAsLin3",30,29,0.966666666666667,2,0.0666666666666667
 "MehtaRS_2018","Mehta 2018",86,"balanced","DASRA",30,30,1,0,0

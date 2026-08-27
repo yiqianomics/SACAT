@@ -86,13 +86,13 @@
 "VilaAV_2018","Vila 2018",15,"balanced","DASRA",30,30,1,0,0
 "VilaAV_2018","Vila 2018",15,"balanced","ZINQ",30,30,1,3,0.1
 "VilaAV_2018","Vila 2018",15,"balanced","MaAsLin3",30,30,1,2,0.0666666666666667
-"VilaAV_2018","Vila 2018",15,"fourfold","DASRA",30,30,1,1,0.0333333333333333
+"VilaAV_2018","Vila 2018",15,"fourfold","DASRA",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",15,"fourfold","ZINQ",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",15,"fourfold","MaAsLin3",30,30,1,1,0.0333333333333333
-"VilaAV_2018","Vila 2018",16,"balanced","DASRA",30,30,1,2,0.0666666666666667
+"VilaAV_2018","Vila 2018",16,"balanced","DASRA",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",16,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",16,"balanced","MaAsLin3",30,30,1,1,0.0333333333333333
-"VilaAV_2018","Vila 2018",16,"fourfold","DASRA",30,30,1,1,0.0333333333333333
+"VilaAV_2018","Vila 2018",16,"fourfold","DASRA",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",16,"fourfold","ZINQ",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",16,"fourfold","MaAsLin3",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",17,"balanced","DASRA",30,30,1,1,0.0333333333333333
@@ -152,7 +152,7 @@
 "VilaAV_2018","Vila 2018",26,"balanced","DASRA",30,30,1,0,0
 "VilaAV_2018","Vila 2018",26,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",26,"balanced","MaAsLin3",30,30,1,0,0
-"VilaAV_2018","Vila 2018",26,"fourfold","DASRA",30,30,1,2,0.0666666666666667
+"VilaAV_2018","Vila 2018",26,"fourfold","DASRA",30,30,1,3,0.1
 "VilaAV_2018","Vila 2018",26,"fourfold","ZINQ",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",26,"fourfold","MaAsLin3",30,30,1,4,0.133333333333333
 "VilaAV_2018","Vila 2018",27,"balanced","DASRA",30,30,1,0,0
@@ -173,7 +173,7 @@
 "VilaAV_2018","Vila 2018",29,"fourfold","DASRA",30,30,1,3,0.1
 "VilaAV_2018","Vila 2018",29,"fourfold","ZINQ",30,30,1,0,0
 "VilaAV_2018","Vila 2018",29,"fourfold","MaAsLin3",30,30,1,2,0.0666666666666667
-"VilaAV_2018","Vila 2018",30,"balanced","DASRA",30,30,1,1,0.0333333333333333
+"VilaAV_2018","Vila 2018",30,"balanced","DASRA",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",30,"balanced","ZINQ",30,30,1,0,0
 "VilaAV_2018","Vila 2018",30,"balanced","MaAsLin3",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",30,"fourfold","DASRA",30,30,1,0,0
@@ -275,7 +275,7 @@
 "VilaAV_2018","Vila 2018",46,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",46,"fourfold","ZINQ",30,30,1,3,0.1
 "VilaAV_2018","Vila 2018",46,"fourfold","MaAsLin3",30,30,1,2,0.0666666666666667
-"VilaAV_2018","Vila 2018",47,"balanced","DASRA",30,30,1,1,0.0333333333333333
+"VilaAV_2018","Vila 2018",47,"balanced","DASRA",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",47,"balanced","ZINQ",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",47,"balanced","MaAsLin3",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",47,"fourfold","DASRA",30,30,1,3,0.1
@@ -329,7 +329,7 @@
 "VilaAV_2018","Vila 2018",55,"fourfold","DASRA",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",55,"fourfold","ZINQ",30,30,1,5,0.166666666666667
 "VilaAV_2018","Vila 2018",55,"fourfold","MaAsLin3",30,30,1,3,0.1
-"VilaAV_2018","Vila 2018",56,"balanced","DASRA",30,30,1,6,0.2
+"VilaAV_2018","Vila 2018",56,"balanced","DASRA",30,30,1,5,0.166666666666667
 "VilaAV_2018","Vila 2018",56,"balanced","ZINQ",30,30,1,0,0
 "VilaAV_2018","Vila 2018",56,"balanced","MaAsLin3",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",56,"fourfold","DASRA",30,30,1,6,0.2
@@ -356,7 +356,7 @@
 "VilaAV_2018","Vila 2018",60,"balanced","DASRA",30,30,1,0,0
 "VilaAV_2018","Vila 2018",60,"balanced","ZINQ",30,30,1,3,0.1
 "VilaAV_2018","Vila 2018",60,"balanced","MaAsLin3",30,30,1,0,0
-"VilaAV_2018","Vila 2018",60,"fourfold","DASRA",30,30,1,1,0.0333333333333333
+"VilaAV_2018","Vila 2018",60,"fourfold","DASRA",30,30,1,0,0
 "VilaAV_2018","Vila 2018",60,"fourfold","ZINQ",30,30,1,4,0.133333333333333
 "VilaAV_2018","Vila 2018",60,"fourfold","MaAsLin3",30,30,1,5,0.166666666666667
 "VilaAV_2018","Vila 2018",61,"balanced","DASRA",30,30,1,1,0.0333333333333333
@@ -398,13 +398,13 @@
 "VilaAV_2018","Vila 2018",67,"balanced","DASRA",30,30,1,5,0.166666666666667
 "VilaAV_2018","Vila 2018",67,"balanced","ZINQ",30,30,1,0,0
 "VilaAV_2018","Vila 2018",67,"balanced","MaAsLin3",30,30,1,3,0.1
-"VilaAV_2018","Vila 2018",67,"fourfold","DASRA",30,30,1,3,0.1
+"VilaAV_2018","Vila 2018",67,"fourfold","DASRA",30,30,1,5,0.166666666666667
 "VilaAV_2018","Vila 2018",67,"fourfold","ZINQ",30,30,1,0,0
 "VilaAV_2018","Vila 2018",67,"fourfold","MaAsLin3",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",68,"balanced","DASRA",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",68,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",68,"balanced","MaAsLin3",30,30,1,0,0
-"VilaAV_2018","Vila 2018",68,"fourfold","DASRA",30,30,1,2,0.0666666666666667
+"VilaAV_2018","Vila 2018",68,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",68,"fourfold","ZINQ",30,30,1,0,0
 "VilaAV_2018","Vila 2018",68,"fourfold","MaAsLin3",30,30,1,0,0
 "VilaAV_2018","Vila 2018",69,"balanced","DASRA",30,30,1,2,0.0666666666666667
@@ -413,7 +413,7 @@
 "VilaAV_2018","Vila 2018",69,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",69,"fourfold","ZINQ",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",69,"fourfold","MaAsLin3",30,30,1,2,0.0666666666666667
-"VilaAV_2018","Vila 2018",70,"balanced","DASRA",30,30,1,0,0
+"VilaAV_2018","Vila 2018",70,"balanced","DASRA",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",70,"balanced","ZINQ",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",70,"balanced","MaAsLin3",30,30,1,0,0
 "VilaAV_2018","Vila 2018",70,"fourfold","DASRA",30,30,1,0,0
@@ -479,7 +479,7 @@
 "VilaAV_2018","Vila 2018",80,"fourfold","DASRA",30,30,1,0,0
 "VilaAV_2018","Vila 2018",80,"fourfold","ZINQ",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",80,"fourfold","MaAsLin3",30,30,1,0,0
-"VilaAV_2018","Vila 2018",81,"balanced","DASRA",30,30,1,1,0.0333333333333333
+"VilaAV_2018","Vila 2018",81,"balanced","DASRA",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",81,"balanced","ZINQ",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",81,"balanced","MaAsLin3",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",81,"fourfold","DASRA",30,30,1,1,0.0333333333333333
@@ -503,7 +503,7 @@
 "VilaAV_2018","Vila 2018",84,"fourfold","DASRA",30,30,1,3,0.1
 "VilaAV_2018","Vila 2018",84,"fourfold","ZINQ",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",84,"fourfold","MaAsLin3",30,30,1,2,0.0666666666666667
-"VilaAV_2018","Vila 2018",85,"balanced","DASRA",30,30,1,1,0.0333333333333333
+"VilaAV_2018","Vila 2018",85,"balanced","DASRA",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",85,"balanced","ZINQ",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",85,"balanced","MaAsLin3",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",85,"fourfold","DASRA",30,30,1,3,0.1
@@ -518,7 +518,7 @@
 "VilaAV_2018","Vila 2018",87,"balanced","DASRA",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",87,"balanced","ZINQ",30,30,1,2,0.0666666666666667
 "VilaAV_2018","Vila 2018",87,"balanced","MaAsLin3",30,30,1,2,0.0666666666666667
-"VilaAV_2018","Vila 2018",87,"fourfold","DASRA",30,30,1,0,0
+"VilaAV_2018","Vila 2018",87,"fourfold","DASRA",30,30,1,1,0.0333333333333333
 "VilaAV_2018","Vila 2018",87,"fourfold","ZINQ",30,30,1,0,0
 "VilaAV_2018","Vila 2018",87,"fourfold","MaAsLin3",30,30,1,0,0
 "VilaAV_2018","Vila 2018",88,"balanced","DASRA",30,30,1,0,0

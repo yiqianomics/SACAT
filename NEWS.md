@@ -12,6 +12,11 @@
   adjusted p-values use a shared adaptive `-log10(p)` color scale from one to a
   rounded lower endpoint, with an explicit numeric range available when plots
   need a fixed cross-study scale.
+- The default plot now separates group and evidence color semantics, uses a
+  continuous component-adjusted-p legend with the 0.05 landmark when it lies
+  within the resolved scale, and applies manuscript-scale typography, spacing,
+  and adaptive output dimensions. Optional display-only group labels support
+  publication figures with long fitted group names.
 - The plot follows standard R conventions: `plot(fit)` draws to the active
   device, and the `file` argument writes PDF, PNG, or SVG output directly.
 

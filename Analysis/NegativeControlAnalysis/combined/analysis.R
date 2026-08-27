@@ -8,7 +8,7 @@ scenario_labels <- c(
     fourfold = "Fourfold depth difference"
 )
 method_order <- c("DASRA", "ZINQ", "MaAsLin3")
-required_dasra_version <- "0.4.1"
+required_dasra_version <- "0.6.0"
 dataset_order <- c(
     "NogueraJulianHIV",
     "BaxterE_2016",

@@ -153,10 +153,11 @@ head(fit$results)
 
 `plot(fit)` draws a taxon-aligned summary of the two complementary components.
 The structural-absence triangle and present-conditional abundance circle share
-one signed-evidence axis. Their colors encode the corresponding component
-adjusted p-values, while superscript stars beside each feature encode the
-primary omnibus adjusted p-value. The reference and comparison labels come
-directly from the fitted contrast.
+one signed-evidence axis. Their shared sequential color scale encodes the
+corresponding component adjusted p-values, while superscript stars beside each
+feature encode the primary omnibus adjusted p-value. Group colors are kept
+visually distinct from this evidence scale, and the reference and comparison
+labels come directly from the fitted contrast by default.
 
 By default, the plot displays omnibus-adjusted discoveries at 0.05, ordered by
 their adjusted and raw omnibus p-values, with at most 24 rows. It does not fill
@@ -174,12 +175,15 @@ plot(
     features = c("Taxon_2", "Taxon_1"),
     p_color_limits = c(1e-8, 1)
 )
+
+plot(fit, group_labels = c("Control", "Disease"))
 ```
 
-The default adaptive color range is shared by both components. Its blue end is
-fixed at p = 1, and its red end is the smallest positive component adjusted
-p-value among the displayed markers rounded down to a power of ten. This uses
-the available color range without giving the two arms incomparable scales.
+The default adaptive color range is shared by both components. Its light end
+is fixed at p = 1, and its dark-plum end is the smallest positive component
+adjusted p-value among the displayed markers rounded down to a power of ten.
+This uses the available color range without giving the two arms incomparable
+scales or reusing the reference/comparison colors.
 Supplying numeric `p_color_limits` fixes the range when feature subsets or
 analyses must be compared directly.
 
@@ -187,12 +191,23 @@ Feature space is calculated from the longest displayed name, including its
 significance superscript, rather than reserved at a fixed width. The side
 profiles are covariate-standardized model summaries for the fitted groups; the
 central symbols carry the prespecified structural score statistic and the
-reference-corrected abundance Wald statistic.
+reference-corrected abundance Wald statistic. The abundance side panel shows
+the fitted present-conditional geometric mean relative abundance, standardized
+over the observed covariate distribution, as a percentage of total reads. It
+uses a log scale and paired group points rather than bars, because a
+logarithmic scale has no meaningful zero baseline. Side-panel segments are
+descriptive fitted group summaries, not effect estimates or confidence
+intervals; component inference is carried by the central signed statistics.
+An omitted central marker or `--` means that component or side summary is
+unavailable, not that its effect is zero. Optional `group_labels` can shorten
+long fitted group names for display without changing the analysis or ordering.
 
-The same call can save a manuscript-ready vector or raster figure:
+The same call can save a manuscript-ready vector or raster figure. Without
+explicit dimensions, PDF, PNG, and SVG output use a 180-mm manuscript width
+and an adaptive height:
 
 ```r
-plot(fit, file = "dasra-profile.pdf", width = 7.2, height = 6.5)
+plot(fit, file = "dasra-profile.pdf")
 plot(fit, file = "dasra-profile.png", width = 7.2, height = 6.5, dpi = 600)
 ```
 

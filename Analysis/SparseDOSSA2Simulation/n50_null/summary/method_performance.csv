@@ -1,235 +1,235 @@
 "setting_id","scenario","depth_design","method","component","multiplicity","metric","n_replications","estimate","mcse","ci95_lower","ci95_upper"
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","available_fraction",100,0.9882,0.00145213183584924,0.985353873900931,0.991046126099069
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","available_fraction",100,0.9726,0.00206275289236241,0.968557078621964,0.976642921378036
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","raw","available_fraction",100,1,0,1,1
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","available_fraction",100,0.943,0.00307974812035797,0.936963804602643,0.949036195397357
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","raw","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","raw","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","raw","available_fraction",100,1,0,1,1
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","available_fraction",100,0.9712,0.00233238075793812,0.966628617716207,0.975771382283793
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","available_fraction",100,0.9378,0.00338618703356188,0.931163195369302,0.944436804630698
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","raw","available_fraction",100,1,0,1,1
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","available_fraction",100,0.8786,0.00427588965283628,0.870219410278574,0.886980589721427
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","available_fraction",100,0.9998,2e-04,0.999408007203092,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","raw","available_fraction",100,1,0,1,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","raw","available_fraction",100,1,0,1,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","raw","available_fraction",100,1,0,1,1
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","available_fraction",100,0.9822,0.00181786865989996,0.978637042897972,0.985762957102028
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","available_fraction",100,0.9608,0.00263496305534448,0.955635567310931,0.965964432689069
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","raw","available_fraction",100,1,0,1,1
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","available_fraction",100,0.924,0.00349313901842171,0.917153573330902,0.930846426669098
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","raw","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","raw","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","raw","available_fraction",100,1,0,1,1
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BH","available_fraction",100,0.9882,0.00145213183584924,0.985353873900931,0.991046126099069
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BH","available_fraction",100,0.9726,0.00206275289236241,0.968557078621964,0.976642921378036
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","BH","available_fraction",100,1,0,1,1
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BH","available_fraction",100,0.943,0.00307974812035797,0.936963804602643,0.949036195397357
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BH","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","BH","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","BH","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","BH","available_fraction",100,1,0,1,1
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BH","available_fraction",100,0.9712,0.00233238075793812,0.966628617716207,0.975771382283793
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BH","available_fraction",100,0.9378,0.00338618703356188,0.931163195369302,0.944436804630698
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","BH","available_fraction",100,1,0,1,1
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BH","available_fraction",100,0.8786,0.00427588965283628,0.870219410278574,0.886980589721427
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BH","available_fraction",100,0.9998,2e-04,0.999408007203092,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","BH","available_fraction",100,1,0,1,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","BH","available_fraction",100,1,0,1,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","BH","available_fraction",100,1,0,1,1
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BH","available_fraction",100,0.9822,0.00181786865989996,0.978637042897972,0.985762957102028
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BH","available_fraction",100,0.9608,0.00263496305534448,0.955635567310931,0.965964432689069
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","BH","available_fraction",100,1,0,1,1
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BH","available_fraction",100,0.924,0.00349313901842171,0.917153573330902,0.930846426669098
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BH","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","BH","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","BH","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","BH","available_fraction",100,1,0,1,1
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BY","available_fraction",100,0.9882,0.00145213183584924,0.985353873900931,0.991046126099069
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BY","available_fraction",100,0.9726,0.00206275289236241,0.968557078621964,0.976642921378036
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","BY","available_fraction",100,1,0,1,1
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BY","available_fraction",100,0.943,0.00307974812035797,0.936963804602643,0.949036195397357
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BY","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","BY","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","BY","available_fraction",100,1,0,1,1
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","BY","available_fraction",100,1,0,1,1
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BY","available_fraction",100,0.9712,0.00233238075793812,0.966628617716207,0.975771382283793
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BY","available_fraction",100,0.9378,0.00338618703356188,0.931163195369302,0.944436804630698
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","BY","available_fraction",100,1,0,1,1
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BY","available_fraction",100,0.8786,0.00427588965283628,0.870219410278574,0.886980589721427
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BY","available_fraction",100,0.9998,2e-04,0.999408007203092,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","BY","available_fraction",100,1,0,1,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","BY","available_fraction",100,1,0,1,1
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","BY","available_fraction",100,1,0,1,1
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BY","available_fraction",100,0.9822,0.00181786865989996,0.978637042897972,0.985762957102028
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BY","available_fraction",100,0.9608,0.00263496305534448,0.955635567310931,0.965964432689069
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","BY","available_fraction",100,1,0,1,1
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BY","available_fraction",100,0.924,0.00349313901842171,0.917153573330902,0.930846426669098
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BY","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","BY","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","BY","available_fraction",100,1,0,1,1
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","BY","available_fraction",100,1,0,1,1
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","rejection_rate",100,0.0364,0.00268749442094793,0.0311326077262897,0.0416673922737103
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","rejection_rate",100,0.0342,0.00262536192791113,0.0290543851749115,0.0393456148250885
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","raw","rejection_rate",100,0.0436,0.0029457039425529,0.0378265263634787,0.0493734736365213
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","rejection_rate",100,0.0506,0.00294673248246805,0.0448245104622883,0.0563754895377117
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","rejection_rate",100,0.0538,0.00295002140036751,0.0480180643016573,0.0595819356983427
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","raw","rejection_rate",100,0.0464,0.0029525541074764,0.0406131002869404,0.0521868997130595
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","raw","rejection_rate",100,0.0568,0.00327488144592266,0.0503813503123531,0.0632186496876469
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","raw","rejection_rate",100,0.0434,0.00288577143372041,0.0377439919222935,0.0490560080777065
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","rejection_rate",100,0.0412,0.00291037850292759,0.0354957629528823,0.0469042370471177
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","rejection_rate",100,0.0352,0.00268358271003824,0.0299402745387907,0.0404597254612093
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","raw","rejection_rate",100,0.0412,0.00316317191528639,0.0350002969691301,0.0473997030308699
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","rejection_rate",100,0.0438,0.00343122912865541,0.0370749144851307,0.0505250855148693
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","rejection_rate",100,0.0572,0.00347016140864084,0.0503986086185232,0.0640013913814768
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","raw","rejection_rate",100,0.0436,0.00314472461899177,0.0374364530054797,0.0497635469945203
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","raw","rejection_rate",100,0.0604,0.00361791278630275,0.0533090212396397,0.0674909787603603
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","raw","rejection_rate",100,0.0442,0.00313075328980362,0.0380638363075046,0.0503361636924954
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","rejection_rate",100,0.0462,0.00282406684328709,0.0406649306972236,0.0517350693027764
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","rejection_rate",100,0.0414,0.00267052750813714,0.0361658622643277,0.0466341377356723
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","raw","rejection_rate",100,0.0444,0.00267544011294961,0.039156233735825,0.049643766264175
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","rejection_rate",100,0.0454,0.00316361894805377,0.0391994208010061,0.0516005791989939
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","rejection_rate",100,0.0612,0.00358244879850911,0.0541785293784633,0.0682214706215366
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","raw","rejection_rate",100,0.0504,0.00298792181418403,0.0445437808555777,0.0562562191444223
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","raw","rejection_rate",100,0.0646,0.00370481532139681,0.0573386954006901,0.0718613045993099
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","raw","rejection_rate",100,0.0402,0.00250244325054979,0.0352953013555671,0.0451046986444329
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BH","rejection_rate",100,0.001,0.00043808582711518,0.000141367556716806,0.00185863244328319
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BH","rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","BH","rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882486
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BH","rejection_rate",100,0.002,0.000724743075339478,0.000579529674289824,0.00342047032571017
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BH","rejection_rate",100,0.0032,0.0010529420063265,0.00113627158979072,0.00526372841020928
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","BH","rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882486
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","BH","rejection_rate",100,8e-04,0.000393892771133865,2.79843548069472e-05,0.00157201564519305
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","BH","rejection_rate",100,0.000800000000000001,0.000393892771133865,2.79843548069464e-05,0.00157201564519305
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BH","rejection_rate",100,0.0032,0.000789834402794905,0.00165195301677128,0.00474804698322871
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BH","rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882485
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","BH","rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BH","rejection_rate",100,0.0042,0.00118219108335994,0.00188294805377012,0.00651705194622988
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BH","rejection_rate",100,0.0048,0.00114132653637172,0.00256304109411159,0.00703695890588841
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","BH","rejection_rate",100,8e-04,0.000393892771133866,2.79843548069459e-05,0.00157201564519305
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","BH","rejection_rate",100,6e-04,0.00034289321599553,0,0.00127205835389435
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","BH","rejection_rate",100,8e-04,0.000485756725079125,0,0.00175206568640321
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BH","rejection_rate",100,0.0036,0.000822904439878482,0.00198713693512007,0.00521286306487993
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BH","rejection_rate",100,0.0014,0.000512864799952486,0.000394803463154789,0.00240519653684521
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","BH","rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882486
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BH","rejection_rate",100,0.0016,0.000787785542267731,5.59687096138922e-05,0.00314403129038611
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BH","rejection_rate",100,0.0042,0.00118219108335994,0.00188294805377012,0.00651705194622988
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","BH","rejection_rate",100,0.0014,0.000586377339124206,0.000250721533966127,0.00254927846603387
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","BH","rejection_rate",100,0.0018,0.000808790092756713,0.000214800547144033,0.00338519945285597
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","BH","rejection_rate",100,0.000999999999999999,0.00043808582711518,0.000141367556716806,0.00185863244328319
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BY","rejection_rate",100,6e-04,0.00034289321599553,0,0.00127205835389435
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BY","rejection_rate",100,0,0,0,0
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","BY","rejection_rate",100,0,0,0,0
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BY","rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BY","rejection_rate",100,0.000999999999999999,0.00043808582711518,0.000141367556716806,0.00185863244328319
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","BY","rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","BY","rejection_rate",100,2e-04,2e-04,0,0.000591992796908011
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","BY","rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882486
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BY","rejection_rate",100,0.0026,0.000733333333333333,0.00116269307800396,0.00403730692199604
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BY","rejection_rate",100,0,0,0,0
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","BY","rejection_rate",100,0,0,0,0
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BY","rejection_rate",100,0.0018,0.000641651908527646,0.000542385368674424,0.00305761463132557
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BY","rejection_rate",100,0.0034,0.000945163125250522,0.00154751431499366,0.00525248568500634
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","BY","rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","BY","rejection_rate",100,0,0,0,0
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","BY","rejection_rate",100,4e-04,4e-04,0,0.00118398559381602
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BY","rejection_rate",100,0.0028,0.000753175097353018,0.00132380393513564,0.00427619606486437
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BY","rejection_rate",100,6e-04,0.000342893215995531,0,0.00127205835389435
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","BY","rejection_rate",100,0,0,0,0
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BY","rejection_rate",100,6e-04,0.000445403006707228,0,0.00147297385175202
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BY","rejection_rate",100,0.0014,0.000586377339124206,0.000250721533966128,0.00254927846603387
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","BY","rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","BY","rejection_rate",100,0,0,0,0
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","BY","rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","null_rejection_rate",100,0.0364,0.00268749442094793,0.0311326077262897,0.0416673922737103
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","null_rejection_rate",100,0.0342,0.00262536192791113,0.0290543851749115,0.0393456148250885
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","raw","null_rejection_rate",100,0.0436,0.0029457039425529,0.0378265263634787,0.0493734736365213
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","null_rejection_rate",100,0.0506,0.00294673248246805,0.0448245104622883,0.0563754895377117
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","null_rejection_rate",100,0.0538,0.00295002140036751,0.0480180643016573,0.0595819356983427
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","raw","null_rejection_rate",100,0.0464,0.0029525541074764,0.0406131002869404,0.0521868997130595
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","raw","null_rejection_rate",100,0.0568,0.00327488144592266,0.0503813503123531,0.0632186496876469
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","raw","null_rejection_rate",100,0.0434,0.00288577143372041,0.0377439919222935,0.0490560080777065
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","null_rejection_rate",100,0.0412,0.00291037850292759,0.0354957629528823,0.0469042370471177
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","null_rejection_rate",100,0.0352,0.00268358271003824,0.0299402745387907,0.0404597254612093
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","raw","null_rejection_rate",100,0.0412,0.00316317191528639,0.0350002969691301,0.0473997030308699
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","null_rejection_rate",100,0.0438,0.00343122912865541,0.0370749144851307,0.0505250855148693
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","null_rejection_rate",100,0.0572,0.00347016140864084,0.0503986086185232,0.0640013913814768
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","raw","null_rejection_rate",100,0.0436,0.00314472461899177,0.0374364530054797,0.0497635469945203
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","raw","null_rejection_rate",100,0.0604,0.00361791278630275,0.0533090212396397,0.0674909787603603
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","raw","null_rejection_rate",100,0.0442,0.00313075328980362,0.0380638363075046,0.0503361636924954
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","null_rejection_rate",100,0.0462,0.00282406684328709,0.0406649306972236,0.0517350693027764
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","null_rejection_rate",100,0.0414,0.00267052750813714,0.0361658622643277,0.0466341377356723
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","raw","null_rejection_rate",100,0.0444,0.00267544011294961,0.039156233735825,0.049643766264175
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","null_rejection_rate",100,0.0454,0.00316361894805377,0.0391994208010061,0.0516005791989939
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","null_rejection_rate",100,0.0612,0.00358244879850911,0.0541785293784633,0.0682214706215366
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","raw","null_rejection_rate",100,0.0504,0.00298792181418403,0.0445437808555777,0.0562562191444223
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","raw","null_rejection_rate",100,0.0646,0.00370481532139681,0.0573386954006901,0.0718613045993099
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","raw","null_rejection_rate",100,0.0402,0.00250244325054979,0.0352953013555671,0.0451046986444329
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BH","null_rejection_rate",100,0.001,0.00043808582711518,0.000141367556716806,0.00185863244328319
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BH","null_rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","BH","null_rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882486
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BH","null_rejection_rate",100,0.002,0.000724743075339478,0.000579529674289824,0.00342047032571017
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BH","null_rejection_rate",100,0.0032,0.0010529420063265,0.00113627158979072,0.00526372841020928
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","BH","null_rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882486
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","BH","null_rejection_rate",100,8e-04,0.000393892771133865,2.79843548069472e-05,0.00157201564519305
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","BH","null_rejection_rate",100,0.000800000000000001,0.000393892771133865,2.79843548069464e-05,0.00157201564519305
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BH","null_rejection_rate",100,0.0032,0.000789834402794905,0.00165195301677128,0.00474804698322871
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BH","null_rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882485
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","BH","null_rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BH","null_rejection_rate",100,0.0042,0.00118219108335994,0.00188294805377012,0.00651705194622988
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BH","null_rejection_rate",100,0.0048,0.00114132653637172,0.00256304109411159,0.00703695890588841
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","BH","null_rejection_rate",100,8e-04,0.000393892771133866,2.79843548069459e-05,0.00157201564519305
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","BH","null_rejection_rate",100,6e-04,0.00034289321599553,0,0.00127205835389435
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","BH","null_rejection_rate",100,8e-04,0.000485756725079125,0,0.00175206568640321
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BH","null_rejection_rate",100,0.0036,0.000822904439878482,0.00198713693512007,0.00521286306487993
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BH","null_rejection_rate",100,0.0014,0.000512864799952486,0.000394803463154789,0.00240519653684521
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","BH","null_rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882486
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BH","null_rejection_rate",100,0.0016,0.000787785542267731,5.59687096138922e-05,0.00314403129038611
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BH","null_rejection_rate",100,0.0042,0.00118219108335994,0.00188294805377012,0.00651705194622988
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","BH","null_rejection_rate",100,0.0014,0.000586377339124206,0.000250721533966127,0.00254927846603387
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","BH","null_rejection_rate",100,0.0018,0.000808790092756713,0.000214800547144033,0.00338519945285597
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","BH","null_rejection_rate",100,0.000999999999999999,0.00043808582711518,0.000141367556716806,0.00185863244328319
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BY","null_rejection_rate",100,6e-04,0.00034289321599553,0,0.00127205835389435
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BY","null_rejection_rate",100,0,0,0,0
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","BY","null_rejection_rate",100,0,0,0,0
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BY","null_rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BY","null_rejection_rate",100,0.000999999999999999,0.00043808582711518,0.000141367556716806,0.00185863244328319
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","BY","null_rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","BY","null_rejection_rate",100,2e-04,2e-04,0,0.000591992796908011
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","BY","null_rejection_rate",100,4e-04,0.00028141058827258,0,0.000951554617882486
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BY","null_rejection_rate",100,0.0026,0.000733333333333333,0.00116269307800396,0.00403730692199604
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BY","null_rejection_rate",100,0,0,0,0
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","BY","null_rejection_rate",100,0,0,0,0
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BY","null_rejection_rate",100,0.0018,0.000641651908527646,0.000542385368674424,0.00305761463132557
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BY","null_rejection_rate",100,0.0034,0.000945163125250522,0.00154751431499366,0.00525248568500634
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","BY","null_rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","BY","null_rejection_rate",100,0,0,0,0
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","BY","null_rejection_rate",100,4e-04,4e-04,0,0.00118398559381602
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BY","null_rejection_rate",100,0.0028,0.000753175097353018,0.00132380393513564,0.00427619606486437
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BY","null_rejection_rate",100,6e-04,0.000342893215995531,0,0.00127205835389435
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","BY","null_rejection_rate",100,0,0,0,0
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BY","null_rejection_rate",100,6e-04,0.000445403006707228,0,0.00147297385175202
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BY","null_rejection_rate",100,0.0014,0.000586377339124206,0.000250721533966128,0.00254927846603387
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","BY","null_rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","BY","null_rejection_rate",100,0,0,0,0
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","BY","null_rejection_rate",100,2e-04,2e-04,0,0.00059199279690801
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","fdp",100,0.86,0.0348735088019777,0.791649178733583,0.928350821266417
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","fdp",100,0.84,0.0368452949177471,0.767784548961459,0.912215451038541
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","raw","fdp",100,0.88,0.0326598632371091,0.815987844315263,0.944012155684738
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","fdp",100,0.96,0.0196946385566932,0.921399217740347,0.998600782259653
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","fdp",100,0.97,0.0171446607997765,0.936397082305282,1
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","raw","fdp",100,0.92,0.0272659924344291,0.866559636825777,0.973440363174223
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","raw","fdp",100,0.93,0.0256432399976243,0.879740173157739,0.98025982684226
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","raw","fdp",100,0.86,0.0348735088019777,0.791649178733583,0.928350821266417
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","fdp",100,0.86,0.0348735088019777,0.791649178733583,0.928350821266417
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","fdp",100,0.81,0.0394277244403662,0.732723080104513,0.887276919895488
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","raw","fdp",100,0.87,0.0337997668989631,0.803753674192183,0.936246325807817
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","fdp",100,0.82,0.0386122919665369,0.744321298385043,0.895678701614958
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","fdp",100,0.93,0.0256432399976243,0.879740173157739,0.98025982684226
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","raw","fdp",100,0.89,0.031446603773522,0.828365789167795,0.951634210832205
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","raw","fdp",100,0.95,0.021904291355759,0.90706837783584,0.99293162216416
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","raw","fdp",100,0.88,0.0326598632371091,0.815987844315263,0.944012155684738
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","fdp",100,0.89,0.031446603773522,0.828365789167795,0.951634210832205
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","fdp",100,0.86,0.0348735088019777,0.791649178733583,0.928350821266417
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","raw","fdp",100,0.91,0.0287623491264661,0.853626831601359,0.966373168398641
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","fdp",100,0.9,0.0301511344577763,0.840904862369734,0.959095137630266
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","fdp",100,0.96,0.0196946385566932,0.921399217740347,0.998600782259653
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","raw","fdp",100,0.92,0.0272659924344291,0.866559636825777,0.973440363174223
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","raw","fdp",100,0.97,0.0171446607997765,0.936397082305282,1
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","raw","fdp",100,0.88,0.0326598632371091,0.815987844315263,0.944012155684738
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BH","fdp",100,0.05,0.021904291355759,0.00706837783584027,0.0929316221641597
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BH","fdp",100,0.00999999999999999,0.00999999999999999,0,0.0295996398454005
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","BH","fdp",100,0.02,0.014070529413629,0,0.0475777308941242
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BH","fdp",100,0.08,0.0272659924344291,0.0265596368257773,0.133440363174223
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BH","fdp",100,0.12,0.0326598632371091,0.0559878443152624,0.184012155684737
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","BH","fdp",100,0.02,0.014070529413629,0,0.0475777308941242
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","BH","fdp",100,0.04,0.0196946385566932,0.00139921774034733,0.0786007822596526
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","BH","fdp",100,0.04,0.0196946385566932,0.00139921774034737,0.0786007822596526
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BH","fdp",100,0.15,0.0358870281282637,0.0796627173564273,0.220337282643573
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BH","fdp",100,0.02,0.014070529413629,0,0.0475777308941242
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","BH","fdp",100,0.01,0.01,0,0.0295996398454005
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BH","fdp",100,0.15,0.0358870281282637,0.0796627173564273,0.220337282643573
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BH","fdp",100,0.18,0.038612291966537,0.104321298385042,0.255678701614958
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","BH","fdp",100,0.04,0.0196946385566932,0.00139921774034738,0.0786007822596526
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","BH","fdp",100,0.03,0.0171446607997765,0,0.0636029176947177
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","BH","fdp",100,0.03,0.0171446607997765,0,0.0636029176947177
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BH","fdp",100,0.17,0.0377525168068637,0.0960064267328041,0.243993573267196
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BH","fdp",100,0.07,0.0256432399976243,0.0197401731577394,0.120259826842261
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","BH","fdp",100,0.02,0.014070529413629,0,0.0475777308941242
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BH","fdp",100,0.05,0.0219042913557591,0.00706837783584021,0.0929316221641598
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BH","fdp",100,0.14,0.0348735088019777,0.071649178733583,0.208350821266417
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","BH","fdp",100,0.06,0.0238683256575942,0.0132189413398421,0.106781058660158
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","BH","fdp",100,0.06,0.0238683256575942,0.0132189413398421,0.106781058660158
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","BH","fdp",100,0.05,0.0219042913557591,0.00706837783584022,0.0929316221641598
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BY","fdp",100,0.03,0.0171446607997765,0,0.0636029176947177
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","BY","fdp",100,0,0,0,0
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","BY","fdp",100,0,0,0,0
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BY","fdp",100,0.01,0.01,0,0.0295996398454005
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","BY","fdp",100,0.05,0.0219042913557591,0.00706837783584019,0.0929316221641598
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","BY","fdp",100,0.01,0.01,0,0.0295996398454005
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","BY","fdp",100,0.01,0.01,0,0.0295996398454005
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","BY","fdp",100,0.02,0.014070529413629,0,0.0475777308941242
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BY","fdp",100,0.12,0.032659863237109,0.0559878443152625,0.184012155684737
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","BY","fdp",100,0,0,0,0
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","BY","fdp",100,0,0,0,0
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BY","fdp",100,0.08,0.0272659924344291,0.0265596368257774,0.133440363174223
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","BY","fdp",100,0.13,0.0337997668989631,0.0637536741921833,0.196246325807817
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","BY","fdp",100,0.01,0.01,0,0.0295996398454005
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","BY","fdp",100,0,0,0,0
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","BY","fdp",100,0.01,0.01,0,0.0295996398454005
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BY","fdp",100,0.13,0.0337997668989631,0.0637536741921834,0.196246325807817
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","BY","fdp",100,0.03,0.0171446607997765,0,0.0636029176947177
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","BY","fdp",100,0,0,0,0
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BY","fdp",100,0.02,0.014070529413629,0,0.0475777308941242
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","BY","fdp",100,0.06,0.0238683256575942,0.0132189413398421,0.106781058660158
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","BY","fdp",100,0.01,0.01,0,0.0295996398454005
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","BY","fdp",100,0,0,0,0
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","BY","fdp",100,0.01,0.01,0,0.0295996398454005
-"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","available_conditional_raw_null_rate",100,0.0368376284556376,0.00271726690730305,0.0315118831809411,0.0421633737303341
+"NULL_BALANCED","global_null","BALANCED","DASRA","structural_absence","raw","available_conditional_raw_null_rate",100,0.0351771632149622,0.00271260369927862,0.029860557660046,0.0404937687698784
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","observed_prevalence","raw","available_conditional_raw_null_rate",100,0.0436,0.0029457039425529,0.0378265263634787,0.0493734736365213
-"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","available_conditional_raw_null_rate",100,0.0535320278335887,0.00306959716687965,0.0475157279394584,0.059548327727719
+"NULL_BALANCED","global_null","BALANCED","DASRA","present_conditional_abundance","raw","available_conditional_raw_null_rate",100,0.0538,0.00295002140036751,0.0480180643016573,0.0595819356983427
 "NULL_BALANCED","global_null","BALANCED","ZINQ","observed_prevalence","raw","available_conditional_raw_null_rate",100,0.0464,0.0029525541074764,0.0406131002869404,0.0521868997130595
 "NULL_BALANCED","global_null","BALANCED","ZINQ","detected_quantile_abundance","raw","available_conditional_raw_null_rate",100,0.0568,0.00327488144592266,0.0503813503123531,0.0632186496876469
 "NULL_BALANCED","global_null","BALANCED","MaAsLin 3","detected_log_abundance","raw","available_conditional_raw_null_rate",100,0.0434,0.00288577143372041,0.0377439919222935,0.0490560080777065
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","available_conditional_raw_null_rate",100,0.0423944698261667,0.002994699329125,0.0365249669965554,0.0482639726557779
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","structural_absence","raw","available_conditional_raw_null_rate",100,0.0374724001513856,0.00285859783996945,0.0318696513387615,0.0430751489640097
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","observed_prevalence","raw","available_conditional_raw_null_rate",100,0.0412,0.00316317191528639,0.0350002969691301,0.0473997030308699
-"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","available_conditional_raw_null_rate",100,0.0496171841960572,0.0038313008270265,0.0421079725611468,0.0571263958309677
+"NULL_BALANCED_LOW","global_null","BALANCED_LOW","DASRA","present_conditional_abundance","raw","available_conditional_raw_null_rate",100,0.0572163265306122,0.00347128317147574,0.0504127365343798,0.0640199165268447
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","observed_prevalence","raw","available_conditional_raw_null_rate",100,0.0436,0.00314472461899177,0.0374364530054797,0.0497635469945203
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","ZINQ","detected_quantile_abundance","raw","available_conditional_raw_null_rate",100,0.0604,0.00361791278630275,0.0533090212396397,0.0674909787603603
 "NULL_BALANCED_LOW","global_null","BALANCED_LOW","MaAsLin 3","detected_log_abundance","raw","available_conditional_raw_null_rate",100,0.0442,0.00313075328980362,0.0380638363075046,0.0503361636924954
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","available_conditional_raw_null_rate",100,0.0470782106829781,0.00289226113507702,0.0414094830243422,0.052746938341614
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","structural_absence","raw","available_conditional_raw_null_rate",100,0.0432494722206734,0.00281956668739831,0.0377232230613638,0.048775721379983
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","observed_prevalence","raw","available_conditional_raw_null_rate",100,0.0444,0.00267544011294961,0.039156233735825,0.049643766264175
-"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","available_conditional_raw_null_rate",100,0.0489062490901719,0.00335721974129642,0.0423262193090441,0.0554862788712998
+"NULL_FOURFOLD","global_null","FOURFOLD","DASRA","present_conditional_abundance","raw","available_conditional_raw_null_rate",100,0.0612,0.00358244879850911,0.0541785293784633,0.0682214706215366
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","observed_prevalence","raw","available_conditional_raw_null_rate",100,0.0504,0.00298792181418403,0.0445437808555777,0.0562562191444223
 "NULL_FOURFOLD","global_null","FOURFOLD","ZINQ","detected_quantile_abundance","raw","available_conditional_raw_null_rate",100,0.0646,0.00370481532139681,0.0573386954006901,0.0718613045993099
 "NULL_FOURFOLD","global_null","FOURFOLD","MaAsLin 3","detected_log_abundance","raw","available_conditional_raw_null_rate",100,0.0402,0.00250244325054979,0.0352953013555671,0.0451046986444329

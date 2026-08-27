@@ -28,8 +28,8 @@ PARENT_CONTRACT_FILE <- file.path(PARENT_STAGE_DIR, "design", "contract.rds")
 sys.source(PARENT_RUNNER_FILE, envir = .GlobalEnv)
 
 EXPECTED_PARENT_RUNNER_SHA256 <-
-    "02de5b1524e521f2b3703c72adc706624303dde2a49e34aaa8c5ddb0c43b4bdb"
-REQUIRED_DASRA_VERSION <- "0.4.1"
+    "0d506567675abae890d4b80b3600fcf1b5710fae1dbf80177d06385f40fe78d4"
+REQUIRED_DASRA_VERSION <- "0.6.0"
 
 assert_true(
     identical(sha256_file(PARENT_RUNNER_FILE), EXPECTED_PARENT_RUNNER_SHA256),
@@ -37,7 +37,7 @@ assert_true(
 )
 assert_true(file.exists(PARENT_CONTRACT_FILE), "The frozen source design is missing.")
 
-RUNNER_VERSION <- "2026-08-24-sparsedossa2-n50-null-v1-dasra-0.4.1"
+RUNNER_VERSION <- "2026-08-26-sparsedossa2-n50-null-v2-dasra-0.6.0"
 RUNNER_FILE <- N50_RUNNER_FILE
 STAGE_DIR <- N50_STAGE_DIR
 METHOD_REFERENCE <- file.path(PARENT_STAGE_DIR, "frozen", "formal_hpc_method_reference.R")
@@ -85,7 +85,7 @@ make_settings <- function(abundance_effect) {
 }
 
 # Preserve the frozen wrappers byte-for-byte while replacing only their obsolete
-# package-version preflight with the installed DASRA 0.4.1 contract.
+# package-version preflight with the installed DASRA 0.6.0 contract.
 load_method_environment <- function(runtime_root) {
     assert_true(
         identical(sha256_file(METHOD_REFERENCE), EXPECTED_METHOD_REFERENCE_SHA256),
@@ -122,7 +122,7 @@ load_method_environment <- function(runtime_root) {
     }
 
     expected <- list(
-        script_version = "2026-08-22-aoas-final-v4-dasra-0.4.0",
+        script_version = "2026-08-26-aoas-final-v5-dasra-0.6.0",
         base_seed = 202608190L,
         alpha = 0.05,
         zinq_taus = c(0.25, 0.50, 0.75),

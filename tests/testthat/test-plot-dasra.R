@@ -160,6 +160,32 @@ test_that("adaptive colors use one shared displayed-component scale", {
     expect_identical(tiny_limits[["lower"]], .Machine$double.xmin)
 })
 
+test_that("default evidence colors are sequential and distinct from groups", {
+    method <- getS3method("plot", "dasra")
+    evidence <- eval(formals(method)$evidence_palette)
+    groups <- eval(formals(method)$group_colors)
+    lightness <- grDevices::convertColor(
+        t(grDevices::col2rgb(evidence)) / 255,
+        from = "sRGB", to = "Lab"
+    )[, "L"]
+
+    expect_true(all(diff(lightness) < 0))
+    expect_length(intersect(tolower(evidence), tolower(groups)), 0L)
+})
+
+test_that("abundance log-axis ticks are regular and carry percent units", {
+    scale <- DASRA:::.dasra_plot_abundance_scale(10 ^ c(-3.8, 0.8))
+    expect_identical(scale$limits, c(-4, 1))
+    expect_identical(scale$ticks, c(-4, -2, 0))
+    expect_true(length(unique(diff(scale$ticks))) == 1L)
+    expect_lte(length(scale$ticks), 4L)
+    expect_true(all(grepl("%", scale$labels, fixed = TRUE)))
+
+    same_decade <- DASRA:::.dasra_plot_abundance_scale(c(0.12, 0.18))
+    expect_identical(same_decade$limits, c(-1, 0))
+    expect_identical(same_decade$ticks, c(-1, 0))
+})
+
 test_that("plot dispatch is side-effect free and writes vector output", {
     fit <- .make_plot_contract_fixture()
     before <- serialize(fit, NULL)
@@ -177,6 +203,39 @@ test_that("plot dispatch is side-effect free and writes vector output", {
     expect_gt(file.info(path)$size, 1000)
     expect_identical(serialize(fit, NULL), before)
     expect_identical(.Random.seed, rng_before)
+})
+
+test_that("display group labels do not change the fitted contrast", {
+    fit <- .make_plot_contract_fixture()
+    original_contrast <- fit$settings$contrast
+    path <- tempfile(fileext = ".pdf")
+
+    spec <- plot(
+        fit,
+        selection = "top",
+        max_features = 2L,
+        group_labels = c("Control", "Case"),
+        file = path,
+        width = 7.2,
+        height = 3.2
+    )
+
+    expect_identical(spec$contrast, c("Control", "Case"))
+    expect_identical(fit$settings$contrast, original_contrast)
+    expect_error(
+        plot(fit, group_labels = "Control"),
+        "two non-empty labels"
+    )
+
+    legacy_path <- tempfile(fileext = ".pdf")
+    method <- getS3method("plot", "dasra")
+    method(
+        fit, NULL, "top", 2L, 0.05, "adaptive",
+        eval(formals(method)$evidence_palette),
+        eval(formals(method)$group_colors),
+        legacy_path, 7.2, 3.2, 300
+    )
+    expect_true(file.exists(legacy_path))
 })
 
 test_that("plot reports incomplete objects and unavailable rows clearly", {

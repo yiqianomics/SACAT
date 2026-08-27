@@ -9,16 +9,16 @@ Sys.setenv(
     NUMEXPR_NUM_THREADS = "1"
 )
 
-RUNNER_VERSION <- "2026-08-23-sparsedossa2-frozen-v1"
+RUNNER_VERSION <- "2026-08-26-sparsedossa2-dasra-0.6.0-v2"
 EXPECTED_METHOD_REFERENCE_SHA256 <-
-    "e4de0e6b155e5291cd6381bfff39a10e1e923c165389a8d2326419d765b30feb"
+    "7597ac45e2540043f1a2c56a824768ecdf7363b30bf77c134660c61f05c62d97"
 EXPECTED_METHOD_REFERENCE_EXPRESSIONS <- 122L
 EXPECTED_SPARSEDOSSA_VERSION <- "0.99.2"
 EXPECTED_SPARSEDOSSA_SHA <-
     "26a998a6e3a5f04d6a86cce14d6d3229ca82633e"
 
 STATIC_CONFIG <- list(
-    default_replications = 200L,
+    default_replications = 100L,
     default_workers = 7L,
     n_per_group = 120L,
     n_tested_taxa = 50L,
@@ -197,7 +197,7 @@ load_method_environment <- function(runtime_root) {
     }
 
     expected <- list(
-        script_version = "2026-08-22-aoas-final-v4-dasra-0.4.0",
+        script_version = "2026-08-26-aoas-final-v5-dasra-0.6.0",
         base_seed = 202608190L,
         alpha = 0.05,
         zinq_taus = c(0.25, 0.50, 0.75),
@@ -270,7 +270,7 @@ collect_package_provenance <- function() {
         "SparseDOSSA2 does not match the frozen GitHub SHA."
     )
     dasra <- output[output$package == "DASRA", , drop = FALSE]
-    assert_true(identical(dasra$version, "0.4.0"), "DASRA must be version 0.4.0.")
+    assert_true(identical(dasra$version, "0.6.0"), "DASRA must be version 0.6.0.")
     output
 }
 
@@ -1758,7 +1758,7 @@ main <- function() {
             assert_true(arguments$workers == STATIC_CONFIG$default_workers,
                         "Formal run/resume requires exactly seven PSOCK workers.")
             assert_true(arguments$replications == STATIC_CONFIG$default_replications,
-                        "Formal run/resume requires the frozen 200 replications.")
+                        "Formal run/resume requires the frozen 100 replications.")
         }
         run_parallel(arguments$root, replications, arguments$workers)
         cleanup_successful_run(arguments$root)

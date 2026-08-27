@@ -11,12 +11,13 @@
   max_features = 24L,
   alpha = 0.05,
   p_color_limits = "adaptive",
-  evidence_palette = c("#6090c1", "#acd2e5", "#fef9b7", "#fee395", "#f2724d", "#d7312d"),
+  evidence_palette = c("#e8ecef", "#d6cdd5", "#c0acba", "#a7879c", "#89617c", "#673b5c"),
   group_colors = c("#6090c1", "#f28e4b"),
   file = NULL,
   width = NULL,
   height = NULL,
   dpi = 300,
+  group_labels = NULL,
   ...
 )
 }
@@ -40,21 +41,29 @@ nonsignificant features.}
 \item{alpha}{Adjusted-p threshold used by \code{selection = "significant"}.}
 
 \item{p_color_limits}{Either \code{"adaptive"} or numeric \code{c(lower, upper)} with
-\verb{0 < lower < upper <= 1}. The adaptive red endpoint is the smallest finite
-component adjusted p-value among the displayed markers rounded down to a
-power of ten; the blue endpoint is one. Colors are interpolated on the
-\code{-log10(p)} scale and values outside the range are clamped.}
+\verb{0 < lower < upper <= 1}. The adaptive strong-evidence endpoint is derived
+from the smallest positive finite component adjusted p-value among the
+displayed markers and rounded down to a power of ten; the weak-evidence
+endpoint is one. Degenerate all-zero or all-one displays use a finite fallback.
+Colors are interpolated on the \code{-log10(p)} scale and values outside the
+range are clamped.}
 
-\item{evidence_palette}{Colors from weak to strong evidence. The default is
-\code{c("#6090c1", "#acd2e5", "#fef9b7", "#fee395", "#f2724d", "#d7312d")}.}
+\item{evidence_palette}{Colors from weak to strong component evidence. The
+default is a sequential gray-plum scale chosen to remain distinct from the
+reference/comparison group colors.}
 
 \item{group_colors}{Two colors for the reference and comparison groups.}
+
+\item{group_labels}{Optional two-element character vector used only as the
+displayed reference and comparison labels. The fitted contrast is used by
+default. This does not change the analysis or group ordering.}
 
 \item{file}{Optional output filename ending in \code{.pdf}, \code{.png}, or \code{.svg}.
 When \code{NULL}, the current graphics device is used.}
 
 \item{width, height}{Output dimensions in inches when \code{file} is supplied.
-Defaults are chosen from the number of displayed features.}
+Defaults use a 180-mm manuscript width and a height chosen from the number of
+displayed features.}
 
 \item{dpi}{Resolution for PNG output.}
 
@@ -76,8 +85,16 @@ prepared when \code{\link[=dasra]{dasra()}} was called with \code{store_plot_dat
 The structural side panel is a descriptive unrestricted companion fit; the
 prespecified structural inference remains the central score statistic. The
 abundance side panel displays standardized present-conditional geometric
-mean relative abundance from the fitted mark model; the central abundance
-statistic retains the target-excluded reference correction used by DASRA.
+mean relative abundance, expressed as a percentage on a log scale, from the
+fitted mark model. Its paired points avoid implying a zero baseline on the
+log scale. The central abundance statistic retains the target-excluded
+reference correction used by DASRA.
+
+Side-panel segments are descriptive fitted group summaries, not effect
+estimates or confidence intervals; the abundance connector only links its two
+fitted group means. Component inference is carried by the central signed
+statistics. An omitted central marker or \code{--} denotes an unavailable
+component or side summary, not a zero effect.
 }
 \examples{
 \dontrun{

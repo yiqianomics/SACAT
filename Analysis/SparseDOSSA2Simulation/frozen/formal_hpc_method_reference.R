@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 
-# Final AOAS-oriented HPC simulation study for DASRA (version 4)
+# Final AOAS-oriented HPC simulation study for DASRA (version 5)
 #
-# The prespecified design crosses two sample sizes, two signal densities and
+# The prespecified design crosses three sample sizes, two signal densities and
 # confounded/unconfounded covariate structures with an exact model-validation
 # study, component-specificity checks, a depth-imbalance negative control and a
 # correlated-community robustness study. One Slurm array task runs one complete
@@ -148,13 +148,13 @@ as_numeric_column <- function(data, candidates) {
 }
 
 CONFIG <- list(
-    script_version = "2026-08-22-aoas-final-v4-dasra-0.4.0",
+    script_version = "2026-08-26-aoas-final-v5-dasra-0.6.0",
     root = Sys.getenv(
         "DASRA_FORMAL_ROOT",
         "/home/zhang.16383/DORAM/dasra_formal_simulation"
     ),
     n_taxa = env_int("DASRA_FORMAL_N_TAXA", 50L, 30L),
-    sample_sizes_per_group = c(80L, 120L),
+    sample_sizes_per_group = c(60L, 80L, 120L),
     signal_fractions = c(0.20, 0.40),
     confounding_levels = c("unconfounded", "confounded"),
     confounder_group_shift = env_num(
@@ -272,9 +272,9 @@ check_packages <- function(packages) {
 
     if ("DASRA" %in% packages) {
         installed_dasra <- as.character(utils::packageVersion("DASRA"))
-        if (!identical(installed_dasra, "0.4.0")) {
+        if (!identical(installed_dasra, "0.6.0")) {
             stopf(
-                "This simulation requires DASRA 0.4.0, but DASRA %s was found in %s.",
+                "This simulation requires DASRA 0.6.0, but DASRA %s was found in %s.",
                 installed_dasra,
                 normalizePath(
                     system.file(package = "DASRA"),
@@ -1505,7 +1505,7 @@ run_dasra <- function(simulation) {
     taxa <- simulation$evaluation_taxa
     captured <- safe_capture(
         DASRA::dasra(
-            counts = simulation$counts,
+            counts = simulation$counts[taxa, , drop = FALSE],
             metadata = simulation$metadata,
             formula = ~ group + z,
             group = "group",
@@ -1551,7 +1551,8 @@ run_dasra <- function(simulation) {
     structural$available <- valid_p(structural$p_value) &
         as.logical(diagnostics$formed_structural_absence)
     structural$status <- ifelse(
-        structural$available,
+        structural$available &
+            as.logical(diagnostics$regular_structural_absence),
         "ok",
         as.character(diagnostics$reason_structural_absence)
     )
@@ -1583,9 +1584,12 @@ run_dasra <- function(simulation) {
         as.character(diagnostics$reason_relative_abundance)
     )
 
-    warning_text <- collapse_text(captured$warnings)
-    structural$warning <- warning_text
-    abundance$warning <- warning_text
+    structural$warning <- as.character(
+        diagnostics$warning_structural_absence
+    )
+    abundance$warning <- as.character(
+        diagnostics$warning_relative_abundance
+    )
     rbind(structural, abundance)
 }
 
@@ -2820,7 +2824,7 @@ make_replicate_metrics <- function(results) {
         } else {
             NA_real_
         },
-        raw_null_rejection_rate = if (sum(!truth_for_component) > 0) {
+        type1_error = if (sum(!truth_for_component) > 0) {
             sum(!truth_for_component & reject_raw, na.rm = TRUE) /
                 sum(!truth_for_component)
         } else {
@@ -3327,7 +3331,7 @@ plot_component_specificity <- function(results) {
         ggplot2::coord_cartesian(ylim = c(0, upper)) +
         ggplot2::labs(
             x = "Target effect size",
-            y = "Non-target component rejection rate",
+            y = "Non-target component Type I error (raw p < 0.05)",
             subtitle = primary_design_subtitle()
         ) +
         publication_theme()
@@ -3361,7 +3365,7 @@ plot_component_specificity <- function(results) {
         ggplot2::coord_cartesian(ylim = c(0, max(0.15, upper))) +
         ggplot2::labs(
             x = "Target effect size",
-            y = "Non-target component rejection rate"
+            y = "Non-target component Type I error (raw p < 0.05)"
         ) +
         publication_theme() +
         ggplot2::theme(strip.text.y = ggplot2::element_text(size = 8))
@@ -3539,50 +3543,84 @@ plot_global_null_qq <- function(results) {
     )
 }
 
-plot_depth_null <- function(metrics) {
+plot_type1_error <- function(metrics) {
     data <- data.table::as.data.table(metrics)
-    data <- data[scenario == "depth_imbalanced_null"]
-    primary <- data[is_primary_sample_signal(data)]
-    summary <- primary[, .(
-        mean = mean(raw_null_rejection_rate, na.rm = TRUE),
-        mcse = stats::sd(raw_null_rejection_rate, na.rm = TRUE) /
-            sqrt(sum(is.finite(raw_null_rejection_rate)))
-    ), by = .(confounding_label, method_label)]
+    data <- data[
+        (
+            scenario == "present_conditional_abundance" &
+                effect_parameter == 0
+        ) |
+            scenario %in% c("depth_imbalanced_null", "joint_global_null")
+    ]
+    data <- data[
+        abs(signal_fraction - CONFIG$primary_signal_fraction) < 1e-12
+    ]
+    data[, null_scenario_label := factor(
+        scenario,
+        levels = c(
+            "present_conditional_abundance",
+            "depth_imbalanced_null",
+            "joint_global_null"
+        ),
+        labels = c(
+            "Taxonwise global null",
+            "Depth-imbalanced global null",
+            "Correlated-community global null"
+        )
+    )]
+    data[, component_family := ifelse(
+        structural_component(component),
+        "Structural / prevalence tests",
+        "Abundance tests"
+    )]
+    summary <- data[, .(
+        mean = mean(type1_error, na.rm = TRUE),
+        mcse = stats::sd(type1_error, na.rm = TRUE) /
+            sqrt(sum(is.finite(type1_error)))
+    ), by = .(
+        n_per_group, confounding_label, null_scenario_label,
+        component_family, method_label
+    )]
+    upper <- max(0.15, summary$mean + 2 * summary$mcse, na.rm = TRUE)
     plot <- ggplot2::ggplot(
         summary,
         ggplot2::aes(
-            x = reorder(method_label, mean),
-            y = mean, color = method_label, shape = method_label
+            x = factor(n_per_group), y = mean,
+            group = method_label, color = method_label,
+            linetype = method_label, shape = method_label
         )
     ) +
         ggplot2::geom_hline(
             yintercept = CONFIG$alpha,
             linetype = "dotted", linewidth = 0.5
         ) +
-        ggplot2::geom_point(size = 2.4) +
+        ggplot2::geom_line(linewidth = 0.65) +
+        ggplot2::geom_point(size = 1.9) +
         ggplot2::geom_errorbar(
             ggplot2::aes(
                 ymin = pmax(0, mean - 1.96 * mcse),
                 ymax = pmin(1, mean + 1.96 * mcse)
             ),
-            width = 0.18, linewidth = 0.43
+            width = 0.12, linewidth = 0.38
         ) +
-        ggplot2::facet_wrap(~ confounding_label, nrow = 1) +
+        ggplot2::facet_grid(
+            component_family + confounding_label ~ null_scenario_label
+        ) +
+        ggplot2::coord_cartesian(ylim = c(0, upper)) +
         ggplot2::labs(
-            x = NULL,
-            y = "Raw null rejection rate under depth imbalance",
-            subtitle = primary_design_subtitle()
+            x = "Samples per group",
+            y = "Empirical Type I error (raw p < 0.05)",
+            subtitle = "Dotted line: nominal alpha = 0.05"
         ) +
-        ggplot2::scale_color_manual(values = METHOD_COLORS, drop = TRUE) +
-        ggplot2::scale_shape_manual(values = METHOD_SHAPES, drop = TRUE) +
-        publication_theme() +
-        ggplot2::theme(
-            legend.position = "none",
-            axis.text.x = ggplot2::element_text(angle = 35, hjust = 1)
+        method_scales() + publication_theme() +
+        ggplot2::guides(
+            color = ggplot2::guide_legend(nrow = 3, byrow = TRUE),
+            shape = ggplot2::guide_legend(nrow = 3, byrow = TRUE),
+            linetype = ggplot2::guide_legend(nrow = 3, byrow = TRUE)
         )
     save_publication_plot(
-        plot, "fig_depth_imbalanced_null",
-        width = 13.0, height = 6.0
+        plot, "fig_type1_error",
+        width = 15.0, height = 12.0
     )
 }
 
@@ -3815,57 +3853,132 @@ summarize_completed_replications <- function() {
     if (!length(files)) {
         stopf("No completed replicate files were found in %s", CONFIG$results_dir)
     }
-    objects <- lapply(files, function(file) {
-        tryCatch(readRDS(file), error = function(e) NULL)
-    })
-    objects <- Filter(function(x) {
-        !is.null(x) && isTRUE(x$success) &&
-            identical(x$script_version, CONFIG$script_version)
-    }, objects)
-    if (!length(objects)) {
+    raw_results_path <- file.path(
+        CONFIG$summary_dir, "all_taxon_method_results.csv.gz"
+    )
+    raw_truth_path <- file.path(
+        CONFIG$summary_dir, "all_simulation_truth.csv.gz"
+    )
+    metrics_parts <- list()
+    failure_parts <- list()
+    plot_result_parts <- list()
+    truth_parts <- list()
+    setting_status_parts <- list()
+    replication_ids <- integer()
+    first_metadata <- NULL
+    n_completed <- 0L
+
+    for (file in files) {
+        object <- tryCatch(readRDS(file), error = function(e) NULL)
+        if (is.null(object) || !isTRUE(object$success) ||
+            !identical(object$script_version, CONFIG$script_version)) {
+            next
+        }
+        n_completed <- n_completed + 1L
+        replication_ids[n_completed] <- object$replication
+        if (is.null(first_metadata)) {
+            first_metadata <- list(
+                package_versions = object$package_versions,
+                method_configuration = object$method_configuration,
+                session_info = object$session_info
+            )
+        }
+
+        result <- data.table::as.data.table(object$method_results)
+        result[, method_label := method_display_name(method, component)]
+        data.table::fwrite(
+            result, raw_results_path,
+            append = n_completed > 1L,
+            col.names = n_completed == 1L,
+            compress = "gzip"
+        )
+        metrics_parts[[n_completed]] <- make_replicate_metrics(result)
+        failure_parts[[n_completed]] <- result[, .N, by = .(
+            method_label, component, design_id, n_per_group,
+            signal_fraction, n_signal_target, confounding, dgp, scenario,
+            effect_parameter, status, available
+        )]
+        plot_result_parts[[n_completed]] <- result[
+            (
+                scenario %in% c(
+                    "observed_prevalence_only",
+                    "structural_matched_prevalence"
+                ) & scenario_signal & structural_component(component)
+            ) |
+                (
+                    scenario == "present_conditional_abundance" &
+                        scenario_signal & method == "DASRA" &
+                        component == "structural_absence"
+                ) |
+                (
+                    scenario == "structural_only" & scenario_signal &
+                        method == "DASRA" &
+                        component == "present_conditional_abundance"
+                ) |
+                (
+                    scenario == "present_conditional_abundance" &
+                        effect_parameter == 0 &
+                        abundance_component(component) & valid_p(p_value) &
+                        n_per_group == CONFIG$primary_n_per_group &
+                        abs(signal_fraction -
+                            CONFIG$primary_signal_fraction) < 1e-12
+                )
+        ]
+
+        truth_value <- data.table::as.data.table(object$truth)
+        truth_value[, replication := object$replication]
+        data.table::fwrite(
+            truth_value, raw_truth_path,
+            append = n_completed > 1L,
+            col.names = n_completed == 1L,
+            compress = "gzip"
+        )
+        truth_parts[[n_completed]] <- truth_value
+
+        status_value <- data.table::as.data.table(object$setting_status)
+        status_value[, replication := object$replication]
+        setting_status_parts[[n_completed]] <- status_value
+        rm(object, result, truth_value, status_value)
+        gc(verbose = FALSE)
+    }
+    if (!n_completed) {
         stop("No replicate files match the current script version.", call. = FALSE)
     }
 
-    results <- data.table::rbindlist(
-        lapply(objects, `[[`, "method_results"),
-        fill = TRUE, use.names = TRUE
+    metrics <- data.table::rbindlist(
+        metrics_parts, fill = TRUE, use.names = TRUE
+    )
+    plot_results <- data.table::rbindlist(
+        plot_result_parts, fill = TRUE, use.names = TRUE
     )
     truth <- data.table::rbindlist(
-        lapply(objects, function(x) {
-            value <- data.table::as.data.table(x$truth)
-            value[, replication := x$replication]
-            value
-        }),
-        fill = TRUE, use.names = TRUE
+        truth_parts, fill = TRUE, use.names = TRUE
     )
     setting_status <- data.table::rbindlist(
-        lapply(objects, function(x) {
-            value <- data.table::as.data.table(x$setting_status)
-            value[, replication := x$replication]
-            value
-        }),
-        fill = TRUE, use.names = TRUE
+        setting_status_parts, fill = TRUE, use.names = TRUE
     )
+    failure_summary <- data.table::rbindlist(
+        failure_parts, fill = TRUE, use.names = TRUE
+    )[, .(N = sum(N)), by = .(
+        method_label, component, design_id, n_per_group, signal_fraction,
+        n_signal_target, confounding, dgp, scenario,
+        effect_parameter, status, available
+    )][order(method_label, design_id, scenario, effect_parameter, -N)]
+    rm(metrics_parts, failure_parts, plot_result_parts,
+       truth_parts, setting_status_parts)
+    gc(verbose = FALSE)
 
-    results[, method_label := method_display_name(method, component)]
-    metrics <- make_replicate_metrics(results)
     metric_summary <- aggregate_metric(
         metrics,
         c(
             "availability", "signal_availability", "null_availability",
-            "raw_signal_rejection_rate", "raw_null_rejection_rate",
+            "raw_signal_rejection_rate", "type1_error",
             "power", "fdp", "power_by", "fdp_by",
             "designated_signal_raw_rejection",
             "designated_signal_bh_rejection",
             "designated_signal_by_rejection"
         )
     )
-    failure_summary <- results[, .N, by = .(
-        method_label, component, design_id, n_per_group, signal_fraction,
-        n_signal_target, confounding, dgp, scenario,
-        effect_parameter, status, available
-    )][order(method_label, design_id, scenario, effect_parameter, -N)]
-
     truth_summary <- truth[, .(
         n_replications = data.table::uniqueN(replication),
         mean_structural_probability_difference = mean(
@@ -3917,16 +4030,6 @@ summarize_completed_replications <- function() {
     ), by = .(n_per_group, confounding, confounding_label)]
 
     data.table::fwrite(
-        results,
-        file.path(CONFIG$summary_dir, "all_taxon_method_results.csv.gz"),
-        compress = "gzip"
-    )
-    data.table::fwrite(
-        truth,
-        file.path(CONFIG$summary_dir, "all_simulation_truth.csv.gz"),
-        compress = "gzip"
-    )
-    data.table::fwrite(
         metrics,
         file.path(CONFIG$summary_dir, "replicate_metrics.csv")
     )
@@ -3963,49 +4066,48 @@ summarize_completed_replications <- function() {
         file.path(CONFIG$summary_dir, "design_strata.csv")
     )
     data.table::fwrite(
-        objects[[1L]]$package_versions,
+        first_metadata$package_versions,
         file.path(CONFIG$summary_dir, "package_versions.csv")
     )
     data.table::fwrite(
-        objects[[1L]]$method_configuration,
+        first_metadata$method_configuration,
         file.path(CONFIG$summary_dir, "method_configuration.csv")
     )
 
     writeLines(
         c(
             sprintf("Script version: %s", CONFIG$script_version),
-            sprintf("Completed replications: %d", length(objects)),
+            sprintf("Completed replications: %d", n_completed),
             sprintf("Base settings: %d", CONFIG$n_base_settings),
             sprintf("Design strata: %d", CONFIG$n_design_strata),
             sprintf("Total settings per replication: %d", CONFIG$n_total_settings),
             sprintf(
                 "Replication IDs: %s",
-                paste(sort(vapply(objects, `[[`, integer(1), "replication")),
-                      collapse = ", ")
+                paste(sort(replication_ids), collapse = ", ")
             ),
             "",
-            objects[[1L]]$session_info
+            first_metadata$session_info
         ),
         file.path(CONFIG$summary_dir, "session_information.txt")
     )
 
-    plot_structural_estimand(results)
+    plot_structural_estimand(plot_results)
     plot_structural_design(truth)
-    plot_component_specificity(results)
+    plot_component_specificity(plot_results)
     plot_abundance_power(metrics)
     plot_abundance_fdr(metrics)
     plot_availability(metrics)
-    plot_global_null_qq(results)
-    plot_depth_null(metrics)
+    plot_global_null_qq(plot_results)
+    plot_type1_error(metrics)
     plot_joint_community_robustness(metrics)
     plot_confounding_design(truth)
 
     messagef(
         "Combined %d completed replications into %s",
-        length(objects), CONFIG$summary_dir
+        n_completed, CONFIG$summary_dir
     )
     invisible(list(
-        results = results,
+        results_file = raw_results_path,
         truth = truth,
         metrics = metrics,
         summary = metric_summary

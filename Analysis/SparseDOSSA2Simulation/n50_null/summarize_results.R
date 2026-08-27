@@ -129,8 +129,8 @@ summarize_main <- function(module_root, output_dir) {
             contract$package_provenance$package == "DASRA"
         ]
     )
-    assert(identical(dasra_version, "0.4.1"),
-           "The frozen n=50 contract is not for DASRA 0.4.1.")
+    assert(identical(dasra_version, "0.6.0"),
+           "The frozen n=50 contract is not for DASRA 0.6.0.")
 
     expected_names <- sprintf("replicate_%04d.rds", EXPECTED_REPLICATIONS)
     observed_names <- sort(list.files(raw_dir, pattern = "^replicate_[0-9]{4}\\.rds$"))
@@ -581,7 +581,7 @@ summarize_main <- function(module_root, output_dir) {
         detail = c(
             "exactly replicate_0001.rds through replicate_0100.rds",
             contract$analysis_signature,
-            "frozen design records DASRA 0.4.1",
+            "frozen design records DASRA 0.6.0",
             "balanced standard, balanced low depth, and fourfold no-direct-spike settings",
             "exactly 50 control and 50 case samples in every frozen dataset",
             "the same 50 prespecified taxa in every method-component family; no support filtering",

@@ -1,5 +1,5 @@
 "name","value"
-"default_replications","200"
+"default_replications","100"
 "default_workers","7"
 "n_per_group","120"
 "n_tested_taxa","50"

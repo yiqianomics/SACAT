@@ -36,7 +36,7 @@ The unused part `B_j - R_j` returns to `Other_unmodeled`. Inactive tested probab
 
 ## Method parity
 
-[`frozen/formal_hpc_method_reference.R`](frozen/formal_hpc_method_reference.R) is an exact copy of the supplied formal simulation script with SHA-256 `e4de0e6b155e5291cd6381bfff39a10e1e923c165389a8d2326419d765b30feb`. The runner verifies the hash, parses the script, confirms the final expression is `main()`, skips only that expression, and directly calls its `analyze_setting()` function.
+[`frozen/formal_hpc_method_reference.R`](frozen/formal_hpc_method_reference.R) is an exact copy of the final DASRA 0.6.0 formal simulation script with SHA-256 `7597ac45e2540043f1a2c56a824768ecdf7363b30bf77c134660c61f05c62d97`. The runner verifies the hash, parses the script, confirms the final expression is `main()`, skips only that expression, and directly calls its `analyze_setting()` function.
 
 This preserves the original DASRA, ZINQ, MaAsLin3, edgeR, DESeq2, ANCOM-BC2, LinDA, corncob, and metagenomeSeq calls, seeds, options, output extraction, and common BH/BY adjustment. Generic abundance methods are omitted only in the two structural-only settings, matching the frozen design. Common multiplicity is applied within the fixed 50-taxon method-by-component family. Package-provided adjusted values remain diagnostic fields.
 
@@ -50,7 +50,7 @@ Rscript Analysis/SparseDOSSA2Simulation/simulation.R design
 Rscript Analysis/SparseDOSSA2Simulation/simulation.R smoke
 
 Rscript Analysis/SparseDOSSA2Simulation/simulation.R run \
-  --workers 7 --replications 200
+  --workers 7 --replications 100
 
 Rscript Analysis/SparseDOSSA2Simulation/simulation.R summarize \
   --replications 100
@@ -58,7 +58,7 @@ Rscript Analysis/SparseDOSSA2Simulation/simulation.R summarize \
 Rscript Analysis/SparseDOSSA2Simulation/summarize_results.R
 ```
 
-The reported analysis uses the prespecified replication IDs 1 through 100. The raw directory contains exactly these 100 records, and `summary/completion.csv` records the corresponding 100-replication analysis. The generation command remains capable of extending the same frozen design to 200 replications later through `resume`; such an extension is not included in the current results. Each worker is limited to one numerical thread.
+The reported analysis uses the prespecified replication IDs 1 through 100. The raw directory contains exactly these 100 records, and `summary/completion.csv` records the corresponding 100-replication analysis. Each worker is limited to one numerical thread.
 
 ## Outputs
 

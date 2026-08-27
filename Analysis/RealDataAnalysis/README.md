@@ -45,6 +45,12 @@ Rscript Analysis/RealDataAnalysis/analysis.R --dataset=cdi_schubert
 
 The random seed is fixed within `analysis.R`. Package versions, method status, elapsed time, and method-specific conventions are recorded in the exported status tables.
 
+The aggregate `Other_unmodeled` row is retained only where a comparison
+method needs the full composition for normalization. DASRA receives the
+prespecified evaluation taxa together with the original sample library sizes;
+the synthetic remainder is therefore not part of its tested family or
+target-excluded abundance reference.
+
 ## Outputs
 
 Each dataset produces six reviewer-facing CSV files in `table/`:
@@ -56,6 +62,11 @@ Each dataset produces six reviewer-facing CSV files in `table/`:
 5. `*_upset_intersections.csv`: intersection definitions and sizes used in the comparison figure.
 6. `*_upset_intersection_membership.csv`: taxon membership in the plotted intersections.
 
-The corresponding UpSet figure is written to `figs/` as `*_upset.pdf`.
+Two corresponding PDF figures are written to `figs/`:
+
+- `*_upset.pdf`: the cross-method discovery-intersection summary.
+- `*_dasra_profile.pdf`: the DASRA dual-component association profile,
+  displaying up to 24 taxa selected by the formal combined BH-adjusted result;
+  both cohorts use the same component adjusted-p color range from 1 to 1e-7.
 
 `processed/` contains reproducible inputs derived from the public archives. `work/` contains regenerable method-specific intermediate files. `R_lib/` is an optional machine-local compatibility library and is not part of the analysis output.

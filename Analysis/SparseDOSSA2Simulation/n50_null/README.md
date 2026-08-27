@@ -1,6 +1,6 @@
 # SparseDOSSA2 n = 50 null calibration
 
-This module evaluates DASRA 0.4.1, ZINQ 2.0, and MaAsLin3 1.5.3 with 50 control and 50 case samples under three no-signal SparseDOSSA2-based settings. It is a small-sample extension of the frozen SparseDOSSA2 robustness simulation and reuses its Stool template, 50-taxon panel, generator calibration, seeds, and formal method wrappers.
+This module evaluates DASRA 0.6.0, ZINQ 2.0, and MaAsLin3 1.5.3 with 50 control and 50 case samples under three no-signal SparseDOSSA2-based settings. It is a small-sample extension of the frozen SparseDOSSA2 robustness simulation and reuses its Stool template, 50-taxon panel, generator calibration, seeds, and formal method wrappers.
 
 ## Design
 
@@ -37,4 +37,4 @@ The raw replication records are local generated artifacts and are ignored by Git
 - `paired_differences.csv`: replication-paired method differences within the same broad domain;
 - `audit_checks.csv`: the complete design, truth, multiplicity, and output validation record.
 
-The analysis contract is `e567863b5a19204e64eeb0a008aca42d55b799be0f816bce59c7e4a877601b7b`. The parent runner and frozen method-reference SHA-256 values are recorded and checked by `simulation.R`.
+The analysis contract is `65eaf12a536fe20872cf149faaacfcf8325c5f388a14860a36acf26ee3b210ee`. The parent runner and frozen method-reference SHA-256 values are recorded and checked by `simulation.R`.
