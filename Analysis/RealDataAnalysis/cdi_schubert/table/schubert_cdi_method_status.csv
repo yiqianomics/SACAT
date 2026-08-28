@@ -5,6 +5,6 @@
 "cdi_schubert","ANCOM-BC2","ANCOMBC","2.10.1","completed with unavailable taxa",33,14.19,"Structural-zero detection and negative lower-bound correction; a raw p-value is set to one when pseudocount sensitivity fails."
 "cdi_schubert","LinDA","MicrobiomeStat","1.4","completed",56,0.02,"Adaptive bias correction, 3% winsorization, and a 0.5 pseudo-count; package-level filters disabled."
 "cdi_schubert","corncob","corncob","0.4.2","completed",40,1.74,"Robust beta-binomial Wald inference; mean and dispersion models share the adjusted formula; original library size is the binomial denominator."
-"cdi_schubert","edgeR","edgeR","4.6.3","completed with unavailable taxa",28,0.25,"TMM normalization with robust quasi-likelihood fitting; filterByExpr exclusions remain in the common BH family as one."
+"cdi_schubert","edgeR","edgeR","4.6.3","completed with unavailable taxa",28,0.25,"TMM normalization with robust quasi-likelihood fitting; edgeR expression-filter exclusions remain in the common BH family as one."
 "cdi_schubert","DESeq2","DESeq2","1.48.2","completed with unavailable taxa",36,0.84,"Positive-count size factors, parametric dispersion fit, and Wald test; Cook's handling and independent filtering retained."
 "cdi_schubert","metagenomeSeq","metagenomeSeq","1.50.0","completed",68,0.08,"CSS normalization at quantile 0.5000 followed by fitZig."

@@ -1,0 +1,83 @@
+"dataset_id","dataset_label","component","reason","taxa_count"
+"microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity","present-conditional abundance","Conditional-present root refinement did not improve the objective",1
+"microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity","combined","Present-conditional abundance result was unavailable",1
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","structural absence","Conditional-present fit design was rank deficient",255
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","structural absence","Conditional-present fit remained on a parameter boundary",1
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","structural absence","Structural-absence inference derivative was unstable",1
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","present-conditional abundance","Conditional-present fit design was rank deficient",255
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","present-conditional abundance","Conditional-present fit had non-positive information",16
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","present-conditional abundance","Conditional-present root refinement did not close",10
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","present-conditional abundance","Conditional-present root refinement did not improve the objective",5
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","present-conditional abundance","Conditional-present fit retained a non-negligible gradient",2
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","combined","Both component results were unavailable",257
+"qiita_1671_produce_farming","Qiita 1671 fresh-produce farming-practice cohort","combined","Present-conditional abundance result was unavailable",31
+"qiita_11624_twinsuk_urobiome_age","Qiita 11624 TwinsUK urinary microbiome age cohort","structural absence","Conditional-present fit retained a non-negligible gradient",4
+"qiita_11624_twinsuk_urobiome_age","Qiita 11624 TwinsUK urinary microbiome age cohort","structural absence","Conditional-present fit remained on a parameter boundary",2
+"qiita_11624_twinsuk_urobiome_age","Qiita 11624 TwinsUK urinary microbiome age cohort","structural absence","Structural-absence nuisance fit was not optimal",49
+"qiita_11624_twinsuk_urobiome_age","Qiita 11624 TwinsUK urinary microbiome age cohort","present-conditional abundance","Conditional-present fit retained a non-negligible gradient",1
+"qiita_11624_twinsuk_urobiome_age","Qiita 11624 TwinsUK urinary microbiome age cohort","combined","Both component results were unavailable",1
+"qiita_11624_twinsuk_urobiome_age","Qiita 11624 TwinsUK urinary microbiome age cohort","combined","Structural-absence result was unavailable",54
+"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort","present-conditional abundance","Conditional-present fit had non-positive information",1
+"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort","present-conditional abundance","Conditional-present root refinement did not close",1
+"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort","combined","Present-conditional abundance result was unavailable",2
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","structural absence","Conditional-present fit retained a non-negligible gradient",14
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","structural absence","Structural-absence nuisance fit was not optimal",13
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","structural absence","Conditional-present fit remained on a parameter boundary",12
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","structural absence","Structural-absence inference derivative was unstable",1
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","present-conditional abundance","Conditional-present root refinement did not close",9
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","present-conditional abundance","Conditional-present fit retained a non-negligible gradient",8
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","present-conditional abundance","Conditional-present fit had non-positive information",6
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","present-conditional abundance","Conditional-present root refinement did not improve the objective",5
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","present-conditional abundance","Conditional-present fit did not converge",1
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","combined","Both component results were unavailable",15
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","combined","Structural-absence result was unavailable",25
+"qiita_1939_pediatric_crohn","Qiita 1939 pediatric Crohn's disease comparison","combined","Present-conditional abundance result was unavailable",14
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","structural absence","Structural-absence nuisance fit was not optimal",3
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","structural absence","Structural-absence inference derivative was unstable",1
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","present-conditional abundance","Conditional-present fit had non-positive information",1
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","present-conditional abundance","Conditional-present root refinement did not close",1
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","combined","Both component results were unavailable",1
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","combined","Structural-absence result was unavailable",3
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","combined","Present-conditional abundance result was unavailable",1
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","structural absence","Structural-absence nuisance fit was not optimal",55
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","structural absence","Conditional-present fit retained a non-negligible gradient",6
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","structural absence","Conditional-present fit remained on a parameter boundary",3
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","structural absence","Conditional-present fit design was rank deficient",2
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","present-conditional abundance","Conditional-present fit retained a non-negligible gradient",4
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","present-conditional abundance","Conditional-present fit design was rank deficient",2
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","present-conditional abundance","Conditional-present root refinement did not close",1
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","combined","Both component results were unavailable",7
+"hfmd_matched","Matched pediatric hand foot and mouth disease cohort","combined","Structural-absence result was unavailable",59
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","structural absence","Structural-absence nuisance fit was not optimal",56
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","structural absence","Conditional-present fit remained on a parameter boundary",27
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","structural absence","Conditional-present fit retained a non-negligible gradient",7
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","structural absence","Structural-absence inference derivative was unstable",1
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","present-conditional abundance","Conditional-present root refinement did not close",9
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","present-conditional abundance","Conditional-present fit retained a non-negligible gradient",6
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","present-conditional abundance","Conditional-present fit had non-positive information",5
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","present-conditional abundance","Conditional-present root refinement did not improve the objective",3
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","combined","Both component results were unavailable",16
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","combined","Structural-absence result was unavailable",75
+"qiita_14884_cervical_chlamydia","Qiita 14884 pre-infection cervicovaginal microbiome","combined","Present-conditional abundance result was unavailable",7
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","structural absence","Structural-absence nuisance fit was not optimal",16
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","structural absence","Conditional-present fit retained a non-negligible gradient",13
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","structural absence","Structural-absence fit remained on a parameter boundary",8
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","structural absence","Conditional-present fit remained on a parameter boundary",1
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","structural absence","Structural-absence inference derivative was unstable",1
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","structural absence","Conditional-present fit design was rank deficient",1
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","present-conditional abundance","Conditional-present fit retained a non-negligible gradient",12
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","present-conditional abundance","Conditional-present fit had non-positive information",5
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","present-conditional abundance","Conditional-present root refinement did not close",5
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","present-conditional abundance","Conditional-present root refinement did not improve the objective",4
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","present-conditional abundance","Conditional-present fit remained on a parameter boundary",1
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","present-conditional abundance","Conditional-present fit design was rank deficient",1
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","combined","Both component results were unavailable",14
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","combined","Structural-absence result was unavailable",26
+"qiita_10567_parkinson","Qiita 10567 Parkinson's disease comparison","combined","Present-conditional abundance result was unavailable",14
+"imsms_household_control_sex","iMSMS household healthy-control adult sex","structural absence","Conditional-present fit design was rank deficient",21
+"imsms_household_control_sex","iMSMS household healthy-control adult sex","structural absence","Structural-absence fit remained on a parameter boundary",1
+"imsms_household_control_sex","iMSMS household healthy-control adult sex","present-conditional abundance","Conditional-present fit design was rank deficient",21
+"imsms_household_control_sex","iMSMS household healthy-control adult sex","present-conditional abundance","Conditional-present root refinement did not close",2
+"imsms_household_control_sex","iMSMS household healthy-control adult sex","combined","Both component results were unavailable",21
+"imsms_household_control_sex","iMSMS household healthy-control adult sex","combined","Structural-absence result was unavailable",1
+"imsms_household_control_sex","iMSMS household healthy-control adult sex","combined","Present-conditional abundance result was unavailable",2

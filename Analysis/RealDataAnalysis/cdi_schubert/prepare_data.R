@@ -334,9 +334,7 @@ depth_eligible <- is.finite(metadata$library_size) &
     metadata$library_size >= minimum_library_size
 primary_group <- metadata$group_clean %in% c("H", "CDI")
 adjustment_columns <- c(
-    "age_clean", "sex_clean", "race_clean", "antibiotics_3mo",
-    "antacid_use", "vegetarian", "surgery_6mos", "history_cdiff",
-    "residence_cdiff", "healthworker_home"
+    "age_clean", "sex_clean", "antibiotics_3mo"
 )
 complete_adjustment <- stats::complete.cases(
     metadata[, adjustment_columns, drop = FALSE]
@@ -634,9 +632,7 @@ preprocessing <- list(
     reference_group = "H",
     comparison_group = "CDI",
     planned_adjustment_variables = c(
-        "age_z", "sex", "race", "antibiotics_3mo", "antacid_use",
-        "vegetarian", "surgery_6mos", "history_cdiff",
-        "residence_cdiff", "healthworker_home"
+        "age_z", "sex", "antibiotics_3mo"
     ),
     dasra_input_orientation = "taxa by samples",
     dasra_group_column = "group",

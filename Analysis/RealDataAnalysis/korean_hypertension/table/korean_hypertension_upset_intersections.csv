@@ -1,0 +1,4 @@
+"intersection","n","methods"
+"I1",8,"metagenomeSeq"
+"I2",3,"edgeR | metagenomeSeq"
+"I3",1,"edgeR | DESeq2 | metagenomeSeq"

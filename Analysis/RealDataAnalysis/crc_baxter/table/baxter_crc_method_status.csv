@@ -5,6 +5,6 @@
 "crc_baxter","ANCOM-BC2","ANCOMBC","2.10.1","completed",2,16.23,"Structural-zero detection and negative lower-bound correction; a raw p-value is set to one when pseudocount sensitivity fails."
 "crc_baxter","LinDA","MicrobiomeStat","1.4","completed",8,0.04,"Adaptive bias correction, 3% winsorization, and a 0.5 pseudo-count; package-level filters disabled."
 "crc_baxter","corncob","corncob","0.4.2","completed",24,2.85,"Robust beta-binomial Wald inference; mean and dispersion models share the adjusted formula; original library size is the binomial denominator."
-"crc_baxter","edgeR","edgeR","4.6.3","completed with unavailable taxa",11,0.15,"TMM normalization with robust quasi-likelihood fitting; filterByExpr exclusions remain in the common BH family as one."
+"crc_baxter","edgeR","edgeR","4.6.3","completed with unavailable taxa",11,0.15,"TMM normalization with robust quasi-likelihood fitting; edgeR expression-filter exclusions remain in the common BH family as one."
 "crc_baxter","DESeq2","DESeq2","1.48.2","completed with unavailable taxa",12,1.75,"Positive-count size factors, parametric dispersion fit, and Wald test; Cook's handling and independent filtering retained."
 "crc_baxter","metagenomeSeq","metagenomeSeq","1.50.0","completed",43,0.14,"CSS normalization at quantile 0.5000 followed by fitZig."

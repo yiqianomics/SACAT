@@ -89,7 +89,8 @@ dataset_configurations <- list(
         input_file = "crc_baxter_dasra_input.rds",
         reference = "H",
         comparison = "CRC",
-        covariates = c("age_z", "sex")
+        covariates = c("age_z", "sex"),
+        seed = 20260821L
     ),
     cdi_schubert = list(
         dataset_id = "cdi_schubert",
@@ -97,7 +98,54 @@ dataset_configurations <- list(
         input_file = "cdi_schubert_dasra_input.rds",
         reference = "H",
         comparison = "CDI",
-        covariates = c("age_z", "sex", "antibiotics_3mo")
+        covariates = c("age_z", "sex", "antibiotics_3mo"),
+        seed = 20260822L
+    ),
+    gems_pediatric_diarrhea = list(
+        dataset_id = "gems_pediatric_diarrhea",
+        output_prefix = "gems_pediatric_diarrhea",
+        input_file = "gems_pediatric_diarrhea_dasra_input.rds",
+        reference = "Control",
+        comparison = "MSD",
+        covariates = c("age_z", "country"),
+        seed = 20260823L
+    ),
+    korean_hypertension = list(
+        dataset_id = "korean_hypertension",
+        output_prefix = "korean_hypertension",
+        input_file = "korean_hypertension_dasra_input.rds",
+        reference = "Normotension",
+        comparison = "Hypertension",
+        covariates = c("age_z", "sex", "bmi_z"),
+        seed = 20260827L,
+        plot_labels = c("Normal BP", "High BP")
+    ),
+    microbiomehd_zupancic_obesity = list(
+        dataset_id = "microbiomehd_zupancic_obesity",
+        output_prefix = "microbiomehd_zupancic_obesity",
+        input_file = "microbiomehd_zupancic_obesity_dasra_input.rds",
+        reference = "H",
+        comparison = "OB",
+        covariates = "sex",
+        seed = 20260829L
+    ),
+    qiita_1939_pediatric_crohn = list(
+        dataset_id = "qiita_1939_pediatric_crohn",
+        output_prefix = "qiita_1939_pediatric_crohn",
+        input_file = "qiita_1939_pediatric_crohn_dasra_input.rds",
+        reference = "Control",
+        comparison = "Crohn",
+        covariates = c("age_z", "sex"),
+        seed = 20260838L
+    ),
+    ravel_vaginal_ethnicity = list(
+        dataset_id = "ravel_vaginal_ethnicity",
+        output_prefix = "ravel_vaginal_ethnicity",
+        input_file = "ravel_vaginal_ethnicity_dasra_input.rds",
+        reference = "White",
+        comparison = "Black",
+        covariates = character(),
+        seed = 20260839L
     )
 )
 
@@ -143,6 +191,67 @@ align_character <- function(values, taxa, default = "not available") {
     output
 }
 
+humanize_result_reason <- function(reason) {
+    output <- trimws(as.character(reason))
+    names(output) <- names(reason)
+    labels <- c(
+        "available" = "Available",
+        "ok" = "Available",
+        "not available" = "Result was unavailable",
+        "both component models and a consistent joint p-value were required" =
+            paste(
+                "Both component models and a consistent joint p-value",
+                "were required"
+            ),
+        "conditional_present_gradient" =
+            "Conditional-present fit retained a non-negligible gradient",
+        "conditional_present_information_nonpositive" =
+            "Conditional-present fit had non-positive information",
+        "conditional_present_nonconvergence" =
+            "Conditional-present fit did not converge",
+        "conditional_present_root_polish_no_descent" =
+            paste(
+                "Conditional-present root refinement did not improve",
+                "the objective"
+            ),
+        "conditional_present_root_polish_not_closed" =
+            "Conditional-present root refinement did not close",
+        "filterByExpr excluded taxon" =
+            "Taxon was excluded by the edgeR expression filter",
+        "inference_derivative_unstable" =
+            "Structural-absence inference derivative was unstable",
+        "invalid p-value" =
+            "The method did not return a valid p-value",
+        "model error: All logistic values are the same" =
+            paste(
+                "Model fitting failed because all logistic responses",
+                "were identical"
+            ),
+        "model error: Fitting error (NA p-value returned from fitting procedure)" =
+            "Model fitting did not return a valid p-value",
+        "no_observed_zeros" =
+            "No zero counts were observed for this taxon",
+        "one or both components were unavailable" =
+            "One or both components were unavailable",
+        "positive_part_design_rank_deficient" =
+            "Positive-count model design was rank deficient",
+        "pseudocount sensitivity failed; p-value set to one" =
+            "Pseudocount sensitivity failed; p-value was set to one",
+        "rank_deficient_positive_mark_design" =
+            "Positive-count model design was rank deficient",
+        "structural_absence_nonoptimal_nuisance_fit" =
+            "Structural-absence nuisance fit was not optimal",
+        "structural_absence_persistent_boundary" =
+            "Structural-absence fit remained on a parameter boundary",
+        "taxon not returned" = "Taxon was not returned"
+    )
+    matched <- match(output, names(labels))
+    replace <- !is.na(matched)
+    output[replace] <- unname(labels[matched[replace]])
+    output <- gsub("_", " ", output, fixed = TRUE)
+    output
+}
+
 make_result <- function(taxa, method, family, component, p_value,
                         available, reason = NULL, estimate = NULL,
                         statistic = NULL, native_q_value = NULL,
@@ -172,6 +281,7 @@ make_result <- function(taxa, method, family, component, p_value,
         is.na(reason) | !nzchar(reason) | reason == "not available"
     )
     reason[missing_reason] <- "available"
+    reason <- humanize_result_reason(reason)
 
     p_for_adjustment <- ifelse(available, p_value, 1)
     q_value <- stats::p.adjust(p_for_adjustment, method = "BH")
@@ -274,11 +384,19 @@ formulas_for_dataset <- function(configuration) {
         full = stats::as.formula(
             paste("~", paste(full_terms, collapse = " + "))
         ),
-        null = stats::as.formula(
-            paste("~", paste(null_terms, collapse = " + "))
-        ),
+        null = if (length(null_terms)) {
+            stats::as.formula(
+                paste("~", paste(null_terms, collapse = " + "))
+            )
+        } else {
+            stats::as.formula("~ 1")
+        },
         full_text = paste(full_terms, collapse = " + "),
-        null_text = paste(null_terms, collapse = " + "),
+        null_text = if (length(null_terms)) {
+            paste(null_terms, collapse = " + ")
+        } else {
+            "intercept only"
+        },
         maaslin = stats::as.formula(
             paste("~", paste(maaslin_terms, collapse = " + "))
         ),
@@ -419,6 +537,7 @@ run_dasra <- function(counts, metadata, configuration, formulas,
         fit,
         features = plot_rows$taxon,
         p_color_limits = c(1e-7, 1),
+        group_labels = configuration$plot_labels,
         file = dasra_figure_file
     )
     message("Saved ", dasra_figure_file)
@@ -976,8 +1095,20 @@ run_edger <- function(counts, metadata, configuration, formulas,
     if (!any(keep)) {
         stop("edgeR filterByExpr retained no taxa.", call. = FALSE)
     }
-    fit_data <- fit_data[keep, , keep.lib.sizes = FALSE]
-    fit_data <- edgeR::calcNormFactors(fit_data)
+    zero_library_after_filtering <- any(
+        colSums(fit_data$counts[keep, , drop = FALSE]) == 0
+    )
+    fit_data <- fit_data[
+        keep, , keep.lib.sizes = zero_library_after_filtering
+    ]
+    normalization_method <- if (zero_library_after_filtering) {
+        "TMMwsp"
+    } else {
+        "TMM"
+    }
+    fit_data <- edgeR::calcNormFactors(
+        fit_data, method = normalization_method
+    )
     fit_data <- edgeR::estimateDisp(fit_data, design, robust = TRUE)
     fit <- edgeR::glmQLFit(fit_data, design, robust = TRUE)
     test <- edgeR::glmQLFTest(fit, coef = coefficient)
@@ -1003,8 +1134,17 @@ run_edger <- function(counts, metadata, configuration, formulas,
     list(
         rows = rows,
         note = paste(
-            "TMM normalization with robust quasi-likelihood fitting;",
-            "filterByExpr exclusions remain in the common BH family as one."
+            normalization_method,
+            "normalization with robust quasi-likelihood fitting;",
+            if (zero_library_after_filtering) {
+                "pre-filter library sizes retained for zero-count samples;"
+            } else {
+                "library sizes recomputed after filtering;"
+            },
+            paste(
+                "edgeR expression-filter exclusions remain in the common",
+                "BH family as one."
+            )
         )
     )
 }
@@ -1494,6 +1634,17 @@ make_upset_figure <- function(results, input, configuration,
             plot.margin = ggplot2::margin(6, 6, 4, 3)
         )
 
+    intersection_axis_text <- if (nrow(pattern_table) > 40L) {
+        ggplot2::element_blank()
+    } else {
+        ggplot2::element_text(size = 7)
+    }
+    intersection_axis_ticks <- if (nrow(pattern_table) > 40L) {
+        ggplot2::element_blank()
+    } else {
+        ggplot2::element_line()
+    }
+
     intersection_matrix <- ggplot2::ggplot() +
         ggplot2::geom_rect(
             data = row_background,
@@ -1534,7 +1685,8 @@ make_upset_figure <- function(results, input, configuration,
         common_theme +
         ggplot2::theme(
             axis.ticks.y = ggplot2::element_blank(),
-            axis.text.x = ggplot2::element_text(size = 7),
+            axis.text.x = intersection_axis_text,
+            axis.ticks.x = intersection_axis_ticks,
             plot.margin = ggplot2::margin(4, 6, 6, 3)
         )
 
@@ -1621,9 +1773,7 @@ run_dataset <- function(configuration, plot_only = FALSE) {
     formulas <- formulas_for_dataset(configuration)
     counts <- validated$fitting_counts
     metadata <- validated$metadata
-    set.seed(20260820L + match(
-        configuration$dataset_id, names(dataset_configurations)
-    ))
+    set.seed(configuration$seed)
 
     families <- list(
         execute_family(

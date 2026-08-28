@@ -1,0 +1,8 @@
+"intersection","taxon","methods"
+"I1","Catenibacterium","metagenomeSeq"
+"I2","Clostridium_XI","edgeR"
+"I3","Faecalibacterium","ZINQ prevalence"
+"I1","Pseudoflavonifractor","metagenomeSeq"
+"I1","Turicibacter","metagenomeSeq"
+"I1","Unclassified_Acidaminococcaceae","metagenomeSeq"
+"I1","Unclassified_Erysipelotrichaceae","metagenomeSeq"

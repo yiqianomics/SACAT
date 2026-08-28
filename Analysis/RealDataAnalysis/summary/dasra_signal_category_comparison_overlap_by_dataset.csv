@@ -1,0 +1,29 @@
+"dataset","dataset_label","signal_category","dasra_discoveries_in_category","selected_by_at_least_one_non_dasra_method","not_selected_by_any_non_dasra_method","percent_in_category_not_selected_by_any_non_dasra"
+"cdi_schubert","Schubert C. difficile infection","Structural absence only",22,22,0,0
+"cdi_schubert","Schubert C. difficile infection","Present-conditional abundance only",10,10,0,0
+"cdi_schubert","Schubert C. difficile infection","Both components",6,6,0,0
+"cdi_schubert","Schubert C. difficile infection","Omnibus only",1,1,0,0
+"crc_baxter","Baxter colorectal cancer","Structural absence only",1,1,0,0
+"crc_baxter","Baxter colorectal cancer","Present-conditional abundance only",4,4,0,0
+"crc_baxter","Baxter colorectal cancer","Both components",0,0,0,
+"crc_baxter","Baxter colorectal cancer","Omnibus only",0,0,0,
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","Structural absence only",9,9,0,0
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","Present-conditional abundance only",16,16,0,0
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","Both components",5,5,0,0
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea","Omnibus only",0,0,0,
+"korean_hypertension","Korean hypertension gut microbiome cohort","Structural absence only",0,0,0,
+"korean_hypertension","Korean hypertension gut microbiome cohort","Present-conditional abundance only",0,0,0,
+"korean_hypertension","Korean hypertension gut microbiome cohort","Both components",0,0,0,
+"korean_hypertension","Korean hypertension gut microbiome cohort","Omnibus only",0,0,0,
+"microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity","Structural absence only",0,0,0,
+"microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity","Present-conditional abundance only",0,0,0,
+"microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity","Both components",0,0,0,
+"microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity","Omnibus only",0,0,0,
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease","Structural absence only",21,21,0,0
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease","Present-conditional abundance only",21,21,0,0
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease","Both components",3,3,0,0
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease","Omnibus only",0,0,0,
+"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort","Structural absence only",18,18,0,0
+"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort","Present-conditional abundance only",5,5,0,0
+"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort","Both components",1,1,0,0
+"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort","Omnibus only",0,0,0,

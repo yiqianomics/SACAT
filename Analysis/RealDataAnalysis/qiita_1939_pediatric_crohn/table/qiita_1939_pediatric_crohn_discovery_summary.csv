@@ -1,0 +1,16 @@
+"method","family","component","discoveries"
+"DASRA structural absence","DASRA","structural absence",26
+"DASRA present-conditional abundance","DASRA","present-conditional abundance",32
+"DASRA combined","DASRA","combined",45
+"MaAsLin3 prevalence","MaAsLin3","prevalence",79
+"MaAsLin3 abundance","MaAsLin3","abundance",22
+"MaAsLin3 combined","MaAsLin3","combined",83
+"ZINQ prevalence","ZINQ","prevalence",94
+"ZINQ abundance","ZINQ","abundance",16
+"ZINQ combined","ZINQ","combined",107
+"ANCOM-BC2","ANCOM-BC2","differential abundance",30
+"LinDA","LinDA","differential abundance",79
+"corncob","corncob","differential abundance",78
+"edgeR","edgeR","differential abundance",47
+"DESeq2","DESeq2","differential abundance",63
+"metagenomeSeq","metagenomeSeq","differential abundance",150
