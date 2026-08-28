@@ -219,6 +219,108 @@
     if (identical(method, "none")) "p" else paste(method, "adjusted p")
 }
 
+.dasra_plot_component_bh_guide <- function(
+        retained, raw_p, adjusted_p, z, alpha) {
+    family <- retained & is.finite(raw_p)
+    family_size <- sum(family)
+    guide <- list(
+        z = NA_real_, p = NA_real_, discoveries = 0L,
+        family_size = family_size
+    )
+    if (!family_size) {
+        return(guide)
+    }
+
+    raw_family <- raw_p[family]
+    adjusted_family <- adjusted_p[family]
+    z_family <- z[family]
+    recomputed <- stats::p.adjust(raw_family, method = "BH")
+    tolerance <- 1e-10
+    finite_z <- is.finite(z_family)
+    expected_p <- 2 * stats::pnorm(-abs(z_family[finite_z]))
+    if (any(raw_family < 0 | raw_family > 1) ||
+        any(!is.finite(adjusted_family)) ||
+        max(abs(adjusted_family - recomputed)) > tolerance ||
+        any(abs(raw_family[finite_z] - expected_p) > tolerance)) {
+        stop(
+            paste(
+                "Component BH guides could not be verified from this fit;",
+                "use `show_component_guides = FALSE` to omit them."
+            ),
+            call. = FALSE
+        )
+    }
+
+    rejected <- recomputed <= alpha
+    guide$discoveries <- sum(rejected)
+    if (!guide$discoveries) {
+        return(guide)
+    }
+    critical_p <- alpha * guide$discoveries / family_size
+    critical_z <- stats::qnorm(
+        critical_p / 2, lower.tail = FALSE
+    )
+    if (any(rejected & !finite_z) || !is.finite(critical_z) ||
+        critical_z <= 0 ||
+        !identical(unname(raw_family <= critical_p), unname(rejected))) {
+        stop(
+            paste(
+                "Component BH guides could not be verified from this fit;",
+                "use `show_component_guides = FALSE` to omit them."
+            ),
+            call. = FALSE
+        )
+    }
+
+    guide$z <- critical_z
+    guide$p <- critical_p
+    guide
+}
+
+.dasra_plot_component_guides <- function(x, alpha, show) {
+    if (length(show) != 1L || is.na(show) || !is.logical(show)) {
+        stop("`show_component_guides` must be TRUE or FALSE.",
+             call. = FALSE)
+    }
+    method <- x$settings$p_adjust_method
+    supported <- length(method) == 1L && !is.na(method) &&
+        method %in% c("BH", "fdr")
+    empty <- list(
+        z = NA_real_, p = NA_real_, discoveries = NA_integer_,
+        family_size = NA_integer_
+    )
+    if (!show || !supported) {
+        return(list(
+            enabled = FALSE, method = method, alpha = alpha,
+            structural = empty, abundance = empty
+        ))
+    }
+
+    retained <- x$diagnostics$retained
+    if (!is.logical(retained) || length(retained) != nrow(x$results) ||
+        anyNA(retained)) {
+        stop("The retained-taxon indicator is malformed.", call. = FALSE)
+    }
+    structural <- .dasra_plot_component_bh_guide(
+        retained,
+        x$results$p_structural_absence,
+        x$results$p_adj_structural_absence,
+        x$results$z_structural_absence,
+        alpha
+    )
+    abundance <- .dasra_plot_component_bh_guide(
+        retained,
+        x$results$p_relative_abundance,
+        x$results$p_adj_relative_abundance,
+        x$results$z_relative_abundance,
+        alpha
+    )
+    list(
+        enabled = TRUE, method = method, alpha = alpha,
+        structural = structural, abundance = abundance
+    )
+}
+
 .dasra_plot_validate_integer <- function(value, name) {
     if (length(value) != 1L || is.na(value) || !is.numeric(value) ||
         !is.finite(value) || value < 1 || value != as.integer(value)) {
@@ -377,13 +479,15 @@
 
 .dasra_plot_build_spec <- function(x, features, selection, max_features,
                                    alpha, p_color_limits,
-                                   evidence_palette, group_colors) {
+                                   evidence_palette, group_colors,
+                                   show_component_guides = TRUE) {
     if (!inherits(x, "dasra")) {
         stop("`x` must be a `dasra` result.", call. = FALSE)
     }
     required_results <- c(
         "taxon", "p_omnibus", "p_adj_omnibus",
-        "p_adj_structural_absence", "z_structural_absence",
+        "p_structural_absence", "p_adj_structural_absence",
+        "z_structural_absence", "p_relative_abundance",
         "p_adj_relative_abundance", "z_relative_abundance"
     )
     if (!all(required_results %in% names(x$results)) ||
@@ -445,6 +549,9 @@
     indices <- .dasra_plot_select(
         x, features, selection, max_features, alpha
     )
+    component_guides <- .dasra_plot_component_guides(
+        x, alpha, show_component_guides
+    )
     profile_index <- match(x$results$taxon[indices], profiles$feature)
     if (anyNA(profile_index)) {
         stop("Stored plotting summaries do not match `x$results`.",
@@ -501,7 +608,8 @@
         evidence_palette = evidence_palette,
         group_colors = unname(group_colors),
         selection = selection,
-        alpha = alpha
+        alpha = alpha,
+        component_guides = component_guides
     )
 }
 
@@ -663,23 +771,64 @@
     grid::pushViewport(grid::viewport(
         layout.pos.row = 1L, layout.pos.col = columns[[3L]]
     ))
-    grid::grid.text("Signed evidence", y = 0.82, gp = gp_title)
+    grid::grid.text("Component Z-statistics", x = 0.5, y = 0.78,
+                    gp = gp_title)
+    component_labels <- parse(text = c("Z[j]^SA", "Z[j]^RA"))
+    component_label_grobs <- lapply(component_labels, function(label) {
+        grid::textGrob(label, gp = gp_small)
+    })
+    component_label_widths <- vapply(component_label_grobs, function(label) {
+        grid::convertWidth(
+            grid::grobWidth(label), "npc", valueOnly = TRUE
+        )
+    }, numeric(1))
+    component_key_width <- grid::convertWidth(
+        grid::unit(1.55, "mm"), "npc", valueOnly = TRUE
+    )
+    component_key_gap <- grid::convertWidth(
+        grid::unit(1.0, "mm"), "npc", valueOnly = TRUE
+    )
+    component_entry_gap <- grid::convertWidth(
+        grid::unit(7.0, "mm"), "npc", valueOnly = TRUE
+    )
+    component_legend_width <- 2 * component_key_width +
+        2 * component_key_gap + sum(component_label_widths) +
+        component_entry_gap
+    component_cursor <- 0.5 - component_legend_width / 2
+    component_key_x <- numeric(2L)
+    component_label_x <- numeric(2L)
+    for (i in seq_len(2L)) {
+        component_key_x[[i]] <- component_cursor + component_key_width / 2
+        component_label_x[[i]] <- component_cursor + component_key_width +
+            component_key_gap
+        component_cursor <- component_label_x[[i]] +
+            component_label_widths[[i]]
+        if (i == 1L) {
+            component_cursor <- component_cursor + component_entry_gap
+        }
+    }
     grid::grid.points(
-        x = grid::unit(c(0.24, 0.55), "npc"),
-        y = grid::unit(c(0.54, 0.54), "npc"),
+        x = grid::unit(component_key_x, "npc"),
+        y = grid::unit(rep(0.52, 2L), "npc"),
         pch = c(24, 21),
         size = grid::unit(c(1.55, 1.45), "mm"),
         gp = grid::gpar(col = "#1A1C1F", fill = "white", lwd = 0.7)
     )
+    for (i in seq_len(2L)) {
+        grid::grid.text(
+            component_labels[[i]],
+            x = grid::unit(component_label_x[[i]], "npc"),
+            y = grid::unit(0.52, "npc"),
+            just = "left",
+            gp = gp_small
+        )
+    }
     grid::grid.text(
-        parse(text = c("Z[j]^SA", "Z[j]^RA")),
-        x = grid::unit(c(0.28, 0.59), "npc"),
-        y = grid::unit(c(0.54, 0.54), "npc"),
-        just = "left",
-        gp = gp_small
+        paste("Component", spec$adjustment_label),
+        x = 0.5, y = 0.30, gp = gp_tiny
     )
-    ramp_left <- 0.43
-    ramp_right <- 0.78
+    ramp_left <- 0.27
+    ramp_right <- 0.73
     ramp_colors <- grDevices::colorRampPalette(
         spec$evidence_palette, space = "Lab"
     )(48L)
@@ -689,7 +838,7 @@
     for (i in seq_along(ramp_colors)) {
         grid::grid.rect(
             x = mean(ramp_x[c(i, i + 1L)]),
-            y = 0.18,
+            y = 0.15,
             width = diff(ramp_x[c(i, i + 1L)]),
             height = 0.075,
             gp = grid::gpar(
@@ -697,10 +846,6 @@
             )
         )
     }
-    grid::grid.text(
-        paste("Component", spec$adjustment_label),
-        x = 0.39, y = 0.18, just = "right", gp = gp_tiny
-    )
     legend_p <- c(
         spec$color_limits[["upper"]],
         if (spec$color_limits[["lower"]] < 0.05 &&
@@ -724,8 +869,8 @@
     grid::grid.segments(
         x0 = grid::unit(legend_x, "npc"),
         x1 = grid::unit(legend_x, "npc"),
-        y0 = grid::unit(0.125, "npc"),
-        y1 = grid::unit(0.235, "npc"),
+        y0 = grid::unit(0.095, "npc"),
+        y1 = grid::unit(0.205, "npc"),
         gp = grid::gpar(col = "#6F7479", lwd = 0.35)
     )
     for (i in seq_along(legend_x)) {
@@ -739,7 +884,7 @@
         grid::grid.text(
             legend_labels[[i]],
             x = grid::unit(legend_x[[i]], "npc"),
-            y = grid::unit(0.035, "npc"),
+            y = grid::unit(0.025, "npc"),
             just = horizontal_justification,
             gp = gp_tiny
         )
@@ -822,6 +967,13 @@
     structural_ticks <- seq(0, 1, by = 0.25)
     structural_domain <- c(-0.035, 1.035)
     z_values <- c(data$z_structural, data$z_abundance)
+    if (isTRUE(spec$component_guides$enabled)) {
+        z_values <- c(
+            z_values,
+            spec$component_guides$structural$z,
+            spec$component_guides$abundance$z
+        )
+    }
     z_values <- z_values[is.finite(z_values)]
     z_step <- max(1, ceiling(max(abs(z_values)) / 2))
     z_limit <- 2 * z_step
@@ -968,6 +1120,35 @@
                 )
             )
         }
+        if (isTRUE(spec$component_guides$enabled)) {
+            guide_color <- "#7F858A"
+            structural_guide <- spec$component_guides$structural$z
+            if (is.finite(structural_guide)) {
+                for (boundary in c(-structural_guide, structural_guide)) {
+                    grid::grid.segments(
+                        x0 = grid::unit(boundary, "native"),
+                        x1 = grid::unit(boundary, "native"),
+                        y0 = 0.54, y1 = 0.82,
+                        gp = grid::gpar(
+                            col = guide_color, lwd = 0.60, lty = 1
+                        )
+                    )
+                }
+            }
+            abundance_guide <- spec$component_guides$abundance$z
+            if (is.finite(abundance_guide)) {
+                for (boundary in c(-abundance_guide, abundance_guide)) {
+                    grid::grid.segments(
+                        x0 = grid::unit(boundary, "native"),
+                        x1 = grid::unit(boundary, "native"),
+                        y0 = 0.18, y1 = 0.46,
+                        gp = grid::gpar(
+                            col = guide_color, lwd = 0.60, lty = 1
+                        )
+                    )
+                }
+            }
+        }
         if (is.finite(data$z_structural[[i]])) {
             grid::grid.segments(
                 x0 = grid::unit(0, "native"),
@@ -1052,11 +1233,12 @@
         layout.pos.row = n + 3L,
         layout.pos.col = 1L:7L
     ))
+    footer <- paste0(
+        "Omnibus ", spec$adjustment_label,
+        ":  * <= .05    ** <= .01    *** <= .001"
+    )
     grid::grid.text(
-        paste0(
-            "Omnibus ", spec$adjustment_label,
-            ":  * <= .05    ** <= .01    *** <= .001"
-        ),
+        footer,
         x = 0, y = 0.55, just = "left", gp = gp_tiny
     )
     grid::popViewport()
@@ -1091,38 +1273,46 @@
 #' Plot a DASRA dual-component association profile
 #'
 #' Draws a publication-oriented, taxon-aligned summary of a DASRA analysis.
-#' The center displays the structural-absence and relative-abundance signed
-#' statistics on one standardized scale. Their colors encode the corresponding
+#' The center displays the structural-absence and relative-abundance component
+#' Z-statistics on one standardized scale. Their colors encode the corresponding
 #' component adjusted p-values. Feature superscripts encode the primary omnibus
-#' adjusted p-value. The side panels show group-standardized model summaries
-#' prepared when [dasra()] was called with `store_plot_data = TRUE`.
+#' adjusted p-value. For BH-adjusted fits, component-specific lane gates mark
+#' the exact family-wide BH discovery boundaries on the component Z-statistic
+#' axis. The side panels show covariate-standardized group summaries prepared
+#' when [dasra()] was called with `store_plot_data = TRUE`.
 #'
-#' The structural side panel is a descriptive unrestricted companion fit; the
-#' prespecified structural inference remains the central score statistic. The
+#' The structural side panel provides a descriptive unrestricted companion
+#' fit, and the central score statistic provides structural inference. The
 #' abundance side panel displays standardized present-conditional geometric
 #' mean relative abundance, expressed as a percentage on a log scale, from the
-#' fitted mark model. Its paired points avoid implying a zero baseline on the
-#' log scale. The central abundance statistic retains the target-excluded
+#' fitted mark model. Paired points represent these positive values on the log
+#' scale. The central abundance statistic retains the target-excluded
 #' reference correction used by DASRA.
-#' Side-panel segments are descriptive fitted group summaries, not effect
-#' estimates or confidence intervals; the abundance connector only links its
-#' two fitted group means. Component inference is carried by the central signed
-#' statistics. An omitted central marker or `--` denotes an unavailable
-#' component or side summary, not a zero effect.
+#' Side-panel segments provide descriptive fitted group summaries, and the
+#' abundance connector links its two fitted group means. Component inference is
+#' carried by the central Z-statistics. An omitted central marker or `--`
+#' denotes an unavailable component or side summary.
+#'
+#' For a component with `m` finite family p-values and `k` BH discoveries at
+#' level `alpha`, the symmetric gates correspond to the two-sided raw-p boundary
+#' `alpha * k / m`. This boundary is exact because both component p-values are
+#' two-sided functions of the plotted Z-statistics. Separate structural and
+#' abundance adjustments produce component-specific gates. The omnibus stars
+#' use the separately adjusted omnibus family.
 #'
 #' @param x A `dasra` object fitted with `component = "all"` and
 #'   `store_plot_data = TRUE`.
 #' @param features Optional character vector of feature names to display. The
-#'   supplied order is preserved and overrides `selection`, `max_features`, and
-#'   `alpha`.
+#'   supplied order is preserved and overrides `selection` and `max_features`.
+#'   The component guides continue to use the complete fitted families.
 #' @param selection Feature-selection rule when `features` is `NULL`.
 #'   `"significant"` displays primary omnibus adjusted p-values no greater than
 #'   `alpha`; `"top"` displays the smallest available adjusted p-values; and
 #'   `"all"` displays every formed omnibus result.
 #' @param max_features Maximum number of rows for `"significant"` or `"top"`.
-#'   The default is `24L`. Significant results are never padded with
-#'   nonsignificant features.
-#' @param alpha Adjusted-p threshold used by `selection = "significant"`.
+#'   The default is `24L`.
+#' @param alpha Adjusted-p threshold used by `selection = "significant"` and,
+#'   when enabled, by the component BH discovery gates.
 #' @param p_color_limits Either `"adaptive"` or numeric `c(lower, upper)` with
 #'   `0 < lower < upper <= 1`. The adaptive strong-evidence endpoint is derived
 #'   from the smallest positive finite component adjusted p-value among the
@@ -1136,7 +1326,13 @@
 #' @param group_colors Two colors for the reference and comparison groups.
 #' @param group_labels Optional two-element character vector used only as the
 #'   displayed reference and comparison labels. The fitted contrast is used by
-#'   default. This does not change the analysis or group ordering.
+#'   default. This option changes display text only.
+#' @param show_component_guides Logical; for a fit using BH (or its `"fdr"`
+#'   alias), draw separate structural and abundance discovery gates at the
+#'   family-wide BH step-up boundaries. Each boundary uses all retained taxa in
+#'   its fitted component family and is invariant to the displayed feature
+#'   subset. A finite gate appears when the component has at least one
+#'   discovery. Guide display is available for BH and `"fdr"` fits.
 #' @param file Optional output filename ending in `.pdf`, `.png`, or `.svg`.
 #'   When `NULL`, the current graphics device is used.
 #' @param width,height Output dimensions in inches when `file` is supplied.
@@ -1179,6 +1375,7 @@ plot.dasra <- function(
         height = NULL,
         dpi = 300,
         group_labels = NULL,
+        show_component_guides = TRUE,
         ...) {
     selection <- match.arg(selection)
     spec <- .dasra_plot_build_spec(
@@ -1189,7 +1386,8 @@ plot.dasra <- function(
         alpha = alpha,
         p_color_limits = p_color_limits,
         evidence_palette = evidence_palette,
-        group_colors = group_colors
+        group_colors = group_colors,
+        show_component_guides = show_component_guides
     )
 
     if (!is.null(group_labels)) {

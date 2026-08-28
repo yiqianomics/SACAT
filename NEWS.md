@@ -2,12 +2,12 @@
 
 - `plot.dasra()` provides a publication-oriented dual-component association
   profile. Structural-absence and present-conditional abundance evidence share
-  an aligned signed-statistic axis, while group-standardized model summaries
-  retain the fitted reference and comparison labels.
+  an aligned component Z-statistic axis, while covariate-standardized group
+  summaries retain the fitted reference and comparison labels.
 - `store_plot_data = TRUE` prepares the compact descriptive summaries needed
-  by the profile without storing the original count matrix or changing the
-  primary estimates, standard errors, or p-values. The default remains
-  `FALSE`, so existing fitted paths and lightweight objects are unchanged.
+  by the profile. Primary estimates, standard errors, and p-values are
+  identical with either setting, and the default `FALSE` retains lightweight
+  fitted objects.
 - Feature labels use only the space required by the displayed names. Component
   adjusted p-values use a shared adaptive `-log10(p)` color scale from one to a
   rounded lower endpoint, with an explicit numeric range available when plots
@@ -19,6 +19,11 @@
   publication figures with long fitted group names.
 - The plot follows standard R conventions: `plot(fit)` draws to the active
   device, and the `file` argument writes PDF, PNG, or SVG output directly.
+- BH-adjusted fits now show separate, family-wide structural and abundance
+  discovery gates on the component Z-statistic axis. The data-dependent
+  boundaries use the complete fitted component families and are invariant to
+  displayed feature selection. A finite gate appears when the component has at
+  least one BH discovery.
 
 # DASRA 0.5.2
 

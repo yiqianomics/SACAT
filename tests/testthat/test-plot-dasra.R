@@ -14,21 +14,21 @@
                    rep(0.9, max(0L, n - 6L)))
     p_adjusted <- c(0.0008, 0.009, 0.04, 0.2, 0.6, 0.95,
                     rep(1, max(0L, n - 6L)))
-    p_structural <- c(4.7e-7, 0.004, 0.03, 0.2, 0.7, 1,
-                      rep(1, max(0L, n - 6L)))
-    p_abundance <- c(0.02, 0.0004, 0.08, 0.5, 0.9, 1,
-                     rep(1, max(0L, n - 6L)))
     z_structural <- c(-5.1, 2.5, -1.9, 0.8, -0.4, 0,
                       rep(0, max(0L, n - 6L)))
     z_abundance <- c(2.3, -3.8, 1.2, -0.7, 0.2, 0,
                      rep(0, max(0L, n - 6L)))
+    p_structural_raw <- 2 * stats::pnorm(-abs(z_structural))
+    p_abundance_raw <- 2 * stats::pnorm(-abs(z_abundance))
+    p_structural <- stats::p.adjust(p_structural_raw, method = "BH")
+    p_abundance <- stats::p.adjust(p_abundance_raw, method = "BH")
 
     results <- data.frame(
         taxon = feature,
-        p_structural_absence = p_structural,
+        p_structural_absence = p_structural_raw,
         p_adj_structural_absence = p_structural,
         z_structural_absence = z_structural,
-        p_relative_abundance = p_abundance,
+        p_relative_abundance = p_abundance_raw,
         p_adj_relative_abundance = p_abundance,
         z_relative_abundance = z_abundance,
         p_omnibus = p_omnibus,
@@ -90,6 +90,18 @@ test_that("plot selection and significance annotations are deterministic", {
     )
     expect_identical(spec$data$stars, c("***", "**", "*"))
     expect_identical(spec$contrast, c("healthy", "disease"))
+    expect_equal(
+        spec$component_guides$structural$z,
+        stats::qnorm(
+            0.05 * 2 / (2 * nrow(fit$results)), lower.tail = FALSE
+        )
+    )
+    expect_equal(
+        spec$component_guides$abundance$z,
+        stats::qnorm(
+            0.05 / (2 * nrow(fit$results)), lower.tail = FALSE
+        )
+    )
 
     explicit <- DASRA:::.dasra_plot_build_spec(
         fit, rev(fit$results$taxon[c(2L, 5L)]), "significant",
@@ -108,6 +120,84 @@ test_that("plot selection and significance annotations are deterministic", {
     expect_identical(top$data$feature, fit$results$taxon[1:2])
 })
 
+test_that("component BH gates use the complete fitted families", {
+    fit <- .make_plot_contract_fixture()
+    full <- DASRA:::.dasra_plot_build_spec(
+        fit, NULL, "all", 24L, 0.05, "adaptive",
+        .plot_contract_palette, c("#6090c1", "#f28e4b")
+    )
+    subset <- DASRA:::.dasra_plot_build_spec(
+        fit, fit$results$taxon[[1L]], "top", 1L, 0.05,
+        "adaptive", .plot_contract_palette,
+        c("#6090c1", "#f28e4b")
+    )
+
+    expect_identical(
+        subset$component_guides, full$component_guides
+    )
+    expect_identical(full$component_guides$structural$discoveries, 2L)
+    expect_identical(full$component_guides$abundance$discoveries, 1L)
+    expect_identical(full$component_guides$structural$family_size, 6L)
+    expect_identical(full$component_guides$abundance$family_size, 6L)
+
+    no_discoveries <- fit
+    no_discoveries$results$z_structural_absence[] <- 0
+    no_discoveries$results$z_relative_abundance[] <- 0
+    no_discoveries$results$p_structural_absence[] <- 1
+    no_discoveries$results$p_relative_abundance[] <- 1
+    no_discoveries$results$p_adj_structural_absence[] <- 1
+    no_discoveries$results$p_adj_relative_abundance[] <- 1
+    no_guide <- DASRA:::.dasra_plot_build_spec(
+        no_discoveries, NULL, "top", 2L, 0.05, "adaptive",
+        .plot_contract_palette, c("#6090c1", "#f28e4b")
+    )
+    expect_identical(
+        no_guide$component_guides$structural$discoveries, 0L
+    )
+    expect_identical(
+        no_guide$component_guides$abundance$discoveries, 0L
+    )
+    expect_true(is.na(no_guide$component_guides$structural$z))
+    expect_true(is.na(no_guide$component_guides$abundance$z))
+
+    disabled <- DASRA:::.dasra_plot_build_spec(
+        fit, NULL, "top", 2L, 0.05, "adaptive",
+        .plot_contract_palette, c("#6090c1", "#f28e4b"), FALSE
+    )
+    expect_false(disabled$component_guides$enabled)
+    expect_error(
+        DASRA:::.dasra_plot_build_spec(
+            fit, NULL, "top", 2L, 0.05, "adaptive",
+            .plot_contract_palette, c("#6090c1", "#f28e4b"), NA
+        ),
+        "TRUE or FALSE"
+    )
+
+    holm <- fit
+    holm$settings$p_adjust_method <- "holm"
+    holm$results$p_adj_structural_absence <- stats::p.adjust(
+        holm$results$p_structural_absence, method = "holm"
+    )
+    holm$results$p_adj_relative_abundance <- stats::p.adjust(
+        holm$results$p_relative_abundance, method = "holm"
+    )
+    holm_spec <- DASRA:::.dasra_plot_build_spec(
+        holm, NULL, "top", 2L, 0.05, "adaptive",
+        .plot_contract_palette, c("#6090c1", "#f28e4b")
+    )
+    expect_false(holm_spec$component_guides$enabled)
+
+    malformed <- fit
+    malformed$results$p_structural_absence[[1L]] <- 0.2
+    expect_error(
+        DASRA:::.dasra_plot_build_spec(
+            malformed, NULL, "top", 2L, 0.05, "adaptive",
+            .plot_contract_palette, c("#6090c1", "#f28e4b")
+        ),
+        "could not be verified"
+    )
+})
+
 test_that("adaptive colors use one shared displayed-component scale", {
     fit <- .make_plot_contract_fixture()
     spec <- DASRA:::.dasra_plot_build_spec(
@@ -116,7 +206,7 @@ test_that("adaptive colors use one shared displayed-component scale", {
         c("#6090c1", "#f28e4b")
     )
     expect_identical(
-        unname(spec$color_limits), c(1e-7, 1)
+        unname(spec$color_limits), c(1e-6, 1)
     )
 
     manual <- DASRA:::.dasra_plot_build_spec(

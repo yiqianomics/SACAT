@@ -18,7 +18,7 @@ Description: Provides depth-aware taxon-level inference for microbiome count
     a zero-truncated conditional-mark likelihood, and corrects the abundance
     component for a shared compositional background across taxa.
     Publication-oriented dual-component profiles display the complementary
-    results on an aligned signed-evidence scale.
+    results on an aligned component Z-statistic axis.
 License: GPL (>= 3)
 Encoding: UTF-8
 Depends: R (>= 4.1.0)

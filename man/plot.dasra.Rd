@@ -18,6 +18,7 @@
   height = NULL,
   dpi = 300,
   group_labels = NULL,
+  show_component_guides = TRUE,
   ...
 )
 }
@@ -26,8 +27,8 @@
 \code{store_plot_data = TRUE}.}
 
 \item{features}{Optional character vector of feature names to display. The
-supplied order is preserved and overrides \code{selection}, \code{max_features}, and
-\code{alpha}.}
+supplied order is preserved and overrides \code{selection} and \code{max_features}.
+The component guides continue to use the complete fitted families.}
 
 \item{selection}{Feature-selection rule when \code{features} is \code{NULL}.
 \code{"significant"} displays primary omnibus adjusted p-values no greater than
@@ -35,37 +36,44 @@ supplied order is preserved and overrides \code{selection}, \code{max_features},
 \code{"all"} displays every formed omnibus result.}
 
 \item{max_features}{Maximum number of rows for \code{"significant"} or \code{"top"}.
-The default is \code{24L}. Significant results are never padded with
-nonsignificant features.}
+The default is \code{24L}.}
 
-\item{alpha}{Adjusted-p threshold used by \code{selection = "significant"}.}
+\item{alpha}{Adjusted-p threshold used by \code{selection = "significant"} and,
+when enabled, by the component BH discovery gates.}
 
 \item{p_color_limits}{Either \code{"adaptive"} or numeric \code{c(lower, upper)} with
 \verb{0 < lower < upper <= 1}. The adaptive strong-evidence endpoint is derived
 from the smallest positive finite component adjusted p-value among the
 displayed markers and rounded down to a power of ten; the weak-evidence
-endpoint is one. Degenerate all-zero or all-one displays use a finite fallback.
-Colors are interpolated on the \code{-log10(p)} scale and values outside the
-range are clamped.}
+endpoint is one. Degenerate all-zero or all-one displays use a finite
+fallback. Colors are interpolated on the \code{-log10(p)} scale and values
+outside the range are clamped.}
 
 \item{evidence_palette}{Colors from weak to strong component evidence. The
-default is a sequential gray-plum scale chosen to remain distinct from the
-reference/comparison group colors.}
+default is a sequential gray-plum scale chosen to remain distinct from
+the reference/comparison group colors.}
 
 \item{group_colors}{Two colors for the reference and comparison groups.}
-
-\item{group_labels}{Optional two-element character vector used only as the
-displayed reference and comparison labels. The fitted contrast is used by
-default. This does not change the analysis or group ordering.}
 
 \item{file}{Optional output filename ending in \code{.pdf}, \code{.png}, or \code{.svg}.
 When \code{NULL}, the current graphics device is used.}
 
 \item{width, height}{Output dimensions in inches when \code{file} is supplied.
-Defaults use a 180-mm manuscript width and a height chosen from the number of
-displayed features.}
+Defaults use a 180-mm manuscript width and a height chosen from the number
+of displayed features.}
 
 \item{dpi}{Resolution for PNG output.}
+
+\item{group_labels}{Optional two-element character vector used only as the
+displayed reference and comparison labels. The fitted contrast is used by
+default. This option changes display text only.}
+
+\item{show_component_guides}{Logical; for a fit using BH (or its \code{"fdr"}
+alias), draw separate structural and abundance discovery gates at the
+family-wide BH step-up boundaries. Each boundary uses all retained taxa in
+its fitted component family and is invariant to the displayed feature
+subset. A finite gate appears when the component has at least one
+discovery. Guide display is available for BH and \code{"fdr"} fits.}
 
 \item{...}{Reserved for future graphical options.}
 }
@@ -75,26 +83,33 @@ figure.
 }
 \description{
 Draws a publication-oriented, taxon-aligned summary of a DASRA analysis.
-The center displays the structural-absence and relative-abundance signed
-statistics on one standardized scale. Their colors encode the corresponding
+The center displays the structural-absence and relative-abundance component
+Z-statistics on one standardized scale. Their colors encode the corresponding
 component adjusted p-values. Feature superscripts encode the primary omnibus
-adjusted p-value. The side panels show group-standardized model summaries
-prepared when \code{\link[=dasra]{dasra()}} was called with \code{store_plot_data = TRUE}.
+adjusted p-value. For BH-adjusted fits, component-specific lane gates mark
+the exact family-wide BH discovery boundaries on the component Z-statistic
+axis. The side panels show covariate-standardized group summaries prepared
+when \code{\link[=dasra]{dasra()}} was called with \code{store_plot_data = TRUE}.
 }
 \details{
-The structural side panel is a descriptive unrestricted companion fit; the
-prespecified structural inference remains the central score statistic. The
+The structural side panel provides a descriptive unrestricted companion
+fit, and the central score statistic provides structural inference. The
 abundance side panel displays standardized present-conditional geometric
 mean relative abundance, expressed as a percentage on a log scale, from the
-fitted mark model. Its paired points avoid implying a zero baseline on the
-log scale. The central abundance statistic retains the target-excluded
+fitted mark model. Paired points represent these positive values on the log
+scale. The central abundance statistic retains the target-excluded
 reference correction used by DASRA.
+Side-panel segments provide descriptive fitted group summaries, and the
+abundance connector links its two fitted group means. Component inference is
+carried by the central Z-statistics. An omitted central marker or \verb{--}
+denotes an unavailable component or side summary.
 
-Side-panel segments are descriptive fitted group summaries, not effect
-estimates or confidence intervals; the abundance connector only links its two
-fitted group means. Component inference is carried by the central signed
-statistics. An omitted central marker or \code{--} denotes an unavailable
-component or side summary, not a zero effect.
+For a component with \code{m} finite family p-values and \code{k} BH discoveries at
+level \code{alpha}, the symmetric gates correspond to the two-sided raw-p boundary
+\code{alpha * k / m}. This boundary is exact because both component p-values are
+two-sided functions of the plotted Z-statistics. Separate structural and
+abundance adjustments produce component-specific gates. The omnibus stars
+use the separately adjusted omnibus family.
 }
 \examples{
 \dontrun{
