@@ -149,7 +149,7 @@ test_that("the mark influence matches a case-weight perturbation", {
     derivative <- (
         refitted_effect(epsilon) - refitted_effect(-epsilon)
     ) / (2 * epsilon)
-    expect_equal(derivative, fit$phi[index], tolerance = 5e-6)
+    expect_lt(abs(derivative - fit$phi[index]), 1e-6)
 })
 
 test_that("all-positive taxa use the same conditional-mark estimator", {

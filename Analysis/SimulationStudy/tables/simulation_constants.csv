@@ -1,0 +1,10 @@
+design_feature,value
+Focal taxa,50
+Samples per group,"60, 80, 120"
+Signal taxa,10 (20%) or 20 (40%)
+Covariate structures,Unconfounded and confounded
+Monte Carlo replications,100
+Base settings,45
+Complete design settings,540
+Nominal level,0.05
+Multiplicity adjustment,Benjamini-Hochberg within each 50-taxon method-component family

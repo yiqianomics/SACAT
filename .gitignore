@@ -19,3 +19,6 @@ Analysis/NegativeControlAnalysis/prepare_public_data.R
 
 # Local SparseDOSSA2 simulation study
 /Analysis/SparseDOSSA2Simulation/
+
+# Local simulation result data and source archive
+/Analysis/SimulationStudy/results_data/

@@ -1,0 +1,505 @@
+experiment,samples_per_group,signal_taxa_percent,covariate_structure,target_effect,method,measure,replications,estimate,monte_carlo_sd,monte_carlo_se,interval_lower,interval_upper
+Abundance perturbation,60,20,Unconfounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.043,0.0768771813355628,0.00768771813355628,0.0279320724582297,0.0580679275417703
+Abundance perturbation,60,20,Unconfounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.131,0.127679364824627,0.0127679364824627,0.105974844494373,0.156025155505627
+Abundance perturbation,60,20,Unconfounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.28,0.155699788832305,0.0155699788832305,0.249482841388868,0.310517158611132
+Abundance perturbation,60,20,Unconfounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.256,0.156553795575486,0.0156553795575486,0.225315456067205,0.286684543932795
+Abundance perturbation,60,20,Unconfounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.526,0.175015150859299,0.0175015150859299,0.491697030431578,0.560302969568423
+Abundance perturbation,60,20,Unconfounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.384,0.160630072533197,0.0160630072533197,0.352516505783493,0.415483494216507
+Abundance perturbation,60,20,Unconfounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.068,0.104330477257839,0.0104330477257839,0.0475512264574635,0.0884487735425365
+Abundance perturbation,60,20,Unconfounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.211,0.174016718110124,0.0174016718110124,0.176892723250416,0.245107276749584
+Abundance perturbation,60,20,Unconfounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
+Abundance perturbation,60,20,Unconfounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.542,0.180448375336594,0.0180448375336594,0.506632118434028,0.577367881565972
+Abundance perturbation,60,20,Unconfounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.887,0.1134001585519,0.01134001585519,0.864773568923828,0.909226431076172
+Abundance perturbation,60,20,Unconfounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.941,0.0726065917924617,0.00726065917924617,0.926769108008678,0.955230891991323
+Abundance perturbation,60,20,Unconfounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.947,0.0731057073315377,0.00731057073315377,0.932671281363019,0.961328718636981
+Abundance perturbation,60,20,Unconfounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.985,0.0385992097056273,0.00385992097056273,0.977434554897697,0.992565445102303
+Abundance perturbation,60,20,Unconfounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,0.97,0.0559581373109678,0.00559581373109678,0.95903220508705,0.98096779491295
+Abundance perturbation,60,20,Unconfounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.536,0.182308429965165,0.0182308429965165,0.500267547726828,0.571732452273173
+Abundance perturbation,60,20,Unconfounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.926,0.103103360906922,0.0103103360906922,0.905791741262243,0.946208258737757
+Abundance perturbation,60,20,Unconfounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.009,0.0287623491264661,0.00287623491264661,0.00336257957121264,0.0146374204287874
+Abundance perturbation,80,20,Unconfounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.089,0.105308589345309,0.0105308589345309,0.0683595164883194,0.109640483511681
+Abundance perturbation,80,20,Unconfounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.215,0.170782512765993,0.0170782512765993,0.181526627497865,0.248473372502135
+Abundance perturbation,80,20,Unconfounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.367,0.188591268797542,0.0188591268797542,0.330036111315682,0.403963888684318
+Abundance perturbation,80,20,Unconfounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.399,0.174364647515,0.0174364647515,0.36482452908706,0.43317547091294
+Abundance perturbation,80,20,Unconfounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.646,0.172574094758797,0.0172574094758797,0.612175477427276,0.679824522572724
+Abundance perturbation,80,20,Unconfounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.495,0.167196128706814,0.0167196128706814,0.462229558773465,0.527770441226536
+Abundance perturbation,80,20,Unconfounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.095,0.101876336206147,0.0101876336206147,0.0750322381035952,0.114967761896405
+Abundance perturbation,80,20,Unconfounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.307,0.170118793907093,0.0170118793907093,0.27365671639421,0.34034328360579
+Abundance perturbation,80,20,Unconfounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.001,0.01,0.001,0,0.00296
+Abundance perturbation,80,20,Unconfounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.673,0.126215304263402,0.0126215304263402,0.648261800364373,0.697738199635627
+Abundance perturbation,80,20,Unconfounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.982,0.0479477830456206,0.00479477830456206,0.972602234523058,0.991397765476942
+Abundance perturbation,80,20,Unconfounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.99,0.0301511344577764,0.00301511344577764,0.984090377646276,0.995909622353724
+Abundance perturbation,80,20,Unconfounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.986,0.0348735088019777,0.00348735088019777,0.979164792274812,0.992835207725188
+Abundance perturbation,80,20,Unconfounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.999,0.01,0.001,0.99704,1
+Abundance perturbation,80,20,Unconfounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,0.997,0.0171446607997765,0.00171446607997765,0.993639646483244,1
+Abundance perturbation,80,20,Unconfounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.693,0.160337396785905,0.0160337396785905,0.661573870229963,0.724426129770037
+Abundance perturbation,80,20,Unconfounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.983,0.0427702341505507,0.00427702341505507,0.974617034106492,0.991382965893508
+Abundance perturbation,80,20,Unconfounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.028,0.0604361253930565,0.00604361253930565,0.0161545194229609,0.0398454805770391
+Abundance perturbation,120,20,Unconfounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.306,0.207836376979487,0.0207836376979487,0.26526407011202,0.34673592988798
+Abundance perturbation,120,20,Unconfounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.499,0.194102440931992,0.0194102440931992,0.46095592157733,0.537044078422671
+Abundance perturbation,120,20,Unconfounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.668,0.161357874416973,0.0161357874416973,0.636373856614273,0.699626143385727
+Abundance perturbation,120,20,Unconfounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.686,0.166981520782475,0.0166981520782475,0.653271621926635,0.718728378073365
+Abundance perturbation,120,20,Unconfounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.872,0.0995748538294258,0.00995748538294258,0.852483328649433,0.891516671350568
+Abundance perturbation,120,20,Unconfounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.788,0.124948474228865,0.0124948474228865,0.763510099051143,0.812489900948857
+Abundance perturbation,120,20,Unconfounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.205,0.159782048523303,0.0159782048523303,0.173682718489433,0.236317281510567
+Abundance perturbation,120,20,Unconfounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.625,0.176025135946116,0.0176025135946116,0.590499073354561,0.659500926645439
+Abundance perturbation,120,20,Unconfounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0,0,0,0,0
+Abundance perturbation,120,20,Unconfounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.74,0.112815214963553,0.0112815214963553,0.717888217867144,0.762111782132856
+Abundance perturbation,120,20,Unconfounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.995,0.021904291355759,0.0021904291355759,0.990706758894271,0.999293241105729
+Abundance perturbation,120,20,Unconfounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.999,0.01,0.001,0.99704,1
+Abundance perturbation,120,20,Unconfounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.998,0.014070529413629,0.0014070529413629,0.995242176234929,1
+Abundance perturbation,120,20,Unconfounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,1,0,0,1,1
+Abundance perturbation,120,20,Unconfounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,1,0,0,1,1
+Abundance perturbation,120,20,Unconfounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.884,0.107044784359565,0.0107044784359565,0.863019222265525,0.904980777734475
+Abundance perturbation,120,20,Unconfounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.999,0.01,0.001,0.99704,1
+Abundance perturbation,120,20,Unconfounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.15,0.163608302869007,0.0163608302869007,0.117932772637675,0.182067227362325
+Abundance perturbation,60,40,Unconfounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.0405,0.0495917678082102,0.00495917678082102,0.0307800135095908,0.0502199864904092
+Abundance perturbation,60,40,Unconfounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.077,0.0697832140969228,0.00697832140969229,0.0633224900370031,0.0906775099629969
+Abundance perturbation,60,40,Unconfounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.292,0.113866836988021,0.0113866836988021,0.269682099950348,0.314317900049652
+Abundance perturbation,60,40,Unconfounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.344,0.146211414663075,0.0146211414663075,0.315342562726037,0.372657437273963
+Abundance perturbation,60,40,Unconfounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.5945,0.143353592648571,0.0143353592648571,0.56640269584088,0.62259730415912
+Abundance perturbation,60,40,Unconfounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.44,0.143019388386839,0.0143019388386839,0.41196819987618,0.46803180012382
+Abundance perturbation,60,40,Unconfounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.042,0.0589127072091164,0.00589127072091164,0.0304531093870132,0.0535468906129868
+Abundance perturbation,60,40,Unconfounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.2755,0.153493822466422,0.0153493822466422,0.245415210796581,0.305584789203419
+Abundance perturbation,60,40,Unconfounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0,0,0,0,0
+Abundance perturbation,60,40,Unconfounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.689,0.103616425514315,0.0103616425514315,0.668691180599194,0.709308819400806
+Abundance perturbation,60,40,Unconfounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.8515,0.0868805635526861,0.00868805635526861,0.834471409543674,0.868528590456327
+Abundance perturbation,60,40,Unconfounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.9455,0.0560009920547048,0.00560009920547048,0.934523805557278,0.956476194442722
+Abundance perturbation,60,40,Unconfounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.964,0.0432750190378615,0.00432750190378615,0.955518096268579,0.972481903731421
+Abundance perturbation,60,40,Unconfounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.987,0.0262274434110301,0.00262274434110301,0.981859421091438,0.992140578908562
+Abundance perturbation,60,40,Unconfounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,0.9865,0.0273907379464761,0.00273907379464761,0.981131415362491,0.991868584637509
+Abundance perturbation,60,40,Unconfounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.429,0.121268547472379,0.0121268547472379,0.405231364695414,0.452768635304586
+Abundance perturbation,60,40,Unconfounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.962,0.0432983541805861,0.00432983541805861,0.953513522580605,0.970486477419395
+Abundance perturbation,60,40,Unconfounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.007,0.0201258665664489,0.00201258665664489,0.00305533015297602,0.010944669847024
+Abundance perturbation,80,40,Unconfounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.1335,0.118716834815821,0.0118716834815821,0.110231500376099,0.156768499623901
+Abundance perturbation,80,40,Unconfounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.1865,0.125901797549767,0.0125901797549767,0.161823247680246,0.211176752319754
+Abundance perturbation,80,40,Unconfounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.4465,0.134887719862473,0.0134887719862473,0.420062006906955,0.472937993093045
+Abundance perturbation,80,40,Unconfounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.537,0.136629706753973,0.0136629706753973,0.510220577476221,0.563779422523779
+Abundance perturbation,80,40,Unconfounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.754,0.099919159243052,0.0099919159243052,0.734415844788362,0.773584155211638
+Abundance perturbation,80,40,Unconfounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.6085,0.126542004045608,0.0126542004045608,0.583697767207061,0.633302232792939
+Abundance perturbation,80,40,Unconfounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.0845,0.0836946711553249,0.00836946711553249,0.0680958444535563,0.100904155546444
+Abundance perturbation,80,40,Unconfounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.489,0.149000033896003,0.0149000033896003,0.459795993356383,0.518204006643617
+Abundance perturbation,80,40,Unconfounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,5e-04,0.005,5e-04,0,0.00148
+Abundance perturbation,80,40,Unconfounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.807,0.0721320338201433,0.00721320338201433,0.792862121371252,0.821137878628748
+Abundance perturbation,80,40,Unconfounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.94,0.0476731294622796,0.00476731294622796,0.930656066625393,0.949343933374607
+Abundance perturbation,80,40,Unconfounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.9865,0.0273907379464761,0.00273907379464761,0.981131415362491,0.991868584637509
+Abundance perturbation,80,40,Unconfounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.995,0.0150755672288882,0.00150755672288882,0.992045188823138,0.997954811176862
+Abundance perturbation,80,40,Unconfounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.999,0.00703526470681449,0.000703526470681449,0.997621088117464,1
+Abundance perturbation,80,40,Unconfounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,0.999,0.00703526470681449,0.000703526470681449,0.997621088117464,1
+Abundance perturbation,80,40,Unconfounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.556,0.122738121480844,0.0122738121480844,0.531943328189755,0.580056671810246
+Abundance perturbation,80,40,Unconfounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.993,0.0174367544009889,0.00174367544009889,0.989582396137406,0.996417603862594
+Abundance perturbation,80,40,Unconfounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.021,0.0396830880192995,0.00396830880192995,0.0132221147482173,0.0287778852517827
+Abundance perturbation,120,40,Unconfounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.3635,0.154045611768237,0.0154045611768237,0.333307060093425,0.393692939906575
+Abundance perturbation,120,40,Unconfounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.433,0.134881167302664,0.0134881167302664,0.406563291208678,0.459436708791322
+Abundance perturbation,120,40,Unconfounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.688,0.112168704110452,0.0112168704110452,0.666014933994351,0.709985066005649
+Abundance perturbation,120,40,Unconfounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.7835,0.0934887774823883,0.00934887774823883,0.765176199613452,0.801823800386548
+Abundance perturbation,120,40,Unconfounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.903,0.0580925767611274,0.00580925767611274,0.891613854954819,0.914386145045181
+Abundance perturbation,120,40,Unconfounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.8215,0.0820368850277149,0.00820368850277149,0.805420770534568,0.837579229465432
+Abundance perturbation,120,40,Unconfounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.1565,0.106755408161447,0.0106755408161447,0.135575940000356,0.177424059999644
+Abundance perturbation,120,40,Unconfounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.7555,0.104662758081817,0.0104662758081817,0.734986099415964,0.776013900584036
+Abundance perturbation,120,40,Unconfounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Abundance perturbation,120,40,Unconfounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.86,0.053654336998866,0.0053654336998866,0.849483749948222,0.870516250051778
+Abundance perturbation,120,40,Unconfounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.9905,0.022127956630617,0.0022127956630617,0.986162920500399,0.994837079499601
+Abundance perturbation,120,40,Unconfounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.999,0.00703526470681449,0.000703526470681449,0.997621088117464,1
+Abundance perturbation,120,40,Unconfounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.9975,0.0109521456778795,0.00109521456778795,0.995353379447136,0.999646620552864
+Abundance perturbation,120,40,Unconfounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.9995,0.005,5e-04,0.99852,1
+Abundance perturbation,120,40,Unconfounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,1,0,0,1,1
+Abundance perturbation,120,40,Unconfounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.7605,0.0868340458296832,0.00868340458296832,0.743480527017382,0.777519472982618
+Abundance perturbation,120,40,Unconfounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.999,0.00703526470681449,0.000703526470681449,0.997621088117464,1
+Abundance perturbation,120,40,Unconfounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.1235,0.111113510075112,0.0111113510075112,0.101721752025278,0.145278247974722
+Abundance perturbation,60,20,Confounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.031,0.0662029325848054,0.00662029325848054,0.0180242252133782,0.0439757747866219
+Abundance perturbation,60,20,Confounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.09,0.119341628287971,0.0119341628287971,0.0666090408555577,0.113390959144442
+Abundance perturbation,60,20,Confounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.204,0.149693289121727,0.0149693289121727,0.174660115332142,0.233339884667858
+Abundance perturbation,60,20,Confounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.199,0.146676996881384,0.0146676996881384,0.170251308611249,0.227748691388751
+Abundance perturbation,60,20,Confounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.411,0.192219886714369,0.0192219886714369,0.373324902203984,0.448675097796016
+Abundance perturbation,60,20,Confounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.298,0.171729173674449,0.0171729173674449,0.264341081959808,0.331658918040192
+Abundance perturbation,60,20,Confounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.043,0.0714284271282814,0.00714284271282814,0.0290000282828569,0.0569999717171432
+Abundance perturbation,60,20,Confounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.132,0.127825638818642,0.0127825638818642,0.106946174791546,0.157053825208454
+Abundance perturbation,60,20,Confounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0,0,0,0,0
+Abundance perturbation,60,20,Confounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.446,0.18500341247194,0.018500341247194,0.4097393311555,0.4822606688445
+Abundance perturbation,60,20,Confounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.816,0.142644574896751,0.0142644574896751,0.788041663320237,0.843958336679763
+Abundance perturbation,60,20,Confounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.902,0.109156545910685,0.0109156545910685,0.880605317001506,0.923394682998494
+Abundance perturbation,60,20,Confounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.885,0.10480862791225,0.010480862791225,0.864457508929199,0.905542491070801
+Abundance perturbation,60,20,Confounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.967,0.0569511575249735,0.00569511575249735,0.955837573125105,0.978162426874895
+Abundance perturbation,60,20,Confounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,0.939,0.0790026211047085,0.00790026211047085,0.923515486263477,0.954484513736523
+Abundance perturbation,60,20,Confounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.439,0.19740488055944,0.019740488055944,0.40030864341035,0.47769135658965
+Abundance perturbation,60,20,Confounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.841,0.135657769047815,0.0135657769047815,0.814411077266628,0.867588922733372
+Abundance perturbation,60,20,Confounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.014,0.0402517331328978,0.00402517331328978,0.00611066030595204,0.021889339694048
+Abundance perturbation,80,20,Confounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.072,0.105485888758984,0.0105485888758984,0.0513247658032392,0.0926752341967608
+Abundance perturbation,80,20,Confounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.153,0.14316410023452,0.014316410023452,0.124939836354034,0.181060163645966
+Abundance perturbation,80,20,Confounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.338,0.177968332218761,0.0177968332218761,0.303118206885123,0.372881793114877
+Abundance perturbation,80,20,Confounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.34,0.169371983181601,0.0169371983181601,0.306803091296406,0.373196908703594
+Abundance perturbation,80,20,Confounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.587,0.167967649602926,0.0167967649602926,0.554078340677827,0.619921659322174
+Abundance perturbation,80,20,Confounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.458,0.147832829420753,0.0147832829420753,0.429024765433532,0.486975234566468
+Abundance perturbation,80,20,Confounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.078,0.0938298481510037,0.00938298481510037,0.0596093497624033,0.0963906502375967
+Abundance perturbation,80,20,Confounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.264,0.175533817858899,0.0175533817858899,0.229595371699656,0.298404628300344
+Abundance perturbation,80,20,Confounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.001,0.01,0.001,0,0.00296
+Abundance perturbation,80,20,Confounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.63,0.112366643743874,0.0112366643743874,0.607976137826201,0.652023862173799
+Abundance perturbation,80,20,Confounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.946,0.0642281287696639,0.00642281287696639,0.933411286761146,0.958588713238854
+Abundance perturbation,80,20,Confounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.979,0.0433333333333333,0.00433333333333333,0.970506666666667,0.987493333333333
+Abundance perturbation,80,20,Confounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.977,0.0446196043338474,0.00446196043338474,0.968254557550566,0.985745442449434
+Abundance perturbation,80,20,Confounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.998,0.014070529413629,0.0014070529413629,0.995242176234929,1
+Abundance perturbation,80,20,Confounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,0.99,0.0301511344577764,0.00301511344577764,0.984090377646276,0.995909622353724
+Abundance perturbation,80,20,Confounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.607,0.154563575883515,0.0154563575883515,0.576705539126831,0.637294460873169
+Abundance perturbation,80,20,Confounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.947,0.0744745906095807,0.00744745906095807,0.932402980240522,0.961597019759478
+Abundance perturbation,80,20,Confounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.02,0.055048188256318,0.0055048188256318,0.00921055510176167,0.0307894448982383
+Abundance perturbation,120,20,Confounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.226,0.172691117959848,0.0172691117959848,0.19215254087987,0.25984745912013
+Abundance perturbation,120,20,Confounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.383,0.186977554964777,0.0186977554964777,0.346352399226904,0.419647600773096
+Abundance perturbation,120,20,Confounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.595,0.180557498047049,0.0180557498047049,0.559610730382778,0.630389269617222
+Abundance perturbation,120,20,Confounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.621,0.153934920001797,0.0153934920001797,0.590828755679648,0.651171244320352
+Abundance perturbation,120,20,Confounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.811,0.123005296757103,0.0123005296757103,0.786890961835608,0.835109038164392
+Abundance perturbation,120,20,Confounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.709,0.13416031417297,0.013416031417297,0.682704578422098,0.735295421577902
+Abundance perturbation,120,20,Confounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.173,0.132463068990812,0.0132463068990812,0.147037238477801,0.198962761522199
+Abundance perturbation,120,20,Confounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.502,0.16995543087777,0.016995543087777,0.468688735547957,0.535311264452043
+Abundance perturbation,120,20,Confounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0,0,0,0,0
+Abundance perturbation,120,20,Confounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.721,0.0956582722533972,0.00956582722533972,0.702250978638334,0.739749021361666
+Abundance perturbation,120,20,Confounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.996,0.0196946385566932,0.00196946385566932,0.992139850842888,0.999860149157112
+Abundance perturbation,120,20,Confounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.999,0.01,0.001,0.99704,1
+Abundance perturbation,120,20,Confounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.999,0.01,0.001,0.99704,1
+Abundance perturbation,120,20,Confounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,1,0,0,1,1
+Abundance perturbation,120,20,Confounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,1,0,0,1,1
+Abundance perturbation,120,20,Confounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.823,0.128593793148673,0.0128593793148673,0.79779561654286,0.84820438345714
+Abundance perturbation,120,20,Confounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,1,0,0,1,1
+Abundance perturbation,120,20,Confounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.1,0.139985569241831,0.0139985569241831,0.072562828428601,0.127437171571399
+Abundance perturbation,60,40,Confounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.0275,0.0428616519994413,0.00428616519994413,0.0190991162081095,0.0359008837918905
+Abundance perturbation,60,40,Confounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.0605,0.0652481665054523,0.00652481665054523,0.0477113593649314,0.0732886406350687
+Abundance perturbation,60,40,Confounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.222,0.111309923142095,0.0111309923142095,0.200183255064149,0.243816744935851
+Abundance perturbation,60,40,Confounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.2925,0.125,0.0125,0.268,0.317
+Abundance perturbation,60,40,Confounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.5145,0.122946773405849,0.0122946773405849,0.490402432412454,0.538597567587546
+Abundance perturbation,60,40,Confounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.39,0.122886167248434,0.0122886167248434,0.365914311219307,0.414085688780693
+Abundance perturbation,60,40,Confounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.0325,0.043446821087696,0.0043446821087696,0.0239844230668116,0.0410155769331884
+Abundance perturbation,60,40,Confounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.2265,0.134737867466028,0.0134737867466028,0.200091377976659,0.252908622023342
+Abundance perturbation,60,40,Confounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0,0,0,0,0
+Abundance perturbation,60,40,Confounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.6255,0.109289486773394,0.0109289486773394,0.604079260592415,0.646920739407585
+Abundance perturbation,60,40,Confounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.775,0.101129979369486,0.0101129979369486,0.755178524043581,0.794821475956419
+Abundance perturbation,60,40,Confounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.916,0.0658587407818714,0.00658587407818714,0.903091686806753,0.928908313193247
+Abundance perturbation,60,40,Confounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.938,0.0611836117227019,0.00611836117227019,0.92600801210235,0.94999198789765
+Abundance perturbation,60,40,Confounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.9815,0.0298607881119482,0.00298607881119482,0.975647285530058,0.987352714469942
+Abundance perturbation,60,40,Confounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,0.9675,0.0462617716387031,0.00462617716387031,0.958432692758814,0.976567307241186
+Abundance perturbation,60,40,Confounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.3535,0.121907192717918,0.0121907192717918,0.329606190227288,0.377393809772712
+Abundance perturbation,60,40,Confounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.937,0.0592972311002935,0.00592972311002935,0.925377742704342,0.948622257295657
+Abundance perturbation,60,40,Confounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.0055,0.017254775360093,0.0017254775360093,0.00211806402942177,0.00888193597057823
+Abundance perturbation,80,40,Confounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.077,0.087738131949454,0.0087738131949454,0.059803326137907,0.094196673862093
+Abundance perturbation,80,40,Confounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.118,0.0960113629638795,0.00960113629638795,0.0991817728590796,0.13681822714092
+Abundance perturbation,80,40,Confounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.3685,0.160751863492034,0.0160751863492034,0.336992634755561,0.400007365244439
+Abundance perturbation,80,40,Confounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.432,0.144515910836311,0.0144515910836311,0.403674881476083,0.460325118523917
+Abundance perturbation,80,40,Confounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.6685,0.123839053255066,0.0123839053255066,0.644227545562007,0.692772454437993
+Abundance perturbation,80,40,Confounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.5115,0.143522602309662,0.0143522602309662,0.483369569947306,0.539630430052694
+Abundance perturbation,80,40,Confounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.0545,0.0659411277067076,0.00659411277067076,0.0415755389694853,0.0674244610305147
+Abundance perturbation,80,40,Confounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.38,0.135773132225575,0.0135773132225575,0.353388466083787,0.406611533916213
+Abundance perturbation,80,40,Confounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,5e-04,0.005,5e-04,0,0.00148
+Abundance perturbation,80,40,Confounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.761,0.0833575722324304,0.00833575722324304,0.744661915842444,0.777338084157556
+Abundance perturbation,80,40,Confounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.9105,0.0667783155997771,0.00667783155997771,0.897411450142444,0.923588549857556
+Abundance perturbation,80,40,Confounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.9725,0.039167472590032,0.0039167472590032,0.964823175372354,0.980176824627646
+Abundance perturbation,80,40,Confounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.983,0.032737091680801,0.0032737091680801,0.976583530030563,0.989416469969437
+Abundance perturbation,80,40,Confounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.994,0.0178093154605032,0.00178093154605032,0.990509374169741,0.997490625830259
+Abundance perturbation,80,40,Confounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,0.9955,0.0160412977131912,0.00160412977131912,0.992355905648215,0.998644094351785
+Abundance perturbation,80,40,Confounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.493,0.128711563842052,0.0128711563842052,0.467772533486958,0.518227466513042
+Abundance perturbation,80,40,Confounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.9785,0.0384385906677814,0.00384385906677814,0.970966036229115,0.986033963770885
+Abundance perturbation,80,40,Confounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.0105,0.0259126348807806,0.00259126348807806,0.00542112356336701,0.015578876436633
+Abundance perturbation,120,40,Confounded,0.4,edgeR,Power after Benjamini-Hochberg adjustment,100,0.284,0.140324299716439,0.0140324299716439,0.256496437255578,0.311503562744422
+Abundance perturbation,120,40,Confounded,0.4,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.3245,0.141331153499485,0.0141331153499485,0.296799093914101,0.352200906085899
+Abundance perturbation,120,40,Confounded,0.4,corncob,Power after Benjamini-Hochberg adjustment,100,0.6215,0.134324911383488,0.0134324911383488,0.595172317368836,0.647827682631164
+Abundance perturbation,120,40,Confounded,0.4,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.7065,0.102409112205049,0.0102409112205049,0.686427814007811,0.72657218599219
+Abundance perturbation,120,40,Confounded,0.4,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,0.856,0.0820445801458764,0.00820445801458764,0.839919262291408,0.872080737708592
+Abundance perturbation,120,40,Confounded,0.4,DASRA,Power after Benjamini-Hochberg adjustment,100,0.7415,0.0942956343987709,0.00942956343987709,0.723018055657841,0.759981944342159
+Abundance perturbation,120,40,Confounded,0.4,LinDA,Power after Benjamini-Hochberg adjustment,100,0.1285,0.0990497783231169,0.00990497783231168,0.109086243448669,0.147913756551331
+Abundance perturbation,120,40,Confounded,0.4,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.659,0.136029557097127,0.0136029557097127,0.632338206808963,0.685661793191037
+Abundance perturbation,120,40,Confounded,0.4,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,5e-04,0.005,5e-04,0,0.00148
+Abundance perturbation,120,40,Confounded,0.8,edgeR,Power after Benjamini-Hochberg adjustment,100,0.844,0.0513848619770846,0.00513848619770846,0.833928567052491,0.854071432947509
+Abundance perturbation,120,40,Confounded,0.8,DESeq2,Power after Benjamini-Hochberg adjustment,100,0.9835,0.0310221491417622,0.00310221491417622,0.977419658768215,0.989580341231785
+Abundance perturbation,120,40,Confounded,0.8,corncob,Power after Benjamini-Hochberg adjustment,100,0.997,0.0119341628287971,0.00119341628287971,0.994660904085556,0.999339095914444
+Abundance perturbation,120,40,Confounded,0.8,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.9985,0.00857233039988827,0.000857233039988827,0.996819823241622,1
+Abundance perturbation,120,40,Confounded,0.8,metagenomeSeq,Power after Benjamini-Hochberg adjustment,100,1,0,0,1,1
+Abundance perturbation,120,40,Confounded,0.8,DASRA,Power after Benjamini-Hochberg adjustment,100,1,0,0,1,1
+Abundance perturbation,120,40,Confounded,0.8,LinDA,Power after Benjamini-Hochberg adjustment,100,0.7075,0.116205799677933,0.0116205799677933,0.684723663263125,0.730276336736875
+Abundance perturbation,120,40,Confounded,0.8,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.9985,0.00857233039988827,0.000857233039988827,0.996819823241622,1
+Abundance perturbation,120,40,Confounded,0.8,ANCOM-BC2,Power after Benjamini-Hochberg adjustment,100,0.0775,0.0805207169527561,0.00805207169527561,0.0617179394772598,0.0932820605227402
+Abundance perturbation,60,20,Unconfounded,0.4,edgeR,Empirical false discovery rate,100,0.01,0.1,0.01,0,0.0296
+Abundance perturbation,60,20,Unconfounded,0.4,DESeq2,Empirical false discovery rate,100,0.005,0.05,0.005,0,0.0148
+Abundance perturbation,60,20,Unconfounded,0.4,corncob,Empirical false discovery rate,100,0.0422619047619048,0.104116785280807,0.0104116785280807,0.0218550148468665,0.062668794676943
+Abundance perturbation,60,20,Unconfounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.024,0.0791126432719638,0.00791126432719638,0.00849392191869511,0.0395060780813049
+Abundance perturbation,60,20,Unconfounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.123520923520924,0.141063343046991,0.0141063343046991,0.0958725082837132,0.151169338758134
+Abundance perturbation,60,20,Unconfounded,0.4,DASRA,Empirical false discovery rate,100,0.0576111111111111,0.116145213409955,0.0116145213409955,0.03484664928276,0.0803755729394622
+Abundance perturbation,60,20,Unconfounded,0.4,LinDA,Empirical false discovery rate,100,0.12625,0.28324512144351,0.028324512144351,0.070733956197072,0.181766043802928
+Abundance perturbation,60,20,Unconfounded,0.4,ZINQ,Empirical false discovery rate,100,0.0435,0.113729131606559,0.0113729131606559,0.0212090902051144,0.0657909097948856
+Abundance perturbation,60,20,Unconfounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,20,Unconfounded,0.8,edgeR,Empirical false discovery rate,100,0.00601190476190476,0.0298099059757869,0.00298099059757869,0.000169163190650527,0.011854646333159
+Abundance perturbation,60,20,Unconfounded,0.8,DESeq2,Empirical false discovery rate,100,0.00854545454545455,0.0302429155792413,0.00302429155792413,0.00261784309192325,0.0144730659989858
+Abundance perturbation,60,20,Unconfounded,0.8,corncob,Empirical false discovery rate,100,0.0521334498834499,0.0632580254012217,0.00632580254012217,0.0397348769048104,0.0645320228620893
+Abundance perturbation,60,20,Unconfounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.0231010101010101,0.0438770243426873,0.00438770243426873,0.0145011133298434,0.0317009068721768
+Abundance perturbation,60,20,Unconfounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.102857725607726,0.0884471101150744,0.00884471101150744,0.085522092025171,0.12019335919028
+Abundance perturbation,60,20,Unconfounded,0.8,DASRA,Empirical false discovery rate,100,0.0558416028416028,0.0680716885706427,0.00680716885706427,0.0424995518817569,0.0691836538014488
+Abundance perturbation,60,20,Unconfounded,0.8,LinDA,Empirical false discovery rate,100,0.0492197802197802,0.0816017190456751,0.00816017190456751,0.0332258432868279,0.0652137171527325
+Abundance perturbation,60,20,Unconfounded,0.8,ZINQ,Empirical false discovery rate,100,0.0526587024087024,0.0676663347668947,0.00676663347668947,0.039396100794391,0.0659213040230138
+Abundance perturbation,60,20,Unconfounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,20,Unconfounded,0.4,edgeR,Empirical false discovery rate,100,0.00333333333333333,0.0333333333333333,0.00333333333333333,0,0.00986666666666667
+Abundance perturbation,80,20,Unconfounded,0.4,DESeq2,Empirical false discovery rate,100,0.0131666666666667,0.0592363960524604,0.00592363960524604,0.00155633304038442,0.0247770002929489
+Abundance perturbation,80,20,Unconfounded,0.4,corncob,Empirical false discovery rate,100,0.0431666666666667,0.100506433674052,0.0100506433674052,0.0234674056665526,0.0628659276667808
+Abundance perturbation,80,20,Unconfounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0414285714285714,0.0978671514854913,0.00978671514854913,0.0222466097374151,0.0606105331197277
+Abundance perturbation,80,20,Unconfounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.112730963480964,0.119842259540269,0.0119842259540269,0.0892418806110708,0.136220046350856
+Abundance perturbation,80,20,Unconfounded,0.4,DASRA,Empirical false discovery rate,100,0.0515873015873016,0.100608481734565,0.0100608481734565,0.0318680391673268,0.0713065640072764
+Abundance perturbation,80,20,Unconfounded,0.4,LinDA,Empirical false discovery rate,100,0.063452380952381,0.160551018917474,0.0160551018917474,0.031984381244556,0.0949203806602059
+Abundance perturbation,80,20,Unconfounded,0.4,ZINQ,Empirical false discovery rate,100,0.0517896825396825,0.109963546070063,0.0109963546070063,0.0302368275099502,0.0733425375694149
+Abundance perturbation,80,20,Unconfounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,20,Unconfounded,0.8,edgeR,Empirical false discovery rate,100,0.0168015873015873,0.0444630943313926,0.00444630943313926,0.00808682081263436,0.0255163537905402
+Abundance perturbation,80,20,Unconfounded,0.8,DESeq2,Empirical false discovery rate,100,0.0112020202020202,0.0305574110191068,0.00305574110191068,0.00521276764227527,0.0171912727617651
+Abundance perturbation,80,20,Unconfounded,0.8,corncob,Empirical false discovery rate,100,0.045948717948718,0.06877791081238,0.006877791081238,0.0324682474294915,0.0594291884679444
+Abundance perturbation,80,20,Unconfounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.0125757575757576,0.0335050672537818,0.00335050672537818,0.00600876439401635,0.0191427507574988
+Abundance perturbation,80,20,Unconfounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.101428571428571,0.0877778455675613,0.00877778455675613,0.0842241136973294,0.118633029159813
+Abundance perturbation,80,20,Unconfounded,0.8,DASRA,Empirical false discovery rate,100,0.0433949383949384,0.0712595707096456,0.00712595707096456,0.0294280625358479,0.0573618142540289
+Abundance perturbation,80,20,Unconfounded,0.8,LinDA,Empirical false discovery rate,100,0.05770670995671,0.0763671347261746,0.00763671347261746,0.0427387515503797,0.0726746683630402
+Abundance perturbation,80,20,Unconfounded,0.8,ZINQ,Empirical false discovery rate,100,0.0388729603729604,0.0645438743579551,0.00645438743579551,0.0262223609988012,0.0515235597471196
+Abundance perturbation,80,20,Unconfounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,20,Unconfounded,0.4,edgeR,Empirical false discovery rate,100,0.00392857142857143,0.028668216293276,0.0028668216293276,0,0.00954754182205352
+Abundance perturbation,120,20,Unconfounded,0.4,DESeq2,Empirical false discovery rate,100,0.00994047619047619,0.0367032290706194,0.00367032290706194,0.0027466432926348,0.0171343090883176
+Abundance perturbation,120,20,Unconfounded,0.4,corncob,Empirical false discovery rate,100,0.0391294816294816,0.0698809947294155,0.00698809947294155,0.0254328066625162,0.0528261565964471
+Abundance perturbation,120,20,Unconfounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0258066378066378,0.061092188829336,0.0061092188829336,0.013832568796088,0.0377807068171876
+Abundance perturbation,120,20,Unconfounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.12157523032523,0.097768861229196,0.0097768861229196,0.102412533524308,0.140737927126153
+Abundance perturbation,120,20,Unconfounded,0.4,DASRA,Empirical false discovery rate,100,0.0442218337218337,0.0711424714610219,0.00711424714610219,0.0302779093154734,0.058165758128194
+Abundance perturbation,120,20,Unconfounded,0.4,LinDA,Empirical false discovery rate,100,0.107981240981241,0.204003991197964,0.0204003991197964,0.06799645870644,0.147966023256042
+Abundance perturbation,120,20,Unconfounded,0.4,ZINQ,Empirical false discovery rate,100,0.0447680375180375,0.0780323397631925,0.00780323397631925,0.0294736989244518,0.0600623761116233
+Abundance perturbation,120,20,Unconfounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,20,Unconfounded,0.8,edgeR,Empirical false discovery rate,100,0.0126709956709957,0.0365361658356195,0.00365361658356196,0.00550990716721424,0.0198320841747771
+Abundance perturbation,120,20,Unconfounded,0.8,DESeq2,Empirical false discovery rate,100,0.0096969696969697,0.0324120680066935,0.00324120680066935,0.00334420436765776,0.0160497350262816
+Abundance perturbation,120,20,Unconfounded,0.8,corncob,Empirical false discovery rate,100,0.0465850815850816,0.0643478144892053,0.00643478144892053,0.0339729099451973,0.0591972532249658
+Abundance perturbation,120,20,Unconfounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.00621212121212121,0.0256710045196922,0.00256710045196922,0.00118060432626153,0.0112436380979809
+Abundance perturbation,120,20,Unconfounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.102124958374958,0.0870740838847801,0.00870740838847801,0.0850584379335415,0.119191478816375
+Abundance perturbation,120,20,Unconfounded,0.8,DASRA,Empirical false discovery rate,100,0.0336363636363636,0.0520685449411677,0.00520685449411677,0.0234309288278948,0.0438417984448325
+Abundance perturbation,120,20,Unconfounded,0.8,LinDA,Empirical false discovery rate,100,0.0590573038073038,0.0753465656384327,0.00753465656384327,0.044289376942171,0.0738252306724366
+Abundance perturbation,120,20,Unconfounded,0.8,ZINQ,Empirical false discovery rate,100,0.0396713286713287,0.0561571652937597,0.00561571652937597,0.0286645242737518,0.0506781330689056
+Abundance perturbation,120,20,Unconfounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,40,Unconfounded,0.4,edgeR,Empirical false discovery rate,100,0.005,0.05,0.005,0,0.0148
+Abundance perturbation,60,40,Unconfounded,0.4,DESeq2,Empirical false discovery rate,100,0.005,0.05,0.005,0,0.0148
+Abundance perturbation,60,40,Unconfounded,0.4,corncob,Empirical false discovery rate,100,0.0331070041070041,0.0719563665781424,0.00719563665781424,0.0190035562576882,0.04721045195632
+Abundance perturbation,60,40,Unconfounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0203216505716506,0.0470177651828106,0.00470177651828106,0.0111061685958197,0.0295371325474815
+Abundance perturbation,60,40,Unconfounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.0883358865077131,0.075762687847647,0.0075762687847647,0.0734863996895743,0.103185373325852
+Abundance perturbation,60,40,Unconfounded,0.4,DASRA,Empirical false discovery rate,100,0.0381296187472658,0.0595717459798147,0.00595717459798147,0.0264535565352221,0.0498056809593095
+Abundance perturbation,60,40,Unconfounded,0.4,LinDA,Empirical false discovery rate,100,0.0868571428571429,0.229085790905035,0.0229085790905035,0.041956327839756,0.13175795787453
+Abundance perturbation,60,40,Unconfounded,0.4,ZINQ,Empirical false discovery rate,100,0.048255772005772,0.105174157078832,0.0105174157078832,0.027641637218321,0.068869906793223
+Abundance perturbation,60,40,Unconfounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,40,Unconfounded,0.8,edgeR,Empirical false discovery rate,100,0.00565852508344768,0.0182162022709879,0.00182162022709879,0.00208814943833406,0.00922890072856131
+Abundance perturbation,60,40,Unconfounded,0.8,DESeq2,Empirical false discovery rate,100,0.0139438915917244,0.0258949656212965,0.00258949656212965,0.0088684783299503,0.0190193048534985
+Abundance perturbation,60,40,Unconfounded,0.8,corncob,Empirical false discovery rate,100,0.0336293377208036,0.04019949273462,0.004019949273462,0.0257502371448181,0.0415084382967891
+Abundance perturbation,60,40,Unconfounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.0113000683526999,0.0217849461524447,0.00217849461524447,0.00703021890682077,0.0155699177985791
+Abundance perturbation,60,40,Unconfounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.0837976091414307,0.052543450527276,0.0052543450527276,0.0734990928380846,0.0940961254447767
+Abundance perturbation,60,40,Unconfounded,0.8,DASRA,Empirical false discovery rate,100,0.0352872101201621,0.0353373641653956,0.00353373641653956,0.0283610867437445,0.0422133334965796
+Abundance perturbation,60,40,Unconfounded,0.8,LinDA,Empirical false discovery rate,100,0.0536610472860473,0.0770617267458538,0.00770617267458538,0.0385569488438599,0.0687651457282346
+Abundance perturbation,60,40,Unconfounded,0.8,ZINQ,Empirical false discovery rate,100,0.0398850139181947,0.0447798223355504,0.00447798223355504,0.0311081687404268,0.0486618590959626
+Abundance perturbation,60,40,Unconfounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,40,Unconfounded,0.4,edgeR,Empirical false discovery rate,100,0.00665909090909091,0.035098003286665,0.0035098003286665,0,0.0135382995532772
+Abundance perturbation,80,40,Unconfounded,0.4,DESeq2,Empirical false discovery rate,100,0.0208168498168498,0.070971621419136,0.0070971621419136,0.00690641201869917,0.0347272876150005
+Abundance perturbation,80,40,Unconfounded,0.4,corncob,Empirical false discovery rate,100,0.0375241841491842,0.0601517775721298,0.00601517775721298,0.0257344357450467,0.0493139325533216
+Abundance perturbation,80,40,Unconfounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0147247197247197,0.0353525931566262,0.00353525931566262,0.00779561146602098,0.0216538279834185
+Abundance perturbation,80,40,Unconfounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.077204489524923,0.0675518266167135,0.00675518266167135,0.0639643315080471,0.0904446475417988
+Abundance perturbation,80,40,Unconfounded,0.4,DASRA,Empirical false discovery rate,100,0.0349012739496486,0.0510107209850059,0.00510107209850059,0.0249031726365874,0.0448993752627097
+Abundance perturbation,80,40,Unconfounded,0.4,LinDA,Empirical false discovery rate,100,0.0675,0.149637140608898,0.0149637140608898,0.0381711204406559,0.0968288795593441
+Abundance perturbation,80,40,Unconfounded,0.4,ZINQ,Empirical false discovery rate,100,0.0305794760794761,0.0583148598644945,0.00583148598644945,0.0191497635460351,0.042009188612917
+Abundance perturbation,80,40,Unconfounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,40,Unconfounded,0.8,edgeR,Empirical false discovery rate,100,0.0102768256425377,0.0247018330253831,0.00247018330253831,0.00543526636956263,0.0151183849155128
+Abundance perturbation,80,40,Unconfounded,0.8,DESeq2,Empirical false discovery rate,100,0.0161023391812866,0.0273354652886909,0.00273354652886909,0.0107445879847031,0.02146009037787
+Abundance perturbation,80,40,Unconfounded,0.8,corncob,Empirical false discovery rate,100,0.038089180461034,0.0408228815555105,0.00408228815555105,0.0300878956761539,0.0460904652459141
+Abundance perturbation,80,40,Unconfounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.00523809523809524,0.0149745732254867,0.00149745732254867,0.00230307888589985,0.00817311159029063
+Abundance perturbation,80,40,Unconfounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.086233788651741,0.0572768351269978,0.00572768351269978,0.0750075289668494,0.0974600483366325
+Abundance perturbation,80,40,Unconfounded,0.8,DASRA,Empirical false discovery rate,100,0.0358883869753435,0.0392318194447771,0.00392318194447771,0.0281989503641672,0.0435778235865198
+Abundance perturbation,80,40,Unconfounded,0.8,LinDA,Empirical false discovery rate,100,0.0419804052156993,0.0599072917537628,0.00599072917537628,0.0302385760319618,0.0537222343994368
+Abundance perturbation,80,40,Unconfounded,0.8,ZINQ,Empirical false discovery rate,100,0.0305575945793337,0.0380284051703767,0.00380284051703767,0.0231040271659399,0.0380111619927275
+Abundance perturbation,80,40,Unconfounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,40,Unconfounded,0.4,edgeR,Empirical false discovery rate,100,0.00611544011544012,0.0275344086085421,0.00275344086085421,0.000718696028165866,0.0115121842027144
+Abundance perturbation,120,40,Unconfounded,0.4,DESeq2,Empirical false discovery rate,100,0.0104955322455322,0.030502264844523,0.0030502264844523,0.00451708833600574,0.0164739761550588
+Abundance perturbation,120,40,Unconfounded,0.4,corncob,Empirical false discovery rate,100,0.0357256456563732,0.0465009245851279,0.00465009245851279,0.0266114644376882,0.0448398268750583
+Abundance perturbation,120,40,Unconfounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0171213020295838,0.0314515240152854,0.00314515240152854,0.0109568033225878,0.0232858007365797
+Abundance perturbation,120,40,Unconfounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.0794515884168428,0.0635255861368511,0.00635255861368511,0.06700057353402,0.0919026032996656
+Abundance perturbation,120,40,Unconfounded,0.4,DASRA,Empirical false discovery rate,100,0.0331179664848395,0.0490462411477114,0.00490462411477114,0.0235049032198881,0.042731029749791
+Abundance perturbation,120,40,Unconfounded,0.4,LinDA,Empirical false discovery rate,100,0.0748769841269841,0.145907115194504,0.0145907115194504,0.0462791895488613,0.103474778705107
+Abundance perturbation,120,40,Unconfounded,0.4,ZINQ,Empirical false discovery rate,100,0.0340322903790396,0.0438135877876067,0.00438135877876067,0.0254448271726687,0.0426197535854105
+Abundance perturbation,120,40,Unconfounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,40,Unconfounded,0.8,edgeR,Empirical false discovery rate,100,0.00848171900339083,0.0240125210159252,0.00240125210159252,0.00377526488426949,0.0131881731225122
+Abundance perturbation,120,40,Unconfounded,0.8,DESeq2,Empirical false discovery rate,100,0.0123268398268398,0.0245857007135193,0.00245857007135193,0.00750804248699004,0.0171456371666896
+Abundance perturbation,120,40,Unconfounded,0.8,corncob,Empirical false discovery rate,100,0.039085827216262,0.0403733264153981,0.00403733264153981,0.031172655238844,0.04699899919368
+Abundance perturbation,120,40,Unconfounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.00480952380952381,0.0145044185680504,0.00145044185680504,0.00196665777018593,0.00765238984886169
+Abundance perturbation,120,40,Unconfounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.0960188326166587,0.062486326946356,0.0062486326946356,0.0837715125351729,0.108266152698144
+Abundance perturbation,120,40,Unconfounded,0.8,DASRA,Empirical false discovery rate,100,0.032008281573499,0.0356276450340138,0.00356276450340138,0.0250252631468323,0.0389913000001657
+Abundance perturbation,120,40,Unconfounded,0.8,LinDA,Empirical false discovery rate,100,0.0431144661152401,0.0457046860677054,0.00457046860677054,0.0341563476459698,0.0520725845845104
+Abundance perturbation,120,40,Unconfounded,0.8,ZINQ,Empirical false discovery rate,100,0.0378978919631094,0.037654538884601,0.0037654538884601,0.0305176023417276,0.0452781815844911
+Abundance perturbation,120,40,Unconfounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,20,Confounded,0.4,edgeR,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,20,Confounded,0.4,DESeq2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,20,Confounded,0.4,corncob,Empirical false discovery rate,100,0.0478333333333333,0.128612883684362,0.0128612883684362,0.0226252081311984,0.0730414585354683
+Abundance perturbation,60,20,Confounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.029952380952381,0.0958781880813869,0.00958781880813869,0.0111602560884291,0.0487445058163328
+Abundance perturbation,60,20,Confounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.139469696969697,0.174365544170376,0.0174365544170376,0.105294050312303,0.173645343627091
+Abundance perturbation,60,20,Confounded,0.4,DASRA,Empirical false discovery rate,100,0.0684880952380952,0.128131479550898,0.0128131479550898,0.0433743252461192,0.0936018652300713
+Abundance perturbation,60,20,Confounded,0.4,LinDA,Empirical false discovery rate,100,0.06,0.200336417395041,0.0200336417395041,0.0207340621905719,0.0992659378094281
+Abundance perturbation,60,20,Confounded,0.4,ZINQ,Empirical false discovery rate,100,0.0441666666666667,0.129995575336943,0.0129995575336943,0.0186875339006258,0.0696457994327076
+Abundance perturbation,60,20,Confounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,20,Confounded,0.8,edgeR,Empirical false discovery rate,100,0.00285714285714286,0.0201007563051842,0.00201007563051842,0,0.00679689109295897
+Abundance perturbation,60,20,Confounded,0.8,DESeq2,Empirical false discovery rate,100,0.00944949494949495,0.03045205719849,0.003045205719849,0.00348089173859092,0.015418098160399
+Abundance perturbation,60,20,Confounded,0.8,corncob,Empirical false discovery rate,100,0.0450526418026418,0.0639883560233779,0.00639883560233779,0.0325109240220597,0.0575943595832239
+Abundance perturbation,60,20,Confounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.0176540404040404,0.0445615973970236,0.00445615973970236,0.00891996731422377,0.026388113493857
+Abundance perturbation,60,20,Confounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.113604909796086,0.0942893026908041,0.00942893026908041,0.0951242064686887,0.132085613123484
+Abundance perturbation,60,20,Confounded,0.8,DASRA,Empirical false discovery rate,100,0.0574331779331779,0.0725704043374327,0.00725704043374327,0.0432093786830411,0.0716569771833148
+Abundance perturbation,60,20,Confounded,0.8,LinDA,Empirical false discovery rate,100,0.0690138888888889,0.11972500170353,0.011972500170353,0.0455477885549969,0.0924799892227808
+Abundance perturbation,60,20,Confounded,0.8,ZINQ,Empirical false discovery rate,100,0.0491092241092241,0.0744622218363445,0.00744622218363445,0.0345146286293006,0.0637038195891477
+Abundance perturbation,60,20,Confounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,20,Confounded,0.4,edgeR,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,20,Confounded,0.4,DESeq2,Empirical false discovery rate,100,0.00333333333333333,0.0333333333333333,0.00333333333333333,0,0.00986666666666667
+Abundance perturbation,80,20,Confounded,0.4,corncob,Empirical false discovery rate,100,0.0337301587301587,0.0908693137742528,0.00908693137742528,0.0159197732304052,0.0515405442299123
+Abundance perturbation,80,20,Confounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0250952380952381,0.0852597509445688,0.00852597509445688,0.00838432691010262,0.0418061492803736
+Abundance perturbation,80,20,Confounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.127319624819625,0.124598175264123,0.0124598175264123,0.102898382467857,0.151740867171393
+Abundance perturbation,80,20,Confounded,0.4,DASRA,Empirical false discovery rate,100,0.0399642857142857,0.0879383271348752,0.00879383271348752,0.0227283735958502,0.0572001978327213
+Abundance perturbation,80,20,Confounded,0.4,LinDA,Empirical false discovery rate,100,0.079,0.217301840274666,0.0217301840274666,0.0364088393061655,0.121591160693835
+Abundance perturbation,80,20,Confounded,0.4,ZINQ,Empirical false discovery rate,100,0.0495119047619048,0.117304713315581,0.0117304713315581,0.026520180952051,0.0725036285717586
+Abundance perturbation,80,20,Confounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,20,Confounded,0.8,edgeR,Empirical false discovery rate,100,0.00900793650793651,0.0331893185639975,0.00331893185639975,0.002502830069393,0.01551304294648
+Abundance perturbation,80,20,Confounded,0.8,DESeq2,Empirical false discovery rate,100,0.0134747474747475,0.0336410098352714,0.00336410098352714,0.00688110954703428,0.0200683854024607
+Abundance perturbation,80,20,Confounded,0.8,corncob,Empirical false discovery rate,100,0.0622736985236985,0.0778823982199349,0.00778823982199349,0.0470087484725913,0.0775386485748058
+Abundance perturbation,80,20,Confounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.0236565656565657,0.0469768944987424,0.00469768944987424,0.0144490943348122,0.0328640369783192
+Abundance perturbation,80,20,Confounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.10575434369552,0.100529878752957,0.0100529878752957,0.0860504874599405,0.1254581999311
+Abundance perturbation,80,20,Confounded,0.8,DASRA,Empirical false discovery rate,100,0.0534818514818515,0.0719854719330904,0.00719854719330904,0.0393726989829658,0.0675910039807372
+Abundance perturbation,80,20,Confounded,0.8,LinDA,Empirical false discovery rate,100,0.0625,0.102770178679727,0.0102770178679727,0.0423570449787735,0.0826429550212265
+Abundance perturbation,80,20,Confounded,0.8,ZINQ,Empirical false discovery rate,100,0.0459343434343434,0.063290438169775,0.0063290438169775,0.0335294175530675,0.0583392693156193
+Abundance perturbation,80,20,Confounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,20,Confounded,0.4,edgeR,Empirical false discovery rate,100,0.002,0.02,0.002,0,0.00592
+Abundance perturbation,120,20,Confounded,0.4,DESeq2,Empirical false discovery rate,100,0.0147777777777778,0.0528992930377218,0.00528992930377218,0.00440951634238431,0.0251460392131712
+Abundance perturbation,120,20,Confounded,0.4,corncob,Empirical false discovery rate,100,0.0603982683982684,0.08644486921964,0.008644486921964,0.043455074031219,0.0773414627653178
+Abundance perturbation,120,20,Confounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0285039682539683,0.057390976091024,0.0057390976091024,0.0172553369401276,0.039752599567809
+Abundance perturbation,120,20,Confounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.107204101454101,0.101582457208584,0.0101582457208584,0.0872939398412189,0.127114263066984
+Abundance perturbation,120,20,Confounded,0.4,DASRA,Empirical false discovery rate,100,0.0442272727272727,0.0669124422262467,0.00669124422262467,0.0311124340509284,0.0573421114036171
+Abundance perturbation,120,20,Confounded,0.4,LinDA,Empirical false discovery rate,100,0.0658571428571429,0.133443754524224,0.0133443754524224,0.039702166970395,0.0920121187438907
+Abundance perturbation,120,20,Confounded,0.4,ZINQ,Empirical false discovery rate,100,0.0331626984126984,0.0696343347363358,0.00696343347363358,0.0195143688043766,0.0468110280210202
+Abundance perturbation,120,20,Confounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,20,Confounded,0.8,edgeR,Empirical false discovery rate,100,0.00811111111111111,0.0330696642499239,0.00330696642499239,0.00162945691812603,0.0145927653040962
+Abundance perturbation,120,20,Confounded,0.8,DESeq2,Empirical false discovery rate,100,0.0127272727272727,0.0317031898199797,0.00317031898199797,0.0065134475225567,0.0189410979319888
+Abundance perturbation,120,20,Confounded,0.8,corncob,Empirical false discovery rate,100,0.0515501165501166,0.0628119851965912,0.00628119851965912,0.0392389674515847,0.0638612656486484
+Abundance perturbation,120,20,Confounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.0125757575757576,0.0335050672537818,0.00335050672537818,0.00600876439401635,0.0191427507574988
+Abundance perturbation,120,20,Confounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.106461871461871,0.0863892130986168,0.00863892130986168,0.0895295856945426,0.1233941572292
+Abundance perturbation,120,20,Confounded,0.8,DASRA,Empirical false discovery rate,100,0.0495238095238095,0.0625127811247564,0.00625127811247564,0.0372713044233573,0.0617763146242618
+Abundance perturbation,120,20,Confounded,0.8,LinDA,Empirical false discovery rate,100,0.0639130036630037,0.0797110543064704,0.00797110543064704,0.0482896370189355,0.0795363703070719
+Abundance perturbation,120,20,Confounded,0.8,ZINQ,Empirical false discovery rate,100,0.0467365967365967,0.0633461442181359,0.00633461442181359,0.0343207524698421,0.0591524410033514
+Abundance perturbation,120,20,Confounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,40,Confounded,0.4,edgeR,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,40,Confounded,0.4,DESeq2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,40,Confounded,0.4,corncob,Empirical false discovery rate,100,0.0291428571428571,0.075233389099918,0.0075233389099918,0.0143971128792732,0.0438886014064411
+Abundance perturbation,60,40,Confounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0119336219336219,0.0398300994381449,0.00398300994381449,0.00412692244374554,0.0197403214234983
+Abundance perturbation,60,40,Confounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.0829494810315244,0.0803851346822612,0.00803851346822612,0.0671939946338012,0.0987049674292476
+Abundance perturbation,60,40,Confounded,0.4,DASRA,Empirical false discovery rate,100,0.0333136724386724,0.0632214802195095,0.00632214802195095,0.0209222623156486,0.0457050825616963
+Abundance perturbation,60,40,Confounded,0.4,LinDA,Empirical false discovery rate,100,0.0678571428571429,0.212780642501194,0.0212780642501194,0.0261521369269089,0.109562148787377
+Abundance perturbation,60,40,Confounded,0.4,ZINQ,Empirical false discovery rate,100,0.0332769175269175,0.0678108127949029,0.00678108127949029,0.0199859982191166,0.0465678368347185
+Abundance perturbation,60,40,Confounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,60,40,Confounded,0.8,edgeR,Empirical false discovery rate,100,0.00433766233766234,0.0173846403588783,0.00173846403588783,0.0009302728273222,0.00774505184800248
+Abundance perturbation,60,40,Confounded,0.8,DESeq2,Empirical false discovery rate,100,0.0086077694235589,0.0246601228290375,0.00246601228290375,0.00377438534906755,0.0134411534980502
+Abundance perturbation,60,40,Confounded,0.8,corncob,Empirical false discovery rate,100,0.0368358633204339,0.0450222176861157,0.00450222176861157,0.0280115086539552,0.0456602179869126
+Abundance perturbation,60,40,Confounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.0145797176231286,0.0316107562343308,0.00316107562343307,0.00838400940119976,0.0207754258450574
+Abundance perturbation,60,40,Confounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.0890538746150874,0.0649473017874431,0.00649473017874431,0.0763242034647486,0.101783545765426
+Abundance perturbation,60,40,Confounded,0.8,DASRA,Empirical false discovery rate,100,0.0421407942276834,0.0473492683848627,0.00473492683848627,0.0328603376242504,0.0514212508311165
+Abundance perturbation,60,40,Confounded,0.8,LinDA,Empirical false discovery rate,100,0.0428721833721834,0.0824252061368247,0.00824252061368247,0.0267168429693657,0.059027523775001
+Abundance perturbation,60,40,Confounded,0.8,ZINQ,Empirical false discovery rate,100,0.0346595747098507,0.0472979115321348,0.00472979115321348,0.0253891840495522,0.0439299653701491
+Abundance perturbation,60,40,Confounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,40,Confounded,0.4,edgeR,Empirical false discovery rate,100,0.00333333333333333,0.0333333333333333,0.00333333333333333,0,0.00986666666666667
+Abundance perturbation,80,40,Confounded,0.4,DESeq2,Empirical false discovery rate,100,0.0197777777777778,0.0828712215218784,0.00828712215218784,0.0035350183594896,0.0360205371960659
+Abundance perturbation,80,40,Confounded,0.4,corncob,Empirical false discovery rate,100,0.0407877816627817,0.0657106241880228,0.00657106241880228,0.0279084993219292,0.0536670640036341
+Abundance perturbation,80,40,Confounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0165607170607171,0.0402338340093354,0.00402338340093354,0.00867488559488733,0.0244465485265468
+Abundance perturbation,80,40,Confounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.0903304365053591,0.0703973448902318,0.00703973448902318,0.0765325569068737,0.104128316103845
+Abundance perturbation,80,40,Confounded,0.4,DASRA,Empirical false discovery rate,100,0.0405899598767246,0.0518840111216308,0.00518840111216307,0.030420693696885,0.0507592260565642
+Abundance perturbation,80,40,Confounded,0.4,LinDA,Empirical false discovery rate,100,0.0787619047619048,0.22105902536577,0.022105902536577,0.0354343357902138,0.122089473733596
+Abundance perturbation,80,40,Confounded,0.4,ZINQ,Empirical false discovery rate,100,0.0372445332445332,0.0675007744685984,0.00675007744685984,0.024014381448688,0.0504746850403785
+Abundance perturbation,80,40,Confounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,80,40,Confounded,0.8,edgeR,Empirical false discovery rate,100,0.00857414132994629,0.0232651576986475,0.00232651576986475,0.00401417042101138,0.0131341122388812
+Abundance perturbation,80,40,Confounded,0.8,DESeq2,Empirical false discovery rate,100,0.0127845499443797,0.0260668406293507,0.00260668406293507,0.00767544918102693,0.0178936507077324
+Abundance perturbation,80,40,Confounded,0.8,corncob,Empirical false discovery rate,100,0.0385782699375377,0.0496584023954303,0.00496584023954303,0.0288452230680333,0.048311316807042
+Abundance perturbation,80,40,Confounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.0077406015037594,0.0178346151598894,0.00178346151598894,0.00424501693242108,0.0112361860750977
+Abundance perturbation,80,40,Confounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.0843168506211985,0.0656077561938822,0.00656077561938822,0.0714577304071975,0.0971759708351994
+Abundance perturbation,80,40,Confounded,0.8,DASRA,Empirical false discovery rate,100,0.0330888386975344,0.0415964533736301,0.00415964533736301,0.0249359338363028,0.0412417435587659
+Abundance perturbation,80,40,Confounded,0.8,LinDA,Empirical false discovery rate,100,0.0520590381840382,0.0705830623870333,0.00705830623870333,0.0382247579561797,0.0658933184118967
+Abundance perturbation,80,40,Confounded,0.8,ZINQ,Empirical false discovery rate,100,0.0310189753038723,0.0354308167207035,0.00354308167207035,0.0240745352266144,0.0379634153811302
+Abundance perturbation,80,40,Confounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,40,Confounded,0.4,edgeR,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,40,Confounded,0.4,DESeq2,Empirical false discovery rate,100,0.0147940115440115,0.0441465612756742,0.00441465612756742,0.00614128553397941,0.0234467375540437
+Abundance perturbation,120,40,Confounded,0.4,corncob,Empirical false discovery rate,100,0.039691773654622,0.0541067963038459,0.00541067963038459,0.0290868415790682,0.0502967057301758
+Abundance perturbation,120,40,Confounded,0.4,MaAsLin 3,Empirical false discovery rate,100,0.0201759812684735,0.0369674910785896,0.00369674910785896,0.01293035301707,0.0274216095198771
+Abundance perturbation,120,40,Confounded,0.4,metagenomeSeq,Empirical false discovery rate,100,0.086432659600835,0.0630822155524443,0.00630822155524443,0.0740685453525559,0.0987967738491141
+Abundance perturbation,120,40,Confounded,0.4,DASRA,Empirical false discovery rate,100,0.0403828417454578,0.0520238982734292,0.00520238982734292,0.0301861576838657,0.05057952580705
+Abundance perturbation,120,40,Confounded,0.4,LinDA,Empirical false discovery rate,100,0.0609166666666667,0.128756798010698,0.0128756798010698,0.0356803342565698,0.0861529990767636
+Abundance perturbation,120,40,Confounded,0.4,ZINQ,Empirical false discovery rate,100,0.0362769548133325,0.0535841815673718,0.00535841815673718,0.0257744552261277,0.0467794544005374
+Abundance perturbation,120,40,Confounded,0.4,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Abundance perturbation,120,40,Confounded,0.8,edgeR,Empirical false discovery rate,100,0.00618679050567596,0.0224004712001717,0.00224004712001717,0.0017962981504423,0.0105772828609096
+Abundance perturbation,120,40,Confounded,0.8,DESeq2,Empirical false discovery rate,100,0.00955194805194805,0.0202644379489712,0.00202644379489712,0.00558011821394969,0.0135237778899464
+Abundance perturbation,120,40,Confounded,0.8,corncob,Empirical false discovery rate,100,0.0329433465085639,0.0371160480443591,0.00371160480443591,0.0256686010918695,0.0402180919252583
+Abundance perturbation,120,40,Confounded,0.8,MaAsLin 3,Empirical false discovery rate,100,0.00523809523809524,0.0149745732254867,0.00149745732254867,0.00230307888589985,0.00817311159029063
+Abundance perturbation,120,40,Confounded,0.8,metagenomeSeq,Empirical false discovery rate,100,0.0977002466132901,0.0689812691016845,0.00689812691016845,0.0841799178693599,0.11122057535722
+Abundance perturbation,120,40,Confounded,0.8,DASRA,Empirical false discovery rate,100,0.0338697534349708,0.0409338859669676,0.00409338859669676,0.0258467117854452,0.0418927950844965
+Abundance perturbation,120,40,Confounded,0.8,LinDA,Empirical false discovery rate,100,0.0387930875454095,0.0469668025634815,0.00469668025634815,0.0295875942429672,0.0479985808478519
+Abundance perturbation,120,40,Confounded,0.8,ZINQ,Empirical false discovery rate,100,0.0299221720308677,0.0384598426216579,0.00384598426216579,0.0223840428770227,0.0374603011847126
+Abundance perturbation,120,40,Confounded,0.8,ANCOM-BC2,Empirical false discovery rate,100,0,0,0,0,0
+Structural perturbation,60,20,Unconfounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.134,0.13723091208734,0.013723091208734,0.107102741230881,0.160897258769119
+Structural perturbation,60,20,Unconfounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.125,0.140255898883851,0.0140255898883851,0.0975098438187651,0.152490156181235
+Structural perturbation,60,20,Unconfounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.147,0.142456798342302,0.0142456798342302,0.119078467524909,0.174921532475091
+Structural perturbation,60,20,Unconfounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.836,0.108730042868667,0.0108730042868667,0.814688911597741,0.857311088402259
+Structural perturbation,60,20,Unconfounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.843,0.102745149065859,0.0102745149065859,0.822861950783092,0.863138049216908
+Structural perturbation,60,20,Unconfounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.856,0.101821789257883,0.0101821789257883,0.836042929305455,0.875957070694545
+Structural perturbation,80,20,Unconfounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.294,0.192705354194827,0.0192705354194827,0.256229750577814,0.331770249422186
+Structural perturbation,80,20,Unconfounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.296,0.200967357518277,0.0200967357518277,0.256610397926418,0.335389602073582
+Structural perturbation,80,20,Unconfounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.315,0.195595438999931,0.0195595438999931,0.276663293956014,0.353336706043987
+Structural perturbation,80,20,Unconfounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.946,0.068784541368778,0.0068784541368778,0.93251822989172,0.959481770108281
+Structural perturbation,80,20,Unconfounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.945,0.0729950876996721,0.00729950876996721,0.930692962810864,0.959307037189136
+Structural perturbation,80,20,Unconfounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.949,0.0731609544260137,0.00731609544260137,0.934660452932501,0.963339547067499
+Structural perturbation,120,20,Unconfounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.558,0.196525372973116,0.0196525372973116,0.519481026897269,0.596518973102731
+Structural perturbation,120,20,Unconfounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.556,0.187659696302007,0.0187659696302007,0.519218699524807,0.592781300475193
+Structural perturbation,120,20,Unconfounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.575,0.189829801494269,0.0189829801494269,0.537793358907123,0.612206641092877
+Structural perturbation,120,20,Unconfounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.996,0.0196946385566932,0.00196946385566932,0.992139850842888,0.999860149157112
+Structural perturbation,120,20,Unconfounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.997,0.0171446607997765,0.00171446607997765,0.993639646483244,1
+Structural perturbation,120,20,Unconfounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.998,0.014070529413629,0.0014070529413629,0.995242176234929,1
+Structural perturbation,60,40,Unconfounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.278,0.135646599662505,0.0135646599662505,0.251413266466149,0.304586733533851
+Structural perturbation,60,40,Unconfounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.25,0.140884650861919,0.0140884650861919,0.222386608431064,0.277613391568936
+Structural perturbation,60,40,Unconfounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.279,0.134686317198162,0.0134686317198162,0.25260148182916,0.30539851817084
+Structural perturbation,60,40,Unconfounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.923,0.0587839736284947,0.00587839736284947,0.911478341168815,0.934521658831185
+Structural perturbation,60,40,Unconfounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.9195,0.0666268820682869,0.00666268820682869,0.906441131114616,0.932558868885384
+Structural perturbation,60,40,Unconfounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.931,0.0535506934378703,0.00535506934378703,0.920504064086177,0.941495935913822
+Structural perturbation,80,40,Unconfounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.4385,0.147513909633477,0.0147513909633477,0.409587273711839,0.467412726288162
+Structural perturbation,80,40,Unconfounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.4265,0.147787555687756,0.0147787555687756,0.3975336390852,0.4554663609148
+Structural perturbation,80,40,Unconfounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.4445,0.151239825603195,0.0151239825603195,0.414856994181774,0.474143005818226
+Structural perturbation,80,40,Unconfounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.9775,0.0336162238368694,0.00336162238368694,0.970911220127974,0.984088779872027
+Structural perturbation,80,40,Unconfounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.98,0.0317820863081864,0.00317820863081864,0.973770711083595,0.986229288916405
+Structural perturbation,80,40,Unconfounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.9805,0.0316985485440261,0.00316985485440261,0.974287084485371,0.986712915514629
+Structural perturbation,120,40,Unconfounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.716,0.126107217489842,0.0126107217489842,0.691282985371991,0.740717014628009
+Structural perturbation,120,40,Unconfounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.719,0.128860585537435,0.0128860585537435,0.693743325234663,0.744256674765337
+Structural perturbation,120,40,Unconfounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.725,0.125428558280494,0.0125428558280494,0.700416002577023,0.749583997422977
+Structural perturbation,120,40,Unconfounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.9995,0.005,5e-04,0.99852,1
+Structural perturbation,120,40,Unconfounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.9995,0.005,5e-04,0.99852,1
+Structural perturbation,120,40,Unconfounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.9995,0.005,5e-04,0.99852,1
+Structural perturbation,60,20,Confounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.089,0.116250339415167,0.0116250339415167,0.0662149334746274,0.111785066525373
+Structural perturbation,60,20,Confounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.088,0.110352969048312,0.0110352969048312,0.0663708180665308,0.109629181933469
+Structural perturbation,60,20,Confounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.116,0.122036589975832,0.0122036589975832,0.092080828364737,0.139919171635263
+Structural perturbation,60,20,Confounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.717,0.160211350308512,0.0160211350308512,0.685598575339532,0.748401424660468
+Structural perturbation,60,20,Confounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.751,0.156666666666667,0.0156666666666667,0.720293333333333,0.781706666666667
+Structural perturbation,60,20,Confounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.766,0.154540701055833,0.0154540701055833,0.735710022593057,0.796289977406943
+Structural perturbation,80,20,Confounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.195,0.179435140641318,0.0179435140641318,0.159830712434302,0.230169287565698
+Structural perturbation,80,20,Confounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.193,0.180490353417482,0.0180490353417482,0.157623890730173,0.228376109269827
+Structural perturbation,80,20,Confounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.216,0.177934274552729,0.0177934274552729,0.181124882187665,0.250875117812335
+Structural perturbation,80,20,Confounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.88,0.124721912892465,0.0124721912892465,0.855554505073077,0.904445494926923
+Structural perturbation,80,20,Confounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.907,0.106605095866222,0.0106605095866222,0.886105401210221,0.92789459878978
+Structural perturbation,80,20,Confounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.919,0.0981598366713878,0.00981598366713878,0.899760672012408,0.938239327987592
+Structural perturbation,120,20,Confounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.431,0.204344233235405,0.0204344233235405,0.390948530285861,0.471051469714139
+Structural perturbation,120,20,Confounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.438,0.220091808208311,0.0220091808208311,0.394862005591171,0.481137994408829
+Structural perturbation,120,20,Confounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.462,0.214984143178472,0.0214984143178472,0.419863107937019,0.504136892062981
+Structural perturbation,120,20,Confounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.988,0.0383497988352882,0.00383497988352882,0.980483439428284,0.995516560571716
+Structural perturbation,120,20,Confounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.993,0.0293188669562103,0.00293188669562103,0.987253502076583,0.998746497923417
+Structural perturbation,120,20,Confounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.993,0.0293188669562103,0.00293188669562103,0.987253502076583,0.998746497923417
+Structural perturbation,60,40,Confounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.1775,0.126006052444021,0.0126006052444021,0.152802813720972,0.202197186279028
+Structural perturbation,60,40,Confounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.166,0.118679604333889,0.0118679604333889,0.142738797550558,0.189261202449442
+Structural perturbation,60,40,Confounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.1985,0.121533758871577,0.0121533758871577,0.174679383261171,0.222320616738829
+Structural perturbation,60,40,Confounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.857,0.0738617326872011,0.00738617326872011,0.842523100393309,0.871476899606691
+Structural perturbation,60,40,Confounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.8675,0.0776468956497322,0.00776468956497322,0.852281208452653,0.882718791547348
+Structural perturbation,60,40,Confounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.873,0.0763498063474488,0.00763498063474488,0.8580354379559,0.8879645620441
+Structural perturbation,80,40,Confounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.319,0.155013847540447,0.0155013847540447,0.288617285882072,0.349382714117928
+Structural perturbation,80,40,Confounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.3135,0.158090723218274,0.0158090723218274,0.282514218249218,0.344485781750782
+Structural perturbation,80,40,Confounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.3415,0.156678755175143,0.0156678755175143,0.310790963985672,0.372209036014328
+Structural perturbation,80,40,Confounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.944,0.06,0.006,0.93224,0.95576
+Structural perturbation,80,40,Confounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.951,0.0541136103793013,0.00541136103793013,0.940393732365657,0.961606267634343
+Structural perturbation,80,40,Confounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.953,0.0526183130543623,0.00526183130543623,0.942686810641345,0.963313189358655
+Structural perturbation,120,40,Confounded,0.2,DASRA,Power after Benjamini-Hochberg adjustment,100,0.5995,0.144511542302288,0.0144511542302288,0.571175737708752,0.627824262291249
+Structural perturbation,120,40,Confounded,0.2,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.61,0.145643816250884,0.0145643816250884,0.581453812014827,0.638546187985173
+Structural perturbation,120,40,Confounded,0.2,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.62,0.143723921657342,0.0143723921657342,0.591830111355161,0.648169888644839
+Structural perturbation,120,40,Confounded,0.35,DASRA,Power after Benjamini-Hochberg adjustment,100,0.9965,0.0146594334781052,0.00146594334781052,0.993626751038292,0.999373248961709
+Structural perturbation,120,40,Confounded,0.35,MaAsLin 3,Power after Benjamini-Hochberg adjustment,100,0.997,0.0119341628287971,0.00119341628287971,0.994660904085556,0.999339095914444
+Structural perturbation,120,40,Confounded,0.35,ZINQ,Power after Benjamini-Hochberg adjustment,100,0.997,0.0119341628287971,0.00119341628287971,0.994660904085556,0.999339095914444

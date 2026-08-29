@@ -1,0 +1,7 @@
+samples_per_group,covariate_structure,replications,mean_group_z_correlation,sd_group_z_correlation,mean_z_mean_difference,sd_z_mean_difference
+60,Unconfounded,100,0,0,0,0
+80,Unconfounded,100,0,0,0,0
+120,Unconfounded,100,0,0,0,0
+60,Confounded,100,0.373982,0.017881,0.744842,0.035613
+80,Confounded,100,0.374083,0.018509,0.745825,0.036902
+120,Confounded,100,0.373024,0.013325,0.744492,0.026595

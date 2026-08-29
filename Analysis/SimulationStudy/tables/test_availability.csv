@@ -1,0 +1,13 @@
+method,component,eligible_tests,available_tests,unavailable_tests,availability_percent
+DASRA structural absence,Structural absence,2700000,2678442,21558,99.202
+DASRA present-conditional abundance,Present-conditional abundance,2700000,2678673,21327,99.21
+ZINQ Firth prevalence,Observed prevalence,2700000,2700000,0,100
+ZINQ quantile abundance,Detected-sample quantile abundance,2700000,2700000,0,100
+MaAsLin 3 prevalence,Observed prevalence,2700000,2700000,0,100
+MaAsLin 3 abundance,Detected log abundance,2700000,2700000,0,100
+ANCOM-BC2,General abundance,960000,960000,0,100
+DESeq2,General abundance,960000,960000,0,100
+edgeR,General abundance,960000,698414,261586,72.751
+LinDA,General abundance,960000,960000,0,100
+corncob,General abundance,960000,960000,0,100
+metagenomeSeq,General abundance,960000,960000,0,100

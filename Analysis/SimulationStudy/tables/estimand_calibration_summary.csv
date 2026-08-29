@@ -1,0 +1,41 @@
+experiment,target_difference,achieved_quantity,achieved_mean,achieved_minimum,achieved_maximum,design_strata
+Observed-prevalence perturbation,0,Observed prevalence,0,0,0,12
+Observed-prevalence perturbation,0.04,Observed prevalence,0.0399999999999424,0.0399999999998872,0.039999999999995,12
+Observed-prevalence perturbation,0.08,Observed prevalence,0.0800000000000084,0.0799999999999357,0.0800000000000637,12
+Observed-prevalence perturbation,0.12,Observed prevalence,0.11999999999998,0.119999999999894,0.12000000000007,12
+Observed-prevalence perturbation,0.16,Observed prevalence,0.160000000000004,0.159999999999954,0.160000000000031,12
+Observed-prevalence perturbation,0.2,Observed prevalence,0.200000000000021,0.19999999999999,0.200000000000063,12
+Observed-prevalence perturbation,0.24,Observed prevalence,0.240000000000072,0.24000000000003,0.24000000000012,12
+Observed-prevalence perturbation,0.28,Observed prevalence,0.280000000000061,0.28000000000001,0.280000000000113,12
+Observed-prevalence perturbation,0.32,Observed prevalence,0.32000000000005,0.320000000000023,0.320000000000083,12
+Observed-prevalence perturbation,0,Structural absence,0,0,0,12
+Observed-prevalence perturbation,0.04,Structural absence,0,0,0,12
+Observed-prevalence perturbation,0.08,Structural absence,0,0,0,12
+Observed-prevalence perturbation,0.12,Structural absence,0,0,0,12
+Observed-prevalence perturbation,0.16,Structural absence,0,0,0,12
+Observed-prevalence perturbation,0.2,Structural absence,0,0,0,12
+Observed-prevalence perturbation,0.24,Structural absence,0,0,0,12
+Observed-prevalence perturbation,0.28,Structural absence,0,0,0,12
+Observed-prevalence perturbation,0.32,Structural absence,0,0,0,12
+Structural perturbation with matched prevalence,0,Structural absence,0,0,0,12
+Structural perturbation with matched prevalence,0.05,Structural absence,0.0499999999995135,0.0499999999995122,0.0499999999995148,12
+Structural perturbation with matched prevalence,0.1,Structural absence,0.100000000000526,0.100000000000406,0.100000000000646,12
+Structural perturbation with matched prevalence,0.15,Structural absence,0.150000000000807,0.150000000000721,0.15000000000089,12
+Structural perturbation with matched prevalence,0.2,Structural absence,0.200000000000045,0.2,0.200000000000091,12
+Structural perturbation with matched prevalence,0.25,Structural absence,0.249999999999672,0.249999999999563,0.249999999999781,12
+Structural perturbation with matched prevalence,0.3,Structural absence,0.30000000000033,0.300000000000078,0.300000000000582,12
+Structural perturbation with matched prevalence,0.35,Structural absence,0.350000000000441,0.350000000000334,0.350000000000549,12
+Structural perturbation with matched prevalence,0.4,Structural absence,0.400000000000063,0.400000000000012,0.400000000000114,12
+Structural perturbation with matched prevalence,0.45,Structural absence,0.449999999999852,0.449999999999639,0.450000000000012,12
+Structural perturbation with matched prevalence,0.5,Structural absence,0.500000000000057,0.500000000000038,0.500000000000076,12
+Structural perturbation with matched prevalence,0,Observed prevalence,0,0,0,12
+Structural perturbation with matched prevalence,0.05,Observed prevalence,1.96675968156685e-13,1.65210931460042e-13,2.24819035509432e-13,12
+Structural perturbation with matched prevalence,0.1,Observed prevalence,1.94117744511157e-13,1.74363598850751e-13,2.13707902997779e-13,12
+Structural perturbation with matched prevalence,0.15,Observed prevalence,2.81641048644287e-13,2.03949517387174e-13,3.51294892757221e-13,12
+Structural perturbation with matched prevalence,0.2,Observed prevalence,1.02524962547216e-12,7.87192921879847e-13,1.29531749860588e-12,12
+Structural perturbation with matched prevalence,0.25,Observed prevalence,7.63423302314482e-13,5.3326732639082e-13,1.03283415497506e-12,12
+Structural perturbation with matched prevalence,0.3,Observed prevalence,2.35442788644183e-13,1.77003447154768e-13,2.89435719568387e-13,12
+Structural perturbation with matched prevalence,0.35,Observed prevalence,8.65389815510696e-13,5.8826511056858e-13,1.16764843674136e-12,12
+Structural perturbation with matched prevalence,0.4,Observed prevalence,7.77096100053593e-13,7.57634940008666e-13,7.91308025092015e-13,12
+Structural perturbation with matched prevalence,0.45,Observed prevalence,9.00958003739604e-13,7.00940810229966e-13,1.10999154531731e-12,12
+Structural perturbation with matched prevalence,0.5,Observed prevalence,4.91004645453412e-13,3.20955909354279e-13,6.66515224905921e-13,12
