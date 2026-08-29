@@ -126,7 +126,7 @@ void validate_solver_controls(const int iterations,
 
 }  // namespace
 
-// [[Rcpp::export]]
+// [[Rcpp::export(rng = false)]]
 Rcpp::NumericVector dasra_gh_log_weights_cpp(
         const Rcpp::NumericVector& node,
         const int order) {
@@ -210,7 +210,7 @@ Rcpp::NumericVector dasra_gh_log_weights_cpp(
     return log_weight;
 }
 
-// [[Rcpp::export]]
+// [[Rcpp::export(rng = false)]]
 Rcpp::NumericVector dasra_count_log_hy_adaptive_cpp(
         const Rcpp::NumericVector& y,
         const Rcpp::NumericVector& N,
@@ -288,7 +288,7 @@ Rcpp::NumericVector dasra_count_log_hy_adaptive_cpp(
     return answer;
 }
 
-// [[Rcpp::export]]
+// [[Rcpp::export(rng = false)]]
 Rcpp::List dasra_count_moments_adaptive_cpp(
         const Rcpp::NumericVector& y,
         const Rcpp::NumericVector& N,
@@ -397,7 +397,7 @@ Rcpp::List dasra_count_moments_adaptive_cpp(
     );
 }
 
-// [[Rcpp::export]]
+// [[Rcpp::export(rng = false)]]
 Rcpp::NumericVector dasra_mean_log_relative_cpp(
         const Rcpp::NumericVector& location,
         const double sigma,
@@ -435,4 +435,3 @@ Rcpp::NumericVector dasra_mean_log_relative_cpp(
     }
     return answer;
 }
-

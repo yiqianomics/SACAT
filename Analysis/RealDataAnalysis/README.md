@@ -9,16 +9,16 @@ The purpose is to determine whether an association is better described as a
 change in structural absence, a change in abundance among samples in which the
 taxon is present, or evidence from both components. The comparison methods
 place those findings in the context of established differential abundance
-workflows. The analysis does not claim that DASRA discovers taxa that no other
-method can find; its added contribution is the explicit decomposition of a
-combined association into two biologically different signal types.
+workflows. DASRA's contribution in these analyses is the explicit
+decomposition of a combined association into two biologically distinct signal
+types.
 
 ## Completed datasets
 
 The first group in each contrast is the reference group. Numeric variables
 ending in `_z` are standardized within the final cohort.
 
-| Dataset | Prespecified contrast | Samples, reference / comparison | Tested taxa | Primary DASRA adjustment variables | Publication |
+| Dataset | Analysis contrast | Samples, reference / comparison | Tested taxa | Primary DASRA adjustment variables | Publication |
 |---|---|---:|---:|---|---|
 | [Baxter colorectal cancer](crc_baxter/README.md) | No-lesion control / colorectal cancer | 172 / 120 | 126 | `age_z`, sex | Baxter et al. 2016, [doi:10.1186/s13073-016-0290-3](https://doi.org/10.1186/s13073-016-0290-3) |
 | [Schubert *C. difficile* infection](cdi_schubert/README.md) | Nondiarrheal healthy control / CDI | 152 / 91 | 88 | `age_z`, sex, recent antibiotics | Schubert et al. 2014, [doi:10.1128/mBio.01021-14](https://doi.org/10.1128/mBio.01021-14) |
@@ -34,32 +34,30 @@ adjustment variables, and preparation command.
 
 ## What the completed analyses show
 
-Across the seven datasets, DASRA identified 143 taxa with a significant
-combined BH-adjusted result:
+Across the seven datasets, DASRA identified 157 taxa with a significant
+combined BH-adjusted result. Both component results were available for 144 of
+these discoveries; their mechanism categories were:
 
-| Signal category | Taxa | Percentage of all combined discoveries |
+| Signal category | Taxa | Percentage of classified discoveries |
 |---|---:|---:|
-| Structural absence only | 71 | 49.65% |
-| Present-conditional abundance only | 56 | 39.16% |
-| Both components | 15 | 10.49% |
-| Omnibus only | 1 | 0.70% |
+| Structural absence only | 71 | 49.31% |
+| Present-conditional abundance only | 57 | 39.58% |
+| Both components | 15 | 10.42% |
+| Omnibus only | 1 | 0.69% |
 
-Thus, 127 of 143 combined discoveries (88.81%) were significant in only one of
-the two component analyses. This is the most direct summary of the added
-scientific information supplied by the decomposition: associations that would
-otherwise be reported as a single differential signal can be separated into
-different occurrence and positive-abundance patterns.
+Thus, 128 of 144 classified discoveries (88.89%) were significant in exactly
+one component analysis. Among the remaining 13 combined discoveries, only the
+structural result formed for 2 taxa and only the present-conditional abundance
+result formed for 11 taxa.
 
-The number of combined discoveries was 39 for CDI, 5 for colorectal cancer,
-30 for GEMS diarrhea, 45 for pediatric Crohn's disease, and 24 for the Ravel
+The number of combined discoveries was 41 for CDI, 5 for colorectal cancer,
+32 for GEMS diarrhea, 55 for pediatric Crohn's disease, and 24 for the Ravel
 cohort. The Korean hypertension and Zupancic obesity analyses had no combined
-BH discoveries. A zero-discovery dataset remains a valid completed analysis;
-passing the applicability screen was never defined by finding a signal.
+BH discoveries.
 
-All 143 combined discoveries were also selected by at least one prespecified
-non-DASRA method. Accordingly, these results support clearer mechanism
-classification, not a claim of DASRA-only discovery. Full dataset-level counts
-and percentages are in [`summary/`](summary/).
+Among the 157 combined discoveries, 156 were also significant under at least
+one comparison method. Full dataset-level counts and percentages are in
+[`summary/`](summary/).
 
 ## Input construction
 
@@ -80,7 +78,7 @@ handling of repeated observations.
 Some comparison methods require a complete composition for normalization. For
 those methods only, [`analysis.R`](analysis.R) adds an `Other_unmodeled` row
 equal to the part of the original library not represented by the tested taxa.
-DASRA receives only the prespecified tested taxa together with the original
+DASRA receives only the retained tested taxa together with the original
 library size; `Other_unmodeled` is neither tested nor included in the DASRA
 target-excluded abundance reference.
 
@@ -141,6 +139,11 @@ unavailable result is assigned an operational p-value of one for harmonized
 BH adjustment, and a discovery requires both an available result and a
 BH-adjusted q-value no greater than 0.05.
 
+The DASRA combined result is available when at least one component forms. Its
+`components_used` field records whether one or both components entered the
+Bonferroni minimum-p omnibus test; an unformed component contributes its
+operational p-value of one.
+
 The 15 exported result sets are:
 
 1. DASRA structural absence, present-conditional abundance, and combined;
@@ -168,40 +171,18 @@ Each completed dataset contains six CSV files in `table/`:
    is the sum of significant result rows across its result sets, while
    `*_discovery_summary.csv` gives the separate count for each result set;
 4. `*_discovery_summary.csv` — BH discovery counts by result set;
-5. `*_upset_intersections.csv` — discovery-set intersections; and
-6. `*_upset_intersection_membership.csv` — the taxa in each intersection.
+5. `*_upset_intersections.csv` — every discovery-set intersection; and
+6. `*_upset_intersection_membership.csv` — the taxa in every intersection.
 
 Each `figs/` directory contains two one-page PDF figures:
 
-- `*_upset.pdf` compares discoveries across the 15 result sets.
+- `*_upset.pdf` compares discoveries across the 15 result sets. It displays
+  the 20 largest intersection patterns; the two UpSet CSV files retain the
+  complete intersection inventory and taxon membership.
 - `*_dasra_profile.pdf` displays the DASRA structural and
-  present-conditional components. It shows up to 24 taxa selected by the
-  formal combined result; when no combined discovery exists, it displays the
-  10 strongest available combined results as a descriptive profile.
-
-## Candidate selection and applicability screening
-
-The five additional completed analyses were drawn from a larger public-data
-search. The eligibility rules and full disposition are documented in
-[`DATASET_SELECTION.md`](DATASET_SELECTION.md).
-
-Twelve candidates reached the DASRA applicability screen. Eight passed and
-four failed because at least one component had availability below 70%, giving
-a candidate-screen rejection fraction of 4/12 (33.33%). None triggered the
-separate gross common-background flag, defined as present-conditional
-abundance discoveries in at least half of all tested taxa. Every screened
-candidate remains in the readable files under [`screening/`](screening/),
-including candidates whose downloaded data were later removed.
-
-The formal study scope was closed after seven complete multi-method analyses:
-the two original analyses and five additional candidates. iMSMS and ISALA
-passed screening but were not carried into the formal workflow after scope
-closure; no formal comparison results or figures were generated for those two
-candidates. Parkinson's disease also passed the DASRA screen. A later formal
-workflow attempt was excluded before the final collection because the public
-input contained three profiles with only 1, 3, and 10 total reads and the
-comparison workflow did not complete reliably. No Parkinson formal output is
-included in the reported analyses.
+  present-conditional components. It displays up to 24 significant combined
+  results; when no combined discovery exists, it displays the 10 strongest
+  available combined results as a descriptive profile.
 
 ## Cross-dataset summaries
 
@@ -210,15 +191,15 @@ tables and writes:
 
 - dataset-level DASRA availability and human-readable unavailability reasons;
 - structural-only, present-conditional-only, both-component, and omnibus-only
-  signal counts;
-- descriptive overlap with the prespecified non-DASRA methods;
+  counts among discoveries with both components available;
+- the number of combined discoveries with one available component;
+- descriptive overlap with the comparison methods;
 - equal-dataset descriptive percentages;
-- candidate-screen and completed-analysis workability summaries; and
 - a PDF overview of signal categories by dataset.
 
-The pooled and equal-dataset percentages are descriptive summaries. No
-meta-analysis is performed. Equal-dataset signal percentages are defined only
-for datasets with at least one combined DASRA discovery.
+The pooled percentage weights each classified discovery equally. The
+equal-dataset percentage averages within-dataset percentages among datasets
+with at least one classified combined DASRA discovery.
 
 ## Interpretation boundaries
 
@@ -231,9 +212,6 @@ for datasets with at least one combined DASRA discovery.
   study. It can reflect social, environmental, behavioral, and clinical
   differences and must not be interpreted as an intrinsic biological effect
   of race or ethnicity.
-- The applicability screen describes whether the requested components can be
-  formed broadly in a dataset. It is not evidence that a dataset must contain
-  an association.
 - Structural-absence and present-conditional abundance findings answer
   different questions. Their separation is the primary scientific purpose of
   this analysis collection.

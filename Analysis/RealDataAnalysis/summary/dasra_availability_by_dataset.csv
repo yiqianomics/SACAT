@@ -7,22 +7,22 @@
 "cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",79,9,89.77,"Conditional-present fit retained a non-negligible gradient",3,33.33
 "cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",79,9,89.77,"Conditional-present root refinement did not improve the objective",2,22.22
 "cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",79,9,89.77,"Positive-count model design was rank deficient",2,22.22
-"cdi_schubert","Schubert C. difficile infection",152,91,88,"Combined omnibus test",76,12,86.36,"One or both components were unavailable",12,100
+"cdi_schubert","Schubert C. difficile infection",152,91,88,"Combined omnibus test",84,4,95.45,"No DASRA component formed",4,100
 "crc_baxter","Baxter colorectal cancer",172,120,126,"Structural absence component",122,4,96.83,"Structural-absence fit remained on a parameter boundary",2,50
 "crc_baxter","Baxter colorectal cancer",172,120,126,"Structural absence component",122,4,96.83,"Structural-absence nuisance fit was not optimal",2,50
 "crc_baxter","Baxter colorectal cancer",172,120,126,"Present-conditional abundance component",124,2,98.41,"Conditional-present fit had non-positive information",2,100
-"crc_baxter","Baxter colorectal cancer",172,120,126,"Combined omnibus test",120,6,95.24,"One or both components were unavailable",6,100
+"crc_baxter","Baxter colorectal cancer",172,120,126,"Combined omnibus test",126,0,100,"None",0,
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Structural absence component",74,4,94.87,"Structural-absence inference derivative was unstable",1,25
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Structural absence component",74,4,94.87,"Structural-absence nuisance fit was not optimal",3,75
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Present-conditional abundance component",76,2,97.44,"Conditional-present fit had non-positive information",1,50
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Present-conditional abundance component",76,2,97.44,"Conditional-present root refinement did not close",1,50
-"gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Combined omnibus test",73,5,93.59,"One or both components were unavailable",5,100
+"gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Combined omnibus test",77,1,98.72,"No DASRA component formed",1,100
 "korean_hypertension","Korean hypertension gut microbiome cohort",503,120,73,"Structural absence component",73,0,100,"None",0,
 "korean_hypertension","Korean hypertension gut microbiome cohort",503,120,73,"Present-conditional abundance component",73,0,100,"None",0,
 "korean_hypertension","Korean hypertension gut microbiome cohort",503,120,73,"Combined omnibus test",73,0,100,"None",0,
 "microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",88,95,41,"Structural absence component",41,0,100,"None",0,
 "microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",88,95,41,"Present-conditional abundance component",40,1,97.56,"Conditional-present root refinement did not improve the objective",1,100
-"microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",88,95,41,"Combined omnibus test",40,1,97.56,"One or both components were unavailable",1,100
+"microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",88,95,41,"Combined omnibus test",41,0,100,"None",0,
 "qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",101,143,212,"Structural absence component",172,40,81.13,"Conditional-present fit retained a non-negligible gradient",14,35
 "qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",101,143,212,"Structural absence component",172,40,81.13,"Structural-absence fit remained on a parameter boundary",12,30
 "qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",101,143,212,"Structural absence component",172,40,81.13,"Structural-absence inference derivative was unstable",1,2.5
@@ -32,8 +32,8 @@
 "qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",101,143,212,"Present-conditional abundance component",183,29,86.32,"Conditional-present fit retained a non-negligible gradient",8,27.59
 "qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",101,143,212,"Present-conditional abundance component",183,29,86.32,"Conditional-present root refinement did not close",9,31.03
 "qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",101,143,212,"Present-conditional abundance component",183,29,86.32,"Conditional-present root refinement did not improve the objective",5,17.24
-"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",101,143,212,"Combined omnibus test",158,54,74.53,"One or both components were unavailable",54,100
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",101,143,212,"Combined omnibus test",197,15,92.92,"No DASRA component formed",15,100
 "ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",97,104,70,"Structural absence component",70,0,100,"None",0,
 "ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",97,104,70,"Present-conditional abundance component",68,2,97.14,"Conditional-present fit had non-positive information",1,50
 "ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",97,104,70,"Present-conditional abundance component",68,2,97.14,"Conditional-present root refinement did not close",1,50
-"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",97,104,70,"Combined omnibus test",68,2,97.14,"One or both components were unavailable",2,100
+"ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",97,104,70,"Combined omnibus test",70,0,100,"None",0,

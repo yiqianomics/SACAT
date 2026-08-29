@@ -16,9 +16,9 @@ SRP002465.
 - **Tested panel:** 41 genus or deepest-resolved higher-rank taxon bins.
 - **Adjustment model:** `~ sex + group`, with sex treated as categorical.
 - **Independent unit:** one visit-1 sample per public
-  `submitted_subject_id_s`, selected by the largest original library size;
-  sample identifier breaks an exact tie. The rule does not use disease group
-  or microbiome association results.
+  `submitted_subject_id_s`, retaining the sample with the largest original
+  library size; sample identifier breaks an exact tie. The rule does not use
+  disease group or microbiome association results.
 - **Original library size:** the column sum of the complete RDP-assigned de
   novo count table, calculated before the MicrobiomeHD feature filter,
   taxonomic aggregation, prevalence filtering, or the two-group support

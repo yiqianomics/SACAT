@@ -1590,7 +1590,8 @@ cauchy_combination <- function(ps) {
         Y, N, g, z, keep_diagnostics,
         min_positive_samples = 3L, min_reference_taxa = 4L,
         quadrature_points = 41L,
-        cluster = NULL, verbose = FALSE) {
+        cluster = NULL, verbose = FALSE,
+        check_quadrature = keep_diagnostics) {
     taxa <- colnames(Y)
     n_samples <- nrow(Y)
     control <- .dasra_abundance_control(quadrature_points)
@@ -1615,7 +1616,7 @@ cauchy_combination <- function(ps) {
                 gh_effect = gh_effect,
                 control = control,
                 min_positive_samples = min_positive_samples,
-                check_quadrature = keep_diagnostics
+                check_quadrature = check_quadrature
             ),
             error = function(e) {
                 .dasra_abundance_empty_fit(
@@ -3309,7 +3310,8 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
                                      derivative_base = 1e-04,
                                      derivative_reference_n = 120L,
                                      keep_fit = FALSE,
-                                     conditional_present_starts = 1L) {
+                                     conditional_present_starts = 1L,
+                                     check_quadrature = keep_fit) {
     y <- as.numeric(y)
     N <- as.numeric(N)
     g <- as.numeric(g)
@@ -3602,7 +3604,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
     diagnostics$structural_absence_objective_tolerance <-
         zero_limit_audit$tolerance
 
-    if (keep_fit && is.finite(fitted_sigma) &&
+    if (isTRUE(check_quadrature) && is.finite(fitted_sigma) &&
         (fitted_sigma > 2 || as.integer(Q) != 1001L)) {
         comparison_Q <- NA_integer_
         quadrature_diagnostic <- tryCatch(
@@ -3804,7 +3806,8 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
         min_positive_samples = 3L,
         quadrature_points = 1001L,
         cluster = NULL,
-        verbose = FALSE) {
+        verbose = FALSE,
+        check_quadrature = keep_diagnostics) {
     J <- ncol(Y)
     n_samples <- nrow(Y)
     worker_count <- if (is.null(cluster)) 1L else length(cluster)
@@ -3827,7 +3830,8 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
                 derivative_base = 1e-4,
                 derivative_reference_n = 120L,
                 keep_fit = keep_diagnostics,
-                conditional_present_starts = conditional_present_starts
+                conditional_present_starts = conditional_present_starts,
+                check_quadrature = check_quadrature
             ),
             error = function(e) {
                 zt_unavailable(
@@ -3966,13 +3970,16 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' Two structural outcomes are nonregular. A taxon with no observed zeros has
 #' no variation in its absence indicator (`no_observed_zeros`). An
 #' intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
-#' exact solution at the zero structural-absence boundary
-#' (`structural_absence_boundary_at_zero`). Both statuses use the documented
-#' operational value in the primary family and are excluded from the Cauchy
-#' sensitivity combination; their signed statistic is undefined. The reason
-#' `structural_absence_nonoptimal_nuisance_fit` records that a returned finite
-#' nuisance fit was not used because the exact zero-limit detection objective
-#' was lower. An otherwise supported all-positive taxon can still enter the
+#' exact solution at the zero structural-absence boundary.
+#'
+#' `structural_absence_boundary_at_zero` records this boundary solution. Both
+#' nonregular statuses use the documented operational value in the primary
+#' family and are excluded from the Cauchy sensitivity combination; their
+#' signed statistic is undefined.
+#'
+#' `structural_absence_nonoptimal_nuisance_fit` identifies a finite nuisance
+#' fit whose detection objective exceeds the exact zero-limit objective. An
+#' otherwise supported all-positive taxon can still enter the
 #' abundance conditional-mark fit because that fit has no structural nuisance
 #' parameter. The component-use columns record the components entering each
 #' omnibus calculation.
@@ -4006,8 +4013,11 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   each requested component and omnibus family. The usual assumptions of the
 #'   selected adjustment method still apply.
 #' @param component Analysis to run. `"all"` fits both components and reports
-#'   the omnibus analyses. `"structural_absence"` fits the structural-absence
-#'   component. `"relative_abundance"` fits the relative-abundance component.
+#'   the omnibus analyses.
+#'
+#'   `"structural_absence"` fits the structural-absence component.
+#'
+#'   `"relative_abundance"` fits the relative-abundance component.
 #' @param full_output Logical. If `TRUE`, the returned object includes detailed
 #'   fits for the requested components. Structural fits may also report the
 #'   maximum discrepancy from a strictly higher-order quadrature rule as a
@@ -4030,8 +4040,8 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   Because it changes the retained multiplicity and reference families, it
 #'   should be chosen before inspecting results.
 #' @param min_reference_taxa Minimum number of eligible target-excluded taxa
-#'   required to form an abundance reference. The default `4L` preserves the
-#'   original formation rule; values below `3L` are not supported.
+#'   required to form an abundance reference. The default is `4L`; values below
+#'   `3L` are not supported.
 #' @param structural_quadrature_points Number of Gauss-Hermite nodes used by the
 #'   structural arm. The validated default is `1001L`. Smaller values trade
 #'   numerical accuracy for speed and should be assessed with `full_output =
@@ -4042,17 +4052,18 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' @param verbose Logical. If `TRUE`, report arm-level start and completion
 #'   messages.
 #' @param abundance_quadrature_points Number of Gauss-Hermite nodes used by the
-#'   relative-abundance arm. The validated default `41L` preserves the original
-#'   fitted procedure exactly. Nondefault values use the stable log-domain rule
-#'   used by the structural arm. With `full_output = TRUE`, nondefault rules and
-#'   fitted scales above two trigger a fixed-fit higher-order sensitivity
-#'   comparison without refitting the model or changing primary inference.
+#'   relative-abundance arm. The default is `41L`. Nondefault values use the
+#'   stable log-domain rule used by the structural arm. With `full_output =
+#'   TRUE`, nondefault rules and fitted latent-scale standard deviations above
+#'   two trigger a fixed-fit higher-order sensitivity comparison without
+#'   refitting the model or changing primary inference.
 #' @param store_plot_data Logical. If `TRUE`, prepare and retain the small set of
-#'   group-standardized summaries used by `plot.dasra()`. This option requires
-#'   `component = "all"`. It adds descriptive companion calculations after the
-#'   primary analyses but does not change their estimates, standard errors, or
-#'   p-values. The default `FALSE` preserves the original fitted path and object
-#'   size.
+#'   covariate-standardized summaries used by `plot.dasra()`. This option
+#'   requires `component = "all"`. Structural companion summaries reuse the
+#'   configured worker pool. Higher-order quadrature sensitivity checks remain
+#'   controlled by `full_output`. Primary estimates, standard errors, and
+#'   p-values are identical with either setting; the default `FALSE` keeps the
+#'   fitted object compact.
 #'
 #' @return An object of class `dasra` with elements:
 #'   \describe{
@@ -4063,7 +4074,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'       status, documented formation reasons, and numerical warnings.}
 #'     \item{settings}{The fitted contrast and analysis settings.}
 #'     \item{call}{The matched function call.}
-#'     \item{plot_data}{Compact group-standardized plotting summaries when
+#'     \item{plot_data}{Compact covariate-standardized plotting summaries when
 #'       `store_plot_data = TRUE`.}
 #'     \item{fits}{Detailed component fits when `full_output = TRUE`.}
 #'   }
@@ -4405,22 +4416,35 @@ dasra <- function(counts, metadata, formula, group, library_size,
             try(parallel::stopCluster(cluster), silent = TRUE),
             add = TRUE
         )
-        library_paths <- .libPaths()
+        main_package_path <- normalizePath(
+            getNamespaceInfo(asNamespace("DASRA"), "path"),
+            winslash = "/",
+            mustWork = TRUE
+        )
+        library_paths <- unique(c(dirname(main_package_path), .libPaths()))
         initialize_worker <- function(paths) {
             .libPaths(paths)
             loadNamespace("DASRA")
-            as.character(utils::packageVersion("DASRA"))
+            list(
+                version = as.character(getNamespaceVersion("DASRA")),
+                path = normalizePath(
+                    find.package("DASRA"),
+                    winslash = "/",
+                    mustWork = TRUE
+                )
+            )
         }
         environment(initialize_worker) <- baseenv()
         tryCatch({
-            worker_versions <- parallel::clusterCall(
+            worker_information <- parallel::clusterCall(
                 cluster,
                 initialize_worker,
                 library_paths
             )
-            main_version <- as.character(utils::packageVersion("DASRA"))
+            main_version <- as.character(getNamespaceVersion("DASRA"))
             if (any(vapply(
-                worker_versions, function(value) !identical(value, main_version),
+                worker_information,
+                function(value) !identical(value$version, main_version),
                 logical(1)
             ))) {
                 stop(sprintf(
@@ -4428,7 +4452,16 @@ dasra <- function(counts, metadata, formula, group, library_size,
                     main_version
                 ))
             }
-            invisible(worker_versions)
+            if (any(vapply(
+                worker_information,
+                function(value) !identical(value$path, main_package_path),
+                logical(1)
+            ))) {
+                stop(
+                    "Parallel workers loaded DASRA from a different installation."
+                )
+            }
+            invisible(worker_information)
         },
             error = function(e) {
                 stop(
@@ -4479,7 +4512,8 @@ dasra <- function(counts, metadata, formula, group, library_size,
                 min_positive_samples = min_positive_samples,
                 quadrature_points = structural_quadrature_points,
                 cluster = cluster,
-                verbose = verbose
+                verbose = verbose,
+                check_quadrature = full_output
             )
             structural$p[retained] <- structural_retained$p
             structural$formed[retained] <- structural_retained$formed
@@ -4497,7 +4531,8 @@ dasra <- function(counts, metadata, formula, group, library_size,
                 min_reference_taxa = min_reference_taxa,
                 quadrature_points = abundance_quadrature_points,
                 cluster = cluster,
-                verbose = verbose
+                verbose = verbose,
+                check_quadrature = full_output
             )
             abundance$p[retained] <- abundance_retained$p
             abundance$formed[retained] <- abundance_retained$formed
@@ -4711,7 +4746,8 @@ dasra <- function(counts, metadata, formula, group, library_size,
             contrast = c(
                 reference = group_info$reference,
                 comparison = group_info$comparison
-            )
+            ),
+            cluster = cluster
         )
         object$settings$plot_data_stored <- TRUE
     }

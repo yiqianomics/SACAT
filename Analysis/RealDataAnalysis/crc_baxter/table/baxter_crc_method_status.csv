@@ -1,5 +1,5 @@
 "dataset","family","package","version","status","discoveries","elapsed_seconds","note"
-"crc_baxter","DASRA","DASRA","0.6.0","completed with unavailable taxa",11,303.89,"Both components are required for the combined result; unavailable p-values remain in the BH family as one."
+"crc_baxter","DASRA","DASRA","0.6.0","completed with unavailable taxa",11,303.89,"The combined result uses every formed component; unavailable component p-values enter as one."
 "crc_baxter","MaAsLin3","maaslin3","1.5.3","completed with unavailable taxa",15,2.97,"TSS normalization and log2 transformation; abundance uses the default median comparison; both arms are required for the joint set."
 "crc_baxter","ZINQ","ZINQ","2.0","completed",20,0.86,"Relative abundance uses the original library size; models adjust for standardized log library size; taus 0.25, 0.50, and 0.75; native Cauchy joint test."
 "crc_baxter","ANCOM-BC2","ANCOMBC","2.10.1","completed",2,16.23,"Structural-zero detection and negative lower-bound correction; a raw p-value is set to one when pseudocount sensitivity fails."

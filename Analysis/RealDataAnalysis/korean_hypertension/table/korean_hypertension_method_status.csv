@@ -1,5 +1,5 @@
 "dataset","family","package","version","status","discoveries","elapsed_seconds","note"
-"korean_hypertension","DASRA","DASRA","0.6.0","completed",0,1717.77,"Both components are required for the combined result; unavailable p-values remain in the BH family as one."
+"korean_hypertension","DASRA","DASRA","0.6.0","completed",0,1717.77,"The combined result uses every formed component; unavailable component p-values enter as one."
 "korean_hypertension","MaAsLin3","maaslin3","1.5.3","completed with unavailable taxa",0,2.05,"TSS normalization and log2 transformation; abundance uses the default median comparison; both arms are required for the joint set."
 "korean_hypertension","ZINQ","ZINQ","2.0","completed",0,0.81,"Relative abundance uses the original library size; models adjust for standardized log library size; taus 0.25, 0.50, and 0.75; native Cauchy joint test."
 "korean_hypertension","ANCOM-BC2","ANCOMBC","2.10.1","completed with unavailable taxa",0,15.17,"Structural-zero detection and negative lower-bound correction; a raw p-value is set to one when pseudocount sensitivity fails."

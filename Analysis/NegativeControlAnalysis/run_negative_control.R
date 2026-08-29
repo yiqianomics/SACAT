@@ -968,8 +968,13 @@ run_negative_control <- function(dataset_directory, workers = 7L,
             call. = FALSE
         )
     }
+    package_versions <- vapply(
+        required_packages,
+        function(package) as.character(getNamespaceVersion(package)),
+        character(1)
+    )
     if (!identical(
-        as.character(utils::packageVersion("DASRA")),
+        package_versions[["DASRA"]],
         required_dasra_version
     )) {
         stop(
@@ -1037,6 +1042,9 @@ run_negative_control <- function(dataset_directory, workers = 7L,
         VECLIB_MAXIMUM_THREADS = "1"
     )
     do.call(Sys.setenv, as.list(thread_environment))
+    worker_library_paths <- normalizePath(
+        .libPaths(), winslash = "/", mustWork = TRUE
+    )
 
     if (nrow(remaining)) {
         cluster <- parallel::makePSOCKcluster(
@@ -1048,8 +1056,24 @@ run_negative_control <- function(dataset_directory, workers = 7L,
         initialized <- parallel::clusterCall(
             cluster,
             function(runner_path, input_path, result_directory, work_root,
-                     thread_environment) {
+                     thread_environment, library_paths, package_versions) {
+                .libPaths(unique(c(library_paths, .libPaths())))
                 do.call(Sys.setenv, as.list(thread_environment))
+                worker_versions <- vapply(
+                    names(package_versions),
+                    function(package) {
+                        if (!requireNamespace(package, quietly = TRUE)) {
+                            stop("A required package is unavailable on a worker.",
+                                 call. = FALSE)
+                        }
+                        as.character(getNamespaceVersion(package))
+                    },
+                    character(1)
+                )
+                if (!identical(worker_versions, package_versions)) {
+                    stop("Worker package versions differ from the main process.",
+                         call. = FALSE)
+                }
                 sys.source(runner_path, envir = .GlobalEnv)
                 validator <- get(
                     "validate_analysis_input", envir = .GlobalEnv
@@ -1067,15 +1091,19 @@ run_negative_control <- function(dataset_directory, workers = 7L,
                     ".negative_control_work", work_root,
                     envir = .GlobalEnv
                 )
-                TRUE
+                worker_versions
             },
             runner_path = runner_path,
             input_path = input_path,
             result_directory = result_directory,
             work_root = work_root,
-            thread_environment = thread_environment
+            thread_environment = thread_environment,
+            library_paths = worker_library_paths,
+            package_versions = package_versions
         )
-        if (!all(unlist(initialized))) {
+        if (!all(vapply(
+            initialized, identical, logical(1), package_versions
+        ))) {
             stop("One or more workers could not be initialized.",
                  call. = FALSE)
         }

@@ -6,7 +6,7 @@
         "Roseburia_intestinalis",
         "Akkermansia_muciniphila",
         "Blautia",
-        "Unicode_æ_feature",
+        "Prevotella_copri",
         paste0("Taxon_", seq_len(max(0L, n - 6L)))
     )
     feature <- feature[seq_len(n)]
@@ -70,6 +70,40 @@
         ),
         class = "dasra"
     )
+}
+
+.make_plot_analysis_fixture <- function(
+        n = 72L, p = 6L, seed = 20260825L) {
+    stopifnot(n %% 2L == 0L, p >= 2L)
+    set.seed(seed)
+    group <- rep(c(0L, 1L), each = n / 2L)
+    depth <- rep(10000L, n)
+    shift <- c(0.25, -0.20, rep(0, p - 2L))
+    latent <- sapply(seq_len(p), function(j) {
+        -5.7 + (j - 1L) * 0.12 + shift[[j]] * group +
+            stats::rnorm(n, sd = 0.25)
+    })
+    present <- matrix(stats::runif(n * p) > 0.15, nrow = n)
+    probability <- present * stats::plogis(latent)
+    count_by_sample <- t(vapply(seq_len(n), function(i) {
+        draw <- stats::rmultinom(
+            1L, depth[[i]],
+            c(probability[i, ], 1 - sum(probability[i, ]))
+        )
+        draw[seq_len(p), 1L]
+    }, numeric(p)))
+    counts <- t(count_by_sample)
+    rownames(counts) <- paste0("Taxon_", seq_len(p))
+    colnames(counts) <- paste0("Sample_", seq_len(n))
+    metadata <- data.frame(
+        group = factor(
+            group, levels = c(0L, 1L),
+            labels = c("reference", "comparison")
+        ),
+        reads = depth,
+        row.names = colnames(counts)
+    )
+    list(counts = counts, metadata = metadata)
 }
 
 .plot_contract_palette <- c(
@@ -189,13 +223,75 @@ test_that("component BH gates use the complete fitted families", {
 
     malformed <- fit
     malformed$results$p_structural_absence[[1L]] <- 0.2
-    expect_error(
-        DASRA:::.dasra_plot_build_spec(
+    expect_warning(
+        malformed_spec <- DASRA:::.dasra_plot_build_spec(
             malformed, NULL, "top", 2L, 0.05, "adaptive",
             .plot_contract_palette, c("#6090c1", "#f28e4b")
         ),
-        "could not be verified"
+        "structural absence"
     )
+    expect_true(is.na(malformed_spec$component_guides$structural$z))
+    expect_equal(
+        malformed_spec$component_guides$abundance$z,
+        full$component_guides$abundance$z
+    )
+
+    malformed_retained <- fit
+    malformed_retained$diagnostics$retained[[1L]] <- NA
+    expect_error(
+        DASRA:::.dasra_plot_build_spec(
+            malformed_retained, NULL, "top", 2L, 0.05, "adaptive",
+            .plot_contract_palette, c("#6090c1", "#f28e4b")
+        ),
+        "retained-taxon indicator"
+    )
+})
+
+test_that("component BH gates tolerate floating-point boundary rounding", {
+    raw_p <- c(rep(0.04166666666666667, 5L), 1)
+    adjusted_p <- stats::p.adjust(raw_p, method = "BH")
+    z <- stats::qnorm(raw_p / 2, lower.tail = FALSE)
+
+    guide <- expect_no_error(
+        DASRA:::.dasra_plot_component_bh_guide(
+            rep(TRUE, 6L), raw_p, adjusted_p, z, 0.05
+        )
+    )
+    expect_identical(guide$discoveries, 5L)
+    expect_equal(guide$p, 0.05 * 5 / 6)
+    expect_equal(
+        guide$z,
+        stats::qnorm((0.05 * 5 / 6) / 2, lower.tail = FALSE)
+    )
+})
+
+test_that("unverifiable component gates are omitted with one warning", {
+    fit <- .make_plot_contract_fixture()
+    fit$results$p_structural_absence[[1L]] <- 0
+    fit$results$p_adj_structural_absence <- stats::p.adjust(
+        fit$results$p_structural_absence, method = "BH"
+    )
+    fit$results$z_structural_absence[[1L]] <- Inf
+
+    expect_warning(
+        spec <- DASRA:::.dasra_plot_build_spec(
+            fit, NULL, "top", 2L,
+            .Machine$double.xmin * .Machine$double.eps,
+            "adaptive", .plot_contract_palette,
+            c("#6090c1", "#f28e4b")
+        ),
+        "structural absence"
+    )
+    expect_true(is.na(spec$component_guides$structural$z))
+    expect_true(is.na(spec$component_guides$abundance$z))
+
+    expect_no_warning(
+        disabled <- DASRA:::.dasra_plot_build_spec(
+            fit, NULL, "top", 2L, 0.05, "adaptive",
+            .plot_contract_palette, c("#6090c1", "#f28e4b"), FALSE
+        )
+    )
+    expect_false(disabled$component_guides$enabled)
 })
 
 test_that("adaptive colors use one shared displayed-component scale", {
@@ -363,40 +459,10 @@ test_that("plot reports incomplete objects and unavailable rows clearly", {
 })
 
 test_that("plot-summary preparation leaves fitted inference unchanged", {
-    set.seed(20260825)
-    n <- 72L
-    p <- 6L
-    group <- rep(c(0L, 1L), each = n / 2L)
-    depth <- rep(10000L, n)
-    shift <- c(0.25, -0.20, rep(0, p - 2L))
-    latent <- sapply(seq_len(p), function(j) {
-        -5.7 + (j - 1L) * 0.12 + shift[[j]] * group +
-            stats::rnorm(n, sd = 0.25)
-    })
-    present <- matrix(stats::runif(n * p) > 0.15, nrow = n)
-    probability <- present * stats::plogis(latent)
-    count_by_sample <- t(vapply(seq_len(n), function(i) {
-        draw <- stats::rmultinom(
-            1L,
-            depth[[i]],
-            c(probability[i, ], 1 - sum(probability[i, ]))
-        )
-        draw[seq_len(p), 1L]
-    }, numeric(p)))
-    counts <- t(count_by_sample)
-    rownames(counts) <- paste0("Taxon_", seq_len(p))
-    colnames(counts) <- paste0("Sample_", seq_len(n))
-    metadata <- data.frame(
-        group = factor(
-            group, levels = c(0L, 1L),
-            labels = c("reference", "comparison")
-        ),
-        reads = depth,
-        row.names = colnames(counts)
-    )
+    input <- .make_plot_analysis_fixture()
     fit_args <- list(
-        counts = counts,
-        metadata = metadata,
+        counts = input$counts,
+        metadata = input$metadata,
         formula = ~ group,
         group = "group",
         library_size = "reads",
@@ -413,6 +479,16 @@ test_that("plot-summary preparation leaves fitted inference unchanged", {
     expect_identical(prepared$results, plain$results)
     expect_identical(prepared$diagnostics, plain$diagnostics)
     expect_identical(prepared$fits, plain$fits)
+    expect_true(any(vapply(
+        plain$fits$structural_absence,
+        function(fit) isTRUE(fit$diagnostics$quadrature_checked),
+        logical(1)
+    )))
+    expect_true(any(vapply(
+        plain$fits$relative_abundance$raw_fits,
+        function(fit) isTRUE(fit$quadrature_checked),
+        logical(1)
+    )))
     prepared_settings <- prepared$settings
     prepared_settings$plot_data_stored <- NULL
     expect_identical(prepared_settings, plain$settings)
@@ -439,4 +515,130 @@ test_that("plot-summary preparation leaves fitted inference unchanged", {
     expect_true(any(abs(
         profile_contrast - detail$corrected_estimate[formed]
     ) > 1e-8))
+
+    compact_args <- fit_args
+    compact_args$full_output <- FALSE
+    compact_plain <- do.call(
+        dasra, c(compact_args, list(store_plot_data = FALSE))
+    )
+    quadrature_calls <- 0L
+    compact_prepared <- with_mocked_bindings(
+        do.call(dasra, c(
+            compact_args, list(store_plot_data = TRUE)
+        )),
+        .dasra_higher_order_quadrature_points = function(...) {
+            quadrature_calls <<- quadrature_calls + 1L
+            stop("unexpected high-order quadrature check")
+        },
+        .package = "DASRA"
+    )
+    expect_identical(quadrature_calls, 0L)
+    expect_identical(compact_prepared$results, compact_plain$results)
+    expect_identical(
+        compact_prepared$diagnostics, compact_plain$diagnostics
+    )
+    expect_false("fits" %in% names(compact_prepared))
+    expect_true("plot_data" %in% names(compact_prepared))
+    compact_settings <- compact_prepared$settings
+    compact_settings$plot_data_stored <- NULL
+    expect_identical(compact_settings, compact_plain$settings)
+})
+
+test_that("profile output works across supported graphics devices", {
+    fit <- .make_plot_contract_fixture()
+    for (extension in c(".pdf", ".png")) {
+        path <- tempfile(fileext = extension)
+        expect_no_warning(
+            spec <- plot(
+                fit, selection = "top", max_features = 3L,
+                file = path, width = 7.2, height = 3.2, dpi = 150
+            )
+        )
+        expect_type(spec, "list")
+        expect_true(file.exists(path))
+        expect_gt(file.info(path)$size, 1000)
+    }
+
+    svg_path <- tempfile(fileext = ".svg")
+    if (isTRUE(capabilities("cairo"))) {
+        expect_no_warning(
+            plot(
+                fit, selection = "top", max_features = 3L,
+                file = svg_path, width = 7.2, height = 3.2
+            )
+        )
+        expect_true(file.exists(svg_path))
+        expect_gt(file.info(svg_path)$size, 1000)
+    } else {
+        expect_error(
+            plot(fit, file = svg_path),
+            "Cairo support"
+        )
+    }
+})
+
+test_that("two PSOCK workers preserve inference and plotting summaries", {
+    package_path <- find.package("DASRA")
+    skip_if_not(
+        file.exists(file.path(package_path, "Meta", "package.rds")),
+        "PSOCK regression test requires an installed package"
+    )
+    probe <- tryCatch(
+        parallel::makePSOCKcluster(2L),
+        error = function(e) NULL
+    )
+    skip_if(is.null(probe), "Two local PSOCK workers are unavailable")
+    parallel::stopCluster(probe)
+
+    original_library_paths <- .libPaths()
+    on.exit(.libPaths(original_library_paths), add = TRUE)
+    package_library <- normalizePath(
+        dirname(package_path), winslash = "/", mustWork = TRUE
+    )
+    retained_library_paths <- original_library_paths[
+        normalizePath(
+            original_library_paths, winslash = "/", mustWork = FALSE
+        ) != package_library
+    ]
+    skip_if(
+        !length(retained_library_paths),
+        "PSOCK regression test requires another package library"
+    )
+    .libPaths(retained_library_paths)
+
+    input <- .make_plot_analysis_fixture(
+        n = 48L, p = 5L, seed = 20260828L
+    )
+    fit_args <- list(
+        counts = input$counts,
+        metadata = input$metadata,
+        formula = ~ group,
+        group = "group",
+        library_size = "reads",
+        component = "all",
+        full_output = FALSE,
+        store_plot_data = TRUE,
+        structural_quadrature_points = 31L,
+        abundance_quadrature_points = 31L
+    )
+
+    set.seed(4802)
+    rng_before <- .Random.seed
+    serial <- suppressWarnings(do.call(
+        dasra, c(fit_args, list(workers = 1L))
+    ))
+    expect_identical(.Random.seed, rng_before)
+    parallel_fit <- suppressWarnings(do.call(
+        dasra, c(fit_args, list(workers = 2L))
+    ))
+    expect_identical(.Random.seed, rng_before)
+
+    expect_identical(parallel_fit$results, serial$results)
+    expect_identical(parallel_fit$diagnostics, serial$diagnostics)
+    expect_identical(parallel_fit$plot_data, serial$plot_data)
+    serial$settings$workers_requested <- NULL
+    serial$settings$workers_used <- NULL
+    parallel_fit$settings$workers_requested <- NULL
+    parallel_fit$settings$workers_used <- NULL
+    expect_identical(parallel_fit$settings, serial$settings)
 })

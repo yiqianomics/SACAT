@@ -11,7 +11,10 @@
   max_features = 24L,
   alpha = 0.05,
   p_color_limits = "adaptive",
-  evidence_palette = c("#e8ecef", "#d6cdd5", "#c0acba", "#a7879c", "#89617c", "#673b5c"),
+  evidence_palette = c(
+    "#e8ecef", "#d6cdd5", "#c0acba",
+    "#a7879c", "#89617c", "#673b5c"
+  ),
   group_colors = c("#6090c1", "#f28e4b"),
   file = NULL,
   width = NULL,
@@ -42,7 +45,8 @@ The default is \code{24L}.}
 when enabled, by the component BH discovery gates.}
 
 \item{p_color_limits}{Either \code{"adaptive"} or numeric \code{c(lower, upper)} with
-\verb{0 < lower < upper <= 1}. The adaptive strong-evidence endpoint is derived
+\code{lower > 0}, \code{upper <= 1}, and \code{lower < upper}. The adaptive
+strong-evidence endpoint is derived
 from the smallest positive finite component adjusted p-value among the
 displayed markers and rounded down to a power of ten; the weak-evidence
 endpoint is one. Degenerate all-zero or all-one displays use a finite
@@ -56,7 +60,8 @@ the reference/comparison group colors.}
 \item{group_colors}{Two colors for the reference and comparison groups.}
 
 \item{file}{Optional output filename ending in \code{.pdf}, \code{.png}, or \code{.svg}.
-When \code{NULL}, the current graphics device is used.}
+When \code{NULL}, the current graphics device is used. SVG output requires an R
+build with Cairo support.}
 
 \item{width, height}{Output dimensions in inches when \code{file} is supplied.
 Defaults use a 180-mm manuscript width and a height chosen from the number
@@ -70,10 +75,9 @@ default. This option changes display text only.}
 
 \item{show_component_guides}{Logical; for a fit using BH (or its \code{"fdr"}
 alias), draw separate structural and abundance discovery gates at the
-family-wide BH step-up boundaries. Each boundary uses all retained taxa in
-its fitted component family and is invariant to the displayed feature
-subset. A finite gate appears when the component has at least one
-discovery. Guide display is available for BH and \code{"fdr"} fits.}
+family-wide BH step-up boundaries. Each gate uses the complete family of
+retained taxa and appears when that component has at least one discovery.
+A warning identifies any component whose boundary cannot be displayed.}
 
 \item{...}{Reserved for future graphical options.}
 }

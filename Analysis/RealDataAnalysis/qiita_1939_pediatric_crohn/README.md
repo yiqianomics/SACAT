@@ -18,10 +18,10 @@ enabled.
 - **Tested panel:** 212 genus or deepest-resolved higher-rank taxon bins.
 - **Adjustment model:** `~ age_z + sex + group`, with age standardized within
   the final cohort.
-- **Independent unit:** one rectal mucosal sample per child, selected by the
+- **Independent unit:** one rectal mucosal sample per child, retaining the
   largest original library size when repeated eligible samples are available;
-  sample identifier breaks an exact tie. Selection does not use diagnosis or
-  association results.
+  sample identifier breaks an exact tie. The tie-breaking rule is independent
+  of diagnosis and association results.
 - **Original library size:** the column sum of the complete downloaded BIOM
   feature table before taxonomic aggregation or any taxon filter.
 
@@ -31,7 +31,7 @@ recorded as having Crohn's disease (`diagnosis = CD`) or no IBD
 are excluded. When a child has more than one eligible sample, the sample with
 the largest original library size is retained. The model compares Crohn's
 disease with the non-IBD control group and adjusts for standardized age and
-sex. Age is standardized after cohort selection and subject deduplication.
+sex. Age is standardized after cohort construction and subject deduplication.
 
 Run the preparation from the repository root:
 

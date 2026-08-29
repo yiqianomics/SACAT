@@ -1,5 +1,5 @@
 "dataset","family","package","version","status","discoveries","elapsed_seconds","note"
-"gems_pediatric_diarrhea","DASRA","DASRA","0.6.0","completed with unavailable taxa",68,6468.72,"Both components are required for the combined result; unavailable p-values remain in the BH family as one."
+"gems_pediatric_diarrhea","DASRA","DASRA","0.6.0","completed with unavailable taxa",70,6468.72,"The combined result uses every formed component; unavailable component p-values enter as one."
 "gems_pediatric_diarrhea","MaAsLin3","maaslin3","1.5.3","completed",112,2.52,"TSS normalization and log2 transformation; abundance uses the default median comparison; both arms are required for the joint set."
 "gems_pediatric_diarrhea","ZINQ","ZINQ","2.0","completed",124,1.52,"Relative abundance uses the original library size; models adjust for standardized log library size; taus 0.25, 0.50, and 0.75; native Cauchy joint test."
 "gems_pediatric_diarrhea","ANCOM-BC2","ANCOMBC","2.10.1","completed",30,24.74,"Structural-zero detection and negative lower-bound correction; a raw p-value is set to one when pseudocount sensitivity fails."

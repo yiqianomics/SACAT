@@ -5,9 +5,10 @@
   an aligned component Z-statistic axis, while covariate-standardized group
   summaries retain the fitted reference and comparison labels.
 - `store_plot_data = TRUE` prepares the compact descriptive summaries needed
-  by the profile. Primary estimates, standard errors, and p-values are
-  identical with either setting, and the default `FALSE` retains lightweight
-  fitted objects.
+  by the profile. Structural companion summaries reuse the configured worker
+  pool, and higher-order quadrature sensitivity checks remain tied to
+  `full_output`. Primary estimates, standard errors, and p-values are identical
+  with either setting; the default `FALSE` retains lightweight fitted objects.
 - Feature labels use only the space required by the displayed names. Component
   adjusted p-values use a shared adaptive `-log10(p)` color scale from one to a
   rounded lower endpoint, with an explicit numeric range available when plots
@@ -18,12 +19,22 @@
   and adaptive output dimensions. Optional display-only group labels support
   publication figures with long fitted group names.
 - The plot follows standard R conventions: `plot(fit)` draws to the active
-  device, and the `file` argument writes PDF, PNG, or SVG output directly.
+  device, and the `file` argument writes PDF, PNG, or SVG output directly. SVG
+  output is available in R builds with Cairo support.
 - BH-adjusted fits now show separate, family-wide structural and abundance
   discovery gates on the component Z-statistic axis. The data-dependent
   boundaries use the complete fitted component families and are invariant to
   displayed feature selection. A finite gate appears when the component has at
-  least one BH discovery.
+  least one BH discovery. Boundary validation handles machine-precision ties
+  consistently and identifies any omitted component boundary with a warning;
+  the remaining profile is drawn.
+- GitHub Actions checks the package on release versions of macOS, Windows, and
+  Ubuntu, together with R-devel and the previous R release on Ubuntu. Device
+  smoke tests cover PDF, PNG, and Cairo-enabled SVG output, and a two-worker
+  PSOCK regression test checks exact agreement with sequential fitting.
+- Parallel workers load the same package installation as the calling session,
+  including installations selected through an explicit library location.
+  Deterministic compiled kernels leave the R random-number state unchanged.
 
 # DASRA 0.5.2
 

@@ -10,6 +10,14 @@ DASRA provides depth-aware inference for structural-absence and
 relative-abundance associations in microbiome count data. It reports the
 two components separately and combines them in an omnibus analysis.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/yiqianomics/DASRA}
+  \item Report bugs at \url{https://github.com/yiqianomics/DASRA/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Yiqian Zhang \email{zhang.16383@osu.edu}
 

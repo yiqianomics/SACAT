@@ -152,9 +152,10 @@
 }
 
 .dasra_prepare_plot_data <- function(Y, N, results, structural_fits,
-                                     abundance_fits, contrast) {
+                                     abundance_fits, contrast,
+                                     cluster = NULL) {
     taxa <- results$taxon
-    structural <- lapply(seq_along(taxa), function(j) {
+    structural_one <- function(j) {
         tryCatch(
             .dasra_structural_plot_profile(
                 y = Y[, j],
@@ -165,7 +166,10 @@
                 paste0("plot_profile_error: ", conditionMessage(e))
             )
         )
-    })
+    }
+    structural <- .dasra_taxon_lapply(
+        seq_along(taxa), structural_one, cluster = cluster
+    )
     abundance <- lapply(taxa, function(taxon) {
         tryCatch(
             .dasra_abundance_plot_profile(taxon, abundance_fits),
@@ -221,6 +225,14 @@
 
 .dasra_plot_component_bh_guide <- function(
         retained, raw_p, adjusted_p, z, alpha) {
+    n_taxa <- length(retained)
+    if (!is.numeric(raw_p) || !is.numeric(adjusted_p) || !is.numeric(z) ||
+        length(raw_p) != n_taxa || length(adjusted_p) != n_taxa ||
+        length(z) != n_taxa) {
+        stop("the component p-values and Z-statistics are malformed",
+             call. = FALSE)
+    }
+
     family <- retained & is.finite(raw_p)
     family_size <- sum(family)
     guide <- list(
@@ -238,17 +250,17 @@
     tolerance <- 1e-10
     finite_z <- is.finite(z_family)
     expected_p <- 2 * stats::pnorm(-abs(z_family[finite_z]))
-    if (any(raw_family < 0 | raw_family > 1) ||
-        any(!is.finite(adjusted_family)) ||
-        max(abs(adjusted_family - recomputed)) > tolerance ||
-        any(abs(raw_family[finite_z] - expected_p) > tolerance)) {
-        stop(
-            paste(
-                "Component BH guides could not be verified from this fit;",
-                "use `show_component_guides = FALSE` to omit them."
-            ),
-            call. = FALSE
-        )
+    if (any(raw_family < 0 | raw_family > 1)) {
+        stop("raw p-values fall outside [0, 1]", call. = FALSE)
+    }
+    if (any(!is.finite(adjusted_family)) ||
+        max(abs(adjusted_family - recomputed)) > tolerance) {
+        stop("stored adjusted p-values do not match BH adjustment",
+             call. = FALSE)
+    }
+    if (any(abs(raw_family[finite_z] - expected_p) > tolerance)) {
+        stop("raw p-values do not match the plotted Z-statistics",
+             call. = FALSE)
     }
 
     rejected <- recomputed <= alpha
@@ -260,16 +272,22 @@
     critical_z <- stats::qnorm(
         critical_p / 2, lower.tail = FALSE
     )
-    if (any(rejected & !finite_z) || !is.finite(critical_z) ||
-        critical_z <= 0 ||
-        !identical(unname(raw_family <= critical_p), unname(rejected))) {
-        stop(
-            paste(
-                "Component BH guides could not be verified from this fit;",
-                "use `show_component_guides = FALSE` to omit them."
-            ),
-            call. = FALSE
-        )
+    if (any(rejected & !finite_z)) {
+        stop("a BH discovery has no finite Z-statistic", call. = FALSE)
+    }
+    if (!is.finite(critical_z) || critical_z <= 0) {
+        stop("the BH boundary has no finite Z-statistic", call. = FALSE)
+    }
+
+    boundary_membership <- raw_family <= critical_p
+    boundary_mismatch <- boundary_membership != rejected
+    boundary_tolerance <- 16 * .Machine$double.eps * pmax(
+        abs(raw_family), abs(critical_p), .Machine$double.xmin
+    )
+    if (any(boundary_mismatch &
+            abs(raw_family - critical_p) > boundary_tolerance)) {
+        stop("the BH decisions do not match the step-up boundary",
+             call. = FALSE)
     }
 
     guide$z <- critical_z
@@ -301,23 +319,50 @@
         anyNA(retained)) {
         stop("The retained-taxon indicator is malformed.", call. = FALSE)
     }
-    structural <- .dasra_plot_component_bh_guide(
-        retained,
+    check_component <- function(raw_p, adjusted_p, z) {
+        tryCatch(
+            list(
+                guide = .dasra_plot_component_bh_guide(
+                    retained, raw_p, adjusted_p, z, alpha
+                ),
+                problem = NULL
+            ),
+            error = function(e) list(guide = empty,
+                                     problem = conditionMessage(e))
+        )
+    }
+    structural <- check_component(
         x$results$p_structural_absence,
         x$results$p_adj_structural_absence,
-        x$results$z_structural_absence,
-        alpha
+        x$results$z_structural_absence
     )
-    abundance <- .dasra_plot_component_bh_guide(
-        retained,
+    abundance <- check_component(
         x$results$p_relative_abundance,
         x$results$p_adj_relative_abundance,
-        x$results$z_relative_abundance,
-        alpha
+        x$results$z_relative_abundance
     )
+    problems <- c(
+        if (!is.null(structural$problem)) {
+            paste0("structural absence (", structural$problem, ")")
+        },
+        if (!is.null(abundance$problem)) {
+            paste0("present-conditional abundance (",
+                   abundance$problem, ")")
+        }
+    )
+    if (length(problems)) {
+        warning(
+            paste0(
+                "Omitted component BH gate",
+                if (length(problems) > 1L) "s" else "",
+                ": ", paste(problems, collapse = "; "), "."
+            ),
+            call. = FALSE
+        )
+    }
     list(
         enabled = TRUE, method = method, alpha = alpha,
-        structural = structural, abundance = abundance
+        structural = structural$guide, abundance = abundance$guide
     )
 }
 
@@ -1314,7 +1359,8 @@
 #' @param alpha Adjusted-p threshold used by `selection = "significant"` and,
 #'   when enabled, by the component BH discovery gates.
 #' @param p_color_limits Either `"adaptive"` or numeric `c(lower, upper)` with
-#'   `0 < lower < upper <= 1`. The adaptive strong-evidence endpoint is derived
+#'   `lower > 0`, `upper <= 1`, and `lower < upper`. The adaptive
+#'   strong-evidence endpoint is derived
 #'   from the smallest positive finite component adjusted p-value among the
 #'   displayed markers and rounded down to a power of ten; the weak-evidence
 #'   endpoint is one. Degenerate all-zero or all-one displays use a finite
@@ -1329,17 +1375,39 @@
 #'   default. This option changes display text only.
 #' @param show_component_guides Logical; for a fit using BH (or its `"fdr"`
 #'   alias), draw separate structural and abundance discovery gates at the
-#'   family-wide BH step-up boundaries. Each boundary uses all retained taxa in
-#'   its fitted component family and is invariant to the displayed feature
-#'   subset. A finite gate appears when the component has at least one
-#'   discovery. Guide display is available for BH and `"fdr"` fits.
+#'   family-wide BH step-up boundaries. Each gate uses the complete family of
+#'   retained taxa and appears when that component has at least one discovery.
+#'   A warning identifies any component whose boundary cannot be displayed.
 #' @param file Optional output filename ending in `.pdf`, `.png`, or `.svg`.
-#'   When `NULL`, the current graphics device is used.
+#'   When `NULL`, the current graphics device is used. SVG output requires an R
+#'   build with Cairo support.
 #' @param width,height Output dimensions in inches when `file` is supplied.
 #'   Defaults use a 180-mm manuscript width and a height chosen from the number
 #'   of displayed features.
 #' @param dpi Resolution for PNG output.
 #' @param ... Reserved for future graphical options.
+#'
+#' @usage
+#' \method{plot}{dasra}(
+#'   x,
+#'   features = NULL,
+#'   selection = c("significant", "top", "all"),
+#'   max_features = 24L,
+#'   alpha = 0.05,
+#'   p_color_limits = "adaptive",
+#'   evidence_palette = c(
+#'     "#e8ecef", "#d6cdd5", "#c0acba",
+#'     "#a7879c", "#89617c", "#673b5c"
+#'   ),
+#'   group_colors = c("#6090c1", "#f28e4b"),
+#'   file = NULL,
+#'   width = NULL,
+#'   height = NULL,
+#'   dpi = 300,
+#'   group_labels = NULL,
+#'   show_component_guides = TRUE,
+#'   ...
+#' )
 #'
 #' @return Invisibly, the data and resolved graphical settings used to draw the
 #'   figure.

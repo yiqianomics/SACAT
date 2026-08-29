@@ -3,20 +3,22 @@ options(stringsAsFactors = FALSE, warn = 1)
 locate_analysis_directory <- function() {
     file_argument <- grep("^--file=", commandArgs(trailingOnly = FALSE),
                           value = TRUE)
-    candidates <- character()
+    search_paths <- character()
     if (length(file_argument) == 1L) {
         script_path <- sub("^--file=", "", file_argument)
-        candidates <- c(candidates, dirname(normalizePath(script_path)))
+        search_paths <- c(
+            search_paths, dirname(normalizePath(script_path))
+        )
     }
-    candidates <- unique(c(
-        candidates,
+    search_paths <- unique(c(
+        search_paths,
         getwd(),
         file.path(getwd(), "Analysis", "RealDataAnalysis")
     ))
     expected <- file.path(
         "crc_baxter", "processed", "crc_baxter_dasra_input.rds"
     )
-    matches <- candidates[file.exists(file.path(candidates, expected))]
+    matches <- search_paths[file.exists(file.path(search_paths, expected))]
     if (length(matches) != 1L) {
         stop("Could not identify the RealDataAnalysis directory.", call. = FALSE)
     }
@@ -233,6 +235,8 @@ humanize_result_reason <- function(reason) {
             "No zero counts were observed for this taxon",
         "one or both components were unavailable" =
             "One or both components were unavailable",
+        "no DASRA component formed" =
+            "No DASRA component formed",
         "positive_part_design_rank_deficient" =
             "Positive-count model design was rank deficient",
         "pseudocount sensitivity failed; p-value set to one" =
@@ -437,7 +441,9 @@ run_dasra <- function(counts, metadata, configuration, formulas,
     abundance_available <- names_by_taxon(
         diagnostics$retained & diagnostics$formed_relative_abundance
     )
-    combined_available <- structural_available & abundance_available
+    combined_available <- names_by_taxon(
+        diagnostics$retained & diagnostics$formed_omnibus
+    )
 
     structural_reason <- names_by_taxon(
         ifelse(
@@ -456,7 +462,7 @@ run_dasra <- function(counts, metadata, configuration, formulas,
     combined_reason <- names_by_taxon(ifelse(
         combined_available,
         "available",
-        "one or both components were unavailable"
+        "no DASRA component formed"
     ))
 
     rows <- rbind(
@@ -545,8 +551,8 @@ run_dasra <- function(counts, metadata, configuration, formulas,
     list(
         rows = rows,
         note = paste(
-            "Both components are required for the combined result;",
-            "unavailable p-values remain in the BH family as one."
+            "The combined result uses every formed component;",
+            "unavailable component p-values enter as one."
         )
     )
 }
@@ -1453,6 +1459,28 @@ make_upset_figure <- function(results, input, configuration,
         na = ""
     )
 
+    full_intersection_count <- nrow(pattern_table)
+    maximum_displayed_intersections <- 20L
+    pattern_table <- utils::head(
+        pattern_table, maximum_displayed_intersections
+    )
+    displayed_intersection_count <- nrow(pattern_table)
+    intersection_note <- if (
+        displayed_intersection_count < full_intersection_count
+    ) {
+        sprintf(
+            paste(
+                "%d largest of %d patterns",
+                "Method totals use all discoveries",
+                sep = "\n"
+            ),
+            displayed_intersection_count,
+            full_intersection_count
+        )
+    } else {
+        "All intersection patterns are shown"
+    }
+
     positions <- data.frame(
         method = method_order,
         y = rev(seq_along(method_order)),
@@ -1603,7 +1631,7 @@ make_upset_figure <- function(results, input, configuration,
             panel.grid.major.x = ggplot2::element_line(
                 color = "grey90", linewidth = 0.3
             ),
-            plot.margin = ggplot2::margin(4, 3, 6, 6)
+            plot.margin = ggplot2::margin(4, 3, 6, 10)
         )
 
     intersection_bar <- ggplot2::ggplot(
@@ -1621,6 +1649,7 @@ make_upset_figure <- function(results, input, configuration,
         ) +
         ggplot2::labs(
             title = "Significant-set intersections",
+            subtitle = intersection_note,
             x = NULL,
             y = "Intersection size"
         ) +
@@ -1628,22 +1657,12 @@ make_upset_figure <- function(results, input, configuration,
         ggplot2::theme(
             axis.text.x = ggplot2::element_blank(),
             axis.ticks.x = ggplot2::element_blank(),
+            plot.subtitle = ggplot2::element_text(size = 8.2),
             panel.grid.major.y = ggplot2::element_line(
                 color = "grey90", linewidth = 0.35
             ),
             plot.margin = ggplot2::margin(6, 6, 4, 3)
         )
-
-    intersection_axis_text <- if (nrow(pattern_table) > 40L) {
-        ggplot2::element_blank()
-    } else {
-        ggplot2::element_text(size = 7)
-    }
-    intersection_axis_ticks <- if (nrow(pattern_table) > 40L) {
-        ggplot2::element_blank()
-    } else {
-        ggplot2::element_line()
-    }
 
     intersection_matrix <- ggplot2::ggplot() +
         ggplot2::geom_rect(
@@ -1685,16 +1704,12 @@ make_upset_figure <- function(results, input, configuration,
         common_theme +
         ggplot2::theme(
             axis.ticks.y = ggplot2::element_blank(),
-            axis.text.x = intersection_axis_text,
-            axis.ticks.x = intersection_axis_ticks,
+            axis.text.x = ggplot2::element_text(size = 7),
             plot.margin = ggplot2::margin(4, 6, 6, 3)
         )
 
-    figure_width <- min(
-        22,
-        max(17.5, 11.2 + 0.21 * nrow(pattern_table))
-    )
-    left_column_width <- 5.1
+    figure_width <- 180 / 25.4
+    left_column_width <- 3.15
     figure <- patchwork::wrap_plots(
         A = patchwork::plot_spacer(),
         B = intersection_bar,
@@ -1726,7 +1741,8 @@ make_upset_figure <- function(results, input, configuration,
     list(
         file = figure_file,
         width = figure_width,
-        intersections = nrow(pattern_table),
+        intersections = full_intersection_count,
+        intersections_shown = displayed_intersection_count,
         taxa_in_union = nrow(membership)
     )
 }
@@ -1972,13 +1988,13 @@ if (length(unknown_arguments)) {
         call. = FALSE
     )
 }
-selected_datasets <- if (length(dataset_arguments)) {
+requested_datasets <- if (length(dataset_arguments)) {
     unique(sub("^--dataset=", "", dataset_arguments))
 } else {
     names(dataset_configurations)
 }
 if (length(dataset_arguments) > 1L ||
-    any(!selected_datasets %in% names(dataset_configurations))) {
+    any(!requested_datasets %in% names(dataset_configurations))) {
     stop(
         sprintf(
             "Dataset must be one of: %s.",
@@ -1987,6 +2003,6 @@ if (length(dataset_arguments) > 1L ||
         call. = FALSE
     )
 }
-for (dataset_id in selected_datasets) {
+for (dataset_id in requested_datasets) {
     run_dataset(dataset_configurations[[dataset_id]], plot_only = plot_only)
 }

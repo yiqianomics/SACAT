@@ -381,13 +381,15 @@ test_that("public controls are validated and recorded", {
         .dasra_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
                 conditional_present_starts, min_positive_samples,
-                quadrature_points, cluster, verbose) {
+                quadrature_points, cluster, verbose,
+                check_quadrature) {
             captured <<- list(
                 starts = conditional_present_starts,
                 minimum = min_positive_samples,
                 Q = quadrature_points,
                 cluster = cluster,
-                verbose = verbose
+                verbose = verbose,
+                check_quadrature = check_quadrature
             )
             list(
                 p = rep(0.5, ncol(Y)),
@@ -407,6 +409,7 @@ test_that("public controls are validated and recorded", {
     expect_identical(captured$Q, 31L)
     expect_null(captured$cluster)
     expect_false(captured$verbose)
+    expect_false(captured$check_quadrature)
     expect_identical(
         fit$settings$structural_conditional_present_starts, "full"
     )
@@ -477,8 +480,10 @@ test_that("the abundance quadrature control is passed and recorded", {
         .dasra_abundance_arm = function(
                 Y, N, g, z, keep_diagnostics,
                 min_positive_samples, min_reference_taxa,
-                quadrature_points, cluster, verbose) {
+                quadrature_points, cluster, verbose,
+                check_quadrature) {
             captured_Q <<- quadrature_points
+            expect_false(check_quadrature)
             list(
                 p = rep(0.5, ncol(Y)),
                 formed = rep(TRUE, ncol(Y)),

@@ -1,4 +1,0 @@
-"setting_id","n_replications","mean_returned","mean_regular_score","mean_conservative_nonregular","mean_unavailable","fraction_regular_score","fraction_conservative_nonregular","fraction_unavailable"
-"NULL_BALANCED",100,48.63,48.63,0,1.37,0.9726,0,0.0274
-"NULL_BALANCED_LOW",100,46.89,46.89,0,3.11,0.9378,0,0.0622
-"NULL_FOURFOLD",100,48.04,48.04,0,1.96,0.9608,0,0.0392

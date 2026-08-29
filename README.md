@@ -1,5 +1,7 @@
 # DASRA
 
+[![R-CMD-check](https://github.com/yiqianomics/DASRA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yiqianomics/DASRA/actions/workflows/R-CMD-check.yaml)
+
 **DASRA** provides depth-aware taxon-level inference for microbiome count data. It separates a group association into two complementary components:
 
 - a **structural-absence component**, which tests whether the probability that a taxon is absent differs between groups; and
@@ -36,16 +38,14 @@ a boundary solution.
 
 ## Installation
 
-Install the dependencies and then install DASRA from the package source
-directory:
+Install the runtime dependencies, then install DASRA from GitHub:
 
 ```r
-install.packages(c("Rcpp", "statmod"))
-devtools::install()
+install.packages(c("Rcpp", "statmod", "remotes"))
+remotes::install_github("yiqianomics/DASRA")
 ```
 
-The released GitHub version can be installed with
-`remotes::install_github("yiqianomics/DASRA")`.
+From a local source checkout, run `R CMD INSTALL .` at the package root.
 
 ## Input
 
@@ -76,7 +76,9 @@ The main analysis controls are:
 - `abundance_quadrature_points = 41L`, the validated abundance quadrature
   default;
 - `store_plot_data = FALSE`; set this to `TRUE` when the fitted object will be
-  used to draw the dual-component association profile; and
+  used to draw the dual-component association profile. Structural companion
+  summaries reuse the configured worker pool, while higher-order quadrature
+  sensitivity checks remain controlled by `full_output`; and
 - `workers = 1L` and `verbose = FALSE`. Increasing `workers` uses an ordered,
   cross-platform process cluster, while `verbose = TRUE` reports arm-level
   progress.
@@ -164,7 +166,8 @@ boundary in each component lane at the selected `alpha`. The upper triangle
 lane represents structural absence, and the lower circle lane represents
 present-conditional abundance. Each boundary uses the complete fitted
 component family and is invariant to the displayed feature subset. A component
-gate appears when that component has at least one BH discovery. Set
+gate appears when that component has at least one BH discovery. A warning
+identifies any component whose boundary cannot be displayed. Set
 `show_component_guides = FALSE` to hide the gates.
 
 By default, the plot displays up to 24 omnibus-adjusted discoveries at 0.05,
@@ -216,6 +219,8 @@ PNG, and SVG dimensions use a 180-mm manuscript width and an adaptive height:
 plot(fit, file = "dasra-profile.pdf")
 plot(fit, file = "dasra-profile.png", width = 7.2, height = 6.5, dpi = 600)
 ```
+
+SVG output requires an R build with Cairo support.
 
 ## Results
 

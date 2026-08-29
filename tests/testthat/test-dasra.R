@@ -38,6 +38,52 @@ test_that("Rcpp mean log relative abundance agrees with direct quadrature", {
     expect_equal(cpp, direct, tolerance = 1e-12)
 })
 
+test_that("deterministic Rcpp kernels leave the RNG state unchanged", {
+    had_seed <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+    original_seed <- if (had_seed) {
+        get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+    } else {
+        NULL
+    }
+    on.exit({
+        if (had_seed) {
+            assign(".Random.seed", original_seed, envir = .GlobalEnv)
+        } else if (exists(
+            ".Random.seed", envir = .GlobalEnv, inherits = FALSE
+        )) {
+            rm(".Random.seed", envir = .GlobalEnv)
+        }
+    })
+
+    gh <- DASRA:::make_count_gh_rule(11L)
+    evaluate_kernels <- function() {
+        DASRA:::dasra_gh_log_weights_cpp(gh$node, length(gh$node))
+        DASRA:::dasra_count_log_hy_adaptive_cpp(
+            1, 100, -4, 0.7, gh$node, gh$log_raw_weight
+        )
+        DASRA:::dasra_count_moments_adaptive_cpp(
+            1, 100, -4, 0.7, gh$node, gh$log_raw_weight
+        )
+        DASRA:::dasra_mean_log_relative_cpp(
+            -4, 0.7, sqrt(2) * gh$node, gh$weight
+        )
+        invisible(NULL)
+    }
+
+    if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+        rm(".Random.seed", envir = .GlobalEnv)
+    }
+    evaluate_kernels()
+    expect_false(exists(
+        ".Random.seed", envir = .GlobalEnv, inherits = FALSE
+    ))
+
+    set.seed(20260828)
+    seed_before <- .Random.seed
+    evaluate_kernels()
+    expect_identical(.Random.seed, seed_before)
+})
+
 test_that("intercept-only LTS uses a strict majority subset", {
     values <- c(-0.52, -0.50, -0.48, -0.46, 0.01, 0.04, 0.06)
     pilot <- DASRA:::.dasra_abundance_lts_pilot(values)

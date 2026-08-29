@@ -1,5 +1,5 @@
 "dataset","family","package","version","status","discoveries","elapsed_seconds","note"
-"microbiomehd_zupancic_obesity","DASRA","DASRA","0.6.0","completed with unavailable taxa",0,314.44,"Both components are required for the combined result; unavailable p-values remain in the BH family as one."
+"microbiomehd_zupancic_obesity","DASRA","DASRA","0.6.0","completed with unavailable taxa",0,314.44,"The combined result uses every formed component; unavailable component p-values enter as one."
 "microbiomehd_zupancic_obesity","MaAsLin3","maaslin3","1.5.3","completed",0,0.95,"TSS normalization and log2 transformation; abundance uses the default median comparison; both arms are required for the joint set."
 "microbiomehd_zupancic_obesity","ZINQ","ZINQ","2.0","completed",1,0.2,"Relative abundance uses the original library size; models adjust for standardized log library size; taus 0.25, 0.50, and 0.75; native Cauchy joint test."
 "microbiomehd_zupancic_obesity","ANCOM-BC2","ANCOMBC","2.10.1","completed",0,3.47,"Structural-zero detection and negative lower-bound correction; a raw p-value is set to one when pseudocount sensitivity fails."

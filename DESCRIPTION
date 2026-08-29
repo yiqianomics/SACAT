@@ -9,6 +9,8 @@ Authors@R:
         person("Zihan", "Zhu", email = "zihan.zhu@yale.edu",
                role = "aut")
     )
+URL: https://github.com/yiqianomics/DASRA
+BugReports: https://github.com/yiqianomics/DASRA/issues
 Description: Provides depth-aware taxon-level inference for microbiome count
     data. The method separates group differences in structural-absence
     probability from differences in relative abundance conditional on taxon

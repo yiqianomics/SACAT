@@ -57,8 +57,11 @@ each requested component and omnibus family. The usual assumptions of the
 selected adjustment method still apply.}
 
 \item{component}{Analysis to run. \code{"all"} fits both components and reports
-the omnibus analyses. \code{"structural_absence"} fits the structural-absence
-component. \code{"relative_abundance"} fits the relative-abundance component.}
+the omnibus analyses.
+
+\code{"structural_absence"} fits the structural-absence component.
+
+\code{"relative_abundance"} fits the relative-abundance component.}
 
 \item{full_output}{Logical. If \code{TRUE}, the returned object includes detailed
 fits for the requested components. Structural fits may also report the
@@ -85,8 +88,8 @@ Because it changes the retained multiplicity and reference families, it
 should be chosen before inspecting results.}
 
 \item{min_reference_taxa}{Minimum number of eligible target-excluded taxa
-required to form an abundance reference. The default \code{4L} preserves the
-original formation rule; values below \code{3L} are not supported.}
+required to form an abundance reference. The default is \code{4L}; values below
+\code{3L} are not supported.}
 
 \item{structural_quadrature_points}{Number of Gauss-Hermite nodes used by the
 structural arm. The validated default is \code{1001L}. Smaller values trade
@@ -100,18 +103,18 @@ cluster and do not change the taxon order.}
 messages.}
 
 \item{abundance_quadrature_points}{Number of Gauss-Hermite nodes used by the
-relative-abundance arm. The validated default \code{41L} preserves the original
-fitted procedure exactly. Nondefault values use the stable log-domain rule
-used by the structural arm. With \code{full_output = TRUE}, nondefault rules and
-fitted scales above two trigger a fixed-fit higher-order sensitivity
-comparison without refitting the model or changing primary inference.}
+relative-abundance arm. The default is \code{41L}. Nondefault values use the
+stable log-domain rule used by the structural arm. With \code{full_output = TRUE}, nondefault rules and fitted latent-scale standard deviations above
+two trigger a fixed-fit higher-order sensitivity comparison without
+refitting the model or changing primary inference.}
 
 \item{store_plot_data}{Logical. If \code{TRUE}, prepare and retain the small set of
-group-standardized summaries used by \code{plot.dasra()}. This option requires
-\code{component = "all"}. It adds descriptive companion calculations after the
-primary analyses but does not change their estimates, standard errors, or
-p-values. The default \code{FALSE} preserves the original fitted path and object
-size.}
+covariate-standardized summaries used by \code{plot.dasra()}. This option
+requires \code{component = "all"}. Structural companion summaries reuse the
+configured worker pool. Higher-order quadrature sensitivity checks remain
+controlled by \code{full_output}. Primary estimates, standard errors, and
+p-values are identical with either setting; the default \code{FALSE} keeps the
+fitted object compact.}
 }
 \value{
 An object of class \code{dasra} with elements:
@@ -123,7 +126,7 @@ p-values use the \code{p_adj_} prefix and the method recorded in
 status, documented formation reasons, and numerical warnings.}
 \item{settings}{The fitted contrast and analysis settings.}
 \item{call}{The matched function call.}
-\item{plot_data}{Compact group-standardized plotting summaries when
+\item{plot_data}{Compact covariate-standardized plotting summaries when
 \code{store_plot_data = TRUE}.}
 \item{fits}{Detailed component fits when \code{full_output = TRUE}.}
 }
@@ -178,13 +181,16 @@ value from a formed test result.
 Two structural outcomes are nonregular. A taxon with no observed zeros has
 no variation in its absence indicator (\code{no_observed_zeros}). An
 intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
-exact solution at the zero structural-absence boundary
-(\code{structural_absence_boundary_at_zero}). Both statuses use the documented
-operational value in the primary family and are excluded from the Cauchy
-sensitivity combination; their signed statistic is undefined. The reason
-\code{structural_absence_nonoptimal_nuisance_fit} records that a returned finite
-nuisance fit was not used because the exact zero-limit detection objective
-was lower. An otherwise supported all-positive taxon can still enter the
+exact solution at the zero structural-absence boundary.
+
+\code{structural_absence_boundary_at_zero} records this boundary solution. Both
+nonregular statuses use the documented operational value in the primary
+family and are excluded from the Cauchy sensitivity combination; their
+signed statistic is undefined.
+
+\code{structural_absence_nonoptimal_nuisance_fit} identifies a finite nuisance
+fit whose detection objective exceeds the exact zero-limit objective. An
+otherwise supported all-positive taxon can still enter the
 abundance conditional-mark fit because that fit has no structural nuisance
 parameter. The component-use columns record the components entering each
 omnibus calculation.
