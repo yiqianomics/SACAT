@@ -15,6 +15,9 @@ if (!requireNamespace("Biobase", quietly = TRUE) ||
     !requireNamespace("metagenomeSeq", quietly = TRUE)) {
     stop("Packages 'Biobase' and 'metagenomeSeq' are required.", call. = FALSE)
 }
+source(file.path(
+    dirname(dataset_directory), "shared", "count_validation.R"
+))
 
 standardize <- function(value) {
     as.numeric((value - mean(value)) / stats::sd(value))
@@ -27,12 +30,27 @@ write_count_csv <- function(counts, path) {
     )
 }
 
-load(source_file)
-phenotype <- Biobase::pData(gates)
-counts <- round(graw)
-storage.mode(counts) <- "integer"
-library_sizes <- as.numeric(totalCounts)
-names(library_sizes) <- names(totalCounts)
+source_environment <- new.env(parent = emptyenv())
+loaded_objects <- load(source_file, envir = source_environment)
+required_objects <- c("gates", "graw", "totalCounts")
+if (!all(required_objects %in% loaded_objects)) {
+    stop(
+        "The GEMS source file lacks gates, graw, or totalCounts.",
+        call. = FALSE
+    )
+}
+phenotype <- Biobase::pData(source_environment$gates)
+counts <- as_count_matrix(
+    source_environment$graw, "The GEMS count table"
+)
+validate_identifiers(rownames(counts), "Taxon identifiers")
+validate_identifiers(colnames(counts), "Sample identifiers")
+library_sizes <- as.numeric(source_environment$totalCounts)
+names(library_sizes) <- names(source_environment$totalCounts)
+validate_identifiers(names(library_sizes), "Library-size sample identifiers")
+if (any(!is.finite(library_sizes)) || any(library_sizes <= 0)) {
+    stop("GEMS library sizes must be positive and finite.", call. = FALSE)
+}
 
 common_samples <- Reduce(intersect, list(
     colnames(counts), rownames(phenotype), names(library_sizes)

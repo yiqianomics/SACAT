@@ -1,8 +1,8 @@
 "dataset","dataset_label","dasra_combined_bh_discoveries","comparison_overlap_status","taxa","percent_of_dasra_combined_discoveries"
-"cdi_schubert","Schubert C. difficile infection",41,"Significant in at least one comparison method",41,100
-"cdi_schubert","Schubert C. difficile infection",41,"Not significant in any comparison method",0,0
 "crc_baxter","Baxter colorectal cancer",5,"Significant in at least one comparison method",5,100
 "crc_baxter","Baxter colorectal cancer",5,"Not significant in any comparison method",0,0
+"cdi_schubert","Schubert C. difficile infection",41,"Significant in at least one comparison method",41,100
+"cdi_schubert","Schubert C. difficile infection",41,"Not significant in any comparison method",0,0
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",32,"Significant in at least one comparison method",32,100
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",32,"Not significant in any comparison method",0,0
 "korean_hypertension","Korean hypertension gut microbiome cohort",0,"Significant in at least one comparison method",0,

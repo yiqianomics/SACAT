@@ -35,9 +35,8 @@ script keeps the original, unrarefied ASV library totals, aggregates ASVs to
 genus or the deepest resolved higher rank, and retains taxa present in at
 least 5% of the cohort and with positive counts in both groups.
 
-The reproducible analysis RDS and readable audit tables are written to
-`processed/`.
+The analysis RDS and accompanying summary tables are written to `processed/`.
 
 For readability, the DASRA profile figure uses the display labels “Normal BP”
-and “High BP”; the model and exported tables retain the formal group labels
+and “High BP”; the model and exported tables retain the full group labels
 `Normotension` and `Hypertension`.

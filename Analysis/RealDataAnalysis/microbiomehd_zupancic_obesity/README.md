@@ -15,10 +15,9 @@ SRP002465.
   participants in total.
 - **Tested panel:** 41 genus or deepest-resolved higher-rank taxon bins.
 - **Adjustment model:** `~ sex + group`, with sex treated as categorical.
-- **Independent unit:** one visit-1 sample per public
-  `submitted_subject_id_s`, retaining the sample with the largest original
-  library size; sample identifier breaks an exact tie. The rule does not use
-  disease group or microbiome association results.
+- **Independent unit:** one visit-1 sample per participant. When more than one
+  eligible sample was available, the sample with the largest original library
+  size was selected, with sample identifier used to break ties.
 - **Original library size:** the column sum of the complete RDP-assigned de
   novo count table, calculated before the MicrobiomeHD feature filter,
   taxonomic aggregation, prevalence filtering, or the two-group support
@@ -30,9 +29,7 @@ Download `ob_zupancic_results.tar.gz` from the Zenodo record and extract it as
 and `raw/ob_zupancic_results/ob_zupancic.metadata.txt`. The primary
 comparison is obesity versus the healthy category at visit 1. The model
 adjusts for sex. Visit-1 records are reduced to one sample per public
-participant using the independence rule above. Only public subject 58 has two
-eligible visit-1 records: sample 49 (11,871 reads) is retained and sample 48
-(10,115 reads) is excluded.
+participant using the rule above.
 
 The standard MicrobiomeHD count filter is applied to the complete cohort. The
 analysis is not rarefied. Features are aggregated to genus or the deepest

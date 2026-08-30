@@ -8,11 +8,13 @@ Each dataset directory contains:
 
 - `analysis_input.rds`: the complete standardized input used in the experiment, including 200 sample-by-genus compositions, aligned sample identifiers and metadata, source information, and the 30-genus analysis panel;
 - `analysis.R`: the dataset-specific entry point;
-- `results/`: taxon-level results, randomization summaries, diagnostics, depth summaries, and the run manifest.
+- `results/`: taxon-level results, randomization summaries, diagnostics, depth summaries, and analysis settings.
 
 `run_negative_control.R` is the shared analysis engine used by every dataset-specific `analysis.R` entry point. It generates the randomized counts, runs DASRA, ZINQ, and MaAsLin3 under the common design, validates each completed unit, and writes the result tables.
 
-The stored `analysis_input.rds` files are sufficient to rerun the analyses. They contain processed genus-level analysis data rather than raw sequencing reads, so no download or preparation step is required for ordinary replication.
+ZINQ 2.0 is available from the [ZINQ-v2 repository](https://github.com/wdl2459/ZINQ-v2), and MaAsLin3 1.5.3 is available from the [MaAsLin3 repository](https://github.com/biobakery/maaslin3). The combined figure requires an R build with Cairo graphics.
+
+The stored `analysis_input.rds` files are sufficient to rerun the analyses. They contain processed genus-level analysis data rather than raw sequencing reads, so no download or preparation step is required.
 
 ## Datasets
 
@@ -54,7 +56,7 @@ Each of 100 randomizations assigns 100 samples to `H` and 100 to `Case`. The sam
 
 Library sizes follow a log-normal distribution with `sdlog = 0.45` and are limited to 300-30,000 reads. Counts are sampled from the 30 target genera together with `Other_unmodeled`; the latter preserves the remaining community mass but is not tested. DASRA, ZINQ, and MaAsLin3 analyze the same 30 target taxa in every randomization.
 
-DASRA uses its public Bonferroni omnibus result. An unavailable component contributes a conservative p-value of 1, and the omnibus is formed when at least one component is formed. MaAsLin3 requires both component fits and a combined p-value. An unavailable method result is represented by an analysis p-value of 1 in the common 30-taxon denominator. Type I error is the proportion of analysis p-values at or below 0.05.
+DASRA uses its public Bonferroni omnibus result. An unavailable component contributes a conservative p-value of 1, and the omnibus is formed when at least one component is formed. MaAsLin3 requires both component fits and a combined p-value. An unavailable method result is represented by an analysis p-value of 1 in the common 30-taxon family. Within each randomization, depth setting, and method, Benjamini-Hochberg adjustment is applied to these 30 p-values. A family incurs a Type I error when at least one adjusted p-value is at most 0.05.
 
 Randomization and count-generation seeds are deterministic functions of the dataset, randomization, and depth setting. Each dataset analysis uses seven independent R workers.
 
@@ -70,15 +72,15 @@ From this directory, run one dataset through its entry point, for example:
 Rscript SchirmerM_2016/analysis.R
 ```
 
-An interrupted run can be restarted; completed randomization-setting units are reused. Temporary checkpoints and method work files are removed after all 200 units pass validation.
+An interrupted run can be restarted from the completed randomization-setting units.
 
 Each completed `results` directory contains:
 
 - `taxon_pvalues.csv`: taxon-level p-values, availability, and status;
-- `replicate_metrics.csv`: Type I error and availability by randomization, setting, and method;
+- `replicate_metrics.csv`: BH rejection counts, family-wise Type I error, and availability by randomization, setting, and method;
 - `diagnostics.csv`: generated positive-count and DASRA component diagnostics;
 - `depth_diagnostics.csv`: realized group sizes and library-depth summaries;
-- `run_manifest.csv`: design constants and software versions.
+- `analysis_settings.csv`: design constants and software versions.
 
 After all 20 dataset analyses finish, run:
 
@@ -86,4 +88,4 @@ After all 20 dataset analyses finish, run:
 Rscript combined/analysis.R
 ```
 
-The combined script validates the complete 20-dataset x 100-randomization x 2-setting x 3-method x 30-taxon result grid. It writes randomization-level and dataset-level Type I error summaries, method-availability and completeness tables, formal fourfold support summaries, and `combined/negative_control_type1_error.pdf`. Figure intervals are 95% Monte Carlo intervals based on variation across the 100 randomization-level Type I error estimates.
+The combined script creates randomization-level and dataset-level Type I error summaries, positive-count support summaries for the fourfold-depth setting, method-availability tables, and `combined/negative_control_type1_error.pdf`. Figure intervals are 95% Monte Carlo intervals across the 100 randomizations.

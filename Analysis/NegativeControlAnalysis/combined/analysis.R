@@ -1,5 +1,7 @@
 #!/usr/bin/env Rscript
 
+# Summarize negative-control results across all public datasets.
+
 options(stringsAsFactors = FALSE, warn = 1)
 
 scenario_order <- c("balanced", "fourfold")
@@ -117,7 +119,7 @@ read_dataset_result <- function(dataset, label, root) {
     result
 }
 
-# Validate the full result grid and conservative unavailable-test convention.
+# Check the complete result grid and the treatment of unavailable tests.
 validate_results <- function(result, catalog) {
     expected_rows <- nrow(catalog) * replicates * length(scenario_order) *
         length(method_order) * taxa_per_replicate
@@ -175,15 +177,18 @@ validate_results <- function(result, catalog) {
     invisible(TRUE)
 }
 
-# Validate the stored input, fixed panel, and formal diagnostics.
-validate_dataset_audit <- function(dataset, result, catalog_entry, root) {
+# Check the stored input, fixed panel, and positive-count summaries.
+validate_dataset_outputs <- function(dataset, result, catalog_entry, root) {
     input_path <- file.path(root, dataset, "analysis_input.rds")
     diagnostics_path <- file.path(root, dataset, "results", "diagnostics.csv")
-    manifest_path <- file.path(root, dataset, "results", "run_manifest.csv")
+    settings_path <- file.path(
+        root, dataset, "results", "analysis_settings.csv"
+    )
     if (!all(file.exists(c(
-        input_path, diagnostics_path, manifest_path
+        input_path, diagnostics_path, settings_path
     )))) {
-        stop("Missing audit records for ", dataset, ".", call. = FALSE)
+        stop("Required analysis files are missing for ", dataset, ".",
+             call. = FALSE)
     }
 
     input <- readRDS(input_path)
@@ -197,7 +202,7 @@ validate_dataset_audit <- function(dataset, result, catalog_entry, root) {
         length(input$evaluation_taxa) != taxa_per_replicate ||
         anyDuplicated(input$evaluation_taxa) ||
         !setequal(input$evaluation_taxa, unique(result$taxon))) {
-        stop("The panel audit is malformed for ", dataset, ".",
+        stop("The taxon panel is malformed for ", dataset, ".",
              call. = FALSE)
     }
 
@@ -255,7 +260,7 @@ validate_dataset_audit <- function(dataset, result, catalog_entry, root) {
             taxa_per_replicate ||
         !identical(unique(diagnostics$dataset), dataset) ||
         !setequal(unique(diagnostics$scenario), scenario_order)) {
-        stop("Formal diagnostics are incomplete for ", dataset, ".",
+        stop("Diagnostics are incomplete for ", dataset, ".",
              call. = FALSE)
     }
     dasra_result <- result[result$method == "DASRA", , drop = FALSE]
@@ -297,86 +302,93 @@ validate_dataset_audit <- function(dataset, result, catalog_entry, root) {
              call. = FALSE)
     }
 
-    formal <- diagnostics[diagnostics$scenario == "fourfold", , drop = FALSE]
-    formal$positive_samples_H <- as.integer(formal$positive_samples_H)
-    formal$positive_samples_Case <- as.integer(formal$positive_samples_Case)
-    formal$minimum_both <- pmin(
-        formal$positive_samples_H, formal$positive_samples_Case
+    fourfold <- diagnostics[
+        diagnostics$scenario == "fourfold", , drop = FALSE
+    ]
+    fourfold$positive_samples_H <- as.integer(fourfold$positive_samples_H)
+    fourfold$positive_samples_Case <- as.integer(
+        fourfold$positive_samples_Case
+    )
+    fourfold$minimum_both <- pmin(
+        fourfold$positive_samples_H, fourfold$positive_samples_Case
     )
     rows <- lapply(input$evaluation_taxa, function(taxon) {
-        subset <- formal[formal$taxon == taxon, , drop = FALSE]
+        subset <- fourfold[fourfold$taxon == taxon, , drop = FALSE]
         if (nrow(subset) != replicates ||
             !identical(sort(as.integer(subset$replicate)),
                        seq_len(replicates))) {
-            stop("Formal support records are incomplete for ", dataset,
+            stop("Fourfold support records are incomplete for ", dataset,
                  ".", call. = FALSE)
         }
         data.frame(
             dataset = dataset,
             taxon = taxon,
-            formal_min_positive_H = min(subset$positive_samples_H),
-            formal_min_positive_Case = min(subset$positive_samples_Case),
-            formal_min_positive_both = min(subset$minimum_both),
-            formal_mean_positive_H = mean(subset$positive_samples_H),
-            formal_mean_positive_Case = mean(subset$positive_samples_Case),
-            formal_mean_positive_both = mean(subset$minimum_both),
-            formal_replicates_at_least_20 = sum(subset$minimum_both >= 20L),
-            formal_replicates_at_least_18 = sum(subset$minimum_both >= 18L),
-            formal_replicates_below_18 = sum(subset$minimum_both < 18L),
+            minimum_positive_H = min(subset$positive_samples_H),
+            minimum_positive_Case = min(subset$positive_samples_Case),
+            minimum_positive_both = min(subset$minimum_both),
+            mean_positive_H = mean(subset$positive_samples_H),
+            mean_positive_Case = mean(subset$positive_samples_Case),
+            mean_positive_both = mean(subset$minimum_both),
+            replicates_at_least_20 = sum(subset$minimum_both >= 20L),
+            replicates_at_least_18 = sum(subset$minimum_both >= 18L),
+            replicates_below_18 = sum(subset$minimum_both < 18L),
             stringsAsFactors = FALSE
         )
     })
-    formal_summary <- do.call(rbind, rows)
-    rownames(formal_summary) <- NULL
+    fourfold_summary <- do.call(rbind, rows)
+    rownames(fourfold_summary) <- NULL
 
-    manifest <- utils::read.csv(manifest_path, check.names = FALSE)
-    required_manifest <- c(
+    settings <- utils::read.csv(settings_path, check.names = FALSE)
+    required_settings <- c(
         "dataset", "dataset_label", "n_samples", "group_size", "n_taxa",
         "replicates", "scenarios",
-        "formal_fourfold_minimum_positive_H",
-        "formal_fourfold_minimum_positive_Case",
-        "formal_fourfold_minimum_positive_both",
-        "formal_fourfold_fraction_records_at_least_20",
-        "formal_fourfold_fraction_records_at_least_18",
-        "formal_fourfold_max_taxon_replicates_below_18",
-        "DASRA_omnibus_contract", "DASRA_version"
+        "fourfold_minimum_positive_H",
+        "fourfold_minimum_positive_Case",
+        "fourfold_minimum_positive_both",
+        "fourfold_fraction_records_at_least_20",
+        "fourfold_fraction_records_at_least_18",
+        "fourfold_max_taxon_replicates_below_18",
+        "DASRA_omnibus_definition", "DASRA_version"
     )
-    formal_minimum <- formal$minimum_both
-    formal_below_by_taxon <- tapply(
-        formal_minimum < 18L, formal$taxon, sum
+    minimum_positive_both <- fourfold$minimum_both
+    below_18_by_taxon <- tapply(
+        minimum_positive_both < 18L, fourfold$taxon, sum
     )
-    manifest_numbers <- suppressWarnings(as.numeric(c(
-        manifest$n_samples, manifest$group_size, manifest$n_taxa,
-        manifest$replicates,
-        manifest$formal_fourfold_minimum_positive_H,
-        manifest$formal_fourfold_minimum_positive_Case,
-        manifest$formal_fourfold_minimum_positive_both,
-        manifest$formal_fourfold_fraction_records_at_least_20,
-        manifest$formal_fourfold_fraction_records_at_least_18,
-        manifest$formal_fourfold_max_taxon_replicates_below_18
+    settings_numbers <- suppressWarnings(as.numeric(c(
+        settings$n_samples, settings$group_size, settings$n_taxa,
+        settings$replicates,
+        settings$fourfold_minimum_positive_H,
+        settings$fourfold_minimum_positive_Case,
+        settings$fourfold_minimum_positive_both,
+        settings$fourfold_fraction_records_at_least_20,
+        settings$fourfold_fraction_records_at_least_18,
+        settings$fourfold_max_taxon_replicates_below_18
     )))
-    expected_manifest_numbers <- c(
+    expected_settings_numbers <- c(
         200, 100, 30, 100,
-        min(formal$positive_samples_H), min(formal$positive_samples_Case),
-        min(formal_minimum), mean(formal_minimum >= 20L),
-        mean(formal_minimum >= 18L), max(formal_below_by_taxon)
+        min(fourfold$positive_samples_H), min(fourfold$positive_samples_Case),
+        min(minimum_positive_both), mean(minimum_positive_both >= 20L),
+        mean(minimum_positive_both >= 18L), max(below_18_by_taxon)
     )
-    if (!all(required_manifest %in% names(manifest)) ||
-        nrow(manifest) != 1L ||
-        !identical(as.character(manifest$dataset), dataset) ||
-        !identical(as.character(manifest$dataset_label),
+    if (!all(required_settings %in% names(settings)) ||
+        nrow(settings) != 1L ||
+        !identical(as.character(settings$dataset), dataset) ||
+        !identical(as.character(settings$dataset_label),
                    unique(result$dataset_label)) ||
-        any(!is.finite(manifest_numbers)) ||
-        any(abs(manifest_numbers - expected_manifest_numbers) > tolerance) ||
-        !identical(as.character(manifest$scenarios), "balanced | fourfold") ||
-        !identical(as.character(manifest$DASRA_omnibus_contract),
-                   "p_omnibus with formed_omnibus") ||
-        !identical(as.character(manifest$DASRA_version),
+        any(!is.finite(settings_numbers)) ||
+        any(abs(settings_numbers - expected_settings_numbers) > tolerance) ||
+        !identical(as.character(settings$scenarios), "balanced | fourfold") ||
+        !identical(as.character(settings$DASRA_omnibus_definition),
+                   paste(
+                       "Bonferroni omnibus p-value when at least one",
+                       "component is formed"
+                   )) ||
+        !identical(as.character(settings$DASRA_version),
                    required_dasra_version)) {
-        stop("The run manifest is inconsistent for ", dataset, ".",
+        stop("The analysis settings are inconsistent for ", dataset, ".",
              call. = FALSE)
     }
-    formal_summary
+    fourfold_summary
 }
 
 # Apply catalog order consistently to a dataset-method-scenario summary.
@@ -396,13 +408,14 @@ ordered_summary <- function(summary, catalog) {
 
 # Collapse the fixed 30-taxon family to one result per randomization cell.
 make_replicate_summary <- function(result, catalog) {
-    result$rejected <- result$p_value <= alpha
     cell <- interaction(
         result$dataset, result$replicate, result$scenario, result$method,
         drop = TRUE, lex.order = TRUE
     )
     rows <- lapply(split(seq_len(nrow(result)), cell), function(index) {
         subset <- result[index, , drop = FALSE]
+        subset$bh_adjusted_p <- stats::p.adjust(subset$p_value, method = "BH")
+        subset$rejected <- subset$bh_adjusted_p <= alpha
         data.frame(
             dataset = subset$dataset[[1L]],
             dataset_label = subset$dataset_label[[1L]],
@@ -412,8 +425,8 @@ make_replicate_summary <- function(result, catalog) {
             n_taxa = nrow(subset),
             n_available = sum(subset$available),
             availability_rate = mean(subset$available),
-            n_rejections = sum(subset$rejected),
-            type1_error = mean(subset$rejected),
+            n_bh_rejections = sum(subset$rejected),
+            familywise_type_i_error = as.integer(any(subset$rejected)),
             stringsAsFactors = FALSE
         )
     })
@@ -432,7 +445,7 @@ make_replicate_summary <- function(result, catalog) {
     summary
 }
 
-# Summarize Type I error and Monte Carlo uncertainty by dataset.
+# Summarize family-wise Type I error and Monte Carlo uncertainty by dataset.
 make_dataset_summary <- function(replicate_summary, catalog) {
     cell <- interaction(
         replicate_summary$dataset, replicate_summary$scenario,
@@ -441,8 +454,9 @@ make_dataset_summary <- function(replicate_summary, catalog) {
     rows <- lapply(split(seq_len(nrow(replicate_summary)), cell),
                    function(index) {
         subset <- replicate_summary[index, , drop = FALSE]
-        mean_error <- mean(subset$type1_error)
-        monte_carlo_se <- stats::sd(subset$type1_error) / sqrt(nrow(subset))
+        mean_error <- mean(subset$familywise_type_i_error)
+        monte_carlo_se <- stats::sd(subset$familywise_type_i_error) /
+            sqrt(nrow(subset))
         margin <- stats::qnorm(0.975) * monte_carlo_se
         data.frame(
             dataset = subset$dataset[[1L]],
@@ -451,7 +465,7 @@ make_dataset_summary <- function(replicate_summary, catalog) {
             method = subset$method[[1L]],
             n_replicates = nrow(subset),
             n_taxa_per_replicate = unique(subset$n_taxa),
-            mean_type1_error = mean_error,
+            empirical_familywise_type_i_error = mean_error,
             monte_carlo_se = monte_carlo_se,
             mc_ci95_lower = max(0, mean_error - margin),
             mc_ci95_upper = min(1, mean_error + margin),
@@ -513,7 +527,7 @@ make_completeness_summary <- function(result, catalog) {
     ordered_summary(do.call(rbind, rows), catalog)
 }
 
-# Draw the reviewer-facing comparison of dataset-level Type I error.
+# Draw the dataset-level family-wise Type I error comparison.
 draw_figure <- function(summary, catalog, output_directory) {
     if (!requireNamespace("ggplot2", quietly = TRUE)) {
         stop("The ggplot2 package is required to draw the figure.",
@@ -534,7 +548,7 @@ draw_figure <- function(summary, catalog, output_directory) {
     figure <- ggplot2::ggplot(
         plot_data,
         ggplot2::aes(
-            x = mean_type1_error, y = dataset_label,
+            x = empirical_familywise_type_i_error, y = dataset_label,
             color = scenario, shape = scenario
         )
     ) +
@@ -569,14 +583,15 @@ draw_figure <- function(summary, catalog, output_directory) {
                 text <- format(
                     round(value, 3), trim = TRUE, scientific = FALSE
                 )
-                text[value > 0] <- sub("^0\\.", ".", text[value > 0])
+                positive <- !is.na(value) & value > 0
+                text[positive] <- sub("^0\\.", ".", text[positive])
                 text
             },
             expand = ggplot2::expansion(mult = c(0.04, 0.08))
         ) +
         ggplot2::coord_cartesian(xlim = c(0, plot_upper), clip = "on") +
         ggplot2::labs(
-            x = "Per-taxon Type I error (raw P ≤ 0.05)",
+            x = "Family-wise Type I error after BH adjustment",
             y = NULL, color = NULL, shape = NULL
         ) +
         ggplot2::theme_classic(base_size = 10.5, base_family = "sans") +
@@ -629,9 +644,9 @@ main <- function() {
     ))
     rownames(result) <- NULL
     validate_results(result, catalog)
-    formal_support <- do.call(rbind, Map(
+    fourfold_support <- do.call(rbind, Map(
         function(dataset) {
-            validate_dataset_audit(
+            validate_dataset_outputs(
                 dataset,
                 result[result$dataset == dataset, , drop = FALSE],
                 catalog[catalog$dataset == dataset, , drop = FALSE],
@@ -640,7 +655,7 @@ main <- function() {
         },
         catalog$dataset
     ))
-    rownames(formal_support) <- NULL
+    rownames(fourfold_support) <- NULL
 
     replicate_summary <- make_replicate_summary(result, catalog)
     dataset_summary <- make_dataset_summary(replicate_summary, catalog)
@@ -648,7 +663,7 @@ main <- function() {
     completeness_summary <- make_completeness_summary(result, catalog)
     expected_dataset_summaries <-
         dataset_count * length(scenario_order) * length(method_order)
-    if (nrow(formal_support) != dataset_count * taxa_per_replicate ||
+    if (nrow(fourfold_support) != dataset_count * taxa_per_replicate ||
         nrow(replicate_summary) != expected_dataset_summaries * replicates ||
         nrow(dataset_summary) != expected_dataset_summaries ||
         nrow(availability_summary) != expected_dataset_summaries ||
@@ -658,8 +673,8 @@ main <- function() {
     }
 
     atomic_write_csv(
-        formal_support,
-        file.path(output_directory, "formal_fourfold_support.csv")
+        fourfold_support,
+        file.path(output_directory, "fourfold_positive_count_support.csv")
     )
     atomic_write_csv(
         replicate_summary,

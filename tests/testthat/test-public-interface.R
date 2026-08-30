@@ -42,7 +42,7 @@
     list(g = encoded, contrast = fit$settings$contrast)
 }
 
-.run_public_contract_fixture <- function(component = "all") {
+.run_public_interface_fixture <- function(component = "all") {
     scenario <- data.frame(
         structural_p = c(0.01, 0.20, 1.00, 0.04),
         structural_formed = rep(TRUE, 4L),
@@ -158,7 +158,7 @@ test_that("group encodings preserve the comparison-minus-reference direction", {
 })
 
 test_that("adjusted p-value columns have a method-neutral schema", {
-    fit <- .run_public_contract_fixture()
+    fit <- .run_public_interface_fixture()
     retained <- fit$diagnostics$retained
     adjusted_columns <- c(
         "p_adj_structural_absence",
@@ -181,7 +181,7 @@ test_that("adjusted p-value columns have a method-neutral schema", {
 })
 
 test_that("lightweight warnings and nonregular status are returned by default", {
-    fit <- .run_public_contract_fixture()
+    fit <- .run_public_interface_fixture()
 
     expect_identical(
         fit$diagnostics$warning_structural_absence,
@@ -201,8 +201,8 @@ test_that("lightweight warnings and nonregular status are returned by default", 
 })
 
 test_that("lightweight diagnostics follow the requested components", {
-    structural <- .run_public_contract_fixture("structural_absence")
-    abundance <- .run_public_contract_fixture("relative_abundance")
+    structural <- .run_public_interface_fixture("structural_absence")
+    abundance <- .run_public_interface_fixture("relative_abundance")
 
     expect_true(all(c(
         "warning_structural_absence",
@@ -287,7 +287,7 @@ test_that("component arms retain warning codes without full output", {
 })
 
 test_that("print separates regular and conservative structural results", {
-    fit <- .run_public_contract_fixture()
+    fit <- .run_public_interface_fixture()
     output <- capture.output(print(fit))
 
     expect_true(any(grepl(
@@ -354,7 +354,7 @@ test_that("plot summaries are an explicit dual-component opt-in", {
     )
 })
 
-test_that("public controls are validated and recorded", {
+test_that("public controls are checked and recorded", {
     samples <- paste0("Sample_", seq_len(8L))
     counts <- matrix(
         2L,

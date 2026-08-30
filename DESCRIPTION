@@ -12,15 +12,12 @@ Authors@R:
 URL: https://github.com/yiqianomics/DASRA
 BugReports: https://github.com/yiqianomics/DASRA/issues
 Description: Provides depth-aware taxon-level inference for microbiome count
-    data. The method separates group differences in structural-absence
-    probability from differences in relative abundance conditional on taxon
-    presence, accounts for finite-depth nondetection through a latent-state
-    count model, uses a nuisance-orthogonalized estimating-function test for
-    regular structural inference, estimates present-conditional abundance with
-    a zero-truncated conditional-mark likelihood, and corrects the abundance
-    component for a shared compositional background across taxa.
-    Publication-oriented dual-component profiles display the complementary
-    results on an aligned component Z-statistic axis.
+    data. DASRA separates group differences in structural-absence probability
+    from differences in mean log relative abundance among samples in which a
+    taxon is present. It accounts for finite-depth nondetection, centers
+    abundance effects against a target-excluded cross-taxon reference, reports
+    component-specific and omnibus tests, and provides aligned plots of fitted
+    group contrasts and statistical evidence.
 License: GPL (>= 3)
 Encoding: UTF-8
 Depends: R (>= 4.1.0)

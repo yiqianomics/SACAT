@@ -22,11 +22,8 @@ comparison group.
   with the source `Depth` field.
 
 The preparation requires the published taxon counts at `raw/counts.tsv` and
-participant metadata at `raw/metadata.tsv`. The accompanying
-`raw/taxonomy.tsv` is retained for source documentation; the preparation does
-not need it because the count-table rows already carry the published taxon
-labels. These files are available in the paper's
-supplementary material and are also mirrored in the
+participant metadata at `raw/metadata.tsv`. These files are available in the
+paper's supplementary material and are also mirrored in the
 [ETH Zurich Microbiome Data Analysis workshop](https://www.gdc-docs.ethz.ch/MDA/reports/ravel.html).
 The count table is unrarefied, and its exact column total is retained as each
 participant's library size.
@@ -43,4 +40,4 @@ From the repository root, run:
 Rscript Analysis/RealDataAnalysis/ravel_vaginal_ethnicity/prepare_data.R
 ```
 
-The resulting RDS and readable audit tables are written to `processed/`.
+The analysis RDS and accompanying summary tables are written to `processed/`.

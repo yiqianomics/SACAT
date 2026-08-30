@@ -32,6 +32,9 @@ dataset_directory <- locate_dataset_directory()
 source(file.path(
     dirname(dataset_directory), "shared", "prepare_qiita_dataset.R"
 ))
+source(file.path(
+    dirname(dataset_directory), "shared", "count_validation.R"
+))
 source_file <- file.path(dataset_directory, "raw", "Table_1.xlsx")
 output_directory <- file.path(dataset_directory, "processed")
 dir.create(output_directory, recursive = TRUE, showWarnings = FALSE)
@@ -55,10 +58,13 @@ taxonomy_raw <- as.data.frame(readxl::read_excel(
     source_file, sheet = "Taxonomy"
 ), check.names = FALSE)
 
-sample_ids <- as.character(count_table[[1L]])
-feature_ids <- names(count_table)[-1L]
-counts_by_sample <- as.matrix(count_table[, -1L, drop = FALSE])
-storage.mode(counts_by_sample) <- "integer"
+sample_ids <- validate_identifiers(count_table[[1L]], "Sample identifiers")
+feature_ids <- validate_identifiers(
+    names(count_table)[-1L], "Feature identifiers"
+)
+counts_by_sample <- as_count_matrix(
+    count_table[, -1L, drop = FALSE], "The ASV count table"
+)
 rownames(counts_by_sample) <- sample_ids
 colnames(counts_by_sample) <- feature_ids
 all_counts <- t(counts_by_sample)
@@ -164,7 +170,7 @@ preprocessing <- list(
     dataset_id = "korean_hypertension",
     dataset_alias = "Korean adult hypertension gut microbiome cohort",
     source_publication = paste(
-        "Lee et al. (2023), The association between gut microbiome and",
+        "Song et al. (2023), The association between gut microbiome and",
         "hypertension varies according to enterotypes: a Korean study"
     ),
     source_publication_doi = "10.3389/frmbi.2023.1072059",

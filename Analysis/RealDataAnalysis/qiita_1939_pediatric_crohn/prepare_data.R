@@ -75,7 +75,7 @@ configuration <- list(
     numeric_covariates = "age_z",
     subject_column = "host_subject_id",
     one_sample_per_subject = TRUE,
-    audit_columns = c(
+    source_metadata_columns = c(
         "collection", "sample_type_qiita", "biopsy_location",
         "diagnosis", "antibiotics", "host_age", "sex"
     ),

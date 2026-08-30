@@ -1,3 +1,5 @@
+# Run the negative-control randomizations for one public dataset.
+
 options(stringsAsFactors = FALSE, warn = 1)
 
 # The depth settings differ only in the group-specific median library size.
@@ -18,8 +20,11 @@ maximum_depth <- 30000L
 minimum_source_prevalence <- 0.10
 minimum_mean_abundance <- 1e-5
 required_dasra_version <- "0.6.0"
-checkpoint_schema_version <- 5L
-checkpoint_contract <- "balanced_fourfold_public_or_v3_dasra_0.6.0"
+checkpoint_schema_version <- 6L
+checkpoint_definition <- paste(
+    "balanced and fourfold depth; public input version 3;",
+    "DASRA 0.6.0; within-family BH"
+)
 
 `%||%` <- function(x, y) {
     if (is.null(x) || !length(x)) y else x
@@ -690,6 +695,8 @@ run_unit <- function(analysis_input, scenario, replicate, result_directory,
 
     replicate_metrics <- do.call(rbind, lapply(method_results, function(item) {
         result <- item$result
+        bh_adjusted_p <- stats::p.adjust(result$p_value, method = "BH")
+        rejected <- bh_adjusted_p <= 0.05
         data.frame(
             dataset = analysis_input$dataset_id,
             dataset_label = analysis_input$label,
@@ -699,8 +706,8 @@ run_unit <- function(analysis_input, scenario, replicate, result_directory,
             n_taxa = length(taxa),
             n_available = sum(result$available),
             availability_rate = mean(result$available),
-            n_rejections = sum(result$p_value <= 0.05),
-            type1_error = mean(result$p_value <= 0.05),
+            n_bh_rejections = sum(rejected),
+            familywise_type_i_error = as.integer(any(rejected)),
             stringsAsFactors = FALSE
         )
     }))
@@ -784,7 +791,7 @@ run_unit <- function(analysis_input, scenario, replicate, result_directory,
 
     atomic_save_rds(list(
         schema_version = checkpoint_schema_version,
-        analysis_contract = checkpoint_contract,
+        analysis_definition = checkpoint_definition,
         DASRA_version = as.character(utils::packageVersion("DASRA")),
         dataset_id = analysis_input$dataset_id,
         evaluation_taxa = taxa,
@@ -804,7 +811,7 @@ checkpoint_is_current <- function(path, analysis_input, scenario, replicate) {
     object <- tryCatch(readRDS(path), error = function(error) NULL)
     !is.null(object) &&
         identical(object$schema_version, checkpoint_schema_version) &&
-        identical(object$analysis_contract, checkpoint_contract) &&
+        identical(object$analysis_definition, checkpoint_definition) &&
         identical(object$DASRA_version, required_dasra_version) &&
         identical(object$dataset_id, analysis_input$dataset_id) &&
         identical(object$evaluation_taxa, analysis_input$evaluation_taxa) &&
@@ -860,11 +867,11 @@ aggregate_checkpoints <- function(result_directory, analysis_input,
         stop(sum(!current), " scenario units are incomplete.", call. = FALSE)
     }
     checkpoints <- lapply(paths, readRDS)
-    formal_diagnostics <- do.call(rbind, lapply(
+    all_diagnostics <- do.call(rbind, lapply(
         checkpoints, `[[`, "diagnostics"
     ))
-    fourfold_diagnostics <- formal_diagnostics[
-        formal_diagnostics$scenario == "fourfold", , drop = FALSE
+    fourfold_diagnostics <- all_diagnostics[
+        all_diagnostics$scenario == "fourfold", , drop = FALSE
     ]
     minimum_both <- pmin(
         fourfold_diagnostics$positive_samples_H,
@@ -904,7 +911,7 @@ aggregate_checkpoints <- function(result_directory, analysis_input,
         ))
     }
 
-    manifest <- data.frame(
+    settings <- data.frame(
         dataset = analysis_input$dataset_id,
         dataset_label = analysis_input$label,
         n_samples = nrow(analysis_input$probability),
@@ -919,21 +926,24 @@ aggregate_checkpoints <- function(result_directory, analysis_input,
         depth_sdlog = depth_sdlog,
         panel_source_prevalence_minimum = minimum_source_prevalence,
         panel_mean_abundance_minimum = minimum_mean_abundance,
-        formal_fourfold_minimum_positive_H = min(
+        fourfold_minimum_positive_H = min(
             fourfold_diagnostics$positive_samples_H
         ),
-        formal_fourfold_minimum_positive_Case = min(
+        fourfold_minimum_positive_Case = min(
             fourfold_diagnostics$positive_samples_Case
         ),
-        formal_fourfold_minimum_positive_both = min(minimum_both),
-        formal_fourfold_fraction_records_at_least_20 =
+        fourfold_minimum_positive_both = min(minimum_both),
+        fourfold_fraction_records_at_least_20 =
             mean(minimum_both >= 20L),
-        formal_fourfold_fraction_records_at_least_18 =
+        fourfold_fraction_records_at_least_18 =
             mean(minimum_both >= 18L),
-        formal_fourfold_max_taxon_replicates_below_18 =
+        fourfold_max_taxon_replicates_below_18 =
             max(below_18_by_taxon),
         sampling_bin = "Other_unmodeled excluded from method inputs",
-        DASRA_omnibus_contract = "p_omnibus with formed_omnibus",
+        DASRA_omnibus_definition = paste(
+            "Bonferroni omnibus p-value when at least one component",
+            "is formed"
+        ),
         MaAsLin3_input = "taxon relative abundance with normalization NONE",
         DASRA_version = as.character(utils::packageVersion("DASRA")),
         ZINQ_version = as.character(utils::packageVersion("ZINQ")),
@@ -941,8 +951,10 @@ aggregate_checkpoints <- function(result_directory, analysis_input,
         R_version = paste(R.version$major, R.version$minor, sep = "."),
         stringsAsFactors = FALSE
     )
-    atomic_write_csv(manifest, file.path(result_directory, "run_manifest.csv"))
-    invisible(manifest)
+    atomic_write_csv(
+        settings, file.path(result_directory, "analysis_settings.csv")
+    )
+    invisible(settings)
 }
 
 run_negative_control <- function(dataset_directory, workers = 7L,
@@ -1149,7 +1161,7 @@ run_negative_control <- function(dataset_directory, workers = 7L,
         }
     }
 
-    manifest <- aggregate_checkpoints(
+    settings <- aggregate_checkpoints(
         result_directory,
         analysis_input,
         expected_replicates = replicates
@@ -1199,5 +1211,5 @@ run_negative_control <- function(dataset_directory, workers = 7L,
            recursive = TRUE, force = TRUE)
     unlink(work_root, recursive = TRUE, force = TRUE)
     message(analysis_input$label, ": complete and validated.")
-    invisible(manifest)
+    invisible(settings)
 }

@@ -38,5 +38,5 @@ Run from the repository root:
 Rscript Analysis/RealDataAnalysis/cdi_schubert/prepare_data.R
 ```
 
-The DASRA input and readable cohort, count, taxonomy, and preprocessing audit
-tables are written to `processed/`.
+The DASRA input and cohort, count, taxonomy, and preprocessing summaries are
+written to `processed/`.

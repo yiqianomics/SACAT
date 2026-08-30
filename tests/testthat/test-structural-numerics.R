@@ -159,15 +159,15 @@ test_that("the exact all-zero structural competitor uses the same detection obje
 
     expect_equal(zero_nll, expected, tolerance = 1e-15)
 
-    dominated <- DASRA:::zt_structural_zero_limit_audit(
+    dominated <- DASRA:::zt_structural_zero_limit_comparison(
         zero_nll + 1e-3, log_r, y,
         relative_tolerance = relative_tolerance
     )
-    within_tolerance <- DASRA:::zt_structural_zero_limit_audit(
+    within_tolerance <- DASRA:::zt_structural_zero_limit_comparison(
         zero_nll + comparison_tolerance / 2, log_r, y,
         relative_tolerance = relative_tolerance
     )
-    finite_better <- DASRA:::zt_structural_zero_limit_audit(
+    finite_better <- DASRA:::zt_structural_zero_limit_comparison(
         zero_nll - 1e-3, log_r, y,
         relative_tolerance = relative_tolerance
     )

@@ -1,4 +1,4 @@
-perturbation,tested_component,samples_per_group,signal_taxa_percent,covariate_structure,target_effect,replications,rejection_probability,monte_carlo_sd,monte_carlo_se,interval_lower,interval_upper
+perturbation,tested_component,samples_per_group,signal_taxa_percent,covariate_structure,target_effect,replications,marginal_type_i_error,monte_carlo_sd,monte_carlo_se,interval_lower,interval_upper
 Present-conditional abundance,Structural absence,60,20,Unconfounded,0,100,0.001,0.01,0.001,0,0.00296
 Present-conditional abundance,Structural absence,60,20,Unconfounded,0.1,100,0.001,0.01,0.001,0,0.00296
 Present-conditional abundance,Structural absence,60,20,Unconfounded,0.2,100,0,0,0,0,0

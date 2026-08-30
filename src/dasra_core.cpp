@@ -4,6 +4,8 @@
 #include <cmath>
 #include <limits>
 
+// Numerical kernels for quadrature and latent count-model calculations.
+
 namespace {
 
 inline double clamp_scalar(const double x, const double lo, const double hi) {
@@ -21,8 +23,6 @@ inline bool integerish(const double x) {
 struct ModeResult {
     double mode;
     double curvature;
-    double score;
-    double bracket_width;
 };
 
 ModeResult latent_mode_one(const double y,
@@ -83,8 +83,6 @@ ModeResult latent_mode_one(const double y,
     ModeResult result;
     result.mode = x;
     result.curvature = curvature;
-    result.score = score;
-    result.bracket_width = upper - lower;
     return result;
 }
 

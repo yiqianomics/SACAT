@@ -1,9 +1,8 @@
 # Summarize completed real-data analyses without rerunning any method
 #
-# A dataset is included only when one method-results table and one input-summary
-# table are present in its table directory. The method-results table is assumed
-# to contain one row per taxon and method. Its `significant` column is the
-# formal within-result-set BH decision written by analysis.R.
+# A dataset is included after its result, input-summary, and method-status
+# tables have been checked for completeness. The `significant` column is the
+# within-result-set BH decision written by analysis.R.
 
 options(stringsAsFactors = FALSE)
 
@@ -20,11 +19,46 @@ real_data_directory <- locate_real_data_directory()
 output_directory <- file.path(real_data_directory, "summary")
 dir.create(output_directory, recursive = TRUE, showWarnings = FALSE)
 
-dataset_directories <- list.dirs(
-    real_data_directory, full.names = TRUE, recursive = FALSE
+expected_methods <- c(
+    "DASRA structural absence",
+    "DASRA present-conditional abundance",
+    "DASRA combined",
+    "MaAsLin3 prevalence",
+    "MaAsLin3 abundance",
+    "MaAsLin3 combined",
+    "ZINQ prevalence",
+    "ZINQ abundance",
+    "ZINQ combined",
+    "ANCOM-BC2",
+    "LinDA",
+    "corncob",
+    "edgeR",
+    "DESeq2",
+    "metagenomeSeq"
 )
+expected_families <- c(
+    "DASRA", "MaAsLin3", "ZINQ", "ANCOM-BC2", "LinDA", "corncob",
+    "edgeR", "DESeq2", "metagenomeSeq"
+)
+expected_dataset_ids <- c(
+    "crc_baxter",
+    "cdi_schubert",
+    "gems_pediatric_diarrhea",
+    "korean_hypertension",
+    "microbiomehd_zupancic_obesity",
+    "qiita_1939_pediatric_crohn",
+    "ravel_vaginal_ethnicity"
+)
+dataset_directories <- file.path(real_data_directory, expected_dataset_ids)
+if (any(!dir.exists(dataset_directories))) {
+    stop(sprintf(
+        "Expected dataset directories are missing: %s.",
+        paste(expected_dataset_ids[!dir.exists(dataset_directories)],
+              collapse = ", ")
+    ), call. = FALSE)
+}
 
-read_completed_dataset <- function(dataset_directory) {
+read_completed_dataset <- function(dataset_directory, expected_dataset_id) {
     table_directory <- file.path(dataset_directory, "table")
     results_file <- list.files(
         table_directory,
@@ -36,8 +70,20 @@ read_completed_dataset <- function(dataset_directory) {
         pattern = "_analysis_input_summary[.]csv$",
         full.names = TRUE
     )
-    if (length(results_file) != 1L || length(input_summary_file) != 1L) {
-        return(NULL)
+    status_file <- list.files(
+        table_directory,
+        pattern = "_method_status[.]csv$",
+        full.names = TRUE
+    )
+    if (length(results_file) != 1L || length(input_summary_file) != 1L ||
+        length(status_file) != 1L) {
+        stop(sprintf(
+            paste(
+                "Expected exactly one result, input-summary, and method-status",
+                "table for %s."
+            ),
+            expected_dataset_id
+        ), call. = FALSE)
     }
 
     results <- utils::read.csv(
@@ -46,13 +92,18 @@ read_completed_dataset <- function(dataset_directory) {
     input_summary <- utils::read.csv(
         input_summary_file, check.names = FALSE, stringsAsFactors = FALSE
     )
+    status <- utils::read.csv(
+        status_file, check.names = FALSE, stringsAsFactors = FALSE
+    )
 
     required_results_columns <- c(
         "dataset", "taxon", "method", "family", "component",
         "available", "reason", "significant", "components_used"
     )
+    required_status_columns <- c("dataset", "family", "status")
     if (!all(required_results_columns %in% names(results)) ||
-        !all(c("item", "value") %in% names(input_summary))) {
+        !all(c("item", "value") %in% names(input_summary)) ||
+        !all(required_status_columns %in% names(status))) {
         stop(sprintf(
             "Completed tables for %s do not follow the real-data output schema.",
             basename(dataset_directory)
@@ -63,15 +114,44 @@ read_completed_dataset <- function(dataset_directory) {
         input_summary$value, input_summary$item
     )
     dataset_id <- unname(summary_values[["dataset"]])
-    if (!identical(unique(results$dataset), dataset_id)) {
+    tested_taxa <- suppressWarnings(as.integer(
+        unname(summary_values[["tested taxa"]])
+    ))
+    valid_grid <- length(tested_taxa) == 1L && is.finite(tested_taxa) &&
+        tested_taxa > 0L &&
+        nrow(results) == tested_taxa * length(expected_methods) &&
+        length(unique(results$taxon)) == tested_taxa &&
+        !anyDuplicated(results[, c("taxon", "method")]) &&
+        setequal(unique(results$method), expected_methods) &&
+        all(table(results$method) == tested_taxa)
+    valid_status <- nrow(status) == length(expected_families) &&
+        !anyDuplicated(status$family) &&
+        setequal(status$family, expected_families) &&
+        all(status$status %in% c(
+            "completed", "completed with unavailable taxa"
+        ))
+    if (!identical(dataset_id, expected_dataset_id) ||
+        !identical(unique(results$dataset), dataset_id) ||
+        !identical(unique(status$dataset), dataset_id) ||
+        !valid_grid || !valid_status) {
         stop(sprintf(
-            "Dataset identifiers disagree between the two completed tables for %s.",
+            "Completed outputs are incomplete or inconsistent for %s.",
             basename(dataset_directory)
         ), call. = FALSE)
     }
 
     results$available <- as.logical(results$available)
     results$significant <- as.logical(results$significant)
+    if (anyNA(results$available) || anyNA(results$significant) ||
+        any(results$significant & !results$available) ||
+        any(stats::aggregate(
+            available ~ method, results, sum
+        )$available == 0L)) {
+        stop(sprintf(
+            "Availability and discovery fields are incomplete for %s.",
+            basename(dataset_directory)
+        ), call. = FALSE)
+    }
 
     fixed_labels <- c(
         crc_baxter = "Baxter colorectal cancer",
@@ -99,12 +179,9 @@ read_completed_dataset <- function(dataset_directory) {
     )
 }
 
-completed_datasets <- Filter(
-    Negate(is.null), lapply(dataset_directories, read_completed_dataset)
+completed_datasets <- Map(
+    read_completed_dataset, dataset_directories, expected_dataset_ids
 )
-if (!length(completed_datasets)) {
-    stop("No completed real-data result pairs were found.", call. = FALSE)
-}
 
 humanize_unavailable_reason <- function(reason) {
     descriptions <- c(
@@ -170,8 +247,8 @@ comparison_overlap_categories <- c(
     "Significant in at least one comparison method",
     "Not significant in any comparison method"
 )
-# MaAsLin3 and ZINQ each contribute their formal combined result so that every
-# comparison family contributes one discovery set.
+# MaAsLin3 and ZINQ each contribute their package-provided combined result.
+# This gives every comparison family one discovery set.
 comparison_methods <- c(
     "MaAsLin3 combined", "ZINQ combined", "ANCOM-BC2", "LinDA",
     "corncob", "edgeR", "DESeq2", "metagenomeSeq"
@@ -617,15 +694,9 @@ signal_plot <- ggplot2::ggplot(
         expand = ggplot2::expansion(mult = c(0, 0))
     ) +
     ggplot2::labs(
-        title = "Mechanism categories with both DASRA components available",
-        subtitle = paste(
-            "Within-dataset percentages use component-level BH decisions",
-            "n denotes classified combined discoveries",
-            sep = "\n"
-        ),
         x = NULL,
         y = "Percentage of classified discoveries",
-        fill = "Signal category"
+        fill = NULL
     ) +
     ggplot2::guides(
         fill = ggplot2::guide_legend(nrow = 2, byrow = TRUE)
@@ -633,8 +704,8 @@ signal_plot <- ggplot2::ggplot(
     ggplot2::theme_classic(base_size = 10.5) +
     ggplot2::theme(
         legend.position = "top",
-        legend.title = ggplot2::element_text(face = "bold"),
-        plot.title = ggplot2::element_text(face = "bold", size = 12),
+        legend.text = ggplot2::element_text(size = 9.4),
+        legend.box.just = "center",
         panel.grid.major.x = ggplot2::element_line(
             color = "grey88", linewidth = 0.35
         ),
@@ -642,15 +713,19 @@ signal_plot <- ggplot2::ggplot(
         plot.margin = ggplot2::margin(7, 16, 7, 7)
     )
 
-ggplot2::ggsave(
-    filename = file.path(
-        output_directory, "dasra_signal_categories_by_dataset.pdf"
-    ),
-    plot = signal_plot,
-    width = 9,
-    height = max(4.8, 2.2 + 0.32 * nrow(dataset_totals)),
-    units = "in"
+signal_figure_file <- file.path(
+    output_directory, "dasra_signal_categories_by_dataset.pdf"
 )
+grDevices::pdf(
+    signal_figure_file,
+    width = 174 / 25.4,
+    height = max(3.8, 1.55 + 0.36 * nrow(dataset_totals)),
+    family = "Helvetica",
+    useDingbats = FALSE,
+    version = "1.5"
+)
+print(signal_plot)
+grDevices::dev.off()
 
 message(sprintf(
     "Summarized %d completed real-data datasets in %s",

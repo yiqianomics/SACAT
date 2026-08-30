@@ -378,10 +378,11 @@ prepare_qiita_dataset <- function(dataset_directory, configuration) {
             )
         }
     }
-    audit_columns <- intersect(
-        configuration$audit_columns, names(candidate_metadata)
+    source_metadata_columns <- intersect(
+        configuration$source_metadata_columns, names(candidate_metadata)
     )
-    for (column in setdiff(audit_columns, names(analysis_metadata))) {
+    for (column in setdiff(
+            source_metadata_columns, names(analysis_metadata))) {
         analysis_metadata[[column]] <- candidate_metadata[[column]]
     }
     rownames(analysis_metadata) <- analysis_metadata$sample_id

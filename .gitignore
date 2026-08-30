@@ -1,5 +1,8 @@
 .DS_Store
 .Rhistory
+.Rd2pdf*/
+*.Rcheck/
+DASRA_*.tar.gz
 # Compiled package artifacts
 src/*.o
 src/*.so
@@ -14,10 +17,7 @@ Analysis/RealDataAnalysis/*/processed/
 Analysis/RealDataAnalysis/*/work/
 Analysis/RealDataAnalysis/R_lib/
 
-# Local negative-control data-maintenance script
-Analysis/NegativeControlAnalysis/prepare_public_data.R
-
-# Local SparseDOSSA2 simulation study
+# Archived local simulation workspace
 /Analysis/SparseDOSSA2Simulation/
 
 # Local simulation result data and source archive

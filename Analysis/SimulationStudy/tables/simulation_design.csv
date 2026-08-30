@@ -1,9 +1,9 @@
 study,scenario,data_generating_process,target_quantity,effect_grid
 Structural estimand,Observed-prevalence perturbation,Taxonwise two-part model,Standardized expected observed-prevalence difference,"0.00, 0.04, 0.08, 0.12, 0.16, 0.20, 0.24, 0.28, 0.32"
-Structural estimand,Structural perturbation with matched prevalence,Taxonwise two-part model,Structural-absence probability difference,"0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50"
+Structural estimand,Structural perturbation with matched prevalence,Taxonwise two-part model,Absolute standardized structural-absence probability difference,"0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50"
 Abundance comparison,Present-conditional abundance,Taxonwise two-part model,Present-conditional mean log-relative-abundance difference,"0.00, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.75, 0.90, 1.05, 1.20, 1.40"
-Component specificity,Structural-only perturbation,Taxonwise two-part model,Structural-absence probability difference,"0.00, 0.10, 0.20, 0.30, 0.40, 0.45, 0.50"
+Component specificity,Structural-only perturbation,Taxonwise two-part model,Absolute standardized structural-absence probability difference,"0.00, 0.10, 0.20, 0.30, 0.40, 0.45, 0.50"
 Depth calibration,Depth-imbalanced global null,Taxonwise two-part model,Global null with fourfold median-depth difference,0
 Joint robustness,Correlated-community global null,Correlated lognormal community,Global null,0
 Joint robustness,Correlated-community abundance,Correlated lognormal community,Direct log-absolute-abundance effect,"0.4, 0.8"
-Joint robustness,Correlated-community structural,Correlated lognormal community,Structural-absence probability difference,"0.20, 0.35"
+Joint robustness,Correlated-community structural,Correlated lognormal community,Absolute standardized structural-absence probability difference,"0.20, 0.35"

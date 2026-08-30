@@ -1,4 +1,4 @@
-.make_plot_contract_fixture <- function(n = 6L) {
+.make_plot_fixture <- function(n = 6L) {
     stopifnot(n >= 6L)
     feature <- c(
         "Faecalibacterium_prausnitzii",
@@ -106,16 +106,16 @@
     list(counts = counts, metadata = metadata)
 }
 
-.plot_contract_palette <- c(
+.plot_test_palette <- c(
     "#6090c1", "#acd2e5", "#fef9b7",
     "#fee395", "#f2724d", "#d7312d"
 )
 
 test_that("plot selection and significance annotations are deterministic", {
-    fit <- .make_plot_contract_fixture()
+    fit <- .make_plot_fixture()
     spec <- DASRA:::.dasra_plot_build_spec(
         fit, NULL, "significant", 24L, 0.05, "adaptive",
-        .plot_contract_palette, c("#6090c1", "#f28e4b")
+        .plot_test_palette, c("#6090c1", "#f28e4b")
     )
 
     expect_identical(
@@ -139,7 +139,7 @@ test_that("plot selection and significance annotations are deterministic", {
 
     explicit <- DASRA:::.dasra_plot_build_spec(
         fit, rev(fit$results$taxon[c(2L, 5L)]), "significant",
-        1L, 0.001, "adaptive", .plot_contract_palette,
+        1L, 0.001, "adaptive", .plot_test_palette,
         c("#6090c1", "#f28e4b")
     )
     expect_identical(
@@ -149,20 +149,20 @@ test_that("plot selection and significance annotations are deterministic", {
 
     top <- DASRA:::.dasra_plot_build_spec(
         fit, NULL, "top", 2L, 0.05, "adaptive",
-        .plot_contract_palette, c("#6090c1", "#f28e4b")
+        .plot_test_palette, c("#6090c1", "#f28e4b")
     )
     expect_identical(top$data$feature, fit$results$taxon[1:2])
 })
 
 test_that("component BH gates use the complete fitted families", {
-    fit <- .make_plot_contract_fixture()
+    fit <- .make_plot_fixture()
     full <- DASRA:::.dasra_plot_build_spec(
         fit, NULL, "all", 24L, 0.05, "adaptive",
-        .plot_contract_palette, c("#6090c1", "#f28e4b")
+        .plot_test_palette, c("#6090c1", "#f28e4b")
     )
     subset <- DASRA:::.dasra_plot_build_spec(
         fit, fit$results$taxon[[1L]], "top", 1L, 0.05,
-        "adaptive", .plot_contract_palette,
+        "adaptive", .plot_test_palette,
         c("#6090c1", "#f28e4b")
     )
 
@@ -183,7 +183,7 @@ test_that("component BH gates use the complete fitted families", {
     no_discoveries$results$p_adj_relative_abundance[] <- 1
     no_guide <- DASRA:::.dasra_plot_build_spec(
         no_discoveries, NULL, "top", 2L, 0.05, "adaptive",
-        .plot_contract_palette, c("#6090c1", "#f28e4b")
+        .plot_test_palette, c("#6090c1", "#f28e4b")
     )
     expect_identical(
         no_guide$component_guides$structural$discoveries, 0L
@@ -196,13 +196,13 @@ test_that("component BH gates use the complete fitted families", {
 
     disabled <- DASRA:::.dasra_plot_build_spec(
         fit, NULL, "top", 2L, 0.05, "adaptive",
-        .plot_contract_palette, c("#6090c1", "#f28e4b"), FALSE
+        .plot_test_palette, c("#6090c1", "#f28e4b"), FALSE
     )
     expect_false(disabled$component_guides$enabled)
     expect_error(
         DASRA:::.dasra_plot_build_spec(
             fit, NULL, "top", 2L, 0.05, "adaptive",
-            .plot_contract_palette, c("#6090c1", "#f28e4b"), NA
+            .plot_test_palette, c("#6090c1", "#f28e4b"), NA
         ),
         "TRUE or FALSE"
     )
@@ -217,7 +217,7 @@ test_that("component BH gates use the complete fitted families", {
     )
     holm_spec <- DASRA:::.dasra_plot_build_spec(
         holm, NULL, "top", 2L, 0.05, "adaptive",
-        .plot_contract_palette, c("#6090c1", "#f28e4b")
+        .plot_test_palette, c("#6090c1", "#f28e4b")
     )
     expect_false(holm_spec$component_guides$enabled)
 
@@ -226,7 +226,7 @@ test_that("component BH gates use the complete fitted families", {
     expect_warning(
         malformed_spec <- DASRA:::.dasra_plot_build_spec(
             malformed, NULL, "top", 2L, 0.05, "adaptive",
-            .plot_contract_palette, c("#6090c1", "#f28e4b")
+            .plot_test_palette, c("#6090c1", "#f28e4b")
         ),
         "structural absence"
     )
@@ -241,7 +241,7 @@ test_that("component BH gates use the complete fitted families", {
     expect_error(
         DASRA:::.dasra_plot_build_spec(
             malformed_retained, NULL, "top", 2L, 0.05, "adaptive",
-            .plot_contract_palette, c("#6090c1", "#f28e4b")
+            .plot_test_palette, c("#6090c1", "#f28e4b")
         ),
         "retained-taxon indicator"
     )
@@ -266,7 +266,7 @@ test_that("component BH gates tolerate floating-point boundary rounding", {
 })
 
 test_that("unverifiable component gates are omitted with one warning", {
-    fit <- .make_plot_contract_fixture()
+    fit <- .make_plot_fixture()
     fit$results$p_structural_absence[[1L]] <- 0
     fit$results$p_adj_structural_absence <- stats::p.adjust(
         fit$results$p_structural_absence, method = "BH"
@@ -277,7 +277,7 @@ test_that("unverifiable component gates are omitted with one warning", {
         spec <- DASRA:::.dasra_plot_build_spec(
             fit, NULL, "top", 2L,
             .Machine$double.xmin * .Machine$double.eps,
-            "adaptive", .plot_contract_palette,
+            "adaptive", .plot_test_palette,
             c("#6090c1", "#f28e4b")
         ),
         "structural absence"
@@ -288,17 +288,17 @@ test_that("unverifiable component gates are omitted with one warning", {
     expect_no_warning(
         disabled <- DASRA:::.dasra_plot_build_spec(
             fit, NULL, "top", 2L, 0.05, "adaptive",
-            .plot_contract_palette, c("#6090c1", "#f28e4b"), FALSE
+            .plot_test_palette, c("#6090c1", "#f28e4b"), FALSE
         )
     )
     expect_false(disabled$component_guides$enabled)
 })
 
 test_that("adaptive colors use one shared displayed-component scale", {
-    fit <- .make_plot_contract_fixture()
+    fit <- .make_plot_fixture()
     spec <- DASRA:::.dasra_plot_build_spec(
         fit, fit$results$taxon[[1L]], "significant", 24L, 0.05,
-        "adaptive", .plot_contract_palette,
+        "adaptive", .plot_test_palette,
         c("#6090c1", "#f28e4b")
     )
     expect_identical(
@@ -307,14 +307,14 @@ test_that("adaptive colors use one shared displayed-component scale", {
 
     manual <- DASRA:::.dasra_plot_build_spec(
         fit, fit$results$taxon[[1L]], "significant", 24L, 0.05,
-        c(1e-8, 0.5), .plot_contract_palette,
+        c(1e-8, 0.5), .plot_test_palette,
         c("#6090c1", "#f28e4b")
     )
     expect_identical(unname(manual$color_limits), c(1e-8, 0.5))
     expect_error(
         DASRA:::.dasra_plot_build_spec(
             fit, NULL, "top", 2L, 0.05, c(1, 1e-4),
-            .plot_contract_palette, c("#6090c1", "#f28e4b")
+            .plot_test_palette, c("#6090c1", "#f28e4b")
         ),
         "0 < lower < upper <= 1"
     )
@@ -333,7 +333,7 @@ test_that("adaptive colors use one shared displayed-component scale", {
     )
     expect_identical(unname(one_limits), c(0.1, 1))
     one_colors <- DASRA:::.dasra_plot_palette_function(
-        .plot_contract_palette, one_limits
+        .plot_test_palette, one_limits
     )(rep(1, nrow(all_one$results)))
     expect_true(length(unique(one_colors)) == 1L)
 
@@ -373,7 +373,7 @@ test_that("abundance log-axis ticks are regular and carry percent units", {
 })
 
 test_that("plot dispatch is side-effect free and writes vector output", {
-    fit <- .make_plot_contract_fixture()
+    fit <- .make_plot_fixture()
     before <- serialize(fit, NULL)
     set.seed(9917)
     rng_before <- .Random.seed
@@ -392,7 +392,7 @@ test_that("plot dispatch is side-effect free and writes vector output", {
 })
 
 test_that("display group labels do not change the fitted contrast", {
-    fit <- .make_plot_contract_fixture()
+    fit <- .make_plot_fixture()
     original_contrast <- fit$settings$contrast
     path <- tempfile(fileext = ".pdf")
 
@@ -425,7 +425,7 @@ test_that("display group labels do not change the fitted contrast", {
 })
 
 test_that("plot reports incomplete objects and unavailable rows clearly", {
-    fit <- .make_plot_contract_fixture()
+    fit <- .make_plot_fixture()
     missing_payload <- fit
     missing_payload$plot_data <- NULL
     expect_error(plot(missing_payload), "store_plot_data = TRUE")
@@ -545,7 +545,7 @@ test_that("plot-summary preparation leaves fitted inference unchanged", {
 })
 
 test_that("profile output works across supported graphics devices", {
-    fit <- .make_plot_contract_fixture()
+    fit <- .make_plot_fixture()
     for (extension in c(".pdf", ".png")) {
         path <- tempfile(fileext = extension)
         expect_no_warning(

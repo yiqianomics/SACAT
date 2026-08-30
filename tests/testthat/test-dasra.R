@@ -86,7 +86,7 @@ test_that("deterministic Rcpp kernels leave the RNG state unchanged", {
 
 test_that("intercept-only LTS uses a strict majority subset", {
     values <- c(-0.52, -0.50, -0.48, -0.46, 0.01, 0.04, 0.06)
-    pilot <- DASRA:::.dasra_abundance_lts_pilot(values)
+    pilot <- DASRA:::.dasra_abundance_lts_reference(values)$pilot
     expect_lt(abs(pilot + 0.49), 0.04)
 })
 

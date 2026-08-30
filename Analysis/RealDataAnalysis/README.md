@@ -5,14 +5,6 @@ cohorts spanning gastrointestinal and vaginal communities and several disease
 or exposure contrasts. Every dataset follows the same preparation, modeling,
 multiplicity, and reporting workflow.
 
-The purpose is to determine whether an association is better described as a
-change in structural absence, a change in abundance among samples in which the
-taxon is present, or evidence from both components. The comparison methods
-place those findings in the context of established differential abundance
-workflows. DASRA's contribution in these analyses is the explicit
-decomposition of a combined association into two biologically distinct signal
-types.
-
 ## Completed datasets
 
 The first group in each contrast is the reference group. Numeric variables
@@ -31,33 +23,6 @@ ending in `_z` are standardized within the final cohort.
 Each linked dataset README records the public source, cohort construction,
 independent sampling unit, filtering, original library-size definition,
 adjustment variables, and preparation command.
-
-## What the completed analyses show
-
-Across the seven datasets, DASRA identified 157 taxa with a significant
-combined BH-adjusted result. Both component results were available for 144 of
-these discoveries; their mechanism categories were:
-
-| Signal category | Taxa | Percentage of classified discoveries |
-|---|---:|---:|
-| Structural absence only | 71 | 49.31% |
-| Present-conditional abundance only | 57 | 39.58% |
-| Both components | 15 | 10.42% |
-| Omnibus only | 1 | 0.69% |
-
-Thus, 128 of 144 classified discoveries (88.89%) were significant in exactly
-one component analysis. Among the remaining 13 combined discoveries, only the
-structural result formed for 2 taxa and only the present-conditional abundance
-result formed for 11 taxa.
-
-The number of combined discoveries was 41 for CDI, 5 for colorectal cancer,
-32 for GEMS diarrhea, 55 for pediatric Crohn's disease, and 24 for the Ravel
-cohort. The Korean hypertension and Zupancic obesity analyses had no combined
-BH discoveries.
-
-Among the 157 combined discoveries, 156 were also significant under at least
-one comparison method. Full dataset-level counts and percentages are in
-[`summary/`](summary/).
 
 ## Input construction
 
@@ -117,6 +82,13 @@ Rscript Analysis/RealDataAnalysis/analysis.R \
   --dataset=gems_pediatric_diarrhea
 ```
 
+Regenerate the seven standard UpSet figures and their intersection tables from
+the completed taxon-level result tables:
+
+```sh
+Rscript Analysis/RealDataAnalysis/analysis.R --plot-only
+```
+
 Regenerate the cross-dataset descriptive summaries without rerunning any
 statistical method:
 
@@ -124,20 +96,32 @@ statistical method:
 Rscript Analysis/RealDataAnalysis/summarize_datasets.R
 ```
 
+After preparing and analyzing the Schubert CDI dataset, regenerate its
+detailed component and method-intersection outputs with:
+
+```sh
+Rscript Analysis/RealDataAnalysis/cdi_schubert/make_detailed_figures.R
+```
+
 The local `raw/`, `processed/`, and `work/` directories and the optional
 `R_lib/` compatibility library are excluded from version control. They are
-regenerable analysis materials, not reported results. Formal reviewer-facing
-files are in each dataset's `table/` and `figs/` directories and in the
-cross-dataset `summary/` directory. Random seeds are fixed by dataset in
+regenerable analysis materials. Tracked tabular and graphical outputs are in
+each dataset's `table/` and `figs/` directories and in the cross-dataset
+`summary/` directory. Random seeds are fixed by dataset in
 `analysis.R`, so changing the order of the dataset list does not change a
 method's random-number stream.
+
+[`software_versions.csv`](software_versions.csv) records the R version and
+direct package versions used to generate the tracked outputs. Each
+`*_method_status.csv` also records the fitted method package version for that
+dataset.
 
 ## Methods and multiplicity
 
 Every retained taxon remains in each result set's multiplicity family. An
 unavailable result is assigned an operational p-value of one for harmonized
 BH adjustment, and a discovery requires both an available result and a
-BH-adjusted q-value no greater than 0.05.
+BH-adjusted p-value no greater than 0.05.
 
 The DASRA combined result is available when at least one component forms. Its
 `components_used` field records whether one or both components entered the
@@ -152,15 +136,14 @@ The 15 exported result sets are:
 4. the primary differential abundance result from ANCOM-BC2, LinDA, corncob,
    edgeR, DESeq2, and metagenomeSeq.
 
-Component definitions differ among methods. Comparisons across methods are
-therefore descriptive comparisons of their prespecified outputs, not claims
-that every method estimates the same biological quantity. Method-specific
-library-size terms, offsets, and normalization conventions are recorded in the
-taxon-level outputs and method-status tables.
+Component definitions differ among methods. Cross-method comparisons summarize
+these prespecified outputs while retaining their method-specific estimands.
+Method-specific library-size terms, offsets, and normalization conventions are
+recorded in the taxon-level outputs and method-status tables.
 
 ## Per-dataset outputs
 
-Each completed dataset contains six CSV files in `table/`:
+Each completed dataset contains six standard CSV files in `table/`:
 
 1. `*_analysis_input_summary.csv` — sample counts, tested taxa, retained-read
    fractions, and the multiplicity definition;
@@ -174,15 +157,23 @@ Each completed dataset contains six CSV files in `table/`:
 5. `*_upset_intersections.csv` — every discovery-set intersection; and
 6. `*_upset_intersection_membership.csv` — the taxa in every intersection.
 
-Each `figs/` directory contains two one-page PDF figures:
+Each `figs/` directory contains two standard PDF figures:
 
-- `*_upset.pdf` compares discoveries across the 15 result sets. It displays
-  the 20 largest intersection patterns; the two UpSet CSV files retain the
-  complete intersection inventory and taxon membership.
+- `*_upset.pdf` compares discoveries across the 15 result sets. Every
+  nonempty intersection pattern is displayed in one continuous matrix.
 - `*_dasra_profile.pdf` displays the DASRA structural and
   present-conditional components. It displays up to 24 significant combined
   results; when no combined discovery exists, it displays the 10 strongest
   available combined results as a descriptive profile.
+
+The Schubert CDI directory also contains a detailed component figure, a
+10-result-set method-intersection figure, and three corresponding data tables:
+
+- `schubert_cdi_component_examples.pdf` and
+  `schubert_cdi_component_examples.csv`;
+- `schubert_cdi_method_intersections.pdf` and
+  `schubert_cdi_method_intersections.csv`; and
+- `schubert_cdi_method_intersection_membership.csv`.
 
 ## Cross-dataset summaries
 
@@ -200,18 +191,3 @@ tables and writes:
 The pooled percentage weights each classified discovery equally. The
 equal-dataset percentage averages within-dataset percentages among datasets
 with at least one classified combined DASRA discovery.
-
-## Interpretation boundaries
-
-- These are observational associations. Adjustment reduces measured
-  confounding but does not establish causality.
-- Taxonomic resolution and available covariates differ across public studies;
-  comparisons should therefore emphasize recurring patterns rather than a
-  universal effect size.
-- The Ravel White/Black comparison uses the categories reported in the source
-  study. It can reflect social, environmental, behavioral, and clinical
-  differences and must not be interpreted as an intrinsic biological effect
-  of race or ethnicity.
-- Structural-absence and present-conditional abundance findings answer
-  different questions. Their separation is the primary scientific purpose of
-  this analysis collection.

@@ -25,16 +25,20 @@ write_count_csv <- function(counts, path) {
 }
 
 dataset_directory <- locate_dataset_directory()
+source(file.path(
+    dirname(dataset_directory), "shared", "count_validation.R"
+))
 raw_directory <- file.path(dataset_directory, "raw")
 output_directory <- file.path(dataset_directory, "processed")
 dir.create(output_directory, recursive = TRUE, showWarnings = FALSE)
 
 message("Reading the Ravel count and participant tables")
-counts_all <- as.matrix(read.table(
+counts_all <- as_count_matrix(read.table(
     file.path(raw_directory, "counts.tsv"), header = TRUE,
     check.names = FALSE
-))
-storage.mode(counts_all) <- "integer"
+), "The published count table")
+validate_identifiers(rownames(counts_all), "Taxon identifiers")
+validate_identifiers(colnames(counts_all), "Sample identifiers")
 metadata_all <- read.table(
     file.path(raw_directory, "metadata.tsv"), header = TRUE,
     check.names = FALSE, stringsAsFactors = FALSE

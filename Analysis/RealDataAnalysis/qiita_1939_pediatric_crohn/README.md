@@ -8,8 +8,13 @@ Nucleotide Archive under PRJEB13679.
 
 Place the taxonomy-annotated public BIOM table at `raw/qiita_1939.biom` and the
 matching Qiita metadata at `raw/qiita_1939.tsv`. These are the files written by
-a redbiom Qiita-study fetch with output basename `qiita_1939` and taxonomy
-enabled.
+redbiom 0.3.9 from the context
+`Pick_closed-reference_OTUs-Greengenes-Illumina-16S-V4-90nt-44feac`. From the
+repository root, the complete public-data fetch is:
+
+```sh
+redbiom fetch qiita-study --study-id 1939 --context Pick_closed-reference_OTUs-Greengenes-Illumina-16S-V4-90nt-44feac --resolve-ambiguities most-reads --fetch-taxonomy --remove-blanks --output-basename Analysis/RealDataAnalysis/qiita_1939_pediatric_crohn/raw/qiita_1939
+```
 
 ## Final prepared analysis
 
@@ -20,8 +25,7 @@ enabled.
   the final cohort.
 - **Independent unit:** one rectal mucosal sample per child, retaining the
   largest original library size when repeated eligible samples are available;
-  sample identifier breaks an exact tie. The tie-breaking rule is independent
-  of diagnosis and association results.
+  sample identifier breaks an exact tie.
 - **Original library size:** the column sum of the complete downloaded BIOM
   feature table before taxonomic aggregation or any taxon filter.
 
@@ -42,5 +46,5 @@ Rscript Analysis/RealDataAnalysis/qiita_1939_pediatric_crohn/prepare_data.R
 The script does not rarefy counts. It preserves each sample's full downloaded
 BIOM total as the original library size, aggregates features to genus or the
 deepest resolved higher rank, retains taxa present in at least 5% of the final
-cohort and in both groups, and writes the analysis RDS and readable audit CSV
-files to `processed/`.
+cohort and in both groups, and writes the analysis RDS and accompanying summary
+tables to `processed/`.

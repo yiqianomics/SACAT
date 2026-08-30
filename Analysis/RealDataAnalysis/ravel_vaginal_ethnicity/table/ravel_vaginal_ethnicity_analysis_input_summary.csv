@@ -7,4 +7,4 @@
 "median retained fraction of original reads","0.9989"
 "minimum retained fraction of original reads","0.37313"
 "multiplicity family","70 prespecified taxa per result set"
-"significance threshold","BH-adjusted q <= 0.05"
+"significance threshold","BH-adjusted p <= 0.05"

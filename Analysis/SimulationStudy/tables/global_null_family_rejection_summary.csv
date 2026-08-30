@@ -1,4 +1,4 @@
-component_family,null_mechanism,samples_per_group,covariate_structure,method,method_component,tested_component,replications,family_rejection_probability,monte_carlo_sd,monte_carlo_se,interval_lower,interval_upper
+component_family,null_mechanism,samples_per_group,covariate_structure,method,method_component,tested_component,replications,familywise_type_i_error,monte_carlo_sd,monte_carlo_se,interval_lower,interval_upper
 Abundance,Taxonwise global null,60,Unconfounded,edgeR,edgeR,General abundance,100,0.01,0.0703526470681448,0.00703526470681448,0,0.0237891188253564
 Abundance,Taxonwise global null,60,Unconfounded,DESeq2,DESeq2,General abundance,100,0.005,0.05,0.005,0,0.0148
 Abundance,Taxonwise global null,60,Unconfounded,corncob,corncob,General abundance,100,0.1,0.235702260395516,0.0235702260395516,0.0538023569624789,0.146197643037521

@@ -20,8 +20,9 @@ The data file is publicly available from the authors'
 - **Original library size:** the published `totalCounts` value, defined before
   the 5% genus-prevalence and two-group support filters.
 
-Download the unchanged repository file to `raw/forserveroptim.rdata`. The
-cohort contains children with moderate-to-severe diarrhea and matched controls
+Download `forserveroptim.rdata` from the MSD1000 repository and place it at
+`raw/forserveroptim.rdata`. The cohort contains children with
+moderate-to-severe diarrhea and matched controls
 from Bangladesh, Kenya, Mali, and The Gambia. Controls are the reference group.
 The model adjusts for age in months and country.
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env Rscript
 
+# Create simulation figures and tables from the aggregated results.
+
 required_packages <- c("data.table", "ggplot2", "patchwork", "scales")
 missing_packages <- required_packages[
     !vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)
@@ -35,7 +37,8 @@ figure_files <- c(
     "global_null_family_rejection_structural.pdf",
     "global_null_family_rejection_abundance.pdf",
     "correlated_community_abundance_power.pdf",
-    "correlated_community_abundance_fdr.pdf"
+    "correlated_community_abundance_fdr.pdf",
+    "correlated_community_structural_performance.pdf"
 )
 table_files <- c(
     "simulation_constants.csv",
@@ -460,7 +463,7 @@ main_mechanism_plot <- make_main_mechanism_panel(
     "Target standardized observed-prevalence difference", "A"
 ) / make_main_mechanism_panel(
     "Structural perturbation with matched prevalence",
-    "Target structural-absence probability difference", "B"
+    "Target absolute standardized structural-absence probability difference", "B"
 ) + patchwork::plot_layout(guides = "collect") &
     ggplot2::theme(
         legend.position = "bottom", legend.box = "vertical",
@@ -528,11 +531,11 @@ make_specificity_panel <- function(data, x_label, y_label, panel_tag) {
 specificity_plot <- make_specificity_panel(
     specificity[panel == "Structural component under abundance perturbation"],
     "Target present-conditional mean log-relative-abundance difference",
-    "Rejection proportion", "A"
+    "Marginal Type I error", "A"
 ) / make_specificity_panel(
     specificity[panel == "Abundance component under structural perturbation"],
-    "Target structural-absence probability difference",
-    "Rejection proportion", "B"
+    "Target absolute standardized structural-absence probability difference",
+    "Marginal Type I error", "B"
 ) + patchwork::plot_layout(guides = "collect") &
     ggplot2::theme(legend.position = "bottom")
 save_pdf(specificity_plot, "component_specificity.pdf", 178, 105)
@@ -550,7 +553,7 @@ specificity_output <- specificity[, .(
     covariate_structure = as.character(confounding_short),
     target_effect = effect_parameter,
     replications = n_replications,
-    rejection_probability = mean,
+    marginal_type_i_error = mean,
     monte_carlo_sd = sd,
     monte_carlo_se = mcse,
     interval_lower = ci_lower,
@@ -775,7 +778,7 @@ plot_null_family_rejection <- function(family, filename, y_limit) {
         ) +
         ggplot2::labs(
             x = "Samples per group",
-            y = "Probability of at least one rejection",
+            y = "Family-wise Type I error",
             color = NULL, shape = NULL, linetype = NULL
         ) +
         method_scales(nrow = if (family == "abundance") 3L else 1L) +
@@ -806,7 +809,7 @@ null_output <- data.table::rbindlist(
     method_component = method_label,
     tested_component = component_name(component),
     replications = n_replications,
-    family_rejection_probability = mean,
+    familywise_type_i_error = mean,
     monte_carlo_sd = sd,
     monte_carlo_se = mcse,
     interval_lower = ci_lower,
@@ -887,9 +890,133 @@ plot_joint_abundance(
 
 joint_structural <- prepare_design_fields(setting_summary[
     study == "joint_robustness" & scenario == "joint_structural" &
-        metric == "power" &
+        metric %in% c("power", "fdp") &
         is_structural_component(component)
 ])
+joint_structural[, effect_label := factor(
+    paste0("Difference = ", format(effect_parameter, nsmall = 2)),
+    levels = c("Difference = 0.20", "Difference = 0.35")
+)]
+
+joint_structural_key <- c(
+    "n_per_group", "signal_fraction", "confounding", "effect_parameter",
+    "method", "component", "metric"
+)
+valid_joint_structural_component <-
+    (joint_structural$method == "DASRA" &
+        joint_structural$component == "structural_absence") |
+    (joint_structural$method %in% c("ZINQ", "MaAsLin 3") &
+        joint_structural$component == "observed_prevalence")
+if (
+    nrow(joint_structural) != 144L ||
+    data.table::uniqueN(joint_structural, by = joint_structural_key) != 144L ||
+    !all(valid_joint_structural_component) ||
+    data.table::uniqueN(
+        joint_structural[, .(method, component)]
+    ) != 3L
+) {
+    stop(
+        "The correlated-community structural summary grid is incomplete.",
+        call. = FALSE
+    )
+}
+
+plot_joint_structural_metric <- function(
+        metric_name, panel_tag, y_limit) {
+    data <- joint_structural[metric == metric_name]
+    method_breaks <- c("DASRA", "ZINQ", "MaAsLin 3")
+    method_labels <- c(
+        "DASRA: structural", "ZINQ: prevalence",
+        "MaAsLin 3: prevalence"
+    )
+    dodge <- ggplot2::position_dodge(width = 3.2)
+    plot <- ggplot2::ggplot(
+        data,
+        ggplot2::aes(
+            x = n_per_group, y = mean, color = method_short,
+            shape = method_short, linetype = method_short,
+            group = method_short
+        )
+    )
+    if (metric_name == "fdp") {
+        plot <- plot + ggplot2::geom_hline(
+            yintercept = 0.05, color = "#555555",
+            linetype = "dotted", linewidth = 0.38
+        )
+    }
+    plot +
+        ggplot2::geom_errorbar(
+            ggplot2::aes(
+                ymin = pmax(0, ci_lower),
+                ymax = pmin(y_limit, ci_upper)
+            ),
+            width = 2.0, linewidth = 0.20, alpha = 0.42,
+            position = dodge
+        ) +
+        ggplot2::geom_line(linewidth = 0.54, position = dodge) +
+        ggplot2::geom_point(
+            size = 1.05, stroke = 0.32, position = dodge
+        ) +
+        ggplot2::facet_grid(effect_label ~ design_column) +
+        ggplot2::coord_cartesian(ylim = c(0, y_limit)) +
+        ggplot2::scale_x_continuous(breaks = c(60, 80, 120)) +
+        ggplot2::scale_y_continuous(
+            breaks = if (metric_name == "power") {
+                seq(0, 1, 0.25)
+            } else {
+                seq(0, 0.10, 0.025)
+            },
+            expand = ggplot2::expansion(mult = c(0, 0.02))
+        ) +
+        ggplot2::scale_color_manual(
+            values = method_colors[method_breaks], breaks = method_breaks,
+            labels = method_labels
+        ) +
+        ggplot2::scale_shape_manual(
+            values = method_shapes[method_breaks], breaks = method_breaks,
+            labels = method_labels
+        ) +
+        ggplot2::scale_linetype_manual(
+            values = method_linetypes[method_breaks], breaks = method_breaks,
+            labels = method_labels
+        ) +
+        ggplot2::guides(
+            color = ggplot2::guide_legend(nrow = 1),
+            shape = ggplot2::guide_legend(nrow = 1),
+            linetype = ggplot2::guide_legend(nrow = 1)
+        ) +
+        ggplot2::labs(
+            x = if (metric_name == "power") NULL else "Samples per group",
+            y = if (metric_name == "power") {
+                "Power"
+            } else {
+                "Empirical false discovery rate"
+            },
+            color = NULL, shape = NULL, linetype = NULL, tag = panel_tag
+        ) +
+        theme_simulation() +
+        ggplot2::theme(
+            panel.spacing.x = grid::unit(2.2, "mm"),
+            panel.spacing.y = grid::unit(1.8, "mm"),
+            plot.tag = ggplot2::element_text(size = 10, face = "bold"),
+            strip.text = ggplot2::element_text(size = 7.8),
+            legend.text = ggplot2::element_text(size = 7.8)
+        )
+}
+
+joint_structural_performance <-
+    plot_joint_structural_metric("power", "A", 1.00) /
+    plot_joint_structural_metric("fdp", "B", 0.10) +
+    patchwork::plot_layout(guides = "collect", heights = c(1, 1)) &
+    ggplot2::theme(
+        legend.position = "bottom", legend.box = "horizontal",
+        legend.justification = "center"
+    )
+save_pdf(
+    joint_structural_performance,
+    "correlated_community_structural_performance.pdf", 178, 170
+)
+
 joint_output <- data.table::rbindlist(
     list(joint_abundance, joint_structural), fill = TRUE
 )[, .(
@@ -933,12 +1060,12 @@ scenario_descriptions <- data.table::data.table(
     ),
     target_quantity = c(
         "Standardized expected observed-prevalence difference",
-        "Structural-absence probability difference",
+        "Absolute standardized structural-absence probability difference",
         "Present-conditional mean log-relative-abundance difference",
-        "Structural-absence probability difference",
+        "Absolute standardized structural-absence probability difference",
         "Global null with fourfold median-depth difference",
         "Global null", "Direct log-absolute-abundance effect",
-        "Structural-absence probability difference"
+        "Absolute standardized structural-absence probability difference"
     ),
     source_scenario = c(
         "observed_prevalence_only", "structural_matched_prevalence",

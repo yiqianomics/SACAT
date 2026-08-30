@@ -21,45 +21,23 @@
 - The plot follows standard R conventions: `plot(fit)` draws to the active
   device, and the `file` argument writes PDF, PNG, or SVG output directly. SVG
   output is available in R builds with Cairo support.
-- BH-adjusted fits now show separate, family-wide structural and abundance
-  discovery gates on the component Z-statistic axis. The data-dependent
-  boundaries use the complete fitted component families and are invariant to
-  displayed feature selection. A finite gate appears when the component has at
-  least one BH discovery. Boundary validation handles machine-precision ties
-  consistently and identifies any omitted component boundary with a warning;
-  the remaining profile is drawn.
-- GitHub Actions checks the package on release versions of macOS, Windows, and
-  Ubuntu, together with R-devel and the previous R release on Ubuntu. Device
-  smoke tests cover PDF, PNG, and Cairo-enabled SVG output, and a two-worker
-  PSOCK regression test checks exact agreement with sequential fitting.
-- Parallel workers load the same package installation as the calling session,
-  including installations selected through an explicit library location.
-  Deterministic compiled kernels leave the R random-number state unchanged.
+- BH-adjusted fits display separate structural and abundance discovery
+  thresholds based on the complete fitted component families.
+- Parallel analyses use ordered, cross-platform worker processes.
 
 # DASRA 0.5.2
 
-- The README and reference manual now present the relative-abundance method as
-  a tutorial workflow: define the present-conditional reference-centered
-  estimand, review formation and support fields, and use detailed reference and
-  numerical diagnostics when needed.
-- This is a documentation-only release. Functions, arguments, defaults, output
-  schemas, fitted procedures, and numerical results are unchanged.
+- Expanded the README and reference manual with guidance for interpreting the
+  present-conditional, reference-centered abundance result.
 
 # DASRA 0.5.1
 
 - The structural fitting control is now named
-  `structural_conditional_present_starts`, making its scope explicit. This is a
-  clean public-interface rename; the fitted structural procedure, argument
-  position, and defaults are unchanged. Named calls using the previous argument
-  must be updated to the new name.
+  `structural_conditional_present_starts`. Named calls using the previous
+  argument must be updated to the new name.
 - `abundance_quadrature_points` makes the relative-abundance quadrature order
-  explicit while preserving the validated 41-node default exactly. Detailed
-  output can report a fixed-fit comparison with a strictly higher-order rule;
-  this is a numerical sensitivity diagnostic, not an error bound and does not
-  alter inference.
-- The `utils` namespace used for parallel-worker version checks is now declared
-  explicitly in `Imports`. The canonical `GPL (>= 3)` license declaration is
-  unchanged and does not require a separate `LICENSE` file.
+  explicit. Detailed output can include a higher-order quadrature comparison.
+- The `utils` namespace is now declared explicitly in `Imports`.
 
 # DASRA 0.5.0
 
@@ -88,13 +66,7 @@
 
 # DASRA 0.4.2
 
-- Structural regular-interior inference now uses the same
-  nuisance-orthogonalized per-sample estimating-function contributions for
-  both the test numerator and its empirical sandwich variance. At an exact
-  nuisance root, the numerator remains algebraically identical to the
-  restricted target score.
-- A covariate-adjusted structural nuisance fit is reported as unavailable when
-  it is strictly dominated by the exact zero
-  structural-absence-probability limit in the same detection objective.
-- The model, estimands, public function arguments, result columns, and
-  relative-abundance implementation are unchanged.
+- Updated the structural test to use nuisance-orthogonalized sample
+  contributions with an empirical sandwich variance.
+- Added handling for structural fits at the zero
+  structural-absence-probability boundary.

@@ -1,12 +1,12 @@
 "dataset","dataset_label","dasra_combined_bh_discoveries","discoveries_with_both_components_available","discoveries_with_one_component_available","signal_category","taxa","percent_of_two_component_discoveries"
-"cdi_schubert","Schubert C. difficile infection",41,39,2,"Structural absence only",22,56.41
-"cdi_schubert","Schubert C. difficile infection",41,39,2,"Present-conditional abundance only",10,25.64
-"cdi_schubert","Schubert C. difficile infection",41,39,2,"Both components",6,15.38
-"cdi_schubert","Schubert C. difficile infection",41,39,2,"Omnibus only",1,2.56
 "crc_baxter","Baxter colorectal cancer",5,5,0,"Structural absence only",1,20
 "crc_baxter","Baxter colorectal cancer",5,5,0,"Present-conditional abundance only",4,80
 "crc_baxter","Baxter colorectal cancer",5,5,0,"Both components",0,0
 "crc_baxter","Baxter colorectal cancer",5,5,0,"Omnibus only",0,0
+"cdi_schubert","Schubert C. difficile infection",41,39,2,"Structural absence only",22,56.41
+"cdi_schubert","Schubert C. difficile infection",41,39,2,"Present-conditional abundance only",10,25.64
+"cdi_schubert","Schubert C. difficile infection",41,39,2,"Both components",6,15.38
+"cdi_schubert","Schubert C. difficile infection",41,39,2,"Omnibus only",1,2.56
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",32,30,2,"Structural absence only",9,30
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",32,30,2,"Present-conditional abundance only",16,53.33
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",32,30,2,"Both components",5,16.67

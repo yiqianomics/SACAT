@@ -24,7 +24,7 @@ test_that("exact C0 helper classifies both sides and equality", {
     expect_false(tiny_positive$at_zero)
 })
 
-test_that("exact C0 structural boundary returns its full contract", {
+test_that("exact C0 structural boundary returns all expected fields", {
     y <- c(1, 1, 0, 0, 1, 1, 0, 0)
     N <- rep(100L, length(y))
     g <- rep(c(0, 1), each = length(y) / 2)

@@ -66,12 +66,12 @@
             "companion_objective_unavailable"
         ))
     }
-    audit <- zt_structural_zero_limit_audit(
+    zero_limit_comparison <- zt_structural_zero_limit_comparison(
         finite_nll = finite_nll,
         log_r = components$log_r,
         y = y
     )
-    if (isTRUE(audit$dominated)) {
+    if (isTRUE(zero_limit_comparison$dominated)) {
         return(.dasra_plot_profile_failure(
             "companion_zero_limit_dominated"
         ))

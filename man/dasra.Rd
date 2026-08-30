@@ -53,8 +53,7 @@ first level by default; logical and numeric 0/1 groups use \code{FALSE} or 0.
 Character groups and other numeric codings require an explicit reference.}
 
 \item{p_adjust_method}{Method passed to \code{\link[stats:p.adjust]{stats::p.adjust()}} separately for
-each requested component and omnibus family. The usual assumptions of the
-selected adjustment method still apply.}
+each requested component and omnibus family.}
 
 \item{component}{Analysis to run. \code{"all"} fits both components and reports
 the omnibus analyses.
@@ -64,18 +63,13 @@ the omnibus analyses.
 \code{"relative_abundance"} fits the relative-abundance component.}
 
 \item{full_output}{Logical. If \code{TRUE}, the returned object includes detailed
-fits for the requested components. Structural fits may also report the
-maximum discrepancy from a strictly higher-order quadrature rule as a
-fixed-fit numerical sensitivity summary. Detailed abundance
-output likewise reports a fixed-fit comparison under a strictly
-higher-order rule when the fitted scale is large or a nondefault rule is
-requested. The comparison does not refit the model or alter inference.
-Its status, comparison order, conditional-log-likelihood discrepancy, and
-effect discrepancy are recorded in the detailed abundance taxon table.}
+component fits and fixed-fit comparisons with a higher-order quadrature
+rule. The detailed abundance table records the comparison order and the
+conditional-log-likelihood and effect discrepancies.}
 
 \item{structural_conditional_present_starts}{Start strategy for the
 structural arm's conditional-present count fit. \code{"adaptive"} first uses
-the prespecified primary start and retries with the full five-start bank if
+the primary start and retries with the full five-start bank if
 formation checks fail. \code{"full"} uses all five starts immediately. Numeric
 values \code{1L} and \code{5L} are accepted with the corresponding meanings. The
 abundance arm always uses its full five-start bank.}
@@ -92,8 +86,9 @@ required to form an abundance reference. The default is \code{4L}; values below
 \code{3L} are not supported.}
 
 \item{structural_quadrature_points}{Number of Gauss-Hermite nodes used by the
-structural arm. The validated default is \code{1001L}. Smaller values trade
-numerical accuracy for speed and should be assessed with \code{full_output = TRUE} before use.}
+structural arm. The default is \code{1001L}. Smaller values reduce computation
+at the cost of numerical accuracy; \code{full_output = TRUE} provides a
+higher-order comparison.}
 
 \item{workers}{Number of parallel worker processes. The default \code{1L} runs
 sequentially. Values above one use an ordered, cross-platform PSOCK
@@ -104,17 +99,16 @@ messages.}
 
 \item{abundance_quadrature_points}{Number of Gauss-Hermite nodes used by the
 relative-abundance arm. The default is \code{41L}. Nondefault values use the
-stable log-domain rule used by the structural arm. With \code{full_output = TRUE}, nondefault rules and fitted latent-scale standard deviations above
-two trigger a fixed-fit higher-order sensitivity comparison without
-refitting the model or changing primary inference.}
+same log-domain rule as the structural arm. With \code{full_output = TRUE},
+nondefault rules and fitted latent-scale standard deviations above two
+trigger a fixed-fit higher-order comparison.}
 
 \item{store_plot_data}{Logical. If \code{TRUE}, prepare and retain the small set of
 covariate-standardized summaries used by \code{plot.dasra()}. This option
 requires \code{component = "all"}. Structural companion summaries reuse the
-configured worker pool. Higher-order quadrature sensitivity checks remain
-controlled by \code{full_output}. Primary estimates, standard errors, and
-p-values are identical with either setting; the default \code{FALSE} keeps the
-fitted object compact.}
+configured worker pool. Higher-order quadrature comparisons remain
+controlled by \code{full_output}. This setting only controls the stored plotting
+summaries; the default \code{FALSE} keeps the fitted object compact.}
 }
 \value{
 An object of class \code{dasra} with elements:
@@ -166,17 +160,17 @@ A positive \code{estimate_relative_abundance} means that the target taxon's
 present-conditional contrast exceeds the shared compositional background;
 the reported quantity is therefore a reference-centered relative contrast,
 not an absolute-abundance effect. This interpretation is intended for
-settings in which, after excluding each target, a separated strict majority
-of stably eligible taxa shares a common background and the selected kernel
-mode is stable, isolated, and has positive curvature. With \code{full_output = TRUE}, the detailed abundance table records the raw taxon estimate and the
-reference quantities used to construct the corrected contrast.
+settings in which most eligible target-excluded taxa form a stable common
+background. With \code{full_output = TRUE}, the detailed abundance table records
+the raw taxon estimate and the reference quantities used to construct the
+corrected contrast.
 
 Taxa with positive counts in fewer than \code{min_positive_samples} samples are
 excluded before component fitting and omitted from the multiple-testing
 families. Every retained taxon remains in each requested family. If a
 component cannot be formed, an operational value of one retains the taxon in
-that family; the formation indicator and reason distinguish this bookkeeping
-value from a formed test result.
+that family; the formation indicator and reason identify values assigned to
+unavailable component tests.
 
 Two structural outcomes are nonregular. A taxon with no observed zeros has
 no variation in its absence indicator (\code{no_observed_zeros}). An

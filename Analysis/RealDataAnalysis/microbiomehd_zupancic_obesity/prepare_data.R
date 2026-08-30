@@ -18,16 +18,21 @@ if (!file.exists(count_file) || !file.exists(metadata_file)) {
 if (!requireNamespace("data.table", quietly = TRUE)) {
     stop("Package 'data.table' is required.", call. = FALSE)
 }
+source(file.path(
+    dirname(dataset_directory), "shared", "count_validation.R"
+))
 
 read_count_table <- function(path) {
     table <- data.table::fread(
         path, sep = "\t", data.table = FALSE, check.names = FALSE,
         showProgress = interactive()
     )
-    feature_ids <- as.character(table[[1L]])
+    feature_ids <- validate_identifiers(
+        table[[1L]], "Feature identifiers"
+    )
     table[[1L]] <- NULL
-    counts <- as.matrix(table)
-    storage.mode(counts) <- "integer"
+    counts <- as_count_matrix(table, "The MicrobiomeHD count table")
+    validate_identifiers(colnames(counts), "Sample identifiers")
     rownames(counts) <- feature_ids
     counts
 }

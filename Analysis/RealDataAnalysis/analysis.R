@@ -1,24 +1,24 @@
+# Run the seven real-data analyses and create their standard tables and figures.
+
 options(stringsAsFactors = FALSE, warn = 1)
 
 locate_analysis_directory <- function() {
     file_argument <- grep("^--file=", commandArgs(trailingOnly = FALSE),
                           value = TRUE)
-    search_paths <- character()
     if (length(file_argument) == 1L) {
         script_path <- sub("^--file=", "", file_argument)
-        search_paths <- c(
-            search_paths, dirname(normalizePath(script_path))
-        )
+        return(dirname(normalizePath(script_path)))
     }
     search_paths <- unique(c(
-        search_paths,
         getwd(),
         file.path(getwd(), "Analysis", "RealDataAnalysis")
     ))
-    expected <- file.path(
-        "crc_baxter", "processed", "crc_baxter_dasra_input.rds"
-    )
-    matches <- search_paths[file.exists(file.path(search_paths, expected))]
+    search_paths <- unique(vapply(
+        search_paths, normalizePath, character(1), mustWork = FALSE
+    ))
+    matches <- search_paths[
+        file.exists(file.path(search_paths, "analysis.R"))
+    ]
     if (length(matches) != 1L) {
         stop("Could not identify the RealDataAnalysis directory.", call. = FALSE)
     }
@@ -26,16 +26,34 @@ locate_analysis_directory <- function() {
 }
 
 analysis_directory <- locate_analysis_directory()
+arguments <- commandArgs(trailingOnly = TRUE)
+plot_only <- "--plot-only" %in% arguments
+dataset_arguments <- grep("^--dataset=", arguments, value = TRUE)
+unknown_arguments <- setdiff(
+    arguments, c("--plot-only", dataset_arguments)
+)
+if (length(unknown_arguments)) {
+    stop(
+        sprintf("Unknown argument: %s", unknown_arguments[[1L]]),
+        call. = FALSE
+    )
+}
+
 local_library <- file.path(analysis_directory, "R_lib")
 if (dir.exists(local_library)) {
     .libPaths(c(normalizePath(local_library), .libPaths()))
 }
 
-required_packages <- c(
+plot_packages <- c("ggplot2", "tidyr", "patchwork")
+analysis_packages <- c(
     "DASRA", "maaslin3", "ZINQ", "ANCOMBC", "MicrobiomeStat",
-    "corncob", "edgeR", "DESeq2", "metagenomeSeq", "Biobase",
-    "ggplot2", "dplyr", "tidyr", "patchwork"
+    "corncob", "edgeR", "DESeq2", "metagenomeSeq", "Biobase"
 )
+required_packages <- if (plot_only) {
+    plot_packages
+} else {
+    c(analysis_packages, plot_packages)
+}
 missing_packages <- required_packages[!vapply(
     required_packages,
     requireNamespace,
@@ -380,7 +398,6 @@ execute_family <- function(family, taxa, package, runner) {
 
 formulas_for_dataset <- function(configuration) {
     full_terms <- c(configuration$covariates, "group")
-    null_terms <- configuration$covariates
     maaslin_terms <- c(
         configuration$covariates, "log_library_size_z", "group"
     )
@@ -388,19 +405,7 @@ formulas_for_dataset <- function(configuration) {
         full = stats::as.formula(
             paste("~", paste(full_terms, collapse = " + "))
         ),
-        null = if (length(null_terms)) {
-            stats::as.formula(
-                paste("~", paste(null_terms, collapse = " + "))
-            )
-        } else {
-            stats::as.formula("~ 1")
-        },
         full_text = paste(full_terms, collapse = " + "),
-        null_text = if (length(null_terms)) {
-            paste(null_terms, collapse = " + ")
-        } else {
-            "intercept only"
-        },
         maaslin = stats::as.formula(
             paste("~", paste(maaslin_terms, collapse = " + "))
         ),
@@ -933,7 +938,10 @@ run_ancombc2 <- function(counts, metadata, configuration, formulas,
         rows = rows,
         note = paste(
             "Structural-zero detection and negative lower-bound correction;",
-            "a raw p-value is set to one when pseudocount sensitivity fails."
+            paste(
+                "the p-value used for harmonized BH adjustment is set to one",
+                "when pseudocount sensitivity fails."
+            )
         )
     )
 }
@@ -1201,8 +1209,11 @@ run_deseq2 <- function(counts, metadata, configuration, formulas,
     list(
         rows = rows,
         note = paste(
-            "Positive-count size factors, parametric dispersion fit, and",
-            "Wald test; Cook's handling and independent filtering retained."
+            "Positive-count size factors, parametric dispersion fit, Wald",
+            paste(
+                "test, and Cook's handling; harmonized BH adjustment uses",
+                "all prespecified taxa."
+            )
         )
     )
 }
@@ -1386,10 +1397,14 @@ validate_analysis_input <- function(input, configuration) {
     )
 }
 
-make_upset_figure <- function(results, input, configuration,
+make_upset_figure <- function(results, tested_taxa, configuration,
                               table_directory, figure_directory) {
-    expected_rows <- length(method_order) * nrow(input$counts)
+    required_columns <- c("taxon", "method", "significant")
+    expected_rows <- length(method_order) * tested_taxa
     if (nrow(results) != expected_rows ||
+        !all(required_columns %in% names(results)) ||
+        length(unique(results$taxon)) != tested_taxa ||
+        !setequal(unique(results$method), method_order) ||
         anyDuplicated(results[, c("taxon", "method")])) {
         stop("The UpSet input does not contain one row per taxon and method.",
              call. = FALSE)
@@ -1439,114 +1454,79 @@ make_upset_figure <- function(results, input, configuration,
         )
     }
     pattern_table <- pattern_table[, c("intersection", "n", "methods")]
+    intersection_file <- file.path(
+        table_directory,
+        paste0(configuration$output_prefix, "_upset_intersections.csv")
+    )
+    membership_file <- file.path(
+        table_directory,
+        paste0(
+            configuration$output_prefix,
+            "_upset_intersection_membership.csv"
+        )
+    )
+    figure_file <- file.path(
+        figure_directory,
+        paste0(configuration$output_prefix, "_upset.pdf")
+    )
+    staged_intersection_file <- tempfile(
+        "upset-intersections-", table_directory, ".csv"
+    )
+    staged_membership_file <- tempfile(
+        "upset-membership-", table_directory, ".csv"
+    )
+    staged_figure_file <- tempfile(
+        "upset-figure-", figure_directory, ".pdf"
+    )
+    staged_files <- c(
+        staged_intersection_file,
+        staged_membership_file,
+        staged_figure_file
+    )
+    on.exit(unlink(staged_files, force = TRUE), add = TRUE)
     utils::write.csv(
         pattern_table,
-        file.path(
-            table_directory,
-            paste0(configuration$output_prefix, "_upset_intersections.csv")
-        ),
+        staged_intersection_file,
         row.names = FALSE,
         na = ""
     )
     utils::write.csv(
         membership[, c("intersection", "taxon", "methods"), drop = FALSE],
-        file.path(
-            table_directory,
-            paste0(configuration$output_prefix,
-                   "_upset_intersection_membership.csv")
-        ),
+        staged_membership_file,
         row.names = FALSE,
         na = ""
     )
 
     full_intersection_count <- nrow(pattern_table)
-    maximum_displayed_intersections <- 20L
-    pattern_table <- utils::head(
-        pattern_table, maximum_displayed_intersections
-    )
-    displayed_intersection_count <- nrow(pattern_table)
-    intersection_note <- if (
-        displayed_intersection_count < full_intersection_count
-    ) {
-        sprintf(
-            paste(
-                "%d largest of %d patterns",
-                "Method totals use all discoveries",
-                sep = "\n"
-            ),
-            displayed_intersection_count,
-            full_intersection_count
-        )
+    dense_intersection_layout <- full_intersection_count > 60L
+    figure_width_mm <- if (full_intersection_count <= 5L) {
+        120
+    } else if (full_intersection_count <= 25L) {
+        142.875
     } else {
-        "All intersection patterns are shown"
+        174
     }
-
+    figure_width <- figure_width_mm / 25.4
+    rotate_intersection_labels <- full_intersection_count > 15L
+    method_label_size <- if (dense_intersection_layout) 7 else 8
+    intersection_label_size <- if (dense_intersection_layout) 6.0 else 7.0
+    intersection_label_rows <- if (dense_intersection_layout) 2L else 1L
+    inactive_point_size <- if (dense_intersection_layout) 0.45 else if (
+        rotate_intersection_labels
+    ) 1.45 else 1.9
+    active_point_size <- if (dense_intersection_layout) 0.90 else if (
+        rotate_intersection_labels
+    ) 1.9 else 2.35
+    connector_width <- if (dense_intersection_layout) 0.18 else 0.35
+    intersection_bar_width <- if (dense_intersection_layout) 0.58 else 0.62
+    intersection_count_size <- if (dense_intersection_layout) 1.65 else 2.15
+    intersection_count_minimum <- if (dense_intersection_layout) 3L else 2L
     positions <- data.frame(
         method = method_order,
         y = rev(seq_along(method_order)),
         stringsAsFactors = FALSE
     )
-    intersections <- pattern_table$intersection
-    pattern_table$intersection <- factor(
-        pattern_table$intersection, levels = intersections
-    )
-    all_points <- merge(
-        expand.grid(
-            intersection = intersections,
-            method = method_order,
-            stringsAsFactors = FALSE
-        ),
-        positions,
-        by = "method",
-        sort = FALSE
-    )
-    all_points$intersection <- factor(
-        all_points$intersection, levels = intersections
-    )
-
-    if (nrow(membership)) {
-        active_points <- do.call(rbind, lapply(
-            seq_len(nrow(pattern_table)),
-            function(index) {
-                methods <- strsplit(
-                    pattern_table$methods[[index]], " | ", fixed = TRUE
-                )[[1L]]
-                data.frame(
-                    intersection = pattern_table$intersection[[index]],
-                    method = methods,
-                    stringsAsFactors = FALSE
-                )
-            }
-        ))
-        active_points <- merge(
-            active_points, positions, by = "method", sort = FALSE
-        )
-        active_points$intersection <- factor(
-            active_points$intersection, levels = intersections
-        )
-        segment_data <- stats::aggregate(
-            y ~ intersection, active_points,
-            function(values) c(minimum = min(values), maximum = max(values))
-        )
-        segment_data <- data.frame(
-            intersection = segment_data$intersection,
-            minimum = segment_data$y[, "minimum"],
-            maximum = segment_data$y[, "maximum"]
-        )
-    } else {
-        active_points <- data.frame(
-            intersection = factor(levels = intersections),
-            method = character(), y = numeric()
-        )
-        segment_data <- data.frame(
-            intersection = factor(levels = intersections),
-            minimum = numeric(), maximum = numeric()
-        )
-    }
-
-    method_counts <- stats::aggregate(
-        significant ~ method, results, sum
-    )
+    method_counts <- stats::aggregate(significant ~ method, results, sum)
     method_counts <- merge(
         positions, method_counts, by = "method", all.x = TRUE, sort = FALSE
     )
@@ -1554,13 +1534,19 @@ make_upset_figure <- function(results, input, configuration,
     names(method_counts)[names(method_counts) == "significant"] <- "discoveries"
     maximum_method_count <- max(1, method_counts$discoveries)
     maximum_intersection <- max(1, pattern_table$n)
+    label_inside_fraction <- if (dense_intersection_layout) 0.24 else 0.12
     method_counts$label_inside <- method_counts$discoveries >=
-        0.08 * maximum_method_count
+        label_inside_fraction * maximum_method_count
     method_counts$label_x <- ifelse(
         method_counts$label_inside,
         method_counts$discoveries / 2,
-        method_counts$discoveries + 0.02 * maximum_method_count
+        method_counts$discoveries + 0.05 * maximum_method_count
     )
+    method_axis_breaks <- unique(c(
+        0,
+        round(maximum_method_count / 2),
+        maximum_method_count
+    ))
 
     method_colors <- c(
         "DASRA structural absence" = "#B2182B",
@@ -1579,170 +1565,283 @@ make_upset_figure <- function(results, input, configuration,
         "DESeq2" = "#E08214",
         "metagenomeSeq" = "#6B6B6B"
     )
+    relative_luminance <- function(color) {
+        rgb <- grDevices::col2rgb(color) / 255
+        rgb <- ifelse(
+            rgb <= 0.04045,
+            rgb / 12.92,
+            ((rgb + 0.055) / 1.055)^2.4
+        )
+        as.numeric(c(0.2126, 0.7152, 0.0722) %*% rgb)
+    }
+    fill_luminance <- vapply(
+        method_colors, relative_luminance, numeric(1)
+    )
+    method_counts$label_color <- ifelse(
+        method_counts$label_inside &
+            fill_luminance[method_counts$method] < 0.20,
+        "white", "grey20"
+    )
     row_background <- data.frame(
         y = positions$y,
         fill = rep(c("grey98", "grey94"), length.out = nrow(positions))
     )
-    common_theme <- ggplot2::theme_classic(base_size = 10) +
+    common_theme <- ggplot2::theme_classic(base_size = 8.5) +
         ggplot2::theme(
             axis.title = ggplot2::element_text(face = "bold"),
             plot.title = ggplot2::element_text(face = "bold", size = 12),
             plot.margin = ggplot2::margin(6, 7, 6, 7)
         )
-    method_bar <- ggplot2::ggplot(method_counts) +
-        ggplot2::geom_rect(
-            ggplot2::aes(
-                xmin = 0, xmax = discoveries,
-                ymin = y - 0.33, ymax = y + 0.33, fill = method
+
+    assemble_upset_figure <- function() {
+        figure_table <- pattern_table
+        intersections <- figure_table$intersection
+        figure_table$intersection <- factor(
+            figure_table$intersection, levels = intersections
+        )
+        all_points <- merge(
+            expand.grid(
+                intersection = intersections,
+                method = method_order,
+                stringsAsFactors = FALSE
+            ),
+            positions,
+            by = "method",
+            sort = FALSE
+        )
+        all_points$intersection <- factor(
+            all_points$intersection, levels = intersections
+        )
+
+        if (nrow(membership)) {
+            active_points <- do.call(rbind, lapply(
+                seq_len(nrow(figure_table)),
+                function(index) {
+                    methods <- strsplit(
+                        figure_table$methods[[index]], " | ", fixed = TRUE
+                    )[[1L]]
+                    data.frame(
+                        intersection = as.character(
+                            figure_table$intersection[[index]]
+                        ),
+                        method = methods,
+                        stringsAsFactors = FALSE
+                    )
+                }
+            ))
+            active_points <- merge(
+                active_points, positions, by = "method", sort = FALSE
             )
-        ) +
-        ggplot2::geom_text(
-            ggplot2::aes(
-                x = label_x,
-                y = y,
-                label = discoveries,
-                color = label_inside
-            ),
-            size = 3
-        ) +
-        ggplot2::scale_fill_manual(values = method_colors) +
-        ggplot2::scale_color_manual(values = c("TRUE" = "white",
-                                               "FALSE" = "grey20")) +
-        ggplot2::scale_x_reverse(
-            limits = c(maximum_method_count * 1.08, 0),
-            expand = ggplot2::expansion(mult = c(0, 0))
-        ) +
-        ggplot2::scale_y_continuous(
-            limits = c(0.5, length(method_order) + 0.5),
-            breaks = positions$y,
-            labels = positions$method,
-            position = "right",
-            expand = ggplot2::expansion(mult = c(0, 0))
-        ) +
-        ggplot2::labs(x = "BH-significant taxa per method", y = NULL) +
-        common_theme +
-        ggplot2::theme(
-            legend.position = "none",
-            axis.ticks.y = ggplot2::element_blank(),
-            axis.text.y = ggplot2::element_text(
-                size = 8.8, hjust = 0,
-                margin = ggplot2::margin(l = 4, r = 2)
-            ),
-            panel.grid.major.x = ggplot2::element_line(
-                color = "grey90", linewidth = 0.3
-            ),
-            plot.margin = ggplot2::margin(4, 3, 6, 10)
-        )
+            active_points$intersection <- factor(
+                active_points$intersection, levels = intersections
+            )
+            segment_data <- stats::aggregate(
+                y ~ intersection, active_points,
+                function(values) {
+                    c(minimum = min(values), maximum = max(values))
+                }
+            )
+            segment_data <- data.frame(
+                intersection = segment_data$intersection,
+                minimum = segment_data$y[, "minimum"],
+                maximum = segment_data$y[, "maximum"]
+            )
+        } else {
+            active_points <- data.frame(
+                intersection = factor(levels = intersections),
+                method = character(),
+                y = numeric()
+            )
+            segment_data <- data.frame(
+                intersection = factor(levels = intersections),
+                minimum = numeric(),
+                maximum = numeric()
+            )
+        }
 
-    intersection_bar <- ggplot2::ggplot(
-        pattern_table,
-        ggplot2::aes(x = intersection, y = n)
-    ) +
-        ggplot2::geom_col(width = 0.66, fill = "grey22") +
-        ggplot2::geom_text(
-            ggplot2::aes(label = n), vjust = -0.25,
-            size = 2.8, color = "grey15"
-        ) +
-        ggplot2::scale_y_continuous(
-            limits = c(0, maximum_intersection * 1.16),
-            expand = ggplot2::expansion(mult = c(0, 0.02))
-        ) +
-        ggplot2::labs(
-            title = "Significant-set intersections",
-            subtitle = intersection_note,
-            x = NULL,
-            y = "Intersection size"
-        ) +
-        common_theme +
-        ggplot2::theme(
-            axis.text.x = ggplot2::element_blank(),
-            axis.ticks.x = ggplot2::element_blank(),
-            plot.subtitle = ggplot2::element_text(size = 8.2),
-            panel.grid.major.y = ggplot2::element_line(
-                color = "grey90", linewidth = 0.35
-            ),
-            plot.margin = ggplot2::margin(6, 6, 4, 3)
-        )
+        method_bar <- ggplot2::ggplot(method_counts) +
+            ggplot2::geom_rect(
+                ggplot2::aes(
+                    xmin = 0, xmax = discoveries,
+                    ymin = y - 0.33, ymax = y + 0.33, fill = method
+                )
+            ) +
+            ggplot2::geom_text(
+                data = method_counts[method_counts$discoveries > 0L, ],
+                ggplot2::aes(
+                    x = label_x, y = y, label = discoveries,
+                    color = label_color
+                ),
+                size = 2.35
+            ) +
+            ggplot2::scale_fill_manual(values = method_colors) +
+            ggplot2::scale_color_identity() +
+            ggplot2::scale_x_reverse(
+                limits = c(maximum_method_count * 1.08, 0),
+                breaks = method_axis_breaks,
+                expand = ggplot2::expansion(mult = c(0, 0))
+            ) +
+            ggplot2::scale_y_continuous(
+                limits = c(0.5, length(method_order) + 0.5),
+                breaks = positions$y,
+                labels = positions$method,
+                position = "right",
+                expand = ggplot2::expansion(mult = c(0, 0))
+            ) +
+            ggplot2::labs(
+                x = "BH\ndiscoveries", y = NULL
+            ) +
+            common_theme +
+            ggplot2::theme(
+                legend.position = "none",
+                axis.ticks.y = ggplot2::element_blank(),
+                axis.text.y = ggplot2::element_text(
+                    size = method_label_size, hjust = 0,
+                    margin = ggplot2::margin(l = 4, r = 2)
+                ),
+                axis.title.x = ggplot2::element_text(
+                    size = 8, lineheight = 0.9
+                ),
+                panel.grid.major.x = ggplot2::element_line(
+                    color = "grey90", linewidth = 0.3
+                ),
+                plot.margin = ggplot2::margin(4, 3, 6, 10)
+            )
 
-    intersection_matrix <- ggplot2::ggplot() +
-        ggplot2::geom_rect(
-            data = row_background,
-            ggplot2::aes(
-                xmin = -Inf, xmax = Inf,
-                ymin = y - 0.5, ymax = y + 0.5, fill = fill
-            ),
-            color = NA
+        intersection_bar <- ggplot2::ggplot(
+            figure_table,
+            ggplot2::aes(x = intersection, y = n)
         ) +
-        ggplot2::scale_fill_identity() +
-        ggplot2::geom_point(
-            data = all_points,
-            ggplot2::aes(x = intersection, y = y),
-            color = "grey82", size = 2.25
-        ) +
-        ggplot2::geom_segment(
-            data = segment_data,
-            ggplot2::aes(
-                x = intersection, xend = intersection,
-                y = minimum, yend = maximum
-            ),
-            color = "grey12", linewidth = 0.42
-        ) +
-        ggplot2::geom_point(
-            data = active_points,
-            ggplot2::aes(x = intersection, y = y),
-            color = "grey12", size = 2.65
-        ) +
-        ggplot2::scale_y_continuous(
-            limits = c(0.5, length(method_order) + 0.5),
-            breaks = NULL,
-            expand = ggplot2::expansion(mult = c(0, 0))
-        ) +
-        ggplot2::labs(
-            x = "Intersections (sorted by size)",
-            y = NULL
-        ) +
-        common_theme +
-        ggplot2::theme(
-            axis.ticks.y = ggplot2::element_blank(),
-            axis.text.x = ggplot2::element_text(size = 7),
-            plot.margin = ggplot2::margin(4, 6, 6, 3)
-        )
+            ggplot2::geom_col(
+                width = intersection_bar_width, fill = "grey22"
+            ) +
+            ggplot2::geom_text(
+                data = figure_table[
+                    figure_table$n >= intersection_count_minimum, ,
+                    drop = FALSE
+                ],
+                ggplot2::aes(x = intersection, y = n, label = n),
+                vjust = -0.25,
+                size = intersection_count_size, color = "grey15"
+            ) +
+            ggplot2::scale_x_discrete(
+                expand = ggplot2::expansion(add = 0.65)
+            ) +
+            ggplot2::scale_y_continuous(
+                limits = c(0, maximum_intersection * 1.16),
+                expand = ggplot2::expansion(mult = c(0, 0.02))
+            ) +
+            ggplot2::labs(x = NULL, y = "Intersection size") +
+            common_theme +
+            ggplot2::theme(
+                axis.text.x = ggplot2::element_blank(),
+                axis.ticks.x = ggplot2::element_blank(),
+                panel.grid.major.y = ggplot2::element_line(
+                    color = "grey90", linewidth = 0.35
+                ),
+                plot.margin = ggplot2::margin(6, 6, 4, 3)
+            )
 
-    figure_width <- 180 / 25.4
-    left_column_width <- 3.15
-    figure <- patchwork::wrap_plots(
-        A = patchwork::plot_spacer(),
-        B = intersection_bar,
-        C = method_bar,
-        D = intersection_matrix,
-        design = "
-            AB
-            CD
-        ",
-        widths = c(
-            left_column_width,
-            figure_width - left_column_width
-        ),
-        heights = c(0.55, 1.45)
-    )
-    figure_file <- file.path(
-        figure_directory,
-        paste0(configuration$output_prefix, "_upset.pdf")
-    )
-    ggplot2::ggsave(
-        filename = figure_file,
-        plot = figure,
+        intersection_matrix <- ggplot2::ggplot() +
+            ggplot2::geom_rect(
+                data = row_background,
+                ggplot2::aes(
+                    xmin = -Inf, xmax = Inf,
+                    ymin = y - 0.5, ymax = y + 0.5, fill = fill
+                ),
+                color = NA
+            ) +
+            ggplot2::scale_fill_identity() +
+            ggplot2::geom_point(
+                data = all_points,
+                ggplot2::aes(x = intersection, y = y),
+                color = "grey82", size = inactive_point_size
+            ) +
+            ggplot2::geom_segment(
+                data = segment_data,
+                ggplot2::aes(
+                    x = intersection, xend = intersection,
+                    y = minimum, yend = maximum
+                ),
+                color = "grey12", linewidth = connector_width
+            ) +
+            ggplot2::geom_point(
+                data = active_points,
+                ggplot2::aes(x = intersection, y = y),
+                color = "grey12", size = active_point_size
+            ) +
+            ggplot2::scale_x_discrete(
+                expand = ggplot2::expansion(add = 0.65),
+                guide = ggplot2::guide_axis(n.dodge = intersection_label_rows)
+            ) +
+            ggplot2::scale_y_continuous(
+                limits = c(0.5, length(method_order) + 0.5),
+                breaks = NULL,
+                expand = ggplot2::expansion(mult = c(0, 0))
+            ) +
+            ggplot2::labs(x = "Intersection pattern", y = NULL) +
+            common_theme +
+            ggplot2::theme(
+                axis.ticks.y = ggplot2::element_blank(),
+                axis.text.x = ggplot2::element_text(
+                    size = intersection_label_size,
+                    angle = if (rotate_intersection_labels) 90 else 0,
+                    hjust = if (rotate_intersection_labels) 1 else 0.5,
+                    vjust = if (rotate_intersection_labels) 0.5 else 0.5
+                ),
+                plot.margin = ggplot2::margin(4, 6, 6, 3)
+            )
+
+        left_column_width <- 0.65
+        upper_left_spacer <- ggplot2::ggplot() +
+            ggplot2::theme_void() +
+            ggplot2::theme(plot.margin = ggplot2::margin(8, 4, 2, 10))
+
+        patchwork::wrap_plots(
+            A = upper_left_spacer,
+            B = intersection_bar,
+            C = method_bar,
+            D = intersection_matrix,
+            design = "
+                AB
+                CD
+            ",
+            widths = c(
+                left_column_width,
+                figure_width - left_column_width
+            ),
+            heights = c(0.5, 1.5)
+        )
+    }
+
+    figure <- assemble_upset_figure()
+    figure_height_mm <- if (dense_intersection_layout) 124 else 116
+    figure_height <- figure_height_mm / 25.4
+    grDevices::pdf(
+        file = staged_figure_file,
         width = figure_width,
-        height = 8.4,
-        units = "in",
-        device = grDevices::cairo_pdf,
-        bg = "white"
+        height = figure_height,
+        onefile = TRUE,
+        family = "Helvetica",
+        useDingbats = FALSE,
+        version = "1.5"
     )
+    print(figure)
+    grDevices::dev.off()
+    if (any(!file.exists(staged_files)) || any(file.info(staged_files)$size == 0)) {
+        stop("The staged UpSet outputs are incomplete.", call. = FALSE)
+    }
+    final_files <- c(intersection_file, membership_file, figure_file)
+    copied <- file.copy(staged_files, final_files, overwrite = TRUE)
+    if (!all(copied)) {
+        stop("The UpSet outputs could not be installed.", call. = FALSE)
+    }
     list(
         file = figure_file,
         width = figure_width,
+        pages = 1L,
         intersections = full_intersection_count,
-        intersections_shown = displayed_intersection_count,
+        intersections_shown = full_intersection_count,
         taxa_in_union = nrow(membership)
     )
 }
@@ -1759,32 +1858,78 @@ run_dataset <- function(configuration, plot_only = FALSE) {
     work_directory <- file.path(dataset_directory, "work")
     dir.create(table_directory, recursive = TRUE, showWarnings = FALSE)
     dir.create(figure_directory, recursive = TRUE, showWarnings = FALSE)
-    dir.create(work_directory, recursive = TRUE, showWarnings = FALSE)
-
-    validated <- validate_analysis_input(
-        readRDS(input_path), configuration
-    )
-    evaluation_taxa <- rownames(validated$counts)
     results_file <- file.path(
         table_directory,
         paste0(configuration$output_prefix, "_method_results_all_taxa.csv")
     )
     if (plot_only) {
-        if (!file.exists(results_file)) {
-            stop("Plot-only mode requires an existing method-results table.",
-                 call. = FALSE)
+        input_summary_file <- file.path(
+            table_directory,
+            paste0(
+                configuration$output_prefix,
+                "_analysis_input_summary.csv"
+            )
+        )
+        if (!file.exists(results_file) || !file.exists(input_summary_file)) {
+            stop(
+                paste(
+                    "Plot-only mode requires the completed method-results",
+                    "and analysis-input-summary tables."
+                ),
+                call. = FALSE
+            )
         }
         results <- utils::read.csv(
             results_file, stringsAsFactors = FALSE, check.names = FALSE
         )
+        input_summary <- utils::read.csv(
+            input_summary_file,
+            stringsAsFactors = FALSE,
+            check.names = FALSE
+        )
+        tested_taxa <- suppressWarnings(as.integer(
+            input_summary$value[match("tested taxa", input_summary$item)]
+        ))
+        if (length(tested_taxa) != 1L || !is.finite(tested_taxa) ||
+            tested_taxa < 1L) {
+            stop(
+                "The completed input summary has no valid tested-taxa count.",
+                call. = FALSE
+            )
+        }
         results$significant <- as.logical(results$significant)
         figure <- make_upset_figure(
-            results, validated, configuration,
+            results, tested_taxa, configuration,
             table_directory, figure_directory
         )
         message("Updated ", figure$file)
         return(invisible(figure))
     }
+
+    if (!file.exists(input_path)) {
+        stop(
+            sprintf(
+                "Prepared input is unavailable for %s: %s",
+                configuration$dataset_id, input_path
+            ),
+            call. = FALSE
+        )
+    }
+    dir.create(work_directory, recursive = TRUE, showWarnings = FALSE)
+    staging_directory <- tempfile(
+        paste0(configuration$dataset_id, "-outputs-"),
+        tmpdir = work_directory
+    )
+    staging_table_directory <- file.path(staging_directory, "table")
+    staging_figure_directory <- file.path(staging_directory, "figs")
+    dir.create(staging_table_directory, recursive = TRUE, showWarnings = FALSE)
+    dir.create(staging_figure_directory, recursive = TRUE, showWarnings = FALSE)
+    on.exit(unlink(staging_directory, recursive = TRUE, force = TRUE), add = TRUE)
+
+    validated <- validate_analysis_input(
+        readRDS(input_path), configuration
+    )
+    evaluation_taxa <- rownames(validated$counts)
 
     formulas <- formulas_for_dataset(configuration)
     counts <- validated$fitting_counts
@@ -1796,7 +1941,7 @@ run_dataset <- function(configuration, plot_only = FALSE) {
             "DASRA", evaluation_taxa, "DASRA",
             function() run_dasra(
                 counts, metadata, configuration, formulas, evaluation_taxa,
-                figure_directory
+                staging_figure_directory
             )
         ),
         execute_family(
@@ -1908,61 +2053,110 @@ run_dataset <- function(configuration, plot_only = FALSE) {
             format(min(validated$retained_fraction), digits = 5),
             paste0(nrow(validated$counts),
                    " prespecified taxa per result set"),
-            "BH-adjusted q <= 0.05"
+            "BH-adjusted p <= 0.05"
         ),
         stringsAsFactors = FALSE
     )
 
-    utils::write.csv(results, results_file, row.names = FALSE, na = "")
     status_for_export <- status[, setdiff(
         names(status), c("available_results", "total_results")
     ), drop = FALSE]
-    utils::write.csv(
-        status_for_export,
-        file.path(
-            table_directory,
-            paste0(configuration$output_prefix, "_method_status.csv")
-        ),
-        row.names = FALSE,
-        na = ""
-    )
-    utils::write.csv(
-        discovery_summary,
-        file.path(
-            table_directory,
-            paste0(configuration$output_prefix, "_discovery_summary.csv")
-        ),
-        row.names = FALSE,
-        na = ""
-    )
-    utils::write.csv(
-        input_summary,
-        file.path(
-            table_directory,
-            paste0(configuration$output_prefix, "_analysis_input_summary.csv")
-        ),
-        row.names = FALSE,
-        na = ""
-    )
-
-    if (any(status$status == "failed") ||
-        any(availability_summary$available == 0L)) {
+    failed_families <- status$family[status$status == "failed"]
+    empty_result_sets <- availability_summary$method[
+        availability_summary$available == 0L
+    ]
+    if (length(failed_families) || length(empty_result_sets)) {
+        details <- c(
+            if (length(failed_families)) {
+                paste0("failed families: ", paste(failed_families, collapse = ", "))
+            },
+            if (length(empty_result_sets)) {
+                paste0(
+                    "result sets without an available test: ",
+                    paste(empty_result_sets, collapse = ", ")
+                )
+            }
+        )
         stop(
             sprintf(
-                "%s did not complete every required result set; inspect %s.",
-                configuration$dataset_id,
-                file.path(
-                    table_directory,
-                    paste0(configuration$output_prefix, "_method_status.csv")
-                )
+                "%s did not complete every required result set (%s).",
+                configuration$dataset_id, paste(details, collapse = "; ")
             ),
             call. = FALSE
         )
     }
-    figure <- make_upset_figure(
-        results, validated, configuration,
-        table_directory, figure_directory
+
+    staged_results_file <- file.path(
+        staging_table_directory, basename(results_file)
     )
+    staged_status_file <- file.path(
+        staging_table_directory,
+        paste0(configuration$output_prefix, "_method_status.csv")
+    )
+    staged_discovery_file <- file.path(
+        staging_table_directory,
+        paste0(configuration$output_prefix, "_discovery_summary.csv")
+    )
+    staged_input_file <- file.path(
+        staging_table_directory,
+        paste0(configuration$output_prefix, "_analysis_input_summary.csv")
+    )
+    utils::write.csv(
+        results, staged_results_file, row.names = FALSE, na = ""
+    )
+    utils::write.csv(
+        status_for_export, staged_status_file, row.names = FALSE, na = ""
+    )
+    utils::write.csv(
+        discovery_summary, staged_discovery_file, row.names = FALSE, na = ""
+    )
+    utils::write.csv(
+        input_summary, staged_input_file, row.names = FALSE, na = ""
+    )
+
+    figure <- make_upset_figure(
+        results, nrow(validated$counts), configuration,
+        staging_table_directory, staging_figure_directory
+    )
+    staged_profile_file <- file.path(
+        staging_figure_directory,
+        paste0(configuration$output_prefix, "_dasra_profile.pdf")
+    )
+    staged_files <- c(
+        staged_results_file,
+        staged_status_file,
+        staged_discovery_file,
+        staged_input_file,
+        file.path(
+            staging_table_directory,
+            paste0(configuration$output_prefix, "_upset_intersections.csv")
+        ),
+        file.path(
+            staging_table_directory,
+            paste0(
+                configuration$output_prefix,
+                "_upset_intersection_membership.csv"
+            )
+        ),
+        figure$file,
+        staged_profile_file
+    )
+    if (!all(file.exists(staged_files))) {
+        stop("The staged output set is incomplete.", call. = FALSE)
+    }
+    destinations <- c(
+        rep(table_directory, 6L), rep(figure_directory, 2L)
+    )
+    final_files <- file.path(destinations, basename(staged_files))
+    copied <- mapply(
+        file.copy, staged_files, final_files,
+        MoreArgs = list(overwrite = TRUE),
+        USE.NAMES = FALSE
+    )
+    if (!all(copied)) {
+        stop("Could not replace the completed output set.", call. = FALSE)
+    }
+    figure$file <- final_files[[7L]]
     message(
         configuration$dataset_id, ": ", figure$taxa_in_union,
         " taxa in ", figure$intersections, " intersections; ",
@@ -1976,18 +2170,6 @@ run_dataset <- function(configuration, plot_only = FALSE) {
     ))
 }
 
-arguments <- commandArgs(trailingOnly = TRUE)
-plot_only <- "--plot-only" %in% arguments
-dataset_arguments <- grep("^--dataset=", arguments, value = TRUE)
-unknown_arguments <- setdiff(
-    arguments, c("--plot-only", dataset_arguments)
-)
-if (length(unknown_arguments)) {
-    stop(
-        sprintf("Unknown argument: %s", unknown_arguments[[1L]]),
-        call. = FALSE
-    )
-}
 requested_datasets <- if (length(dataset_arguments)) {
     unique(sub("^--dataset=", "", dataset_arguments))
 } else {

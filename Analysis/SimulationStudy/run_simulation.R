@@ -9,10 +9,10 @@
 # complete independent replication over the full setting grid.
 #
 # Usage
-#   Rscript dasra_formal_hpc_simulation.R replicate <replication_id>
-#   Rscript dasra_formal_hpc_simulation.R summarize
-#   Rscript dasra_formal_hpc_simulation.R design
-#   Rscript dasra_formal_hpc_simulation.R preflight
+#   Rscript run_simulation.R replicate <replication_id>
+#   Rscript run_simulation.R summarize
+#   Rscript run_simulation.R design
+#   Rscript run_simulation.R preflight
 #
 # Raw taxon-level p-values, adjusted p-values, diagnostics, simulation truth,
 # latent states and count data are saved for reproducibility.
@@ -150,29 +150,29 @@ as_numeric_column <- function(data, candidates) {
 CONFIG <- list(
     script_version = "dasra-simulation-study-v1",
     root = Sys.getenv(
-        "DASRA_FORMAL_ROOT",
-        "/home/zhang.16383/DORAM/dasra_formal_simulation"
+        "DASRA_SIMULATION_ROOT",
+        "dasra_simulation_output"
     ),
-    n_taxa = env_int("DASRA_FORMAL_N_TAXA", 50L, 30L),
+    n_taxa = env_int("DASRA_SIMULATION_N_TAXA", 50L, 30L),
     sample_sizes_per_group = c(60L, 80L, 120L),
     signal_fractions = c(0.20, 0.40),
     confounding_levels = c("unconfounded", "confounded"),
     confounder_group_shift = env_num(
-        "DASRA_FORMAL_CONFOUNDER_GROUP_SHIFT", 0.80, 0
+        "DASRA_SIMULATION_CONFOUNDER_GROUP_SHIFT", 0.80, 0
     ),
-    alpha = env_num("DASRA_FORMAL_ALPHA", 0.05, 0),
-    base_seed = env_int("DASRA_FORMAL_BASE_SEED", 202608190L, 1L),
-    save_datasets = env_flag("DASRA_FORMAL_SAVE_DATASETS", TRUE),
-    overwrite = env_flag("DASRA_FORMAL_OVERWRITE", FALSE),
-    depth_median = env_num("DASRA_FORMAL_DEPTH_MEDIAN", 8000, 500),
-    depth_sdlog = env_num("DASRA_FORMAL_DEPTH_SDLOG", 0.45, 0),
-    depth_min = env_int("DASRA_FORMAL_DEPTH_MIN", 1500L, 100L),
-    depth_max = env_int("DASRA_FORMAL_DEPTH_MAX", 40000L, 1000L),
+    alpha = env_num("DASRA_SIMULATION_ALPHA", 0.05, 0),
+    base_seed = env_int("DASRA_SIMULATION_BASE_SEED", 202608190L, 1L),
+    save_datasets = env_flag("DASRA_SIMULATION_SAVE_DATASETS", TRUE),
+    overwrite = env_flag("DASRA_SIMULATION_OVERWRITE", FALSE),
+    depth_median = env_num("DASRA_SIMULATION_DEPTH_MEDIAN", 8000, 500),
+    depth_sdlog = env_num("DASRA_SIMULATION_DEPTH_SDLOG", 0.45, 0),
+    depth_min = env_int("DASRA_SIMULATION_DEPTH_MIN", 1500L, 100L),
+    depth_max = env_int("DASRA_SIMULATION_DEPTH_MAX", 40000L, 1000L),
     depth_case_multiplier = env_num(
-        "DASRA_FORMAL_DEPTH_CASE_MULTIPLIER", 0.55, 0.05
+        "DASRA_SIMULATION_DEPTH_CASE_MULTIPLIER", 0.55, 0.05
     ),
     probability_guard = env_num(
-        "DASRA_FORMAL_PROBABILITY_GUARD", 0.70, 0.1
+        "DASRA_SIMULATION_PROBABILITY_GUARD", 0.70, 0.1
     ),
     zinq_taus = c(0.25, 0.50, 0.75),
     gh_order_truth = 81L,
@@ -200,7 +200,7 @@ CONFIG <- list(
 )
 
 if (CONFIG$alpha <= 0 || CONFIG$alpha >= 1) {
-    stop("DASRA_FORMAL_ALPHA must lie strictly between zero and one.",
+    stop("DASRA_SIMULATION_ALPHA must lie strictly between zero and one.",
          call. = FALSE)
 }
 if (any(CONFIG$sample_sizes_per_group < 20L) ||
@@ -239,7 +239,7 @@ if (!all(CONFIG$confounding_levels %in% c("unconfounded", "confounded"))) {
     stop("Unknown confounding level.", call. = FALSE)
 }
 if (CONFIG$probability_guard >= 0.95) {
-    stop("DASRA_FORMAL_PROBABILITY_GUARD must be below 0.95.",
+    stop("DASRA_SIMULATION_PROBABILITY_GUARD must be below 0.95.",
          call. = FALSE)
 }
 
@@ -489,7 +489,7 @@ make_setting_grid <- function() {
     out$setting_index <- seq_len(nrow(out))
     rownames(out) <- NULL
 
-    filter_text <- trimws(Sys.getenv("DASRA_FORMAL_SETTING_FILTER", ""))
+    filter_text <- trimws(Sys.getenv("DASRA_SIMULATION_SETTING_FILTER", ""))
     if (nzchar(filter_text)) {
         requested <- trimws(strsplit(filter_text, ",", fixed = TRUE)[[1L]])
         keep <- out$setting_id %in% requested |
@@ -497,7 +497,7 @@ make_setting_grid <- function() {
             out$design_id %in% requested
         out <- out[keep, , drop = FALSE]
         if (!nrow(out)) {
-            stop("DASRA_FORMAL_SETTING_FILTER selected no settings.",
+            stop("DASRA_SIMULATION_SETTING_FILTER selected no settings.",
                  call. = FALSE)
         }
     }
@@ -514,28 +514,11 @@ CONFIG$n_total_settings <- nrow(SETTINGS)
 package_versions <- function() {
     packages <- unique(c(replicate_packages, summary_packages))
     data.frame(
-        package = packages,
-        version = vapply(packages, package_version_or_na, character(1)),
-        remote_sha = vapply(packages, function(package) {
-            if (!requireNamespace(package, quietly = TRUE)) {
-                return(NA_character_)
-            }
-            description <- utils::packageDescription(package)
-            value <- description$RemoteSha %||%
-                description$GithubSHA1 %||%
-                description$GithubSHA %||%
-                NA_character_
-            as.character(value)[1L]
-        }, character(1)),
-        library_path = vapply(packages, function(package) {
-            if (!requireNamespace(package, quietly = TRUE)) {
-                return(NA_character_)
-            }
-            normalizePath(
-                system.file(package = package),
-                winslash = "/", mustWork = FALSE
-            )
-        }, character(1)),
+        package = c("R", packages),
+        version = c(
+            paste(R.version$major, R.version$minor, sep = "."),
+            vapply(packages, package_version_or_na, character(1))
+        ),
         stringsAsFactors = FALSE
     )
 }
@@ -2610,7 +2593,7 @@ run_replication <- function(replication_id) {
 
     messagef(
         paste(
-            "Starting formal DASRA replication %d with %d settings",
+            "Starting DASRA replication %d with %d settings",
             "(%d base settings x %d design strata)."
         ),
         replication_id, nrow(SETTINGS),
@@ -2733,7 +2716,6 @@ run_replication <- function(replication_id) {
         design_strata = DESIGN_STRATA,
         package_versions = package_versions(),
         method_configuration = method_configuration(),
-        session_info = utils::capture.output(sessionInfo()),
         method_results = as.data.frame(method_results),
         truth = as.data.frame(truth),
         setting_status = errors,
@@ -2978,8 +2960,7 @@ summarize_completed_replications <- function() {
         if (is.null(first_metadata)) {
             first_metadata <- list(
                 package_versions = object$package_versions,
-                method_configuration = object$method_configuration,
-                session_info = object$session_info
+                method_configuration = object$method_configuration
             )
         }
 
@@ -3143,23 +3124,6 @@ summarize_completed_replications <- function() {
         file.path(CONFIG$summary_dir, "method_configuration.csv")
     )
 
-    writeLines(
-        c(
-            sprintf("Script version: %s", CONFIG$script_version),
-            sprintf("Completed replications: %d", n_completed),
-            sprintf("Base settings: %d", CONFIG$n_base_settings),
-            sprintf("Design strata: %d", CONFIG$n_design_strata),
-            sprintf("Total settings per replication: %d", CONFIG$n_total_settings),
-            sprintf(
-                "Replication IDs: %s",
-                paste(sort(replication_ids), collapse = ", ")
-            ),
-            "",
-            first_metadata$session_info
-        ),
-        file.path(CONFIG$summary_dir, "session_information.txt")
-    )
-
     messagef(
         "Combined %d completed replications into %s",
         n_completed, CONFIG$summary_dir
@@ -3282,7 +3246,7 @@ run_preflight <- function() {
         n_signal = selected$n_signal_target,
         role = selected$template_role
     )
-    temporary_root <- tempfile("dasra_formal_preflight_")
+    temporary_root <- tempfile("dasra_simulation_preflight_")
     safe_dir_create(temporary_root)
     on.exit(
         unlink(temporary_root, recursive = TRUE, force = TRUE),
@@ -3348,7 +3312,7 @@ main <- function() {
     if (!length(arguments)) {
         stop(
             paste(
-                "Usage: Rscript dasra_formal_hpc_simulation.R",
+                "Usage: Rscript run_simulation.R",
                 "replicate <id> | summarize | design | preflight"
             ),
             call. = FALSE

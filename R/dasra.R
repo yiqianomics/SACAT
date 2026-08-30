@@ -84,14 +84,6 @@ count_softplus <- function(x) {
     pmax(x, 0) + log1p(exp(-abs(x)))
 }
 
-count_logspace_add <- function(a, b) {
-    m <- pmax(a, b)
-    out <- m + log(exp(a - m) + exp(b - m))
-    both_inf <- !is.finite(m)
-    out[both_inf] <- m[both_inf]
-    out
-}
-
 count_row_log_sum_exp <- function(x) {
     x <- as.matrix(x)
     m <- apply(x, 1L, max)
@@ -99,35 +91,6 @@ count_row_log_sum_exp <- function(x) {
     bad <- !is.finite(m)
     out[bad] <- m[bad]
     out
-}
-
-count_numeric_gradient <- function(par, fn,
-                                   lower = rep(-Inf, length(par)),
-                                   upper = rep(Inf, length(par))) {
-    grad <- numeric(length(par))
-    f0 <- fn(par)
-    for (k in seq_along(par)) {
-        h <- 1e-05 * (1 + abs(par[k]))
-        can_left <- par[k] - h >= lower[k]
-        can_right <- par[k] + h <= upper[k]
-        if (can_left && can_right) {
-            p_left <- p_right <- par
-            p_left[k] <- par[k] - h
-            p_right[k] <- par[k] + h
-            grad[k] <- (fn(p_right) - fn(p_left)) / (2 * h)
-        } else if (can_right) {
-            p_right <- par
-            p_right[k] <- par[k] + h
-            grad[k] <- (fn(p_right) - f0) / h
-        } else if (can_left) {
-            p_left <- par
-            p_left[k] <- par[k] - h
-            grad[k] <- (f0 - fn(p_left)) / h
-        } else {
-            grad[k] <- NA
-        }
-    }
-    grad
 }
 
 .dasra_count_gh_cache <- new.env(parent = emptyenv())
@@ -321,7 +284,7 @@ count_log_hy_adaptive_ref <- function(y, N, eta, sigma, gh,
          x_node = x_node, mode = mode, curvature = curvature)
 }
 
-# Use the compiled kernel for production evaluations.
+# Use the compiled kernel for the final objective evaluations.
 count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
                                   return_nodes = FALSE) {
     if (isTRUE(return_nodes)) {
@@ -341,41 +304,6 @@ count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
         score_tolerance = 1e-12,
         bracket_tolerance = 1e-12
     )
-}
-
-count_log_hy <- function(y, N, eta, sigma, gh, return_nodes = FALSE) {
-    y <- as.numeric(y)
-    N <- as.numeric(N)
-    eta <- as.numeric(eta)
-    n <- length(y)
-    if (length(N) != n || length(eta) != n) {
-        stop("y, N, and eta must have the same length.")
-    }
-    if (length(sigma) != 1L || !is.finite(sigma) || sigma <= 0) {
-        stop("sigma must be finite and positive.")
-    }
-    if (any(!is.finite(y)) || any(!is.finite(N)) || any(y < 0) ||
-        any(N < 0) || any(y > N) ||
-        any(abs(y - round(y)) > 1e-08) ||
-        any(abs(N - round(N)) > 1e-08)) {
-        stop("y and N must be finite integer counts satisfying 0 <= y <= N.")
-    }
-    Q <- length(gh$node)
-    x_node <- matrix(eta, nrow = n, ncol = Q) +
-        sqrt(2) * sigma * matrix(gh$node, nrow = n, ncol = Q, byrow = TRUE)
-    log_p <- -count_softplus(-x_node)
-    log_one_minus_p <- -count_softplus(x_node)
-    log_kernel <- sweep(log_p, 1L, y, "*") +
-        sweep(log_one_minus_p, 1L, N - y, "*")
-    log_choose <- lgamma(N + 1) - lgamma(y + 1) - lgamma(N - y + 1)
-    log_terms <- sweep(log_kernel, 1L, log_choose, "+") +
-        matrix(gh$log_weight, nrow = n, ncol = Q, byrow = TRUE)
-    log_hy <- count_row_log_sum_exp(log_terms)
-    if (!return_nodes) {
-        return(log_hy)
-    }
-    list(log_hy = log_hy, log_terms = log_terms,
-         log_term_normalizer = log_hy, x_node = x_node)
 }
 
 count_design_matrix <- function(g = NULL, z = NULL, include_group = FALSE,
@@ -1279,10 +1207,6 @@ cauchy_combination <- function(ps) {
     upper <- max(values[window])
     index <- finite[values[finite] >= lower & values[finite] <= upper]
     list(index = index, pilot = mean(values[window]))
-}
-
-.dasra_abundance_lts_pilot <- function(values) {
-    .dasra_abundance_lts_reference(values)$pilot
 }
 
 .dasra_abundance_kernel_mode <- function(
@@ -2383,31 +2307,16 @@ zt_detection_nll_from_components <- function(alpha, y, X_rho, comp) {
     if (is.finite(value)) value else 1e+300
 }
 
-zt_detection_nll <- function(alpha, beta, y, N, X_rho, X_eta, gh) {
-    comp <- zt_beta_detection_components(beta, N, X_eta, gh)
-    zt_detection_nll_from_components(alpha, y, X_rho, comp)
-}
-
 zt_alpha_scores_from_components <- function(alpha, y, X_rho, comp) {
     state <- zt_detection_state_from_components(alpha, y, X_rho, comp)
     if (is.null(state)) return(matrix(NA, length(y), ncol(X_rho)))
     X_rho * state$structural_residual
 }
 
-zt_alpha_scores <- function(alpha, beta, y, N, X_rho, X_eta, gh) {
-    comp <- zt_beta_detection_components(beta, N, X_eta, gh)
-    zt_alpha_scores_from_components(alpha, y, X_rho, comp)
-}
-
 zt_target_score_from_components <- function(alpha, y, g, X_rho, comp) {
     state <- zt_detection_state_from_components(alpha, y, X_rho, comp)
     if (is.null(state)) return(rep(NA, length(y)))
     as.numeric(g) * state$structural_residual
-}
-
-zt_target_score <- function(alpha, beta, y, N, g, X_rho, X_eta, gh) {
-    comp <- zt_beta_detection_components(beta, N, X_eta, gh)
-    zt_target_score_from_components(alpha, y, g, X_rho, comp)
 }
 
 zt_intercept_alpha_boundary <- function(log_r, y) {
@@ -2470,14 +2379,14 @@ zt_structural_zero_limit_nll <- function(log_r, y) {
     -sum(log_likelihood)
 }
 
-zt_structural_zero_limit_audit <- function(
+zt_structural_zero_limit_comparison <- function(
         finite_nll, log_r, y,
         relative_tolerance = sqrt(.Machine$double.eps)) {
     finite_nll <- as.numeric(finite_nll)
     if (length(finite_nll) != 1L || !is.finite(finite_nll) ||
         length(relative_tolerance) != 1L ||
         !is.finite(relative_tolerance) || relative_tolerance <= 0) {
-        stop("Invalid structural objective-audit inputs.")
+        stop("Invalid structural objective-comparison inputs.")
     }
     zero_limit_nll <- zt_structural_zero_limit_nll(log_r, y)
     tolerance <- relative_tolerance * max(
@@ -2628,10 +2537,6 @@ zt_fit_alpha <- function(beta, y, N, X_rho, X_eta, gh, maxit = 500L,
         numerical_warnings = unique(numerical_warnings),
         optimization_history = fit_history
     )
-}
-
-zt_unpack_theta <- function(theta, p_beta) {
-    list(beta = theta[seq_len(p_beta)], alpha = theta[-seq_len(p_beta)])
 }
 
 zt_unavailable <- function(reason, n, diagnostics = list()) {
@@ -3463,19 +3368,19 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
     finite_structural_nll <- zt_detection_nll_from_components(
         alpha, y, X_rho, detection_component
     )
-    zero_limit_audit <- zt_structural_zero_limit_audit(
+    zero_limit_comparison <- zt_structural_zero_limit_comparison(
         finite_structural_nll, detection_component$log_r, y
     )
-    if (isTRUE(zero_limit_audit$dominated)) {
+    if (isTRUE(zero_limit_comparison$dominated)) {
         details <- c(base_diag, list(
             structural_absence_finite_nll =
-                zero_limit_audit$finite_nll,
+                zero_limit_comparison$finite_nll,
             structural_absence_zero_limit_nll =
-                zero_limit_audit$zero_limit_nll,
+                zero_limit_comparison$zero_limit_nll,
             structural_absence_zero_limit_improvement =
-                zero_limit_audit$improvement,
+                zero_limit_comparison$improvement,
             structural_absence_objective_tolerance =
-                zero_limit_audit$tolerance
+                zero_limit_comparison$tolerance
         ))
         if (keep_fit) {
             details$fit <- list(
@@ -3596,13 +3501,13 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
         numerical_warnings = numerical_warnings
     ))
     diagnostics$structural_absence_finite_nll <-
-        zero_limit_audit$finite_nll
+        zero_limit_comparison$finite_nll
     diagnostics$structural_absence_zero_limit_nll <-
-        zero_limit_audit$zero_limit_nll
+        zero_limit_comparison$zero_limit_nll
     diagnostics$structural_absence_zero_limit_improvement <-
-        zero_limit_audit$improvement
+        zero_limit_comparison$improvement
     diagnostics$structural_absence_objective_tolerance <-
-        zero_limit_audit$tolerance
+        zero_limit_comparison$tolerance
 
     if (isTRUE(check_quadrature) && is.finite(fitted_sigma) &&
         (fitted_sigma > 2 || as.integer(Q) != 1001L)) {
@@ -3954,18 +3859,17 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' present-conditional contrast exceeds the shared compositional background;
 #' the reported quantity is therefore a reference-centered relative contrast,
 #' not an absolute-abundance effect. This interpretation is intended for
-#' settings in which, after excluding each target, a separated strict majority
-#' of stably eligible taxa shares a common background and the selected kernel
-#' mode is stable, isolated, and has positive curvature. With `full_output =
-#' TRUE`, the detailed abundance table records the raw taxon estimate and the
-#' reference quantities used to construct the corrected contrast.
+#' settings in which most eligible target-excluded taxa form a stable common
+#' background. With `full_output = TRUE`, the detailed abundance table records
+#' the raw taxon estimate and the reference quantities used to construct the
+#' corrected contrast.
 #'
 #' Taxa with positive counts in fewer than `min_positive_samples` samples are
 #' excluded before component fitting and omitted from the multiple-testing
 #' families. Every retained taxon remains in each requested family. If a
 #' component cannot be formed, an operational value of one retains the taxon in
-#' that family; the formation indicator and reason distinguish this bookkeeping
-#' value from a formed test result.
+#' that family; the formation indicator and reason identify values assigned to
+#' unavailable component tests.
 #'
 #' Two structural outcomes are nonregular. A taxon with no observed zeros has
 #' no variation in its absence indicator (`no_observed_zeros`). An
@@ -4010,8 +3914,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   first level by default; logical and numeric 0/1 groups use `FALSE` or 0.
 #'   Character groups and other numeric codings require an explicit reference.
 #' @param p_adjust_method Method passed to [stats::p.adjust()] separately for
-#'   each requested component and omnibus family. The usual assumptions of the
-#'   selected adjustment method still apply.
+#'   each requested component and omnibus family.
 #' @param component Analysis to run. `"all"` fits both components and reports
 #'   the omnibus analyses.
 #'
@@ -4019,17 +3922,12 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'
 #'   `"relative_abundance"` fits the relative-abundance component.
 #' @param full_output Logical. If `TRUE`, the returned object includes detailed
-#'   fits for the requested components. Structural fits may also report the
-#'   maximum discrepancy from a strictly higher-order quadrature rule as a
-#'   fixed-fit numerical sensitivity summary. Detailed abundance
-#'   output likewise reports a fixed-fit comparison under a strictly
-#'   higher-order rule when the fitted scale is large or a nondefault rule is
-#'   requested. The comparison does not refit the model or alter inference.
-#'   Its status, comparison order, conditional-log-likelihood discrepancy, and
-#'   effect discrepancy are recorded in the detailed abundance taxon table.
+#'   component fits and fixed-fit comparisons with a higher-order quadrature
+#'   rule. The detailed abundance table records the comparison order and the
+#'   conditional-log-likelihood and effect discrepancies.
 #' @param structural_conditional_present_starts Start strategy for the
 #'   structural arm's conditional-present count fit. `"adaptive"` first uses
-#'   the prespecified primary start and retries with the full five-start bank if
+#'   the primary start and retries with the full five-start bank if
 #'   formation checks fail. `"full"` uses all five starts immediately. Numeric
 #'   values `1L` and `5L` are accepted with the corresponding meanings. The
 #'   abundance arm always uses its full five-start bank.
@@ -4043,9 +3941,9 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   required to form an abundance reference. The default is `4L`; values below
 #'   `3L` are not supported.
 #' @param structural_quadrature_points Number of Gauss-Hermite nodes used by the
-#'   structural arm. The validated default is `1001L`. Smaller values trade
-#'   numerical accuracy for speed and should be assessed with `full_output =
-#'   TRUE` before use.
+#'   structural arm. The default is `1001L`. Smaller values reduce computation
+#'   at the cost of numerical accuracy; `full_output = TRUE` provides a
+#'   higher-order comparison.
 #' @param workers Number of parallel worker processes. The default `1L` runs
 #'   sequentially. Values above one use an ordered, cross-platform PSOCK
 #'   cluster and do not change the taxon order.
@@ -4053,17 +3951,15 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   messages.
 #' @param abundance_quadrature_points Number of Gauss-Hermite nodes used by the
 #'   relative-abundance arm. The default is `41L`. Nondefault values use the
-#'   stable log-domain rule used by the structural arm. With `full_output =
-#'   TRUE`, nondefault rules and fitted latent-scale standard deviations above
-#'   two trigger a fixed-fit higher-order sensitivity comparison without
-#'   refitting the model or changing primary inference.
+#'   same log-domain rule as the structural arm. With `full_output = TRUE`,
+#'   nondefault rules and fitted latent-scale standard deviations above two
+#'   trigger a fixed-fit higher-order comparison.
 #' @param store_plot_data Logical. If `TRUE`, prepare and retain the small set of
 #'   covariate-standardized summaries used by `plot.dasra()`. This option
 #'   requires `component = "all"`. Structural companion summaries reuse the
-#'   configured worker pool. Higher-order quadrature sensitivity checks remain
-#'   controlled by `full_output`. Primary estimates, standard errors, and
-#'   p-values are identical with either setting; the default `FALSE` keeps the
-#'   fitted object compact.
+#'   configured worker pool. Higher-order quadrature comparisons remain
+#'   controlled by `full_output`. This setting only controls the stored plotting
+#'   summaries; the default `FALSE` keeps the fitted object compact.
 #'
 #' @return An object of class `dasra` with elements:
 #'   \describe{
