@@ -35,12 +35,12 @@
 "MehtaRS_2018","Mehta 2018","fourfold","ZINQ",3000,3000,0,1
 "MehtaRS_2018","Mehta 2018","balanced","MaAsLin3",3000,2900,100,0.966666666666667
 "MehtaRS_2018","Mehta 2018","fourfold","MaAsLin3",3000,2900,100,0.966666666666667
-"VatanenT_2016","Vatanen 2016","balanced","DASRA",3000,3000,0,1
-"VatanenT_2016","Vatanen 2016","fourfold","DASRA",3000,3000,0,1
-"VatanenT_2016","Vatanen 2016","balanced","ZINQ",3000,3000,0,1
-"VatanenT_2016","Vatanen 2016","fourfold","ZINQ",3000,3000,0,1
-"VatanenT_2016","Vatanen 2016","balanced","MaAsLin3",3000,3000,0,1
-"VatanenT_2016","Vatanen 2016","fourfold","MaAsLin3",3000,3000,0,1
+"AsnicarF_2021","Asnicar 2021","balanced","DASRA",3000,3000,0,1
+"AsnicarF_2021","Asnicar 2021","fourfold","DASRA",3000,3000,0,1
+"AsnicarF_2021","Asnicar 2021","balanced","ZINQ",3000,3000,0,1
+"AsnicarF_2021","Asnicar 2021","fourfold","ZINQ",3000,3000,0,1
+"AsnicarF_2021","Asnicar 2021","balanced","MaAsLin3",3000,2820,180,0.94
+"AsnicarF_2021","Asnicar 2021","fourfold","MaAsLin3",3000,2885,115,0.961666666666667
 "LeChatelierE_2013","Le Chatelier 2013","balanced","DASRA",3000,3000,0,1
 "LeChatelierE_2013","Le Chatelier 2013","fourfold","DASRA",3000,3000,0,1
 "LeChatelierE_2013","Le Chatelier 2013","balanced","ZINQ",3000,3000,0,1
@@ -113,9 +113,9 @@
 "VilaAV_2018","Vila 2018","fourfold","ZINQ",3000,3000,0,1
 "VilaAV_2018","Vila 2018","balanced","MaAsLin3",3000,3000,0,1
 "VilaAV_2018","Vila 2018","fourfold","MaAsLin3",3000,3000,0,1
-"QinJ_2012","Qin 2012","balanced","DASRA",3000,3000,0,1
-"QinJ_2012","Qin 2012","fourfold","DASRA",3000,3000,0,1
-"QinJ_2012","Qin 2012","balanced","ZINQ",3000,3000,0,1
-"QinJ_2012","Qin 2012","fourfold","ZINQ",3000,3000,0,1
-"QinJ_2012","Qin 2012","balanced","MaAsLin3",3000,2991,9,0.997
-"QinJ_2012","Qin 2012","fourfold","MaAsLin3",3000,2994,6,0.998
+"YachidaS_2019","Yachida 2019","balanced","DASRA",3000,3000,0,1
+"YachidaS_2019","Yachida 2019","fourfold","DASRA",3000,3000,0,1
+"YachidaS_2019","Yachida 2019","balanced","ZINQ",3000,3000,0,1
+"YachidaS_2019","Yachida 2019","fourfold","ZINQ",3000,3000,0,1
+"YachidaS_2019","Yachida 2019","balanced","MaAsLin3",3000,2900,100,0.966666666666667
+"YachidaS_2019","Yachida 2019","fourfold","MaAsLin3",3000,2901,99,0.967

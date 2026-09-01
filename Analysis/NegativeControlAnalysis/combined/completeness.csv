@@ -35,12 +35,12 @@
 "MehtaRS_2018","Mehta 2018","fourfold","ZINQ",3000,100,30,3000,TRUE
 "MehtaRS_2018","Mehta 2018","balanced","MaAsLin3",3000,100,30,3000,TRUE
 "MehtaRS_2018","Mehta 2018","fourfold","MaAsLin3",3000,100,30,3000,TRUE
-"VatanenT_2016","Vatanen 2016","balanced","DASRA",3000,100,30,3000,TRUE
-"VatanenT_2016","Vatanen 2016","fourfold","DASRA",3000,100,30,3000,TRUE
-"VatanenT_2016","Vatanen 2016","balanced","ZINQ",3000,100,30,3000,TRUE
-"VatanenT_2016","Vatanen 2016","fourfold","ZINQ",3000,100,30,3000,TRUE
-"VatanenT_2016","Vatanen 2016","balanced","MaAsLin3",3000,100,30,3000,TRUE
-"VatanenT_2016","Vatanen 2016","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"AsnicarF_2021","Asnicar 2021","balanced","DASRA",3000,100,30,3000,TRUE
+"AsnicarF_2021","Asnicar 2021","fourfold","DASRA",3000,100,30,3000,TRUE
+"AsnicarF_2021","Asnicar 2021","balanced","ZINQ",3000,100,30,3000,TRUE
+"AsnicarF_2021","Asnicar 2021","fourfold","ZINQ",3000,100,30,3000,TRUE
+"AsnicarF_2021","Asnicar 2021","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"AsnicarF_2021","Asnicar 2021","fourfold","MaAsLin3",3000,100,30,3000,TRUE
 "LeChatelierE_2013","Le Chatelier 2013","balanced","DASRA",3000,100,30,3000,TRUE
 "LeChatelierE_2013","Le Chatelier 2013","fourfold","DASRA",3000,100,30,3000,TRUE
 "LeChatelierE_2013","Le Chatelier 2013","balanced","ZINQ",3000,100,30,3000,TRUE
@@ -113,9 +113,9 @@
 "VilaAV_2018","Vila 2018","fourfold","ZINQ",3000,100,30,3000,TRUE
 "VilaAV_2018","Vila 2018","balanced","MaAsLin3",3000,100,30,3000,TRUE
 "VilaAV_2018","Vila 2018","fourfold","MaAsLin3",3000,100,30,3000,TRUE
-"QinJ_2012","Qin 2012","balanced","DASRA",3000,100,30,3000,TRUE
-"QinJ_2012","Qin 2012","fourfold","DASRA",3000,100,30,3000,TRUE
-"QinJ_2012","Qin 2012","balanced","ZINQ",3000,100,30,3000,TRUE
-"QinJ_2012","Qin 2012","fourfold","ZINQ",3000,100,30,3000,TRUE
-"QinJ_2012","Qin 2012","balanced","MaAsLin3",3000,100,30,3000,TRUE
-"QinJ_2012","Qin 2012","fourfold","MaAsLin3",3000,100,30,3000,TRUE
+"YachidaS_2019","Yachida 2019","balanced","DASRA",3000,100,30,3000,TRUE
+"YachidaS_2019","Yachida 2019","fourfold","DASRA",3000,100,30,3000,TRUE
+"YachidaS_2019","Yachida 2019","balanced","ZINQ",3000,100,30,3000,TRUE
+"YachidaS_2019","Yachida 2019","fourfold","ZINQ",3000,100,30,3000,TRUE
+"YachidaS_2019","Yachida 2019","balanced","MaAsLin3",3000,100,30,3000,TRUE
+"YachidaS_2019","Yachida 2019","fourfold","MaAsLin3",3000,100,30,3000,TRUE

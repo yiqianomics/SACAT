@@ -18,7 +18,7 @@ dataset_order <- c(
     "Qiita13631ASD",
     "ArtPrize_2015_Forehead",
     "MehtaRS_2018",
-    "VatanenT_2016",
+    "AsnicarF_2021",
     "LeChatelierE_2013",
     "ORIGINS_2022_Healthy_Plaque",
     "NHANESOral_2011_2012",
@@ -31,7 +31,7 @@ dataset_order <- c(
     "SchirmerM_2016",
     "ZeeviD_2015",
     "VilaAV_2018",
-    "QinJ_2012"
+    "YachidaS_2019"
 )
 dataset_count <- length(dataset_order)
 alpha <- 0.05

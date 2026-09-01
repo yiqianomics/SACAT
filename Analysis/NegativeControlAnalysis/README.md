@@ -28,7 +28,7 @@ Each analysis input represents 200 independent empirical profiles. When a public
 | `Qiita13631ASD` | Public [Qiita study 13631](https://qiita.ucsd.edu/public/?study_id=13631), a gut microbiome study of children with autism spectrum disorder and controls; 200 fecal profiles from 286 participants. |
 | `ArtPrize_2015_Forehead` | Central-forehead 16S profiles from the cross-sectional [ArtPrize study](https://doi.org/10.1128/mBio.00839-19) and its [public phyloseq object](https://doi.org/10.6084/m9.figshare.8127287.v1); 200 profiles from 372 participants. |
 | `MehtaRS_2018` | Stool relative-abundance profiles from curatedMetagenomicData and the [Mehta study of fecal-microbiome stability in adult men](https://pubmed.ncbi.nlm.nih.gov/29335554/); 200 profiles, one per participant, from 308 participants represented by 928 stool assays. |
-| `VatanenT_2016` | Stool relative-abundance profiles from curatedMetagenomicData and the [DIABIMMUNE study of early-life microbiome LPS immunogenicity](https://pubmed.ncbi.nlm.nih.gov/27133167/); 200 profiles, one per participant, from 212 infants represented by 785 stool assays. |
+| `AsnicarF_2021` | Stool relative-abundance profiles from curatedMetagenomicData and the [Asnicar study of gut microbiome associations with diet and host metabolism](https://pubmed.ncbi.nlm.nih.gov/33432175/); 200 profiles from 1,098 independent participants. |
 | `LeChatelierE_2013` | Stool relative-abundance profiles from curatedMetagenomicData and the [Le Chatelier gut microbial richness study](https://pubmed.ncbi.nlm.nih.gov/23985870/); 200 profiles from 292 independent stool samples. |
 | `ORIGINS_2022_Healthy_Plaque` | Healthy-site subgingival-plaque 16S profiles from the public [ORIGINS study](https://doi.org/10.1038/s41522-022-00289-w); 200 profiles from 668 participants, with one healthy-site profile per participant. |
 | `NHANESOral_2011_2012` | CDC [NHANES Oral Microbiome](https://wwwn.cdc.gov/Nchs/Nhanes/omp/) genus-level oral-rinse data from the 2011-2012 survey cycle; 200 profiles from 4,887 participants with unique SEQN identifiers. |
@@ -41,7 +41,7 @@ Each analysis input represents 200 independent empirical profiles. When a public
 | `SchirmerM_2016` | Stool relative-abundance profiles from curatedMetagenomicData and the [Schirmer study of the gut microbiome and inflammatory cytokine production](https://doi.org/10.1016/j.cell.2016.10.020); 200 profiles from 471 independent stool samples. |
 | `ZeeviD_2015` | Stool relative-abundance profiles from curatedMetagenomicData and the [Zeevi personalized-nutrition study of postprandial glycemic responses](https://pubmed.ncbi.nlm.nih.gov/26590418/); 200 profiles from 900 participants. |
 | `VilaAV_2018` | Stool relative-abundance profiles from curatedMetagenomicData and the [Vila study of gut microbiome composition and function in IBD and IBS](https://pubmed.ncbi.nlm.nih.gov/30567928/); 200 profiles from 355 participants. |
-| `QinJ_2012` | Stool relative-abundance profiles from curatedMetagenomicData and the [Qin metagenome-wide association study of type 2 diabetes](https://pubmed.ncbi.nlm.nih.gov/23023125/); 200 profiles from 363 participants. |
+| `YachidaS_2019` | Stool relative-abundance profiles from curatedMetagenomicData and the [Yachida study of stage-specific gut microbiome patterns in colorectal cancer](https://pubmed.ncbi.nlm.nih.gov/31171880/); 200 profiles from 616 independent participants. |
 
 ## Analysis design
 
