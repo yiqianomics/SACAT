@@ -182,6 +182,10 @@ read_completed_dataset <- function(dataset_directory, expected_dataset_id) {
 completed_datasets <- Map(
     read_completed_dataset, dataset_directories, expected_dataset_ids
 )
+all_results <- do.call(rbind, lapply(
+    completed_datasets, function(dataset_input) dataset_input$results
+))
+row.names(all_results) <- NULL
 
 humanize_unavailable_reason <- function(reason) {
     descriptions <- c(
@@ -253,6 +257,23 @@ comparison_methods <- c(
     "MaAsLin3 combined", "ZINQ combined", "ANCOM-BC2", "LinDA",
     "corncob", "edgeR", "DESeq2", "metagenomeSeq"
 )
+
+# Availability is compared across the same prespecified taxon--dataset grid.
+# DASRA contributes its omnibus result; MaAsLin3 and ZINQ contribute their
+# package-provided combined results; each remaining family contributes its
+# primary differential-abundance result.
+availability_result_labels <- c(
+    "DASRA combined" = "DASRA",
+    "MaAsLin3 combined" = "MaAsLin3",
+    "ZINQ combined" = "ZINQ",
+    "ANCOM-BC2" = "ANCOM-BC2",
+    "LinDA" = "LinDA",
+    "corncob" = "corncob",
+    "edgeR" = "edgeR",
+    "DESeq2" = "DESeq2",
+    "metagenomeSeq" = "metagenomeSeq"
+)
+dasra_availability_result_sets <- dasra_methods
 
 for (dataset_input in completed_datasets) {
     dataset_id <- dataset_input$dataset
@@ -436,6 +457,139 @@ signal_category_summary <- do.call(rbind, signal_category_rows)
 comparison_overlap_summary <- do.call(rbind, comparison_overlap_rows)
 signal_overlap_summary <- do.call(rbind, signal_overlap_rows)
 
+expected_availability_results <- sum(vapply(
+    completed_datasets, function(dataset_input) dataset_input$tested_taxa,
+    integer(1)
+))
+expected_results_by_dataset <- stats::setNames(
+    vapply(
+        completed_datasets, function(dataset_input) dataset_input$tested_taxa,
+        integer(1)
+    ),
+    expected_dataset_ids
+)
+
+method_availability_rows <- lapply(
+    seq_along(availability_result_labels),
+    function(index) {
+        result_set <- names(availability_result_labels)[[index]]
+        result_rows <- all_results[
+            all_results$method == result_set, , drop = FALSE
+        ]
+        observed_by_dataset <- table(factor(
+            result_rows$dataset, levels = expected_dataset_ids
+        ))
+        complete_grid <- nrow(result_rows) == expected_availability_results &&
+            !anyDuplicated(result_rows[, c("dataset", "taxon")]) &&
+            identical(
+                as.integer(observed_by_dataset),
+                unname(expected_results_by_dataset)
+            )
+        if (!complete_grid || anyNA(result_rows$available)) {
+            stop(sprintf(
+                "Availability rows are incomplete for %s.", result_set
+            ), call. = FALSE)
+        }
+
+        data.frame(
+            display_order = index,
+            method = unname(availability_result_labels[[result_set]]),
+            result_set = result_set,
+            taxon_dataset_results = nrow(result_rows),
+            available_results = sum(result_rows$available),
+            unavailable_results = sum(!result_rows$available),
+            availability_percent = 100 * mean(result_rows$available),
+            stringsAsFactors = FALSE
+        )
+    }
+)
+method_availability_summary <- do.call(rbind, method_availability_rows)
+
+dasra_unavailability_rows <- lapply(
+    dasra_availability_result_sets,
+    function(result_set) {
+        result_rows <- all_results[
+            all_results$method == result_set, , drop = FALSE
+        ]
+        unavailable_rows <- result_rows[
+            !result_rows$available, , drop = FALSE
+        ]
+        reasons <- trimws(unavailable_rows$reason)
+        if (!nrow(unavailable_rows)) {
+            return(data.frame(
+                dasra_result = character(0),
+                result_set = character(0),
+                taxon_dataset_results = integer(0),
+                unavailable_results = integer(0),
+                unavailable_reason = character(0),
+                results_with_reason = integer(0),
+                percent_of_all_results = numeric(0),
+                percent_of_unavailable_results = numeric(0),
+                stringsAsFactors = FALSE
+            ))
+        }
+        if (anyNA(reasons) || any(!nzchar(reasons)) ||
+            any(reasons == "Available")) {
+            stop(sprintf(
+                "Unavailable DASRA reasons are incomplete for %s.", result_set
+            ), call. = FALSE)
+        }
+        reason_counts <- sort(table(reasons), decreasing = TRUE)
+
+        data.frame(
+            dasra_result = unname(
+                dasra_result_labels[[result_set]]
+            ),
+            result_set = result_set,
+            taxon_dataset_results = nrow(result_rows),
+            unavailable_results = nrow(unavailable_rows),
+            unavailable_reason = names(reason_counts),
+            results_with_reason = as.integer(reason_counts),
+            percent_of_all_results =
+                100 * as.integer(reason_counts) / nrow(result_rows),
+            percent_of_unavailable_results =
+                100 * as.integer(reason_counts) / nrow(unavailable_rows),
+            stringsAsFactors = FALSE
+        )
+    }
+)
+dasra_unavailability_summary <- do.call(rbind, dasra_unavailability_rows)
+
+reason_totals_by_result <- stats::setNames(
+    integer(length(dasra_availability_result_sets)),
+    dasra_availability_result_sets
+)
+if (nrow(dasra_unavailability_summary)) {
+    observed_reason_totals <- tapply(
+        dasra_unavailability_summary$results_with_reason,
+        dasra_unavailability_summary$result_set,
+        sum
+    )
+    reason_totals_by_result[names(observed_reason_totals)] <- as.integer(
+        observed_reason_totals
+    )
+}
+expected_unavailable_by_result <- stats::setNames(
+    vapply(
+        dasra_availability_result_sets,
+        function(result_set) {
+            sum(
+                all_results$method == result_set &
+                    !all_results$available
+            )
+        },
+        integer(1)
+    ),
+    dasra_availability_result_sets
+)
+if (!identical(
+    unname(reason_totals_by_result),
+    unname(expected_unavailable_by_result)
+)) {
+    stop("DASRA unavailability reasons do not match availability totals.",
+         call. = FALSE)
+}
+
 equal_dataset_rows <- lapply(
     list(
         "DASRA signal category" = list(
@@ -550,7 +704,7 @@ overall_signal_rows <- lapply(signal_categories, function(category_name) {
         calculation_note = paste(
             "Mechanism categories use combined discoveries for which both",
             "component results were available; pooled summaries are",
-            "descriptive, and equal-dataset percentages average the",
+            "descriptive, and dataset-averaged percentages average the",
             "within-dataset percentages among contributing datasets"
         ),
         stringsAsFactors = FALSE
@@ -595,6 +749,20 @@ overall_signal_summary$
             percent_in_category_not_significant_in_any_comparison_method,
         2
     )
+method_availability_output <- method_availability_summary[, c(
+    "method", "result_set", "taxon_dataset_results", "available_results",
+    "unavailable_results", "availability_percent"
+), drop = FALSE]
+method_availability_output$availability_percent <- round(
+    method_availability_output$availability_percent, 2
+)
+dasra_unavailability_output <- dasra_unavailability_summary
+dasra_unavailability_output$percent_of_all_results <- round(
+    dasra_unavailability_output$percent_of_all_results, 2
+)
+dasra_unavailability_output$percent_of_unavailable_results <- round(
+    dasra_unavailability_output$percent_of_unavailable_results, 2
+)
 
 utils::write.csv(
     availability_summary,
@@ -634,9 +802,26 @@ utils::write.csv(
     ),
     row.names = FALSE, quote = TRUE, na = ""
 )
-if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    stop("Package 'ggplot2' is required to draw the summary figure.",
-         call. = FALSE)
+utils::write.csv(
+    method_availability_output,
+    file.path(output_directory, "method_availability.csv"),
+    row.names = FALSE, quote = TRUE, na = ""
+)
+utils::write.csv(
+    dasra_unavailability_output,
+    file.path(output_directory, "dasra_unavailability_reasons.csv"),
+    row.names = FALSE, quote = TRUE, na = ""
+)
+
+required_plot_packages <- c("ggplot2", "patchwork")
+missing_plot_packages <- required_plot_packages[!vapply(
+    required_plot_packages, requireNamespace, logical(1), quietly = TRUE
+)]
+if (length(missing_plot_packages)) {
+    stop(sprintf(
+        "Required plotting packages are unavailable: %s.",
+        paste(missing_plot_packages, collapse = ", ")
+    ), call. = FALSE)
 }
 
 plot_data <- signal_category_summary
@@ -725,6 +910,220 @@ grDevices::pdf(
     version = "1.5"
 )
 print(signal_plot)
+grDevices::dev.off()
+
+method_plot_data <- method_availability_summary
+method_plot_data$method <- factor(
+    method_plot_data$method,
+    levels = rev(unname(availability_result_labels))
+)
+method_plot_data$plot_group <- "Comparison method"
+method_plot_data$plot_group[
+    method_plot_data$result_set == "DASRA combined"
+] <- "DASRA"
+
+availability_colors <- c(
+    "DASRA" = "#0072B2",
+    "Comparison method" = "#606060"
+)
+method_availability_plot <- ggplot2::ggplot(
+    method_plot_data,
+    ggplot2::aes(
+        x = method, y = availability_percent, fill = plot_group
+    )
+) +
+    ggplot2::geom_col(width = 0.64) +
+    ggplot2::geom_text(
+        ggplot2::aes(label = sprintf("%.1f%%", availability_percent)),
+        hjust = -0.18,
+        color = "grey10",
+        size = 3.15
+    ) +
+    ggplot2::coord_flip(ylim = c(0, 106), clip = "off") +
+    ggplot2::scale_fill_manual(values = availability_colors) +
+    ggplot2::scale_y_continuous(
+        breaks = seq(0, 100, by = 25),
+        labels = function(value) paste0(value, "%"),
+        expand = ggplot2::expansion(mult = c(0, 0))
+    ) +
+    ggplot2::labs(
+        x = NULL,
+        y = "Availability",
+        title = "Availability across methods",
+        subtitle = sprintf(
+            "%d taxon-by-dataset results per method across seven datasets",
+            expected_availability_results
+        )
+    ) +
+    ggplot2::theme_classic(base_size = 10.5) +
+    ggplot2::theme(
+        legend.position = "none",
+        panel.grid.major.x = ggplot2::element_line(
+            color = "grey88", linewidth = 0.35
+        ),
+        axis.text.y = ggplot2::element_text(color = "grey15", size = 9.2),
+        axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 6)),
+        plot.title = ggplot2::element_text(face = "bold", size = 11),
+        plot.subtitle = ggplot2::element_text(color = "grey30", size = 9.2),
+        plot.margin = ggplot2::margin(7, 28, 4, 7)
+    )
+
+reason_totals <- stats::aggregate(
+    results_with_reason ~ unavailable_reason,
+    dasra_unavailability_summary,
+    sum
+)
+reason_totals <- reason_totals[order(
+    -reason_totals$results_with_reason,
+    reason_totals$unavailable_reason,
+    method = "radix"
+), , drop = FALSE]
+reason_order <- reason_totals$unavailable_reason
+wrapped_reason_labels <- stats::setNames(vapply(
+    reason_order,
+    function(reason) paste(strwrap(reason, width = 49), collapse = "\n"),
+    character(1)
+), reason_order)
+
+dasra_result_plot_labels <- stats::setNames(vapply(
+    dasra_availability_result_sets,
+    function(result_set) {
+        result_rows <- all_results[
+            all_results$method == result_set, , drop = FALSE
+        ]
+        result_name <- if (result_set == "DASRA structural absence") {
+            "Structural-absence\ncomponent"
+        } else if (
+            result_set == "DASRA present-conditional abundance"
+        ) {
+            "Present-conditional\nabundance component"
+        } else {
+            "Omnibus\nresult"
+        }
+        sprintf(
+            "%s\n%d/%d unavailable",
+            result_name,
+            sum(!result_rows$available),
+            nrow(result_rows)
+        )
+    },
+    character(1)
+), dasra_availability_result_sets)
+
+reason_plot_data <- dasra_unavailability_summary
+reason_plot_data$reason_label <- factor(
+    unname(wrapped_reason_labels[reason_plot_data$unavailable_reason]),
+    levels = rev(unname(wrapped_reason_labels))
+)
+reason_plot_data$result_label <- factor(
+    unname(dasra_result_plot_labels[reason_plot_data$result_set]),
+    levels = unname(dasra_result_plot_labels)
+)
+reason_plot_data$cell_label <- sprintf(
+    "%d (%.1f%%)",
+    reason_plot_data$results_with_reason,
+    reason_plot_data$percent_of_unavailable_results
+)
+
+reason_grid <- expand.grid(
+    reason_label = levels(reason_plot_data$reason_label),
+    result_label = levels(reason_plot_data$result_label),
+    stringsAsFactors = FALSE
+)
+reason_grid$reason_label <- factor(
+    reason_grid$reason_label,
+    levels = levels(reason_plot_data$reason_label)
+)
+reason_grid$result_label <- factor(
+    reason_grid$result_label,
+    levels = levels(reason_plot_data$result_label)
+)
+
+dasra_result_cell_colors <- stats::setNames(
+    c("#DCEEF8", "#F8E2D5", "#DCEFE8"),
+    unname(dasra_result_plot_labels)
+)
+dasra_reason_plot <- ggplot2::ggplot(
+    reason_plot_data,
+    ggplot2::aes(x = result_label, y = reason_label)
+) +
+    ggplot2::geom_tile(
+        data = reason_grid,
+        ggplot2::aes(x = result_label, y = reason_label),
+        inherit.aes = FALSE,
+        fill = "grey97",
+        color = "white",
+        linewidth = 0.7,
+        width = 0.94,
+        height = 0.88
+    ) +
+    ggplot2::geom_tile(
+        ggplot2::aes(fill = result_label),
+        color = "white",
+        linewidth = 0.7,
+        width = 0.94,
+        height = 0.88
+    ) +
+    ggplot2::geom_text(
+        ggplot2::aes(label = cell_label),
+        size = 3.05,
+        color = "grey10"
+    ) +
+    ggplot2::scale_fill_manual(values = dasra_result_cell_colors) +
+    ggplot2::scale_x_discrete(position = "top", drop = FALSE) +
+    ggplot2::scale_y_discrete(drop = FALSE) +
+    ggplot2::labs(
+        x = NULL,
+        y = NULL,
+        title = "DASRA unavailability reasons",
+        subtitle = paste(
+            "Cells show count (percentage of unavailable results",
+            "within each result set)"
+        )
+    ) +
+    ggplot2::theme_minimal(base_size = 10.5) +
+    ggplot2::theme(
+        legend.position = "none",
+        panel.grid = ggplot2::element_blank(),
+        axis.ticks = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_text(
+            color = "grey15", face = "bold", size = 9.1,
+            lineheight = 0.95, margin = ggplot2::margin(b = 5)
+        ),
+        axis.text.y = ggplot2::element_text(
+            color = "grey15", size = 8.6, lineheight = 0.95
+        ),
+        plot.title = ggplot2::element_text(face = "bold", size = 11),
+        plot.subtitle = ggplot2::element_text(color = "grey30", size = 9.2),
+        plot.margin = ggplot2::margin(5, 10, 7, 7)
+    )
+
+method_availability_figure <- patchwork::wrap_plots(
+    patchwork::free(method_availability_plot, side = "l"),
+    dasra_reason_plot,
+    ncol = 1,
+    heights = c(0.82, 1.35)
+) +
+    patchwork::plot_annotation(
+        tag_levels = "a",
+        theme = ggplot2::theme(
+            plot.tag = ggplot2::element_text(face = "bold", size = 11)
+        )
+    )
+
+method_availability_figure_file <- file.path(
+    output_directory, "method_availability.pdf"
+)
+grDevices::pdf(
+    method_availability_figure_file,
+    width = 190 / 25.4,
+    height = 185 / 25.4,
+    family = "Helvetica",
+    useDingbats = FALSE,
+    version = "1.5",
+    timestamp = FALSE
+)
+print(method_availability_figure)
 grDevices::dev.off()
 
 message(sprintf(

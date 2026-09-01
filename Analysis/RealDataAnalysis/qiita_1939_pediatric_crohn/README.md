@@ -43,8 +43,8 @@ Run the preparation from the repository root:
 Rscript Analysis/RealDataAnalysis/qiita_1939_pediatric_crohn/prepare_data.R
 ```
 
-The script does not rarefy counts. It preserves each sample's full downloaded
-BIOM total as the original library size, aggregates features to genus or the
+The script uses unrarefied counts and preserves each sample's full downloaded
+BIOM total as the original library size. It aggregates features to genus or the
 deepest resolved higher rank, retains taxa present in at least 5% of the final
 cohort and in both groups, and writes the analysis RDS and accompanying summary
 tables to `processed/`.

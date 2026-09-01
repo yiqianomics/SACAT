@@ -34,12 +34,11 @@ are columns. `metadata` must have sample identifiers as row names.
 each sample.
 
 The formula is one-sided, contains the tested binary `group` variable as an
-additive main effect, and may include adjustment terms. Group interactions,
-offsets, and random-effect terms are not supported. Variables used by the
-formula, the tested group, and a metadata-based library size must be complete.
-DASRA does not silently remove samples; handle missing values first while
-keeping counts, metadata, and any named depth vector aligned. Missing values in
-unused metadata columns are allowed.
+additive main effect, and may include additive fixed-effect adjustment terms.
+Variables used by the formula, the tested group, and a metadata-based library
+size must be complete. Prepare a complete analysis set while keeping counts,
+metadata, and any named depth vector aligned. Missing values in unused metadata
+columns are allowed.
 
 The main analysis controls are:
 
@@ -181,7 +180,7 @@ central marker or `--` identifies an unavailable component or side summary.
 Optional `group_labels` shortens long fitted group names while preserving the
 analysis and group ordering.
 
-The same call can save a manuscript-ready vector or raster figure. Default PDF,
+The same call can save a vector or raster figure. Default PDF,
 PNG, and SVG dimensions use a 180-mm manuscript width and an adaptive height:
 
 ```r
@@ -203,12 +202,13 @@ For the comparison-minus-reference contrast:
 Adjusted p-value columns use the `p_adj_` prefix. The adjustment method is
 recorded in `fit$settings$p_adjust_method`.
 
-Use `fit$diagnostics` to review positive-count support in each group and whether
-each requested component was formed. Retained taxa remain in the corresponding
-testing family. When a component is unavailable, its operational p-value is one
-and the associated `reason_*` field records the cause. Eligible abundance
-results are reported independently of structural component formation. Complete
-definitions of the diagnostic fields are available in `?dasra`.
+Use `fit$diagnostics` to review positive-count support in each group and
+component formation. Retained taxa remain in the corresponding testing family.
+An unavailable component receives an operational p-value of one, with its cause
+recorded in the corresponding `reason_*` field. Eligible abundance results are
+reported independently of structural component formation. When the
+present-conditional abundance test forms for fewer than 80% of retained taxa,
+users should assess null calibration before interpreting its discoveries.
 
 ## Interpreting abundance results
 
@@ -222,5 +222,5 @@ definitions of the diagnostic fields are available in `?dasra`.
    estimate, target-excluded background estimate, and corrected estimate, and
    records the reference size and model diagnostics.
 
-The raw and reference-centered estimates answer different questions; DASRA
-reports the reference-centered test as its abundance result.
+DASRA reports the reference-centered test as its abundance result. Detailed
+output also records the raw taxon estimate and the target-excluded background.

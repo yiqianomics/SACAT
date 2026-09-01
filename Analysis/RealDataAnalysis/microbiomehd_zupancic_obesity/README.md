@@ -32,9 +32,9 @@ adjusts for sex. Visit-1 records are reduced to one sample per public
 participant using the rule above.
 
 The standard MicrobiomeHD count filter is applied to the complete cohort. The
-analysis is not rarefied. Features are aggregated to genus or the deepest
-resolved higher rank, retained when present in at least 5% of the final cohort,
-and required to occur in both groups.
+analysis uses unrarefied counts. Features are aggregated to genus or the
+deepest resolved higher rank, retained when present in at least 5% of the final
+cohort, and required to occur in both groups.
 
 Run from the repository root:
 

@@ -11,7 +11,8 @@ The public count table and metadata are distributed in MicrobiomeHD version 3,
 
 - **Comparison:** 172 participants without a colorectal lesion (reference)
   versus 120 participants with colorectal cancer (comparison), 292
-  participants in total. Adenoma groups are not part of this contrast.
+  participants in total. The contrast contains the no-lesion and colorectal
+  cancer groups.
 - **Tested panel:** 126 genus or deepest-resolved higher-rank taxon bins.
 - **Adjustment model:** `~ age_z + sex + group`, with age standardized within
   the final cohort.
@@ -24,8 +25,8 @@ The public count table and metadata are distributed in MicrobiomeHD version 3,
 Download `crc_baxter_results.tar.gz` from the Zenodo record and extract it as
 `raw/crc_baxter_results/`. The preparation uses the RDP-assigned 100% de novo
 feature table and the accompanying metadata. The published analysis used a
-different 97% OTU table and rarefied samples to 10,000 reads; this analysis
-does not rarefy because the original library size is modeled explicitly.
+different 97% OTU table and rarefied samples to 10,000 reads. This analysis
+uses the complete unrarefied count table and models the original library size.
 
 The preparation applies the documented MicrobiomeHD count filters, retains
 the no-lesion and colorectal-cancer groups, aggregates features to genus or

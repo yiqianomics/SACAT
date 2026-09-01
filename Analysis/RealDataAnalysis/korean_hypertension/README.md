@@ -29,11 +29,11 @@ Rscript Analysis/RealDataAnalysis/korean_hypertension/prepare_data.R
 ```
 
 Normotension is the reference group and hypertension is the comparison group.
-Age, sex, and BMI are included as adjustment variables. Systolic and diastolic
-blood pressure are not included because they define the study group. The
-script keeps the original, unrarefied ASV library totals, aggregates ASVs to
-genus or the deepest resolved higher rank, and retains taxa present in at
-least 5% of the cohort and with positive counts in both groups.
+The adjustment variables are age, sex, and BMI. Systolic and diastolic blood
+pressure define the study group. The script keeps the original, unrarefied ASV
+library totals, aggregates ASVs to genus or the deepest resolved higher rank,
+and retains taxa present in at least 5% of the cohort and with positive counts
+in both groups.
 
 The analysis RDS and accompanying summary tables are written to `processed/`.
 

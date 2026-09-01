@@ -24,34 +24,38 @@ Each linked dataset README records the public source, cohort construction,
 independent sampling unit, filtering, original library-size definition,
 adjustment variables, and preparation command.
 
-## Input construction
+## Defined mock-community benchmark
 
-All analyses begin with public nonnegative integer count tables. Counts are not
-rarefied and are not converted to relative abundance before modeling. Each
-sample's `library_size` is the source-recorded read depth or the column total
-of the complete source count table before analysis-level taxonomic aggregation
-and filtering. The sum of the retained analysis taxa can therefore be smaller
-than the original library size.
+The [Rauer mock-community benchmark](rauer_mock/README.md) uses 32 libraries
+from two defined source communities to evaluate component-specific recovery,
+calibration, and availability across native and controlled sequencing depths.
+The cross-cohort summaries cover the seven human cohorts.
+
+## Human-cohort input construction
+
+The seven human-cohort analyses use public unrarefied integer count tables.
+Each sample's `library_size` is the source-recorded read depth or the column
+total of the complete source count table before analysis-level taxonomic
+aggregation and filtering. The sum of the retained analysis taxa can therefore
+be smaller than the original library size.
 
 After the cohort and adjustment set are fixed, taxa are retained when they are
 observed in at least 5% of the pooled analysis cohort. A separate support rule
-requires a positive count in both comparison groups. These rules do not use
-association results. Dataset-specific preparation scripts document source
-quality filters, taxonomic aggregation, complete-case restrictions, and any
-handling of repeated observations.
+requires a positive count in both comparison groups. Both retention rules are
+applied before association testing. Dataset-specific preparation scripts
+document source quality filters, taxonomic aggregation, complete-case
+restrictions, and any handling of repeated observations.
 
-Some comparison methods require a complete composition for normalization. For
-those methods only, [`analysis.R`](analysis.R) adds an `Other_unmodeled` row
-equal to the part of the original library not represented by the tested taxa.
-DASRA receives only the retained tested taxa together with the original
-library size; `Other_unmodeled` is neither tested nor included in the DASRA
-target-excluded abundance reference.
+Some comparison methods require a complete composition for normalization.
+For these methods, [`analysis.R`](analysis.R) adds an `Other_unmodeled` row
+equal to the part of the original library represented outside the tested taxa.
+DASRA receives the retained tested taxa and the original library size. Its
+target-excluded abundance reference is formed from the retained tested taxa.
 
 ## Reproducing the workflow
 
-Run commands from the repository root. Public source files are not committed
-to version control because of their size and source-specific redistribution
-terms. Download and place them exactly as described in each dataset README.
+Run commands from the repository root. Download and place the public source
+files exactly as described in each dataset README.
 
 Prepare all seven inputs:
 
@@ -103,20 +107,26 @@ detailed component and method-intersection outputs with:
 Rscript Analysis/RealDataAnalysis/cdi_schubert/make_detailed_figures.R
 ```
 
-The local `raw/`, `processed/`, and `work/` directories and the optional
-`R_lib/` compatibility library are excluded from version control. They are
-regenerable analysis materials. Tracked tabular and graphical outputs are in
-each dataset's `table/` and `figs/` directories and in the cross-dataset
-`summary/` directory. Random seeds are fixed by dataset in
-`analysis.R`, so changing the order of the dataset list does not change a
-method's random-number stream.
+Prepare, analyze, and summarize the defined mock-community benchmark with:
+
+```sh
+Rscript Analysis/RealDataAnalysis/rauer_mock/prepare_data.R
+Rscript Analysis/RealDataAnalysis/rauer_mock/analysis.R
+Rscript Analysis/RealDataAnalysis/rauer_mock/make_figures.R
+```
+
+Preparation and fitting write source inputs and intermediate files to `raw/`,
+`processed/`, and `work/`. Reported tables and figures are in each dataset's
+`table/` and `figs/` directories and in the cross-dataset `summary/` directory.
+Dataset-specific fixed seeds provide reproducible random-number streams
+independent of execution order.
 
 [`software_versions.csv`](software_versions.csv) records the R version and
-direct package versions used to generate the tracked outputs. Each
+direct package versions used to generate the reported outputs. Each
 `*_method_status.csv` also records the fitted method package version for that
 dataset.
 
-## Methods and multiplicity
+## Human-cohort methods and multiplicity
 
 Every retained taxon remains in each result set's multiplicity family. An
 unavailable result is assigned an operational p-value of one for harmonized
@@ -141,9 +151,9 @@ these prespecified outputs while retaining their method-specific estimands.
 Method-specific library-size terms, offsets, and normalization conventions are
 recorded in the taxon-level outputs and method-status tables.
 
-## Per-dataset outputs
+## Human-cohort outputs
 
-Each completed dataset contains six standard CSV files in `table/`:
+Each completed human cohort contains six standard CSV files in `table/`:
 
 1. `*_analysis_input_summary.csv` — sample counts, tested taxa, retained-read
    fractions, and the multiplicity definition;
@@ -181,13 +191,25 @@ The Schubert CDI directory also contains a detailed component figure, a
 tables and writes:
 
 - dataset-level DASRA availability and human-readable unavailability reasons;
+- pooled availability for the primary result from each method, using the common
+  taxon-by-dataset result grid;
+- DASRA component and omnibus unavailability reasons, with counts, percentages
+  of all results, and percentages among unavailable results;
 - structural-only, present-conditional-only, both-component, and omnibus-only
   counts among discoveries with both components available;
 - the number of combined discoveries with one available component;
 - descriptive overlap with the comparison methods;
-- equal-dataset descriptive percentages;
-- a PDF overview of signal categories by dataset.
+- dataset-averaged descriptive percentages;
+- PDF overviews of method availability and signal categories by dataset.
 
-The pooled percentage weights each classified discovery equally. The
-equal-dataset percentage averages within-dataset percentages among datasets
-with at least one classified combined DASRA discovery.
+The availability outputs are `method_availability.csv`,
+`dasra_unavailability_reasons.csv`, and `method_availability.pdf`. MaAsLin3 and
+ZINQ contribute their package-provided combined results; DASRA contributes its
+omnibus result, and the other methods contribute their primary
+differential-abundance results.
+
+Availability percentages weight each of the 688 prespecified taxon-by-dataset
+results equally. For signal-category summaries, the pooled percentage weights
+each classified discovery equally. The dataset-averaged percentage averages
+within-dataset percentages among datasets with at least one classified
+combined DASRA discovery.

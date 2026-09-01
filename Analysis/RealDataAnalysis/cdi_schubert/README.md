@@ -12,7 +12,8 @@ count table and metadata are distributed in MicrobiomeHD version 3,
 
 - **Comparison:** 152 nondiarrheal healthy controls (reference) versus 91
   participants with *C. difficile* infection (comparison), 243 participants
-  in total. The non-*C. difficile* diarrhea group is not part of this contrast.
+  in total. The contrast contains the healthy-control and *C. difficile*
+  infection groups.
 - **Tested panel:** 88 genus or deepest-resolved higher-rank taxon bins.
 - **Adjustment model:** `~ age_z + sex + antibiotics_3mo + group`, with age
   standardized within the final cohort.
@@ -25,8 +26,8 @@ count table and metadata are distributed in MicrobiomeHD version 3,
 Download `cdi_schubert_results.tar.gz` from the Zenodo record and extract it
 as `raw/cdi_schubert_results/`. The preparation uses the RDP-assigned 100% de
 novo feature table and the accompanying metadata. It retains the publication's
-minimum depth of 1,450 reads but does not rarefy the counts. One healthy sample
-with missing sex is excluded from the complete-case model.
+minimum depth of 1,450 reads and the unrarefied counts. One healthy sample with
+missing sex is excluded from the complete-case model.
 
 Features are aggregated to genus or the deepest resolved higher rank. Taxa
 must be observed in at least 5% of the final cohort and have positive counts in

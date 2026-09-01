@@ -2760,19 +2760,6 @@ method_display_name <- function(method, component) {
     answer
 }
 
-abundance_component <- function(component) {
-    component %in% c(
-        "present_conditional_abundance",
-        "detected_quantile_abundance",
-        "detected_log_abundance",
-        "general_abundance"
-    )
-}
-
-structural_component <- function(component) {
-    component %in% c("structural_absence", "observed_prevalence")
-}
-
 make_replicate_metrics <- function(results) {
     data <- data.table::as.data.table(results)
     data[, method_label := method_display_name(method, component)]

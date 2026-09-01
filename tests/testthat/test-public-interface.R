@@ -286,7 +286,7 @@ test_that("component arms retain warning codes without full output", {
     expect_null(abundance$diagnostics)
 })
 
-test_that("print separates regular and conservative structural results", {
+test_that("print separates regular and nonregular structural results", {
     fit <- .run_public_interface_fixture()
     output <- capture.output(print(fit))
 
@@ -297,7 +297,7 @@ test_that("print separates regular and conservative structural results", {
         "Regular structural score tests: 2/4", output, fixed = TRUE
     )))
     expect_true(any(grepl(
-        "Conservative nonregular results: 2/4", output, fixed = TRUE
+        "Nonregular structural results: 2/4", output, fixed = TRUE
     )))
     expect_true(any(grepl("holm-adjusted p", output, fixed = TRUE)))
 })

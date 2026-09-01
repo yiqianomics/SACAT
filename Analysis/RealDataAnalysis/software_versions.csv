@@ -17,3 +17,7 @@
 "readxl","1.5.0","CRAN"
 "data.table","1.18.4","CRAN"
 "biomformat","1.38.0","Bioconductor 3.22"
+"dada2","1.36.0","Bioconductor 3.22"
+"Biostrings","2.78.0","Bioconductor 3.22"
+"stringdist","0.9.17","CRAN"
+"ape","5.8.1","CRAN"

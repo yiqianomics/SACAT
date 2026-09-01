@@ -445,7 +445,7 @@ make_replicate_summary <- function(result, catalog) {
     summary
 }
 
-# Summarize family-wise Type I error and Monte Carlo uncertainty by dataset.
+# Summarize familywise Type I error and Monte Carlo uncertainty by dataset.
 make_dataset_summary <- function(replicate_summary, catalog) {
     cell <- interaction(
         replicate_summary$dataset, replicate_summary$scenario,
@@ -527,7 +527,7 @@ make_completeness_summary <- function(result, catalog) {
     ordered_summary(do.call(rbind, rows), catalog)
 }
 
-# Draw the dataset-level family-wise Type I error comparison.
+# Draw the dataset-level familywise Type I error comparison.
 draw_figure <- function(summary, catalog, output_directory) {
     if (!requireNamespace("ggplot2", quietly = TRUE)) {
         stop("The ggplot2 package is required to draw the figure.",

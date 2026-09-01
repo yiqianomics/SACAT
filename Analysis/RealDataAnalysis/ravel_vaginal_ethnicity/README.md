@@ -29,10 +29,9 @@ The count table is unrarefied, and its exact column total is retained as each
 participant's library size.
 
 The primary model contains the ethnicity-group indicator. Vaginal pH, Nugent
-score, and community state type are not adjustment variables because they are
-microbiome-related outcomes rather than pre-exposure confounders. Taxa are
-retained when they are observed in at least 5% of the analysis cohort and in
-both groups.
+score, and community state type are treated as microbiome-related outcomes and
+omitted from the adjustment set. Taxa are retained when they are observed in
+at least 5% of the analysis cohort and in both groups.
 
 From the repository root, run:
 

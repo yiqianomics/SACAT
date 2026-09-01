@@ -30,9 +30,9 @@ dasra(
 
 \item{metadata}{Sample metadata in a data frame. Row names must contain all
 sample names in \code{counts}. Variables used by \code{formula}, \code{group}, or a
-metadata-based \code{library_size} must be complete; samples are not removed
-automatically. Missing values should be handled before calling \code{dasra()}
-while keeping counts, metadata, and any named depth vector aligned.}
+metadata-based \code{library_size} must be complete. Prepare a complete analysis
+set before calling \code{dasra()} while keeping counts, metadata, and any named
+depth vector aligned.}
 
 \item{formula}{A one-sided formula containing \code{group} as an additive main
 effect and any adjustment terms, for example \code{~ disease + age + sex}.
@@ -63,9 +63,10 @@ the omnibus analyses.
 \code{"relative_abundance"} fits the relative-abundance component.}
 
 \item{full_output}{Logical. If \code{TRUE}, the returned object includes detailed
-component fits and fixed-fit comparisons with a higher-order quadrature
-rule. The detailed abundance table records the comparison order and the
-conditional-log-likelihood and effect discrepancies.}
+component fits. Nondefault quadrature rules and fitted latent-scale
+standard deviations above two trigger fixed-fit higher-order quadrature
+comparisons. The detailed abundance table records the comparison order and
+the conditional-log-likelihood and effect discrepancies.}
 
 \item{structural_conditional_present_starts}{Start strategy for the
 structural arm's conditional-present count fit. \code{"adaptive"} first uses
@@ -117,7 +118,7 @@ An object of class \code{dasra} with elements:
 p-values use the \code{p_adj_} prefix and the method recorded in
 \code{settings$p_adjust_method}.}
 \item{diagnostics}{Taxon retention, support counts, component-formation
-status, documented formation reasons, and numerical warnings.}
+status and reason codes, and numerical warnings.}
 \item{settings}{The fitted contrast and analysis settings.}
 \item{call}{The matched function call.}
 \item{plot_data}{Compact covariate-standardized plotting summaries when
@@ -145,25 +146,21 @@ comparison group.
 The relative-abundance component estimates a covariate-standardized
 comparison-minus-reference difference in mean log relative abundance
 conditional on taxon presence. Every taxon is fitted with the same
-zero-truncated conditional-mark likelihood. Within the fitted conditional
-factorization, conditioning on a positive count removes the
-structural-presence probability from this likelihood, so the abundance fit
-does not require a structural-absence nuisance estimate or a data-dependent
-model switch. Zero counts have zero mark score, while all samples still
-contribute their covariate values to the fixed observed-design
-sample-standardized effect.
+zero-truncated conditional-mark likelihood. Conditioning on a positive count
+removes the structural-presence probability from this likelihood. Zero counts
+have zero mark score, and all samples contribute their covariate values to
+sample standardization.
 
 Taxon-specific effects are centered against a target-excluded cross-taxon
-reference. The corrected standard error uses centered, sample-aligned
+reference. The standard error uses centered, sample-aligned
 influence contributions with a first-order standard-normal Wald reference.
-A positive \code{estimate_relative_abundance} means that the target taxon's
-present-conditional contrast exceeds the shared compositional background;
-the reported quantity is therefore a reference-centered relative contrast,
-not an absolute-abundance effect. This interpretation is intended for
-settings in which most eligible target-excluded taxa form a stable common
-background. With \code{full_output = TRUE}, the detailed abundance table records
-the raw taxon estimate and the reference quantities used to construct the
-corrected contrast.
+A positive \code{estimate_relative_abundance} indicates that the target taxon's
+present-conditional contrast exceeds the shared compositional background.
+The reported effect is the taxon's present-conditional contrast relative to
+this background. Interpretation uses the eligible target-excluded taxa as a
+stable common background. With \code{full_output = TRUE}, the detailed abundance
+table records the raw taxon estimate and the reference quantities used to
+construct the reported contrast.
 
 Taxa with positive counts in fewer than \code{min_positive_samples} samples are
 excluded before component fitting and omitted from the multiple-testing
@@ -171,6 +168,10 @@ families. Every retained taxon remains in each requested family. If a
 component cannot be formed, an operational value of one retains the taxon in
 that family; the formation indicator and reason identify values assigned to
 unavailable component tests.
+Abundance-component availability is the proportion of retained taxa with
+\code{formed_relative_abundance = TRUE}. When availability is below 80\%, review
+positive-count support and assess null calibration before interpreting
+relative-abundance discoveries.
 
 Two structural outcomes are nonregular. A taxon with no observed zeros has
 no variation in its absence indicator (\code{no_observed_zeros}). An
@@ -178,9 +179,9 @@ intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
 exact solution at the zero structural-absence boundary.
 
 \code{structural_absence_boundary_at_zero} records this boundary solution. Both
-nonregular statuses use the documented operational value in the primary
-family and are excluded from the Cauchy sensitivity combination; their
-signed statistic is undefined.
+nonregular statuses use an operational p-value of one in the primary family
+and are excluded from the Cauchy sensitivity combination; their signed
+statistic is undefined.
 
 \code{structural_absence_nonoptimal_nuisance_fit} identifies a finite nuisance
 fit whose detection objective exceeds the exact zero-limit objective. An

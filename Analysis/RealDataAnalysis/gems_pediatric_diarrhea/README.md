@@ -14,9 +14,7 @@ The data file is publicly available from the authors'
 - **Tested panel:** 78 published genera.
 - **Adjustment model:** `~ age_z + country + group`, where age in months is
   standardized within the final cohort and country is categorical.
-- **Independent unit:** one published study observation per enrolled child;
-  the source analysis object does not contribute repeated observations for a
-  child to this comparison.
+- **Independent unit:** one published study observation per enrolled child.
 - **Original library size:** the published `totalCounts` value, defined before
   the 5% genus-prevalence and two-group support filters.
 

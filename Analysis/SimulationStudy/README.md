@@ -47,7 +47,7 @@ Rscript run_simulation.R summarize
 
 ## Simulation results
 
-The full simulation result archive is stored outside version control because of its size and accompanies the supplementary materials. It contains the complete taxon-level results, simulation truth, replication-level metrics, setting summaries, completion records, method-status summaries, and software information.
+The full simulation result archive contains the complete taxon-level results, simulation truth, replication-level metrics, setting summaries, completion records, method-status summaries, and software information.
 
 Extract the supplied archive into `results_data/`, or place the output of the `summarize` step under `results_data/source/`, and run:
 
@@ -74,8 +74,8 @@ Additional figures:
 | [`component_specificity.pdf`](figures/component_specificity.pdf) | Marginal Type I error for the non-target DASRA component |
 | [`abundance_fdr_signal20.pdf`](figures/abundance_fdr_signal20.pdf) | Present-conditional abundance false discovery rates with 10 perturbed taxa |
 | [`abundance_fdr_signal40.pdf`](figures/abundance_fdr_signal40.pdf) | Present-conditional abundance false discovery rates with 20 perturbed taxa |
-| [`global_null_family_rejection_structural.pdf`](figures/global_null_family_rejection_structural.pdf) | Structural and observed-prevalence family-wise Type I error under three global-null generators |
-| [`global_null_family_rejection_abundance.pdf`](figures/global_null_family_rejection_abundance.pdf) | Abundance family-wise Type I error under three global-null generators |
+| [`global_null_family_rejection_structural.pdf`](figures/global_null_family_rejection_structural.pdf) | Structural and observed-prevalence familywise Type I error under three global-null generators |
+| [`global_null_family_rejection_abundance.pdf`](figures/global_null_family_rejection_abundance.pdf) | Abundance familywise Type I error under three global-null generators |
 | [`correlated_community_abundance_power.pdf`](figures/correlated_community_abundance_power.pdf) | Abundance power under correlated-community perturbations |
 | [`correlated_community_abundance_fdr.pdf`](figures/correlated_community_abundance_fdr.pdf) | Abundance false discovery rates under correlated-community perturbations |
 | [`correlated_community_structural_performance.pdf`](figures/correlated_community_structural_performance.pdf) | Structural and observed-prevalence power and false discovery rates under correlated-community structural-absence perturbations |
@@ -106,7 +106,7 @@ Within each replication, setting, method, and component, Benjamini-Hochberg adju
 
 - Power is the proportion of directly perturbed taxa rejected after adjustment.
 - The false discovery proportion is the number of false discoveries divided by the total number of discoveries, with zero assigned when no discovery occurs. The empirical false discovery rate is its mean over 100 replications.
-- Under a global null, family-wise Type I error is the probability of at least one rejection. It equals the empirical false discovery rate because all 50 focal taxa are null.
+- Under a global null, familywise Type I error is the probability of at least one rejection. It equals the empirical false discovery rate because all 50 focal taxa are null.
 - Marginal Type I error in the component-specificity experiment is the mean rejection probability for the non-target DASRA component among taxa designated for the other component.
 - Monte Carlo intervals equal the replication-level mean plus or minus 1.96 Monte Carlo standard errors, truncated to the parameter range.
 

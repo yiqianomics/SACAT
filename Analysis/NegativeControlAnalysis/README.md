@@ -14,7 +14,7 @@ Each dataset directory contains:
 
 ZINQ 2.0 is available from the [ZINQ-v2 repository](https://github.com/wdl2459/ZINQ-v2), and MaAsLin3 1.5.3 is available from the [MaAsLin3 repository](https://github.com/biobakery/maaslin3). The combined figure requires an R build with Cairo graphics.
 
-The stored `analysis_input.rds` files are sufficient to rerun the analyses. They contain processed genus-level analysis data rather than raw sequencing reads, so no download or preparation step is required.
+The stored `analysis_input.rds` files contain the processed genus-level data required to rerun the analyses, so no download or preparation step is required.
 
 ## Datasets
 
@@ -56,7 +56,7 @@ Each of 100 randomizations assigns 100 samples to `H` and 100 to `Case`. The sam
 
 Library sizes follow a log-normal distribution with `sdlog = 0.45` and are limited to 300-30,000 reads. Counts are sampled from the 30 target genera together with `Other_unmodeled`; the latter preserves the remaining community mass but is not tested. DASRA, ZINQ, and MaAsLin3 analyze the same 30 target taxa in every randomization.
 
-DASRA uses its public Bonferroni omnibus result. An unavailable component contributes a conservative p-value of 1, and the omnibus is formed when at least one component is formed. MaAsLin3 requires both component fits and a combined p-value. An unavailable method result is represented by an analysis p-value of 1 in the common 30-taxon family. Within each randomization, depth setting, and method, Benjamini-Hochberg adjustment is applied to these 30 p-values. A family incurs a Type I error when at least one adjusted p-value is at most 0.05.
+DASRA uses its public Bonferroni omnibus result. An unavailable component contributes a p-value of 1, and the omnibus is formed when at least one component is formed. MaAsLin3 requires both component fits and a combined p-value. An unavailable method result is represented by an analysis p-value of 1 in the common 30-taxon family. Within each randomization, depth setting, and method, Benjamini-Hochberg adjustment is applied to these 30 p-values. A family incurs a Type I error when at least one adjusted p-value is at most 0.05.
 
 Randomization and count-generation seeds are deterministic functions of the dataset, randomization, and depth setting. Each dataset analysis uses seven independent R workers.
 
@@ -77,7 +77,7 @@ An interrupted run can be restarted from the completed randomization-setting uni
 Each completed `results` directory contains:
 
 - `taxon_pvalues.csv`: taxon-level p-values, availability, and status;
-- `replicate_metrics.csv`: BH rejection counts, family-wise Type I error, and availability by randomization, setting, and method;
+- `replicate_metrics.csv`: BH rejection counts, familywise Type I error, and availability by randomization, setting, and method;
 - `diagnostics.csv`: generated positive-count and DASRA component diagnostics;
 - `depth_diagnostics.csv`: realized group sizes and library-depth summaries;
 - `analysis_settings.csv`: design constants and software versions.
