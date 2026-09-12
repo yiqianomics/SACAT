@@ -2,7 +2,7 @@
 % Please edit documentation in R/sacat.R
 \name{sacat}
 \alias{sacat}
-\title{Depth-Aware Structural-Absence and Relative-Abundance Analysis}
+\title{Structural-Absence and Conditional-Abundance Testing}
 \usage{
 sacat(
   counts,

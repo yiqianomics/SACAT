@@ -1,6 +1,6 @@
-# SACAT: Depth-Aware Structural-Absence and Relative-Abundance Analysis
+# Structural-Absence and Conditional-Abundance Testing
 
-#' SACAT: Depth-Aware Structural-Absence and Relative-Abundance Analysis
+#' Structural-Absence and Conditional-Abundance Testing
 #'
 #' SACAT provides depth-aware inference for structural-absence and
 #' relative-abundance associations in microbiome count data. It reports the
@@ -3824,7 +3824,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
     result
 }
 
-#' Depth-Aware Structural-Absence and Relative-Abundance Analysis
+#' Structural-Absence and Conditional-Abundance Testing
 #'
 #' Fits SACAT to microbiome count data and tests a binary group contrast in
 #' structural-absence probability, relative abundance conditional on presence,

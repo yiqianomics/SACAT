@@ -4,7 +4,7 @@
 \name{SACAT-package}
 \alias{SACAT}
 \alias{SACAT-package}
-\title{SACAT: Depth-Aware Structural-Absence and Relative-Abundance Analysis}
+\title{Structural-Absence and Conditional-Abundance Testing}
 \description{
 SACAT provides depth-aware inference for structural-absence and
 relative-abundance associations in microbiome count data. It reports the

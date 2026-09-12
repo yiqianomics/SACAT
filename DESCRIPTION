@@ -1,6 +1,6 @@
 Package: SACAT
 Type: Package
-Title: Depth-Aware Structural-Absence and Relative-Abundance Analysis
+Title: Structural-Absence and Conditional-Abundance Testing
 Version: 0.6.0
 Authors@R:
     c(

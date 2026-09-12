@@ -2,7 +2,7 @@
 
 [![R-CMD-check](https://github.com/yiqianomics/SACAT/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yiqianomics/SACAT/actions/workflows/R-CMD-check.yaml)
 
-**SACAT** provides depth-aware taxon-level inference for microbiome count data. It separates a group association into two complementary components:
+**Structural-Absence and Conditional-Abundance Testing** provides depth-aware taxon-level inference for microbiome count data. It separates a group association into two complementary components:
 
 - a **structural-absence component**, which tests whether the probability that a taxon is absent differs between groups; and
 - a **relative-abundance component**, which tests the covariate-adjusted group difference in mean log relative abundance conditional on taxon presence.
