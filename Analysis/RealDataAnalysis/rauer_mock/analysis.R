@@ -41,12 +41,12 @@ if (!requested_design %in% c("all", "nonnull", "null")) {
     stop("--design must be all, nonnull, or null.", call. = FALSE)
 }
 
-workers <- suppressWarnings(as.integer(Sys.getenv("DASRA_WORKERS", "1")))
+workers <- suppressWarnings(as.integer(Sys.getenv("SACAT_WORKERS", "1")))
 if (length(workers) != 1L || is.na(workers) || workers < 1L) {
-    stop("DASRA_WORKERS must be a positive integer.", call. = FALSE)
+    stop("SACAT_WORKERS must be a positive integer.", call. = FALSE)
 }
 
-required_packages <- c("DASRA", "maaslin3", "ZINQ")
+required_packages <- c("SACAT", "maaslin3", "ZINQ")
 missing_packages <- required_packages[!vapply(
     required_packages, requireNamespace, logical(1), quietly = TRUE
 )]
@@ -62,7 +62,7 @@ if (length(missing_packages)) {
 
 dataset_directory <- locate_dataset_directory()
 input_file <- file.path(
-    dataset_directory, "processed", "rauer_mock_dasra_input.rds"
+    dataset_directory, "processed", "rauer_mock_sacat_input.rds"
 )
 if (!file.exists(input_file)) {
     stop("Run prepare_data.R before the benchmark analysis.", call. = FALSE)
@@ -460,7 +460,7 @@ run_one_depth <- function(design, allocation_id, allocation,
         0
     }
 
-    dasra_fit <- DASRA::dasra(
+    sacat_fit <- SACAT::sacat(
         counts = counts[, taxa, drop = FALSE],
         metadata = model_metadata,
         formula = ~ group + extraction_kit + lysis + extraction_buffer +
@@ -475,33 +475,33 @@ run_one_depth <- function(design, allocation_id, allocation,
         workers = 1L,
         verbose = FALSE
     )
-    dasra_rows <- rbind(
+    sacat_rows <- rbind(
         data.frame(
             taxon = taxa,
-            method = "DASRA structural absence",
+            method = "SACAT structural absence",
             component = "structural absence",
-            available = dasra_fit$diagnostics$formed_structural_absence,
+            available = sacat_fit$diagnostics$formed_structural_absence,
             reason = ifelse(
-                dasra_fit$diagnostics$formed_structural_absence,
+                sacat_fit$diagnostics$formed_structural_absence,
                 "available",
-                dasra_fit$diagnostics$reason_structural_absence
+                sacat_fit$diagnostics$reason_structural_absence
             ),
-            p_value = dasra_fit$results$p_structural_absence,
-            estimate = dasra_fit$results$z_structural_absence,
+            p_value = sacat_fit$results$p_structural_absence,
+            estimate = sacat_fit$results$z_structural_absence,
             stringsAsFactors = FALSE
         ),
         data.frame(
             taxon = taxa,
-            method = "DASRA present-conditional abundance",
+            method = "SACAT present-conditional abundance",
             component = "abundance",
-            available = dasra_fit$diagnostics$formed_relative_abundance,
+            available = sacat_fit$diagnostics$formed_relative_abundance,
             reason = ifelse(
-                dasra_fit$diagnostics$formed_relative_abundance,
+                sacat_fit$diagnostics$formed_relative_abundance,
                 "available",
-                dasra_fit$diagnostics$reason_relative_abundance
+                sacat_fit$diagnostics$reason_relative_abundance
             ),
-            p_value = dasra_fit$results$p_relative_abundance,
-            estimate = dasra_fit$results$estimate_relative_abundance,
+            p_value = sacat_fit$results$p_relative_abundance,
+            estimate = sacat_fit$results$estimate_relative_abundance,
             stringsAsFactors = FALSE
         )
     )
@@ -541,7 +541,7 @@ run_one_depth <- function(design, allocation_id, allocation,
         }
     )
     zinq_rows <- run_zinq(counts, model_metadata, seed + 10000L)
-    rows <- rbind(dasra_rows, maaslin_rows, zinq_rows)
+    rows <- rbind(sacat_rows, maaslin_rows, zinq_rows)
     rows$q_value <- ave(
         seq_len(nrow(rows)),
         rows$method,
@@ -569,8 +569,8 @@ run_one_depth <- function(design, allocation_id, allocation,
 }
 
 method_order <- c(
-    "DASRA structural absence",
-    "DASRA present-conditional abundance",
+    "SACAT structural absence",
+    "SACAT present-conditional abundance",
     "MaAsLin3 prevalence",
     "MaAsLin3 abundance",
     "ZINQ prevalence",

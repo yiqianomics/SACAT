@@ -39,5 +39,5 @@ Run from the repository root:
 Rscript Analysis/RealDataAnalysis/cdi_schubert/prepare_data.R
 ```
 
-The DASRA input and cohort, count, taxonomy, and preprocessing summaries are
+The SACAT input and cohort, count, taxonomy, and preprocessing summaries are
 written to `processed/`.

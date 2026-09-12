@@ -125,7 +125,7 @@ void validate_solver_controls(const int iterations,
 }  // namespace
 
 // [[Rcpp::export(rng = false)]]
-Rcpp::NumericVector dasra_gh_log_weights_cpp(
+Rcpp::NumericVector sacat_gh_log_weights_cpp(
         const Rcpp::NumericVector& node,
         const int order) {
     if (order < 3 || node.size() != order) {
@@ -209,7 +209,7 @@ Rcpp::NumericVector dasra_gh_log_weights_cpp(
 }
 
 // [[Rcpp::export(rng = false)]]
-Rcpp::NumericVector dasra_count_log_hy_adaptive_cpp(
+Rcpp::NumericVector sacat_count_log_hy_adaptive_cpp(
         const Rcpp::NumericVector& y,
         const Rcpp::NumericVector& N,
         const Rcpp::NumericVector& eta,
@@ -287,7 +287,7 @@ Rcpp::NumericVector dasra_count_log_hy_adaptive_cpp(
 }
 
 // [[Rcpp::export(rng = false)]]
-Rcpp::List dasra_count_moments_adaptive_cpp(
+Rcpp::List sacat_count_moments_adaptive_cpp(
         const Rcpp::NumericVector& y,
         const Rcpp::NumericVector& N,
         const Rcpp::NumericVector& eta,
@@ -396,7 +396,7 @@ Rcpp::List dasra_count_moments_adaptive_cpp(
 }
 
 // [[Rcpp::export(rng = false)]]
-Rcpp::NumericVector dasra_mean_log_relative_cpp(
+Rcpp::NumericVector sacat_mean_log_relative_cpp(
         const Rcpp::NumericVector& location,
         const double sigma,
         const Rcpp::NumericVector& z,

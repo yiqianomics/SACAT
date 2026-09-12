@@ -68,7 +68,7 @@ Rscript Analysis/RealDataAnalysis/rauer_mock/analysis.R
 Rscript Analysis/RealDataAnalysis/rauer_mock/make_figures.R
 ```
 
-Set `DASRA_WORKERS` to use more than one local process during preparation or
+Set `SACAT_WORKERS` to use more than one local process during preparation or
 analysis. The analysis can also be resumed one design at a time with
 `--design=nonnull` or `--design=null`.
 

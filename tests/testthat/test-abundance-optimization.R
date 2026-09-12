@@ -22,12 +22,12 @@
 
 .fit_mark_fixture <- function(all_positive = FALSE, with_covariate = TRUE) {
     input <- .make_mark_fit_fixture(all_positive, with_covariate)
-    control <- DASRA:::.dasra_abundance_control()
-    gh_fit <- DASRA:::.dasra_make_abundance_gh_rule(
+    control <- SACAT:::.sacat_abundance_control()
+    gh_fit <- SACAT:::.sacat_make_abundance_gh_rule(
         control$quadrature_Q
     )
     gh_effect <- gh_fit
-    fit <- DASRA:::.dasra_abundance_fit_taxon(
+    fit <- SACAT:::.sacat_abundance_fit_taxon(
         y = input$y,
         N = input$N,
         group = input$group,
@@ -45,10 +45,10 @@ test_that("the conditional-mark likelihood cancels structural presence", {
     group <- rep(0:1, each = 3L)
     X_eta <- cbind(Intercept = 1, Group = group)
     beta <- c(-4.5, 0.25, log(0.7))
-    gh <- DASRA:::make_count_gh_rule(31L)
+    gh <- SACAT:::make_count_gh_rule(31L)
 
-    component <- DASRA:::zt_beta_components(beta, y, N, X_eta, gh)
-    conditional <- DASRA:::zt_beta_loglik_by_sample_inference(
+    component <- SACAT:::zt_beta_components(beta, y, N, X_eta, gh)
+    conditional <- SACAT:::zt_beta_loglik_by_sample_inference(
         beta, y, N, X_eta, gh
     )
     positive <- y > 0
@@ -117,7 +117,7 @@ test_that("the mark influence matches a case-weight perturbation", {
     index <- which(input$y > 0)[17L]
     step <- fit$solver_diagnostics$derivative_step
     X_eta <- fit$solver_diagnostics$X_eta
-    X_b <- DASRA:::.dasra_abundance_designs(
+    X_b <- SACAT:::.sacat_abundance_designs(
         input$group, input$z
     )$X_b
 
@@ -127,11 +127,11 @@ test_that("the mark influence matches a case-weight perturbation", {
         beta <- fit$theta
         for (iteration in seq_len(8L)) {
             weighted_loglik <- function(value) {
-                weight * DASRA:::zt_beta_loglik_by_sample_inference(
+                weight * SACAT:::zt_beta_loglik_by_sample_inference(
                     value, input$y, input$N, X_eta, result$gh_fit
                 )
             }
-            linearization <- DASRA:::zt_beta_linearization(
+            linearization <- SACAT:::zt_beta_linearization(
                 beta, weighted_loglik, step$step, step$scheme
             )
             score_sum <- colSums(linearization$score)
@@ -140,7 +140,7 @@ test_that("the mark influence matches a case-weight perturbation", {
                 linearization$information, score_sum
             ))
         }
-        DASRA:::.dasra_abundance_mark_effect(
+        SACAT:::.sacat_abundance_mark_effect(
             beta, X_b, result$gh_effect
         )
     }
@@ -173,10 +173,10 @@ test_that("all-positive taxa use the same conditional-mark estimator", {
 })
 
 test_that("mark formation reports the mathematical support failures", {
-    control <- DASRA:::.dasra_abundance_control()
-    gh <- DASRA:::make_count_gh_rule(control$quadrature_Q)
+    control <- SACAT:::.sacat_abundance_control()
+    gh <- SACAT:::make_count_gh_rule(control$quadrature_Q)
     run_case <- function(y, group, z = NULL, minimum = 3L) {
-        DASRA:::.dasra_abundance_fit_taxon(
+        SACAT:::.sacat_abundance_fit_taxon(
             y = y,
             N = rep(1000L, length(y)),
             group = group,
@@ -213,27 +213,27 @@ test_that("mark formation reports the mathematical support failures", {
 
 test_that("structural start modes have explicit public meanings", {
     expect_identical(
-        DASRA:::.dasra_resolve_structural_conditional_present_starts(
+        SACAT:::.sacat_resolve_structural_conditional_present_starts(
             "adaptive"
         ),
         list(mode = "adaptive", count = 1L)
     )
     expect_identical(
-        DASRA:::.dasra_resolve_structural_conditional_present_starts(
+        SACAT:::.sacat_resolve_structural_conditional_present_starts(
             "full"
         ),
         list(mode = "full", count = 5L)
     )
     expect_identical(
-        DASRA:::.dasra_resolve_structural_conditional_present_starts(1L),
+        SACAT:::.sacat_resolve_structural_conditional_present_starts(1L),
         list(mode = "adaptive", count = 1L)
     )
     expect_identical(
-        DASRA:::.dasra_resolve_structural_conditional_present_starts(5L),
+        SACAT:::.sacat_resolve_structural_conditional_present_starts(5L),
         list(mode = "full", count = 5L)
     )
     expect_error(
-        DASRA:::.dasra_resolve_structural_conditional_present_starts(
+        SACAT:::.sacat_resolve_structural_conditional_present_starts(
             "primary"
         ),
         "adaptive.*full"
@@ -242,11 +242,11 @@ test_that("structural start modes have explicit public meanings", {
 
 test_that("abundance quadrature preserves its default numerical rule", {
     expect_identical(
-        DASRA:::.dasra_make_abundance_gh_rule(41L),
-        DASRA:::make_count_gh_rule(41L)
+        SACAT:::.sacat_make_abundance_gh_rule(41L),
+        SACAT:::make_count_gh_rule(41L)
     )
 
-    stable <- DASRA:::.dasra_make_abundance_gh_rule(81L)
+    stable <- SACAT:::.sacat_make_abundance_gh_rule(81L)
     expect_identical(stable$Q, 81L)
     expect_true(all(is.finite(stable$node)))
     expect_true(all(is.finite(stable$log_raw_weight)))
@@ -256,7 +256,7 @@ test_that("abundance quadrature preserves its default numerical rule", {
     expect_identical(
         vapply(
             c(41L, 1001L, 1002L, 2001L),
-            DASRA:::.dasra_higher_order_quadrature_points,
+            SACAT:::.sacat_higher_order_quadrature_points,
             integer(1)
         ),
         c(2001L, 2001L, 2003L, 4001L)
@@ -270,10 +270,10 @@ test_that("abundance quadrature sensitivity is a fixed-fit diagnostic", {
     X_eta <- cbind(Intercept = 1, Group = group)
     X_b <- matrix(1, nrow = length(y), ncol = 1L)
     beta <- c(-8, 0.25, log(8))
-    gh <- DASRA:::.dasra_make_abundance_gh_rule(41L)
-    effect <- DASRA:::.dasra_abundance_mark_effect(beta, X_b, gh)
+    gh <- SACAT:::.sacat_make_abundance_gh_rule(41L)
+    effect <- SACAT:::.sacat_abundance_mark_effect(beta, X_b, gh)
 
-    diagnostic <- DASRA:::.dasra_abundance_quadrature_diagnostic(
+    diagnostic <- SACAT:::.sacat_abundance_quadrature_diagnostic(
         beta, y, N, X_eta, X_b, gh, effect,
         check_quadrature = TRUE
     )
@@ -288,12 +288,12 @@ test_that("abundance quadrature sensitivity is a fixed-fit diagnostic", {
     expect_gte(diagnostic$quadrature_effect_abs, 0)
 
     failed <- with_mocked_bindings(
-        .dasra_abundance_quadrature_diagnostic(
+        .sacat_abundance_quadrature_diagnostic(
             beta, y, N, X_eta, X_b, gh, effect,
             check_quadrature = TRUE
         ),
         make_structural_gh_rule = function(...) stop("controlled failure"),
-        .package = "DASRA"
+        .package = "SACAT"
     )
     expect_true(failed$quadrature_checked)
     expect_false(failed$quadrature_check_succeeded)
@@ -305,11 +305,11 @@ test_that("abundance quadrature sensitivity is a fixed-fit diagnostic", {
     boundary_group <- 0:1
     boundary_X_eta <- cbind(Intercept = 1, Group = boundary_group)
     boundary_X_b <- matrix(1, nrow = 2L, ncol = 1L)
-    boundary_effect <- DASRA:::.dasra_abundance_mark_effect(
+    boundary_effect <- SACAT:::.sacat_abundance_mark_effect(
         boundary_beta, boundary_X_b, gh
     )
     boundary_diagnostic <-
-        DASRA:::.dasra_abundance_quadrature_diagnostic(
+        SACAT:::.sacat_abundance_quadrature_diagnostic(
             boundary_beta, boundary_y, boundary_N,
             boundary_X_eta, boundary_X_b, gh, boundary_effect,
             check_quadrature = TRUE

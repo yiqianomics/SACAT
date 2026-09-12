@@ -1,13 +1,13 @@
-# DASRA
+# SACAT
 
-[![R-CMD-check](https://github.com/yiqianomics/DASRA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yiqianomics/DASRA/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/yiqianomics/SACAT/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yiqianomics/SACAT/actions/workflows/R-CMD-check.yaml)
 
-**DASRA** provides depth-aware taxon-level inference for microbiome count data. It separates a group association into two complementary components:
+**SACAT** provides depth-aware taxon-level inference for microbiome count data. It separates a group association into two complementary components:
 
 - a **structural-absence component**, which tests whether the probability that a taxon is absent differs between groups; and
 - a **relative-abundance component**, which tests the covariate-adjusted group difference in mean log relative abundance conditional on taxon presence.
 
-DASRA models microbial counts together with their original sequencing depths,
+SACAT models microbial counts together with their original sequencing depths,
 allowing zeros observed at different depths to provide different evidence about
 structural absence. For samples in which a taxon is present, the abundance
 component estimates the adjusted group difference in mean log relative
@@ -17,11 +17,11 @@ contrast.
 
 ## Installation
 
-Install the runtime dependencies, then install DASRA from GitHub:
+Install the runtime dependencies, then install SACAT from GitHub:
 
 ```r
 install.packages(c("Rcpp", "statmod", "remotes"))
-remotes::install_github("yiqianomics/DASRA")
+remotes::install_github("yiqianomics/SACAT")
 ```
 
 From a local source checkout, run `R CMD INSTALL .` at the package root.
@@ -105,7 +105,7 @@ metadata <- data.frame(
     row.names = samples
 )
 
-fit <- dasra(
+fit <- sacat(
     counts = counts,
     metadata = metadata,
     formula = ~ group,
@@ -184,8 +184,8 @@ The same call can save a vector or raster figure. Default PDF,
 PNG, and SVG dimensions use a 180-mm manuscript width and an adaptive height:
 
 ```r
-plot(fit, file = "dasra-profile.pdf")
-plot(fit, file = "dasra-profile.png", width = 7.2, height = 6.5, dpi = 600)
+plot(fit, file = "sacat-profile.pdf")
+plot(fit, file = "sacat-profile.png", width = 7.2, height = 6.5, dpi = 600)
 ```
 
 SVG output requires an R build with Cairo support.
@@ -222,5 +222,5 @@ users should assess null calibration before interpreting its discoveries.
    estimate, target-excluded background estimate, and corrected estimate, and
    records the reference size and model diagnostics.
 
-DASRA reports the reference-centered test as its abundance result. Detailed
+SACAT reports the reference-centered test as its abundance result. Detailed
 output also records the raw taxon estimate and the target-excluded background.

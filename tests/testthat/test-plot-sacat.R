@@ -61,14 +61,14 @@
                 contrast = c(reference = "healthy", comparison = "disease"),
                 p_adjust_method = "BH"
             ),
-            call = quote(dasra()),
+            call = quote(sacat()),
             plot_data = list(
                 version = 1L,
                 contrast = c(reference = "healthy", comparison = "disease"),
                 profiles = profiles
             )
         ),
-        class = "dasra"
+        class = "sacat"
     )
 }
 
@@ -113,7 +113,7 @@
 
 test_that("plot selection and significance annotations are deterministic", {
     fit <- .make_plot_fixture()
-    spec <- DASRA:::.dasra_plot_build_spec(
+    spec <- SACAT:::.sacat_plot_build_spec(
         fit, NULL, "significant", 24L, 0.05, "adaptive",
         .plot_test_palette, c("#6090c1", "#f28e4b")
     )
@@ -137,7 +137,7 @@ test_that("plot selection and significance annotations are deterministic", {
         )
     )
 
-    explicit <- DASRA:::.dasra_plot_build_spec(
+    explicit <- SACAT:::.sacat_plot_build_spec(
         fit, rev(fit$results$taxon[c(2L, 5L)]), "significant",
         1L, 0.001, "adaptive", .plot_test_palette,
         c("#6090c1", "#f28e4b")
@@ -147,7 +147,7 @@ test_that("plot selection and significance annotations are deterministic", {
         rev(fit$results$taxon[c(2L, 5L)])
     )
 
-    top <- DASRA:::.dasra_plot_build_spec(
+    top <- SACAT:::.sacat_plot_build_spec(
         fit, NULL, "top", 2L, 0.05, "adaptive",
         .plot_test_palette, c("#6090c1", "#f28e4b")
     )
@@ -156,11 +156,11 @@ test_that("plot selection and significance annotations are deterministic", {
 
 test_that("component BH gates use the complete fitted families", {
     fit <- .make_plot_fixture()
-    full <- DASRA:::.dasra_plot_build_spec(
+    full <- SACAT:::.sacat_plot_build_spec(
         fit, NULL, "all", 24L, 0.05, "adaptive",
         .plot_test_palette, c("#6090c1", "#f28e4b")
     )
-    subset <- DASRA:::.dasra_plot_build_spec(
+    subset <- SACAT:::.sacat_plot_build_spec(
         fit, fit$results$taxon[[1L]], "top", 1L, 0.05,
         "adaptive", .plot_test_palette,
         c("#6090c1", "#f28e4b")
@@ -181,7 +181,7 @@ test_that("component BH gates use the complete fitted families", {
     no_discoveries$results$p_relative_abundance[] <- 1
     no_discoveries$results$p_adj_structural_absence[] <- 1
     no_discoveries$results$p_adj_relative_abundance[] <- 1
-    no_guide <- DASRA:::.dasra_plot_build_spec(
+    no_guide <- SACAT:::.sacat_plot_build_spec(
         no_discoveries, NULL, "top", 2L, 0.05, "adaptive",
         .plot_test_palette, c("#6090c1", "#f28e4b")
     )
@@ -194,13 +194,13 @@ test_that("component BH gates use the complete fitted families", {
     expect_true(is.na(no_guide$component_guides$structural$z))
     expect_true(is.na(no_guide$component_guides$abundance$z))
 
-    disabled <- DASRA:::.dasra_plot_build_spec(
+    disabled <- SACAT:::.sacat_plot_build_spec(
         fit, NULL, "top", 2L, 0.05, "adaptive",
         .plot_test_palette, c("#6090c1", "#f28e4b"), FALSE
     )
     expect_false(disabled$component_guides$enabled)
     expect_error(
-        DASRA:::.dasra_plot_build_spec(
+        SACAT:::.sacat_plot_build_spec(
             fit, NULL, "top", 2L, 0.05, "adaptive",
             .plot_test_palette, c("#6090c1", "#f28e4b"), NA
         ),
@@ -215,7 +215,7 @@ test_that("component BH gates use the complete fitted families", {
     holm$results$p_adj_relative_abundance <- stats::p.adjust(
         holm$results$p_relative_abundance, method = "holm"
     )
-    holm_spec <- DASRA:::.dasra_plot_build_spec(
+    holm_spec <- SACAT:::.sacat_plot_build_spec(
         holm, NULL, "top", 2L, 0.05, "adaptive",
         .plot_test_palette, c("#6090c1", "#f28e4b")
     )
@@ -224,7 +224,7 @@ test_that("component BH gates use the complete fitted families", {
     malformed <- fit
     malformed$results$p_structural_absence[[1L]] <- 0.2
     expect_warning(
-        malformed_spec <- DASRA:::.dasra_plot_build_spec(
+        malformed_spec <- SACAT:::.sacat_plot_build_spec(
             malformed, NULL, "top", 2L, 0.05, "adaptive",
             .plot_test_palette, c("#6090c1", "#f28e4b")
         ),
@@ -239,7 +239,7 @@ test_that("component BH gates use the complete fitted families", {
     malformed_retained <- fit
     malformed_retained$diagnostics$retained[[1L]] <- NA
     expect_error(
-        DASRA:::.dasra_plot_build_spec(
+        SACAT:::.sacat_plot_build_spec(
             malformed_retained, NULL, "top", 2L, 0.05, "adaptive",
             .plot_test_palette, c("#6090c1", "#f28e4b")
         ),
@@ -253,7 +253,7 @@ test_that("component BH gates tolerate floating-point boundary rounding", {
     z <- stats::qnorm(raw_p / 2, lower.tail = FALSE)
 
     guide <- expect_no_error(
-        DASRA:::.dasra_plot_component_bh_guide(
+        SACAT:::.sacat_plot_component_bh_guide(
             rep(TRUE, 6L), raw_p, adjusted_p, z, 0.05
         )
     )
@@ -274,7 +274,7 @@ test_that("unverifiable component gates are omitted with one warning", {
     fit$results$z_structural_absence[[1L]] <- Inf
 
     expect_warning(
-        spec <- DASRA:::.dasra_plot_build_spec(
+        spec <- SACAT:::.sacat_plot_build_spec(
             fit, NULL, "top", 2L,
             .Machine$double.xmin * .Machine$double.eps,
             "adaptive", .plot_test_palette,
@@ -286,7 +286,7 @@ test_that("unverifiable component gates are omitted with one warning", {
     expect_true(is.na(spec$component_guides$abundance$z))
 
     expect_no_warning(
-        disabled <- DASRA:::.dasra_plot_build_spec(
+        disabled <- SACAT:::.sacat_plot_build_spec(
             fit, NULL, "top", 2L, 0.05, "adaptive",
             .plot_test_palette, c("#6090c1", "#f28e4b"), FALSE
         )
@@ -296,7 +296,7 @@ test_that("unverifiable component gates are omitted with one warning", {
 
 test_that("adaptive colors use one shared displayed-component scale", {
     fit <- .make_plot_fixture()
-    spec <- DASRA:::.dasra_plot_build_spec(
+    spec <- SACAT:::.sacat_plot_build_spec(
         fit, fit$results$taxon[[1L]], "significant", 24L, 0.05,
         "adaptive", .plot_test_palette,
         c("#6090c1", "#f28e4b")
@@ -305,14 +305,14 @@ test_that("adaptive colors use one shared displayed-component scale", {
         unname(spec$color_limits), c(1e-6, 1)
     )
 
-    manual <- DASRA:::.dasra_plot_build_spec(
+    manual <- SACAT:::.sacat_plot_build_spec(
         fit, fit$results$taxon[[1L]], "significant", 24L, 0.05,
         c(1e-8, 0.5), .plot_test_palette,
         c("#6090c1", "#f28e4b")
     )
     expect_identical(unname(manual$color_limits), c(1e-8, 0.5))
     expect_error(
-        DASRA:::.dasra_plot_build_spec(
+        SACAT:::.sacat_plot_build_spec(
             fit, NULL, "top", 2L, 0.05, c(1, 1e-4),
             .plot_test_palette, c("#6090c1", "#f28e4b")
         ),
@@ -328,11 +328,11 @@ test_that("adaptive colors use one shared displayed-component scale", {
         p_abundance = all_one$results$p_adj_relative_abundance,
         z_abundance = all_one$results$z_relative_abundance
     )
-    one_limits <- DASRA:::.dasra_plot_color_limits(
+    one_limits <- SACAT:::.sacat_plot_color_limits(
         one_data, "adaptive"
     )
     expect_identical(unname(one_limits), c(0.1, 1))
-    one_colors <- DASRA:::.dasra_plot_palette_function(
+    one_colors <- SACAT:::.sacat_plot_palette_function(
         .plot_test_palette, one_limits
     )(rep(1, nrow(all_one$results)))
     expect_true(length(unique(one_colors)) == 1L)
@@ -340,14 +340,14 @@ test_that("adaptive colors use one shared displayed-component scale", {
     subnormal <- one_data[1L, , drop = FALSE]
     subnormal$p_structural <- 5e-324
     subnormal$p_abundance <- 5e-324
-    tiny_limits <- DASRA:::.dasra_plot_color_limits(
+    tiny_limits <- SACAT:::.sacat_plot_color_limits(
         subnormal, "adaptive"
     )
     expect_identical(tiny_limits[["lower"]], .Machine$double.xmin)
 })
 
 test_that("default evidence colors are sequential and distinct from groups", {
-    method <- getS3method("plot", "dasra")
+    method <- getS3method("plot", "sacat")
     evidence <- eval(formals(method)$evidence_palette)
     groups <- eval(formals(method)$group_colors)
     lightness <- grDevices::convertColor(
@@ -360,14 +360,14 @@ test_that("default evidence colors are sequential and distinct from groups", {
 })
 
 test_that("abundance log-axis ticks are regular and carry percent units", {
-    scale <- DASRA:::.dasra_plot_abundance_scale(10 ^ c(-3.8, 0.8))
+    scale <- SACAT:::.sacat_plot_abundance_scale(10 ^ c(-3.8, 0.8))
     expect_identical(scale$limits, c(-4, 1))
     expect_identical(scale$ticks, c(-4, -2, 0))
     expect_true(length(unique(diff(scale$ticks))) == 1L)
     expect_lte(length(scale$ticks), 4L)
     expect_true(all(grepl("%", scale$labels, fixed = TRUE)))
 
-    same_decade <- DASRA:::.dasra_plot_abundance_scale(c(0.12, 0.18))
+    same_decade <- SACAT:::.sacat_plot_abundance_scale(c(0.12, 0.18))
     expect_identical(same_decade$limits, c(-1, 0))
     expect_identical(same_decade$ticks, c(-1, 0))
 })
@@ -414,7 +414,7 @@ test_that("display group labels do not change the fitted contrast", {
     )
 
     legacy_path <- tempfile(fileext = ".pdf")
-    method <- getS3method("plot", "dasra")
+    method <- getS3method("plot", "sacat")
     method(
         fit, NULL, "top", 2L, 0.05, "adaptive",
         eval(formals(method)$evidence_palette),
@@ -473,8 +473,8 @@ test_that("plot-summary preparation leaves fitted inference unchanged", {
         workers = 1L
     )
 
-    plain <- do.call(dasra, c(fit_args, list(store_plot_data = FALSE)))
-    prepared <- do.call(dasra, c(fit_args, list(store_plot_data = TRUE)))
+    plain <- do.call(sacat, c(fit_args, list(store_plot_data = FALSE)))
+    prepared <- do.call(sacat, c(fit_args, list(store_plot_data = TRUE)))
 
     expect_identical(prepared$results, plain$results)
     expect_identical(prepared$diagnostics, plain$diagnostics)
@@ -519,18 +519,18 @@ test_that("plot-summary preparation leaves fitted inference unchanged", {
     compact_args <- fit_args
     compact_args$full_output <- FALSE
     compact_plain <- do.call(
-        dasra, c(compact_args, list(store_plot_data = FALSE))
+        sacat, c(compact_args, list(store_plot_data = FALSE))
     )
     quadrature_calls <- 0L
     compact_prepared <- with_mocked_bindings(
-        do.call(dasra, c(
+        do.call(sacat, c(
             compact_args, list(store_plot_data = TRUE)
         )),
-        .dasra_higher_order_quadrature_points = function(...) {
+        .sacat_higher_order_quadrature_points = function(...) {
             quadrature_calls <<- quadrature_calls + 1L
             stop("unexpected high-order quadrature check")
         },
-        .package = "DASRA"
+        .package = "SACAT"
     )
     expect_identical(quadrature_calls, 0L)
     expect_identical(compact_prepared$results, compact_plain$results)
@@ -578,7 +578,7 @@ test_that("profile output works across supported graphics devices", {
 })
 
 test_that("two PSOCK workers preserve inference and plotting summaries", {
-    package_path <- find.package("DASRA")
+    package_path <- find.package("SACAT")
     skip_if_not(
         file.exists(file.path(package_path, "Meta", "package.rds")),
         "PSOCK regression test requires an installed package"
@@ -625,11 +625,11 @@ test_that("two PSOCK workers preserve inference and plotting summaries", {
     set.seed(4802)
     rng_before <- .Random.seed
     serial <- suppressWarnings(do.call(
-        dasra, c(fit_args, list(workers = 1L))
+        sacat, c(fit_args, list(workers = 1L))
     ))
     expect_identical(.Random.seed, rng_before)
     parallel_fit <- suppressWarnings(do.call(
-        dasra, c(fit_args, list(workers = 2L))
+        sacat, c(fit_args, list(workers = 2L))
     ))
     expect_identical(.Random.seed, rng_before)
 

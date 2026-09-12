@@ -145,7 +145,7 @@ analysis_input <- list(
 saveRDS(
     analysis_input,
     file.path(output_directory,
-              "ravel_vaginal_ethnicity_dasra_input.rds"),
+              "ravel_vaginal_ethnicity_sacat_input.rds"),
     compress = "xz"
 )
 write_count_csv(

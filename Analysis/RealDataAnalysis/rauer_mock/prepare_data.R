@@ -36,9 +36,9 @@ if (length(missing_packages)) {
     )
 }
 
-workers <- suppressWarnings(as.integer(Sys.getenv("DASRA_WORKERS", "1")))
+workers <- suppressWarnings(as.integer(Sys.getenv("SACAT_WORKERS", "1")))
 if (length(workers) != 1L || is.na(workers) || workers < 1L) {
-    stop("DASRA_WORKERS must be a positive integer.", call. = FALSE)
+    stop("SACAT_WORKERS must be a positive integer.", call. = FALSE)
 }
 
 dataset_directory <- locate_dataset_directory()
@@ -371,7 +371,7 @@ prepared <- list(
 )
 saveRDS(
     prepared,
-    file.path(processed_directory, "rauer_mock_dasra_input.rds"),
+    file.path(processed_directory, "rauer_mock_sacat_input.rds"),
     compress = "xz"
 )
 

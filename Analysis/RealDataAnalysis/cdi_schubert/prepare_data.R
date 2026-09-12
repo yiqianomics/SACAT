@@ -1,4 +1,4 @@
-# Prepare the Schubert Clostridioides difficile cohort for DASRA
+# Prepare the Schubert Clostridioides difficile cohort for SACAT
 #
 # Source publication:
 # Schubert AM et al. mBio (2014).
@@ -42,7 +42,7 @@ locate_dataset_directory <- function() {
     if (length(matches) != 1L) {
         stop(
             "Could not identify the cdi_schubert data directory. Run this ",
-            "script with Rscript or from the DASRA repository root.",
+            "script with Rscript or from the SACAT repository root.",
             call. = FALSE
         )
     }
@@ -631,9 +631,9 @@ preprocessing <- list(
     planned_adjustment_variables = c(
         "age_z", "sex", "antibiotics_3mo"
     ),
-    dasra_input_orientation = "taxa by samples",
-    dasra_group_column = "group",
-    dasra_library_size_column = "library_size",
+    sacat_input_orientation = "taxa by samples",
+    sacat_group_column = "group",
+    sacat_library_size_column = "library_size",
     group_counts_after_depth_filter = as.list(depth_group_counts),
     complete_case_exclusions = as.list(stats::setNames(
         missing_covariates[missing_adjustment_samples],
@@ -672,7 +672,7 @@ summary_table <- data.frame(
         "CDI samples after complete-case restriction",
         "complete-case exclusion",
         "retained upstream features", "retained taxon bins",
-        "DASRA count orientation", "DASRA library-size definition"
+        "SACAT count orientation", "SACAT library-size definition"
     ),
     value = c(
         "Schubert Clostridioides difficile 16S stool cohort",
@@ -713,7 +713,7 @@ summary_table <- data.frame(
         paste0("DA10113: missing sex"),
         as.character(nrow(filtered_feature_counts)),
         as.character(nrow(taxon_counts)),
-        preprocessing$dasra_input_orientation,
+        preprocessing$sacat_input_orientation,
         "sum of the full MicrobiomeHD feature table before taxon filtering"
     ),
     stringsAsFactors = FALSE
@@ -728,7 +728,7 @@ analysis_input <- list(
 
 saveRDS(
     analysis_input,
-    file.path(output_directory, "cdi_schubert_dasra_input.rds"),
+    file.path(output_directory, "cdi_schubert_sacat_input.rds"),
     compress = "xz"
 )
 write_count_csv(

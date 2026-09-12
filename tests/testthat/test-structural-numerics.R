@@ -6,7 +6,7 @@ test_that("the default structural engine forms a regular result", {
     y <- as.integer(7 + ((index * 7L) %% 13L) + 3L * group)
     y[index %% 5L == 0L | index %% 11L == 0L] <- 0L
 
-    fit <- DASRA:::zt_count_structural_test(
+    fit <- SACAT:::zt_count_structural_test(
         y = y,
         N = depth,
         g = group,
@@ -57,7 +57,7 @@ test_that("the default structural engine forms a regular result", {
 test_that("structural inference uses one orthogonalized contribution for U and V", {
     run_candidate <- function(psi, target, adjustment) {
         with_mocked_bindings(
-            DASRA:::zt_structural_inference_candidate(
+            SACAT:::zt_structural_inference_candidate(
                 beta = 0, alpha = 0, y = 0, N = 1, g = 0,
                 X_rho = matrix(1), X_eta = matrix(1), gh = list(),
                 detection_component = list(),
@@ -85,7 +85,7 @@ test_that("structural inference uses one orthogonalized contribution for U and V
                     equilibrated_condition = 1
                 )
             },
-            .package = "DASRA"
+            .package = "SACAT"
         )
     }
 
@@ -133,7 +133,7 @@ test_that("structural inference uses one orthogonalized contribution for U and V
                lower.tail = FALSE)
     )))
 
-    summary <- DASRA:::zt_structural_candidate_summary(
+    summary <- SACAT:::zt_structural_candidate_summary(
         list(approximate)
     )
     expect_equal(summary$U_raw, approximate$U_raw)
@@ -148,26 +148,26 @@ test_that("the exact all-zero structural competitor uses the same detection obje
     log_r <- log(c(0.15, 0.35, 0.65, 0.85))
     y <- c(0, 2, 0, 1)
     expected <- -sum(c(
-        DASRA:::zt_log1mexp(log_r[1]),
+        SACAT:::zt_log1mexp(log_r[1]),
         log_r[2],
-        DASRA:::zt_log1mexp(log_r[3]),
+        SACAT:::zt_log1mexp(log_r[3]),
         log_r[4]
     ))
-    zero_nll <- DASRA:::zt_structural_zero_limit_nll(log_r, y)
+    zero_nll <- SACAT:::zt_structural_zero_limit_nll(log_r, y)
     relative_tolerance <- sqrt(.Machine$double.eps)
     comparison_tolerance <- relative_tolerance * max(1, abs(zero_nll))
 
     expect_equal(zero_nll, expected, tolerance = 1e-15)
 
-    dominated <- DASRA:::zt_structural_zero_limit_comparison(
+    dominated <- SACAT:::zt_structural_zero_limit_comparison(
         zero_nll + 1e-3, log_r, y,
         relative_tolerance = relative_tolerance
     )
-    within_tolerance <- DASRA:::zt_structural_zero_limit_comparison(
+    within_tolerance <- SACAT:::zt_structural_zero_limit_comparison(
         zero_nll + comparison_tolerance / 2, log_r, y,
         relative_tolerance = relative_tolerance
     )
-    finite_better <- DASRA:::zt_structural_zero_limit_comparison(
+    finite_better <- SACAT:::zt_structural_zero_limit_comparison(
         zero_nll - 1e-3, log_r, y,
         relative_tolerance = relative_tolerance
     )
@@ -192,7 +192,7 @@ test_that("a finite structural fit dominated by the exact zero limit is unavaila
     adaptive_called <- FALSE
 
     result <- with_mocked_bindings(
-        DASRA:::zt_count_structural_test(
+        SACAT:::zt_count_structural_test(
             y = y, N = N, g = g, z = z, Q = 3L,
             min_positive_samples = 3L, keep_fit = TRUE
         ),
@@ -217,7 +217,7 @@ test_that("a finite structural fit dominated by the exact zero limit is unavaila
             adaptive_called <<- TRUE
             stop("adaptive inference must not be reached")
         },
-        .package = "DASRA"
+        .package = "SACAT"
     )
 
     expect_false(adaptive_called)
@@ -237,7 +237,7 @@ test_that("a finite structural fit dominated by the exact zero limit is unavaila
 })
 
 test_that("the Q=1001 structural quadrature rule preserves its invariants", {
-    gh <- DASRA:::make_structural_gh_rule(1001L)
+    gh <- SACAT:::make_structural_gh_rule(1001L)
     midpoint <- (gh$Q + 1L) / 2L
     largest_log_weight <- max(gh$log_weight)
     log_weight_sum <- largest_log_weight + log(sum(exp(

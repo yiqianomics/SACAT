@@ -1,17 +1,17 @@
 test_that("exact C0 helper classifies both sides and equality", {
     y <- c(1, 0)
 
-    negative <- DASRA:::zt_intercept_alpha_boundary(
+    negative <- SACAT:::zt_intercept_alpha_boundary(
         rep(log(1 / 3), length(y)), y
     )
-    equality <- DASRA:::zt_intercept_alpha_boundary(
+    equality <- SACAT:::zt_intercept_alpha_boundary(
         rep(log(1 / 2), length(y)), y
     )
 
     epsilon <- 1e-10
     odds <- 1 + epsilon
     tiny_positive_probability <- odds / (1 + odds)
-    tiny_positive <- DASRA:::zt_intercept_alpha_boundary(
+    tiny_positive <- SACAT:::zt_intercept_alpha_boundary(
         rep(log(tiny_positive_probability), length(y)), y
     )
 
@@ -31,7 +31,7 @@ test_that("exact C0 structural boundary returns all expected fields", {
 
     run_case <- function(probability) {
         with_mocked_bindings(
-            DASRA:::zt_count_structural_test(
+            SACAT:::zt_count_structural_test(
                 y = y, N = N, g = g, Q = 3L,
                 min_positive_samples = 3L, keep_fit = TRUE
             ),
@@ -47,7 +47,7 @@ test_that("exact C0 structural boundary returns all expected fields", {
             zt_beta_detection_components = function(...) {
                 list(log_r = rep(log(probability), length(y)))
             },
-            .package = "DASRA"
+            .package = "SACAT"
         )
     }
 
@@ -84,7 +84,7 @@ test_that("positive C0 proceeds to the finite structural fit", {
     finite_path_reached <- FALSE
 
     result <- with_mocked_bindings(
-        DASRA:::zt_count_structural_test(
+        SACAT:::zt_count_structural_test(
             y = y, N = N, g = g, Q = 3L,
             min_positive_samples = 3L
         ),
@@ -104,7 +104,7 @@ test_that("positive C0 proceeds to the finite structural fit", {
             finite_path_reached <<- TRUE
             list(ok = FALSE, reason = "finite_alpha_path_reached")
         },
-        .package = "DASRA"
+        .package = "SACAT"
     )
 
     expect_true(finite_path_reached)
@@ -127,7 +127,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
     )
 
     local_mocked_bindings(
-        .dasra_structural_arm = function(
+        .sacat_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
                 conditional_present_starts = 1L, ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
@@ -141,7 +141,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
                 diagnostics = NULL
             )
         },
-        .dasra_abundance_arm = function(
+        .sacat_abundance_arm = function(
                 Y, N, g, z, keep_diagnostics, ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
             list(
@@ -155,7 +155,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
                 diagnostics = NULL
             )
         },
-        .package = "DASRA"
+        .package = "SACAT"
     )
 
     samples <- paste0("sample_", seq_len(6L))
@@ -173,7 +173,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
         row.names = samples
     )
 
-    fit <- dasra(
+    fit <- sacat(
         counts = counts,
         metadata = metadata,
         formula = ~ group,
@@ -199,7 +199,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
     )
     expect_equal(
         unname(fit$results["both", "p_omnibus_cauchy"]),
-        DASRA:::cauchy_combination(c(0.4, 0.6)),
+        SACAT:::cauchy_combination(c(0.4, 0.6)),
         tolerance = 1e-15
     )
     expect_identical(

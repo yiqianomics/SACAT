@@ -1,4 +1,4 @@
-"target_set","taxon","DASRA structural absence","DASRA abundance","MaAsLin3 prevalence","MaAsLin3 abundance","ZINQ prevalence","ZINQ abundance"
+"target_set","taxon","SACAT structural absence","SACAT abundance","MaAsLin3 prevalence","MaAsLin3 abundance","ZINQ prevalence","ZINQ abundance"
 "Structural targets","Bacillus_subtilis",100,0,28.85,0,48.08,1.92
 "Structural targets","Enterococcus_faecalis",100,3.85,38.46,0,44.23,0
 "Structural targets","Escherichia_coli",100,9.62,30.77,0,44.23,1.92

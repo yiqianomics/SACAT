@@ -1,0 +1,13 @@
+"sacat_result","result_set","taxon_dataset_results","unavailable_results","unavailable_reason","results_with_reason","percent_of_all_results","percent_of_unavailable_results"
+"Structural absence component","SACAT structural absence",688,55,"Structural-absence nuisance fit was not optimal",18,2.62,32.73
+"Structural absence component","SACAT structural absence",688,55,"Conditional-present fit retained a non-negligible gradient",16,2.33,29.09
+"Structural absence component","SACAT structural absence",688,55,"Structural-absence fit remained on a parameter boundary",16,2.33,29.09
+"Structural absence component","SACAT structural absence",688,55,"Structural-absence inference derivative was unstable",3,0.44,5.45
+"Structural absence component","SACAT structural absence",688,55,"Positive-count model design was rank deficient",2,0.29,3.64
+"Present-conditional abundance component","SACAT present-conditional abundance",688,45,"Conditional-present fit had non-positive information",12,1.74,26.67
+"Present-conditional abundance component","SACAT present-conditional abundance",688,45,"Conditional-present fit retained a non-negligible gradient",11,1.6,24.44
+"Present-conditional abundance component","SACAT present-conditional abundance",688,45,"Conditional-present root refinement did not close",11,1.6,24.44
+"Present-conditional abundance component","SACAT present-conditional abundance",688,45,"Conditional-present root refinement did not improve the objective",8,1.16,17.78
+"Present-conditional abundance component","SACAT present-conditional abundance",688,45,"Positive-count model design was rank deficient",2,0.29,4.44
+"Present-conditional abundance component","SACAT present-conditional abundance",688,45,"Conditional-present fit did not converge",1,0.15,2.22
+"Combined omnibus test","SACAT combined",688,20,"No SACAT component formed",20,2.91,100

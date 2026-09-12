@@ -1,4 +1,4 @@
-# Prepare the Baxter colorectal cancer cohort for DASRA
+# Prepare the Baxter colorectal cancer cohort for SACAT
 #
 # Source publication:
 # Baxter NT, Ruffin MT IV, Rogers MAM, Schloss PD. Genome Medicine (2016).
@@ -40,7 +40,7 @@ locate_dataset_directory <- function() {
     if (length(matches) != 1L) {
         stop(
             "Could not identify the crc_baxter data directory. Run this script ",
-            "with Rscript or from the DASRA repository root.",
+            "with Rscript or from the SACAT repository root.",
             call. = FALSE
         )
     }
@@ -513,9 +513,9 @@ preprocessing <- list(
     reference_group = "H",
     comparison_group = "CRC",
     planned_adjustment_variables = c("age_z", "sex"),
-    dasra_input_orientation = "taxa by samples",
-    dasra_group_column = "group",
-    dasra_library_size_column = "library_size",
+    sacat_input_orientation = "taxa by samples",
+    sacat_group_column = "group",
+    sacat_library_size_column = "library_size",
     sample_counts = as.list(observed_group_counts),
     feature_counts = list(
         source_features_before_microbiomehd_filter =
@@ -544,8 +544,8 @@ summary_table <- data.frame(
         "taxa excluded without two-group positive-count support",
         "excluded taxa and positive samples by group",
         "healthy samples", "CRC samples", "retained upstream features",
-        "retained taxon bins", "DASRA count orientation",
-        "DASRA library-size definition"
+        "retained taxon bins", "SACAT count orientation",
+        "SACAT library-size definition"
     ),
     value = c(
         "Baxter colorectal cancer 16S stool cohort",
@@ -583,7 +583,7 @@ summary_table <- data.frame(
         as.character(observed_group_counts[["CRC"]]),
         as.character(nrow(filtered_feature_counts)),
         as.character(nrow(taxon_counts)),
-        preprocessing$dasra_input_orientation,
+        preprocessing$sacat_input_orientation,
         "sum of the full MicrobiomeHD feature table before taxon filtering"
     ),
     stringsAsFactors = FALSE
@@ -598,7 +598,7 @@ analysis_input <- list(
 
 saveRDS(
     analysis_input,
-    file.path(output_directory, "crc_baxter_dasra_input.rds"),
+    file.path(output_directory, "crc_baxter_sacat_input.rds"),
     compress = "xz"
 )
 write_count_csv(

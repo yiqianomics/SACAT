@@ -10,7 +10,7 @@
     raw_se <- sqrt(colSums(phi^2))
 
     lapply(seq_along(raw_delta), function(index) {
-        fit <- DASRA:::.dasra_abundance_empty_fit("ok", nrow(phi))
+        fit <- SACAT:::.sacat_abundance_empty_fit("ok", nrow(phi))
         fit$available <- TRUE
         fit$status <- "ok"
         fit$raw_delta <- raw_delta[index]
@@ -29,7 +29,7 @@
     phi[p + 1L, ] <- -scale
 
     lapply(seq_len(p), function(index) {
-        fit <- DASRA:::.dasra_abundance_empty_fit("ok", n)
+        fit <- SACAT:::.sacat_abundance_empty_fit("ok", n)
         fit$available <- TRUE
         fit$status <- "ok"
         fit$raw_delta <- raw_delta[index]
@@ -65,7 +65,7 @@ test_that("public all-positive data retain abundance but not regular structure",
         row.names = colnames(counts)
     )
 
-    fit <- dasra(
+    fit <- sacat(
         counts, metadata, ~ group, "group", "reads", component = "all"
     )
 
@@ -84,7 +84,7 @@ test_that("public all-positive data retain abundance but not regular structure",
 test_that("cross-taxon correction uses sample-aligned covariance", {
     fits <- .make_abundance_correction_fits()
     taxa <- paste0("Taxon_", seq_along(fits))
-    corrected <- DASRA:::.dasra_abundance_correct(
+    corrected <- SACAT:::.sacat_abundance_correct(
         fits = fits,
         taxa = taxa,
         n_samples = length(fits[[1L]]$phi),
@@ -92,7 +92,7 @@ test_that("cross-taxon correction uses sample-aligned covariance", {
     )
 
     reference <- 2:5
-    background <- DASRA:::.dasra_abundance_background(
+    background <- SACAT:::.sacat_abundance_background(
         values = vapply(
             fits[reference], `[[`, numeric(1), "raw_delta"
         ),
@@ -156,7 +156,7 @@ test_that("kernel-mode influence weights match finite differences", {
     values <- c(-0.050, -0.021, 0.002, 0.018, 0.041, 0.067, 0.530, 0.610)
     initial <- 0.01
     bandwidth <- 0.09
-    mode <- DASRA:::.dasra_abundance_kernel_mode(
+    mode <- SACAT:::.sacat_abundance_kernel_mode(
         values, initial, bandwidth
     )
     step <- 1e-6
@@ -164,10 +164,10 @@ test_that("kernel-mode influence weights match finite differences", {
         plus <- minus <- values
         plus[index] <- plus[index] + step
         minus[index] <- minus[index] - step
-        plus_mode <- DASRA:::.dasra_abundance_kernel_mode(
+        plus_mode <- SACAT:::.sacat_abundance_kernel_mode(
             plus, initial, bandwidth
         )
-        minus_mode <- DASRA:::.dasra_abundance_kernel_mode(
+        minus_mode <- SACAT:::.sacat_abundance_kernel_mode(
             minus, initial, bandwidth
         )
         (plus_mode$estimate - minus_mode$estimate) / (2 * step)
@@ -194,21 +194,21 @@ test_that("kernel background is equivariant and order invariant", {
     standard_errors <- c(0.08, 0.04, 0.05, 0.06, 0.04, 0.30, 0.35)
     taxa <- paste0("Taxon_", seq_along(values))
     permutation <- c(6L, 2L, 7L, 4L, 1L, 5L, 3L)
-    fit <- DASRA:::.dasra_abundance_background(
+    fit <- SACAT:::.sacat_abundance_background(
         values, standard_errors, 120L, taxa
     )
-    shifted <- DASRA:::.dasra_abundance_background(
+    shifted <- SACAT:::.sacat_abundance_background(
         values + 2.4, standard_errors, 120L, taxa
     )
-    reflected <- DASRA:::.dasra_abundance_background(
+    reflected <- SACAT:::.sacat_abundance_background(
         -values, standard_errors, 120L, taxa
     )
-    reordered <- DASRA:::.dasra_abundance_background(
+    reordered <- SACAT:::.sacat_abundance_background(
         values[permutation], standard_errors[permutation], 120L,
         taxa[permutation]
     )
     restored <- match(taxa, taxa[permutation])
-    lts <- DASRA:::.dasra_abundance_lts_reference(values, taxa)
+    lts <- SACAT:::.sacat_abundance_lts_reference(values, taxa)
     expected_bandwidth <- median(standard_errors[lts$index]) *
         sqrt(2 * log(log(120)))
 
@@ -233,10 +233,10 @@ test_that("kernel background is invariant to labels at exact ties", {
     renamed <- labels
     renamed[c(1L, 5L)] <- renamed[c(5L, 1L)]
 
-    original <- DASRA:::.dasra_abundance_background(
+    original <- SACAT:::.sacat_abundance_background(
         values, standard_errors, 120L, labels
     )
-    relabeled <- DASRA:::.dasra_abundance_background(
+    relabeled <- SACAT:::.sacat_abundance_background(
         values, standard_errors, 120L, renamed
     )
 
@@ -255,7 +255,7 @@ test_that("kernel background resists same-direction high-SE signals", {
     raw_se <- c(rep(0.04, 7L), rep(0.35, 3L))
     fits <- .make_abundance_reference_fits(raw_delta, raw_se)
     taxa <- paste0("Taxon_", seq_along(fits))
-    corrected <- DASRA:::.dasra_abundance_correct(
+    corrected <- SACAT:::.sacat_abundance_correct(
         fits, taxa, 120L, keep_diagnostics = TRUE
     )
 
@@ -267,11 +267,11 @@ test_that("kernel background resists same-direction high-SE signals", {
 })
 
 test_that("kernel mode reports genuine mode failures", {
-    not_converged <- DASRA:::.dasra_abundance_kernel_mode(
+    not_converged <- SACAT:::.sacat_abundance_kernel_mode(
         c(-0.1, 0, 0.1), initial = 2, bandwidth = 0.1,
         max_iterations = 1L
     )
-    nonpositive_curvature <- DASRA:::.dasra_abundance_kernel_mode(
+    nonpositive_curvature <- SACAT:::.sacat_abundance_kernel_mode(
         c(-1, -1, 1, 1), initial = 0, bandwidth = 0.5
     )
 
@@ -291,10 +291,10 @@ test_that("target exclusion leaves its background unchanged", {
     changed <- fits
     changed[[1L]]$raw_delta <- changed[[1L]]$raw_delta + 0.5
     taxa <- paste0("Taxon_", seq_along(fits))
-    original <- DASRA:::.dasra_abundance_correct(
+    original <- SACAT:::.sacat_abundance_correct(
         fits, taxa, length(fits[[1L]]$phi), keep_diagnostics = TRUE
     )
-    updated <- DASRA:::.dasra_abundance_correct(
+    updated <- SACAT:::.sacat_abundance_correct(
         changed, taxa, length(fits[[1L]]$phi), keep_diagnostics = TRUE
     )
 
@@ -306,7 +306,7 @@ test_that("target exclusion leaves its background unchanged", {
     expect_equal(updated$estimate[1L] - original$estimate[1L], 0.5)
     expect_false(taxa[1L] %in%
         original$diagnostics$taxon$reference_taxa[[1L]])
-    expect_null(DASRA:::.dasra_abundance_correct(
+    expect_null(SACAT:::.sacat_abundance_correct(
         fits, taxa, length(fits[[1L]]$phi), keep_diagnostics = FALSE
     )$diagnostics)
 })
@@ -314,10 +314,10 @@ test_that("target exclusion leaves its background unchanged", {
 test_that("the public reference threshold has a target-excluded meaning", {
     fits <- .make_abundance_correction_fits()[1:4]
     taxa <- paste0("Taxon_", seq_along(fits))
-    default <- DASRA:::.dasra_abundance_correct(
+    default <- SACAT:::.sacat_abundance_correct(
         fits, taxa, length(fits[[1L]]$phi), keep_diagnostics = FALSE
     )
-    minimum <- DASRA:::.dasra_abundance_correct(
+    minimum <- SACAT:::.sacat_abundance_correct(
         fits, taxa, length(fits[[1L]]$phi), keep_diagnostics = FALSE,
         min_reference_taxa = 3L
     )
@@ -328,7 +328,7 @@ test_that("the public reference threshold has a target-excluded meaning", {
     ))
     expect_true(all(minimum$formed))
     expect_error(
-        DASRA:::.dasra_abundance_correct(
+        SACAT:::.sacat_abundance_correct(
             fits, taxa, length(fits[[1L]]$phi), FALSE,
             min_reference_taxa = 2L
         ),
@@ -350,7 +350,7 @@ test_that("full correction is shift and sign equivariant", {
         fit
     })
     correct <- function(input) {
-        DASRA:::.dasra_abundance_correct(
+        SACAT:::.sacat_abundance_correct(
             input, taxa, length(input[[1L]]$phi), keep_diagnostics = TRUE
         )
     }
@@ -377,10 +377,10 @@ test_that("cross-taxon correction is invariant to taxon order", {
     taxa <- paste0("Taxon_", seq_along(fits))
     permutation <- c(4L, 1L, 5L, 2L, 3L)
 
-    original <- DASRA:::.dasra_abundance_correct(
+    original <- SACAT:::.sacat_abundance_correct(
         fits, taxa, length(fits[[1L]]$phi), keep_diagnostics = TRUE
     )
-    reordered <- DASRA:::.dasra_abundance_correct(
+    reordered <- SACAT:::.sacat_abundance_correct(
         fits[permutation], taxa[permutation],
         length(fits[[1L]]$phi), keep_diagnostics = TRUE
     )
@@ -401,20 +401,20 @@ test_that("cross-taxon correction is invariant to taxon order", {
 })
 
 test_that("count kernels return the same marginal log likelihood", {
-    gh <- DASRA:::make_count_gh_rule(41L)
+    gh <- SACAT:::make_count_gh_rule(41L)
     y <- c(0, 1, 3, 12, 0, 2, 50, 900, 999)
     depth <- c(100, 100, 250, 500, rep(10000, 4L), 1000)
     eta <- c(-8, -5, -3, -1, -12, -9, -5, 2, 20)
     sigma <- 1.8
 
-    log_only <- DASRA:::dasra_count_log_hy_adaptive_cpp(
+    log_only <- SACAT:::sacat_count_log_hy_adaptive_cpp(
         y, depth, eta, sigma, gh$node, gh$log_raw_weight
     )
-    without_moments <- DASRA:::dasra_count_moments_adaptive_cpp(
+    without_moments <- SACAT:::sacat_count_moments_adaptive_cpp(
         y, depth, eta, sigma, gh$node, gh$log_raw_weight,
         need_moments = FALSE
     )
-    with_moments <- DASRA:::dasra_count_moments_adaptive_cpp(
+    with_moments <- SACAT:::sacat_count_moments_adaptive_cpp(
         y, depth, eta, sigma, gh$node, gh$log_raw_weight,
         need_moments = TRUE
     )

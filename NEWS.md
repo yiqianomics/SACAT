@@ -1,6 +1,6 @@
-# DASRA 0.6.0
+# SACAT 0.6.0
 
-- `plot.dasra()` provides a publication-oriented dual-component association
+- `plot.sacat()` provides a publication-oriented dual-component association
   profile. Structural-absence and present-conditional abundance evidence share
   an aligned component Z-statistic axis, while covariate-standardized group
   summaries retain the fitted reference and comparison labels.
@@ -23,19 +23,19 @@
   thresholds based on the complete fitted component families.
 - Parallel analyses use ordered, cross-platform worker processes.
 
-# DASRA 0.5.2
+# SACAT 0.5.2
 
 - Expanded the README and reference manual with guidance for interpreting the
   present-conditional, reference-centered abundance result.
 
-# DASRA 0.5.1
+# SACAT 0.5.1
 
 - The structural fitting control is named
   `structural_conditional_present_starts`.
 - `abundance_quadrature_points` makes the relative-abundance quadrature order
   explicit. Detailed output can include a higher-order quadrature comparison.
 
-# DASRA 0.5.0
+# SACAT 0.5.0
 
 - The relative-abundance arm uses one zero-truncated conditional-mark
   likelihood for every taxon. Conditioning on a positive count removes the
@@ -54,7 +54,7 @@
 - Optional ordered PSOCK workers and arm-level progress messages are available
   through `workers` and `verbose`.
 
-# DASRA 0.4.2
+# SACAT 0.4.2
 
 - Updated the structural test to use nuisance-orthogonalized sample
   contributions with an empirical sandwich variance.

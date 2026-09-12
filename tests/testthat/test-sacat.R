@@ -1,14 +1,14 @@
 test_that("Rcpp adaptive abundance marginals agree with the R implementation", {
-    gh <- DASRA:::make_count_gh_rule(21L)
+    gh <- SACAT:::make_count_gh_rule(21L)
     y <- c(0, 1, 3, 8)
     N <- c(100, 150, 200, 300)
     eta <- c(-5.0, -4.7, -4.2, -3.8)
     sigma <- 0.8
 
-    cpp <- DASRA:::dasra_count_moments_adaptive_cpp(
+    cpp <- SACAT:::sacat_count_moments_adaptive_cpp(
         y, N, eta, sigma, gh$node, gh$log_raw_weight, TRUE
     )
-    r <- DASRA:::count_log_hy_adaptive_ref(
+    r <- SACAT:::count_log_hy_adaptive_ref(
         y, N, eta, sigma, gh, return_nodes = TRUE
     )
     weight <- exp(r$log_terms - r$log_term_normalizer)
@@ -26,13 +26,13 @@ test_that("Rcpp adaptive abundance marginals agree with the R implementation", {
 })
 
 test_that("Rcpp mean log relative abundance agrees with direct quadrature", {
-    gh <- DASRA:::make_count_gh_rule(31L)
+    gh <- SACAT:::make_count_gh_rule(31L)
     location <- c(-6, -4, -2)
     sigma <- 0.7
     direct <- vapply(location, function(mu) {
-        sum(gh$weight * (-DASRA:::count_softplus(-(mu + sigma * sqrt(2) * gh$node))))
+        sum(gh$weight * (-SACAT:::count_softplus(-(mu + sigma * sqrt(2) * gh$node))))
     }, numeric(1))
-    cpp <- DASRA:::dasra_mean_log_relative_cpp(
+    cpp <- SACAT:::sacat_mean_log_relative_cpp(
         location, sigma, sqrt(2) * gh$node, gh$weight
     )
     expect_equal(cpp, direct, tolerance = 1e-12)
@@ -55,16 +55,16 @@ test_that("deterministic Rcpp kernels leave the RNG state unchanged", {
         }
     })
 
-    gh <- DASRA:::make_count_gh_rule(11L)
+    gh <- SACAT:::make_count_gh_rule(11L)
     evaluate_kernels <- function() {
-        DASRA:::dasra_gh_log_weights_cpp(gh$node, length(gh$node))
-        DASRA:::dasra_count_log_hy_adaptive_cpp(
+        SACAT:::sacat_gh_log_weights_cpp(gh$node, length(gh$node))
+        SACAT:::sacat_count_log_hy_adaptive_cpp(
             1, 100, -4, 0.7, gh$node, gh$log_raw_weight
         )
-        DASRA:::dasra_count_moments_adaptive_cpp(
+        SACAT:::sacat_count_moments_adaptive_cpp(
             1, 100, -4, 0.7, gh$node, gh$log_raw_weight
         )
-        DASRA:::dasra_mean_log_relative_cpp(
+        SACAT:::sacat_mean_log_relative_cpp(
             -4, 0.7, sqrt(2) * gh$node, gh$weight
         )
         invisible(NULL)
@@ -86,7 +86,7 @@ test_that("deterministic Rcpp kernels leave the RNG state unchanged", {
 
 test_that("intercept-only LTS uses a strict majority subset", {
     values <- c(-0.52, -0.50, -0.48, -0.46, 0.01, 0.04, 0.06)
-    pilot <- DASRA:::.dasra_abundance_lts_reference(values)$pilot
+    pilot <- SACAT:::.sacat_abundance_lts_reference(values)$pilot
     expect_lt(abs(pilot + 0.49), 0.04)
 })
 
@@ -105,7 +105,7 @@ test_that("public input validation rejects unsupported group interactions", {
         row.names = colnames(counts)
     )
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group * age, "group", "reads",
             component = "relative_abundance"
         ),
@@ -140,11 +140,11 @@ test_that("relative-abundance component forms on a regular example", {
         row.names = colnames(counts)
     )
 
-    fit <- dasra(
+    fit <- sacat(
         counts, metadata, ~ group, "group", "reads",
         component = "relative_abundance"
     )
-    expect_s3_class(fit, "dasra")
+    expect_s3_class(fit, "sacat")
     expect_true(all(fit$diagnostics$retained))
     expect_true(all(fit$diagnostics$formed_relative_abundance))
     expect_true(all(is.finite(fit$results$p_relative_abundance)))

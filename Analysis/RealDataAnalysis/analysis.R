@@ -46,7 +46,7 @@ if (dir.exists(local_library)) {
 
 plot_packages <- c("ggplot2", "tidyr", "patchwork")
 analysis_packages <- c(
-    "DASRA", "maaslin3", "ZINQ", "ANCOMBC", "MicrobiomeStat",
+    "SACAT", "maaslin3", "ZINQ", "ANCOMBC", "MicrobiomeStat",
     "corncob", "edgeR", "DESeq2", "metagenomeSeq", "Biobase"
 )
 required_packages <- if (plot_only) {
@@ -69,9 +69,9 @@ if (length(missing_packages)) {
 }
 
 method_order <- c(
-    "DASRA structural absence",
-    "DASRA present-conditional abundance",
-    "DASRA combined",
+    "SACAT structural absence",
+    "SACAT present-conditional abundance",
+    "SACAT combined",
     "MaAsLin3 prevalence",
     "MaAsLin3 abundance",
     "MaAsLin3 combined",
@@ -89,7 +89,7 @@ method_order <- c(
 method_information <- data.frame(
     method = method_order,
     family = c(
-        rep("DASRA", 3L), rep("MaAsLin3", 3L), rep("ZINQ", 3L),
+        rep("SACAT", 3L), rep("MaAsLin3", 3L), rep("ZINQ", 3L),
         "ANCOM-BC2", "LinDA", "corncob", "edgeR", "DESeq2",
         "metagenomeSeq"
     ),
@@ -106,7 +106,7 @@ dataset_configurations <- list(
     crc_baxter = list(
         dataset_id = "crc_baxter",
         output_prefix = "baxter_crc",
-        input_file = "crc_baxter_dasra_input.rds",
+        input_file = "crc_baxter_sacat_input.rds",
         reference = "H",
         comparison = "CRC",
         covariates = c("age_z", "sex"),
@@ -115,7 +115,7 @@ dataset_configurations <- list(
     cdi_schubert = list(
         dataset_id = "cdi_schubert",
         output_prefix = "schubert_cdi",
-        input_file = "cdi_schubert_dasra_input.rds",
+        input_file = "cdi_schubert_sacat_input.rds",
         reference = "H",
         comparison = "CDI",
         covariates = c("age_z", "sex", "antibiotics_3mo"),
@@ -124,7 +124,7 @@ dataset_configurations <- list(
     gems_pediatric_diarrhea = list(
         dataset_id = "gems_pediatric_diarrhea",
         output_prefix = "gems_pediatric_diarrhea",
-        input_file = "gems_pediatric_diarrhea_dasra_input.rds",
+        input_file = "gems_pediatric_diarrhea_sacat_input.rds",
         reference = "Control",
         comparison = "MSD",
         covariates = c("age_z", "country"),
@@ -133,7 +133,7 @@ dataset_configurations <- list(
     korean_hypertension = list(
         dataset_id = "korean_hypertension",
         output_prefix = "korean_hypertension",
-        input_file = "korean_hypertension_dasra_input.rds",
+        input_file = "korean_hypertension_sacat_input.rds",
         reference = "Normotension",
         comparison = "Hypertension",
         covariates = c("age_z", "sex", "bmi_z"),
@@ -143,7 +143,7 @@ dataset_configurations <- list(
     microbiomehd_zupancic_obesity = list(
         dataset_id = "microbiomehd_zupancic_obesity",
         output_prefix = "microbiomehd_zupancic_obesity",
-        input_file = "microbiomehd_zupancic_obesity_dasra_input.rds",
+        input_file = "microbiomehd_zupancic_obesity_sacat_input.rds",
         reference = "H",
         comparison = "OB",
         covariates = "sex",
@@ -152,7 +152,7 @@ dataset_configurations <- list(
     qiita_1939_pediatric_crohn = list(
         dataset_id = "qiita_1939_pediatric_crohn",
         output_prefix = "qiita_1939_pediatric_crohn",
-        input_file = "qiita_1939_pediatric_crohn_dasra_input.rds",
+        input_file = "qiita_1939_pediatric_crohn_sacat_input.rds",
         reference = "Control",
         comparison = "Crohn",
         covariates = c("age_z", "sex"),
@@ -161,7 +161,7 @@ dataset_configurations <- list(
     ravel_vaginal_ethnicity = list(
         dataset_id = "ravel_vaginal_ethnicity",
         output_prefix = "ravel_vaginal_ethnicity",
-        input_file = "ravel_vaginal_ethnicity_dasra_input.rds",
+        input_file = "ravel_vaginal_ethnicity_sacat_input.rds",
         reference = "White",
         comparison = "Black",
         covariates = character(),
@@ -253,8 +253,8 @@ humanize_result_reason <- function(reason) {
             "No zero counts were observed for this taxon",
         "one or both components were unavailable" =
             "One or both components were unavailable",
-        "no DASRA component formed" =
-            "No DASRA component formed",
+        "no SACAT component formed" =
+            "No SACAT component formed",
         "positive_part_design_rank_deficient" =
             "Positive-count model design was rank deficient",
         "pseudocount sensitivity failed; p-value set to one" =
@@ -413,10 +413,10 @@ formulas_for_dataset <- function(configuration) {
     )
 }
 
-run_dasra <- function(counts, metadata, configuration, formulas,
+run_sacat <- function(counts, metadata, configuration, formulas,
                       evaluation_taxa, figure_directory) {
     taxa <- evaluation_taxa
-    fit <- DASRA::dasra(
+    fit <- SACAT::sacat(
         counts = counts[taxa, , drop = FALSE],
         metadata = metadata,
         formula = formulas$full,
@@ -436,7 +436,7 @@ run_dasra <- function(counts, metadata, configuration, formulas,
         match(taxa, fit$diagnostics$taxon), , drop = FALSE
     ]
     if (anyNA(results$taxon) || anyNA(diagnostics$taxon)) {
-        stop("DASRA did not return every taxon.", call. = FALSE)
+        stop("SACAT did not return every taxon.", call. = FALSE)
     }
 
     names_by_taxon <- function(values) stats::setNames(values, taxa)
@@ -467,12 +467,12 @@ run_dasra <- function(counts, metadata, configuration, formulas,
     combined_reason <- names_by_taxon(ifelse(
         combined_available,
         "available",
-        "no DASRA component formed"
+        "no SACAT component formed"
     ))
 
     rows <- rbind(
         make_result(
-            taxa, "DASRA structural absence", "DASRA",
+            taxa, "SACAT structural absence", "SACAT",
             "structural absence",
             names_by_taxon(results$p_structural_absence),
             structural_available,
@@ -487,7 +487,7 @@ run_dasra <- function(counts, metadata, configuration, formulas,
             )
         ),
         make_result(
-            taxa, "DASRA present-conditional abundance", "DASRA",
+            taxa, "SACAT present-conditional abundance", "SACAT",
             "present-conditional abundance",
             names_by_taxon(results$p_relative_abundance),
             abundance_available,
@@ -503,7 +503,7 @@ run_dasra <- function(counts, metadata, configuration, formulas,
             )
         ),
         make_result(
-            taxa, "DASRA combined", "DASRA", "combined",
+            taxa, "SACAT combined", "SACAT", "combined",
             names_by_taxon(results$p_omnibus),
             combined_available,
             combined_reason,
@@ -514,13 +514,13 @@ run_dasra <- function(counts, metadata, configuration, formulas,
     )
 
     plot_rows <- rows[
-        rows$method == "DASRA combined" & rows$significant,
+        rows$method == "SACAT combined" & rows$significant,
         ,
         drop = FALSE
     ]
     if (!nrow(plot_rows)) {
         plot_rows <- rows[
-            rows$method == "DASRA combined" & rows$available,
+            rows$method == "SACAT combined" & rows$available,
             ,
             drop = FALSE
         ]
@@ -537,21 +537,21 @@ run_dasra <- function(counts, metadata, configuration, formulas,
         10L
     })
     if (!nrow(plot_rows)) {
-        stop("DASRA returned no formed combined result to plot.",
+        stop("SACAT returned no formed combined result to plot.",
              call. = FALSE)
     }
-    dasra_figure_file <- file.path(
+    sacat_figure_file <- file.path(
         figure_directory,
-        paste0(configuration$output_prefix, "_dasra_profile.pdf")
+        paste0(configuration$output_prefix, "_sacat_profile.pdf")
     )
     graphics::plot(
         fit,
         features = plot_rows$taxon,
         p_color_limits = c(1e-7, 1),
         group_labels = configuration$plot_labels,
-        file = dasra_figure_file
+        file = sacat_figure_file
     )
-    message("Saved ", dasra_figure_file)
+    message("Saved ", sacat_figure_file)
 
     list(
         rows = rows,
@@ -1549,9 +1549,9 @@ make_upset_figure <- function(results, tested_taxa, configuration,
     ))
 
     method_colors <- c(
-        "DASRA structural absence" = "#B2182B",
-        "DASRA present-conditional abundance" = "#EF8A62",
-        "DASRA combined" = "#D6604D",
+        "SACAT structural absence" = "#B2182B",
+        "SACAT present-conditional abundance" = "#EF8A62",
+        "SACAT combined" = "#D6604D",
         "MaAsLin3 prevalence" = "#2166AC",
         "MaAsLin3 abundance" = "#67A9CF",
         "MaAsLin3 combined" = "#4393C3",
@@ -1938,8 +1938,8 @@ run_dataset <- function(configuration, plot_only = FALSE) {
 
     families <- list(
         execute_family(
-            "DASRA", evaluation_taxa, "DASRA",
-            function() run_dasra(
+            "SACAT", evaluation_taxa, "SACAT",
+            function() run_sacat(
                 counts, metadata, configuration, formulas, evaluation_taxa,
                 staging_figure_directory
             )
@@ -2120,7 +2120,7 @@ run_dataset <- function(configuration, plot_only = FALSE) {
     )
     staged_profile_file <- file.path(
         staging_figure_directory,
-        paste0(configuration$output_prefix, "_dasra_profile.pdf")
+        paste0(configuration$output_prefix, "_sacat_profile.pdf")
     )
     staged_files <- c(
         staged_results_file,

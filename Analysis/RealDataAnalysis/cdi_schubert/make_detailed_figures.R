@@ -24,7 +24,7 @@ analysis_directory <- normalizePath(dirname(script_path), mustWork = TRUE)
 table_directory <- file.path(analysis_directory, "table")
 figure_directory <- file.path(analysis_directory, "figs")
 input_path <- file.path(
-    analysis_directory, "processed", "cdi_schubert_dasra_input.rds"
+    analysis_directory, "processed", "cdi_schubert_sacat_input.rds"
 )
 
 result_path <- file.path(
@@ -42,9 +42,9 @@ results <- utils::read.csv(result_path, stringsAsFactors = FALSE)
 input <- readRDS(input_path)
 
 analysis_method_order <- c(
-    "DASRA structural absence",
-    "DASRA present-conditional abundance",
-    "DASRA combined",
+    "SACAT structural absence",
+    "SACAT present-conditional abundance",
+    "SACAT combined",
     "MaAsLin3 prevalence",
     "MaAsLin3 abundance",
     "MaAsLin3 combined",
@@ -59,9 +59,9 @@ analysis_method_order <- c(
     "metagenomeSeq"
 )
 display_method_sources <- c(
-    "DASRA structural absence" = "DASRA structural absence",
-    "DASRA present-conditional abundance" =
-        "DASRA present-conditional abundance",
+    "SACAT structural absence" = "SACAT structural absence",
+    "SACAT present-conditional abundance" =
+        "SACAT present-conditional abundance",
     "MaAsLin3 combined" = "MaAsLin3",
     "ZINQ combined" = "ZINQ",
     "ANCOM-BC2" = "ANCOM-BC2",
@@ -552,12 +552,12 @@ grDevices::pdf(
 print(intersection_figure)
 grDevices::dev.off()
 
-# DASRA component evidence ------------------------------------------------
+# SACAT component evidence ------------------------------------------------
 
 component_rows <- results[results$method %in% c(
-    "DASRA structural absence",
-    "DASRA present-conditional abundance",
-    "DASRA combined"
+    "SACAT structural absence",
+    "SACAT present-conditional abundance",
+    "SACAT combined"
 ), c("taxon", "method", "available", "p_value", "q_value",
      "significant", "estimate", "statistic")]
 component_wide <- tidyr::pivot_wider(
@@ -568,15 +568,15 @@ component_wide <- tidyr::pivot_wider(
     names_sep = "__"
 )
 names(component_wide) <- gsub(
-    "DASRA structural absence", "structural", names(component_wide),
+    "SACAT structural absence", "structural", names(component_wide),
     fixed = TRUE
 )
 names(component_wide) <- gsub(
-    "DASRA present-conditional abundance", "abundance",
+    "SACAT present-conditional abundance", "abundance",
     names(component_wide), fixed = TRUE
 )
 names(component_wide) <- gsub(
-    "DASRA combined", "combined", names(component_wide), fixed = TRUE
+    "SACAT combined", "combined", names(component_wide), fixed = TRUE
 )
 
 structural_gate <- bh_z_gate(

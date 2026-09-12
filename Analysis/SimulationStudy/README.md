@@ -1,6 +1,6 @@
-# DASRA Simulation Study
+# SACAT Simulation Study
 
-This directory contains the simulation program, cluster submission template, figures, numerical summaries, and tabular results for the DASRA simulation study.
+This directory contains the simulation program, cluster submission template, figures, numerical summaries, and tabular results for the SACAT simulation study.
 
 ## Study design
 
@@ -23,7 +23,7 @@ The effect grids and common design constants are recorded in [`tables/simulation
 - `submit.slurm` is the SLURM array template used for the 100 replications.
 - `summarize_results.R` validates the completed grid and creates the figures and CSV tables.
 
-The simulation program uses DASRA 0.6.0 and the packages listed in its `replicate_packages` and `summary_packages` objects. The supplied SLURM file provides a portable 100-task array template. Load the required R environment before submission and add any cluster-specific partition or resource options locally.
+The simulation program uses SACAT 0.6.0 and the packages listed in its `replicate_packages` and `summary_packages` objects. The supplied SLURM file provides a portable 100-task array template. Load the required R environment before submission and add any cluster-specific partition or resource options locally.
 
 ZINQ 2.0 is available from the [ZINQ-v2 repository](https://github.com/wdl2459/ZINQ-v2), and MaAsLin3 1.5.3 is available from the [MaAsLin3 repository](https://github.com/biobakery/maaslin3).
 
@@ -32,8 +32,8 @@ The figure and table script requires `data.table`, `ggplot2`, `patchwork`, `scal
 From `Analysis/SimulationStudy`, set the repository and output directories and run:
 
 ```bash
-export DASRA_PROJECT_ROOT=/path/to/DASRA
-export DASRA_SIMULATION_ROOT=/path/to/dasra_simulation_output
+export SACAT_PROJECT_ROOT=/path/to/SACAT
+export SACAT_SIMULATION_ROOT=/path/to/sacat_simulation_output
 Rscript run_simulation.R preflight
 Rscript run_simulation.R design
 sbatch submit.slurm
@@ -71,7 +71,7 @@ Additional figures:
 | File | Content |
 |---|---|
 | [`estimand_calibration.pdf`](figures/estimand_calibration.pdf) | Target and achieved probability contrasts in the estimand-separation experiments |
-| [`component_specificity.pdf`](figures/component_specificity.pdf) | Marginal Type I error for the non-target DASRA component |
+| [`component_specificity.pdf`](figures/component_specificity.pdf) | Marginal Type I error for the non-target SACAT component |
 | [`abundance_fdr_signal20.pdf`](figures/abundance_fdr_signal20.pdf) | Present-conditional abundance false discovery rates with 10 perturbed taxa |
 | [`abundance_fdr_signal40.pdf`](figures/abundance_fdr_signal40.pdf) | Present-conditional abundance false discovery rates with 20 perturbed taxa |
 | [`global_null_family_rejection_structural.pdf`](figures/global_null_family_rejection_structural.pdf) | Structural and observed-prevalence familywise Type I error under three global-null generators |
@@ -107,7 +107,7 @@ Within each replication, setting, method, and component, Benjamini-Hochberg adju
 - Power is the proportion of directly perturbed taxa rejected after adjustment.
 - The false discovery proportion is the number of false discoveries divided by the total number of discoveries, with zero assigned when no discovery occurs. The empirical false discovery rate is its mean over 100 replications.
 - Under a global null, familywise Type I error is the probability of at least one rejection. It equals the empirical false discovery rate because all 50 focal taxa are null.
-- Marginal Type I error in the component-specificity experiment is the mean rejection probability for the non-target DASRA component among taxa designated for the other component.
+- Marginal Type I error in the component-specificity experiment is the mean rejection probability for the non-target SACAT component among taxa designated for the other component.
 - Monte Carlo intervals equal the replication-level mean plus or minus 1.96 Monte Carlo standard errors, truncated to the parameter range.
 
 For the global-null summaries, the two signal-template strata are averaged within replication before the Monte Carlo mean and interval are computed.

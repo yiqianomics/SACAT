@@ -2,7 +2,7 @@
 .Rhistory
 .Rd2pdf*/
 *.Rcheck/
-DASRA_*.tar.gz
+SACAT_*.tar.gz
 # Compiled package artifacts
 src/*.o
 src/*.so

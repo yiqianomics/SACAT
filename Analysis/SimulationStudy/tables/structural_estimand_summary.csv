@@ -1,721 +1,721 @@
 experiment,samples_per_group,signal_taxa_percent,covariate_structure,target_difference,method,tested_quantity,replications,rejection_probability,monte_carlo_sd,monte_carlo_se,interval_lower,interval_upper
-Observed-prevalence perturbation,60,20,Unconfounded,0,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Unconfounded,0,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,60,20,Unconfounded,0,ZINQ,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
-Observed-prevalence perturbation,60,20,Unconfounded,0.04,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Unconfounded,0.04,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Unconfounded,0.04,MaAsLin 3,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
 Observed-prevalence perturbation,60,20,Unconfounded,0.04,ZINQ,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
-Observed-prevalence perturbation,60,20,Unconfounded,0.08,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Unconfounded,0.08,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Unconfounded,0.08,MaAsLin 3,Observed prevalence,100,0.006,0.0238683256575942,0.00238683256575942,0.00132180817111154,0.0106781918288885
 Observed-prevalence perturbation,60,20,Unconfounded,0.08,ZINQ,Observed prevalence,100,0.008,0.0307482445914323,0.00307482445914323,0.00197334406007927,0.0140266559399207
-Observed-prevalence perturbation,60,20,Unconfounded,0.12,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Unconfounded,0.12,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Unconfounded,0.12,MaAsLin 3,Observed prevalence,100,0.015,0.0435194139889245,0.00435194139889245,0.00647019485817081,0.0235298051418292
 Observed-prevalence perturbation,60,20,Unconfounded,0.12,ZINQ,Observed prevalence,100,0.02,0.0568535243614961,0.00568535243614961,0.00885670922514676,0.0311432907748532
-Observed-prevalence perturbation,60,20,Unconfounded,0.16,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,60,20,Unconfounded,0.16,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,60,20,Unconfounded,0.16,MaAsLin 3,Observed prevalence,100,0.081,0.122015895636096,0.0122015895636096,0.0570848844553251,0.104915115544675
 Observed-prevalence perturbation,60,20,Unconfounded,0.16,ZINQ,Observed prevalence,100,0.097,0.128279209365959,0.0128279209365959,0.071857274964272,0.122142725035728
-Observed-prevalence perturbation,60,20,Unconfounded,0.2,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Unconfounded,0.2,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.242,0.19341690983495,0.019341690983495,0.20409028567235,0.27990971432765
 Observed-prevalence perturbation,60,20,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.281,0.19,0.019,0.24376,0.31824
-Observed-prevalence perturbation,60,20,Unconfounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Unconfounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Unconfounded,0.24,MaAsLin 3,Observed prevalence,100,0.446,0.209578701979071,0.0209578701979071,0.404922574412102,0.487077425587898
 Observed-prevalence perturbation,60,20,Unconfounded,0.24,ZINQ,Observed prevalence,100,0.482,0.204682557866931,0.0204682557866931,0.441882218658082,0.522117781341918
-Observed-prevalence perturbation,60,20,Unconfounded,0.28,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Unconfounded,0.28,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Unconfounded,0.28,MaAsLin 3,Observed prevalence,100,0.673,0.19584316545273,0.019584316545273,0.634614739571265,0.711385260428735
 Observed-prevalence perturbation,60,20,Unconfounded,0.28,ZINQ,Observed prevalence,100,0.694,0.200413713516956,0.0200413713516956,0.654718912150677,0.733281087849323
-Observed-prevalence perturbation,60,20,Unconfounded,0.32,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Unconfounded,0.32,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Unconfounded,0.32,MaAsLin 3,Observed prevalence,100,0.834,0.148541733074064,0.0148541733074064,0.804885820317483,0.863114179682517
 Observed-prevalence perturbation,60,20,Unconfounded,0.32,ZINQ,Observed prevalence,100,0.85,0.141778031094419,0.0141778031094419,0.822211505905494,0.877788494094506
-Observed-prevalence perturbation,80,20,Unconfounded,0,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,80,20,Unconfounded,0,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,80,20,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,80,20,Unconfounded,0,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Observed-prevalence perturbation,80,20,Unconfounded,0.04,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,80,20,Unconfounded,0.04,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,80,20,Unconfounded,0.04,MaAsLin 3,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
 Observed-prevalence perturbation,80,20,Unconfounded,0.04,ZINQ,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
-Observed-prevalence perturbation,80,20,Unconfounded,0.08,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Unconfounded,0.08,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Unconfounded,0.08,MaAsLin 3,Observed prevalence,100,0.009,0.0320825954263823,0.00320825954263823,0.00271181129642906,0.0152881887035709
 Observed-prevalence perturbation,80,20,Unconfounded,0.08,ZINQ,Observed prevalence,100,0.015,0.0435194139889245,0.00435194139889245,0.00647019485817081,0.0235298051418292
-Observed-prevalence perturbation,80,20,Unconfounded,0.12,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,80,20,Unconfounded,0.12,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,80,20,Unconfounded,0.12,MaAsLin 3,Observed prevalence,100,0.048,0.0771722460186015,0.00771722460186015,0.0328742397803541,0.0631257602196459
 Observed-prevalence perturbation,80,20,Unconfounded,0.12,ZINQ,Observed prevalence,100,0.059,0.0877266185143346,0.00877266185143346,0.0418055827711904,0.0761944172288096
-Observed-prevalence perturbation,80,20,Unconfounded,0.16,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Unconfounded,0.16,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Unconfounded,0.16,MaAsLin 3,Observed prevalence,100,0.209,0.174132771821453,0.0174132771821453,0.174869976722995,0.243130023277005
 Observed-prevalence perturbation,80,20,Unconfounded,0.16,ZINQ,Observed prevalence,100,0.228,0.18150882773423,0.018150882773423,0.192424269764091,0.263575730235909
-Observed-prevalence perturbation,80,20,Unconfounded,0.2,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Unconfounded,0.2,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.433,0.216517431122296,0.0216517431122296,0.39056258350003,0.47543741649997
 Observed-prevalence perturbation,80,20,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.455,0.214322988581121,0.0214322988581121,0.4129926942381,0.4970073057619
-Observed-prevalence perturbation,80,20,Unconfounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Unconfounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Unconfounded,0.24,MaAsLin 3,Observed prevalence,100,0.654,0.18500341247194,0.018500341247194,0.6177393311555,0.6902606688445
 Observed-prevalence perturbation,80,20,Unconfounded,0.24,ZINQ,Observed prevalence,100,0.676,0.183743343176334,0.0183743343176334,0.639986304737439,0.712013695262562
-Observed-prevalence perturbation,80,20,Unconfounded,0.28,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,80,20,Unconfounded,0.28,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,80,20,Unconfounded,0.28,MaAsLin 3,Observed prevalence,100,0.852,0.143181738015049,0.0143181738015049,0.82393637934905,0.88006362065095
 Observed-prevalence perturbation,80,20,Unconfounded,0.28,ZINQ,Observed prevalence,100,0.872,0.129552454179141,0.0129552454179141,0.846607718980888,0.897392281019112
-Observed-prevalence perturbation,80,20,Unconfounded,0.32,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Unconfounded,0.32,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Unconfounded,0.32,MaAsLin 3,Observed prevalence,100,0.943,0.0768771813355628,0.00768771813355628,0.92793207245823,0.95806792754177
 Observed-prevalence perturbation,80,20,Unconfounded,0.32,ZINQ,Observed prevalence,100,0.946,0.077093672525275,0.0077093672525275,0.930889640185046,0.961110359814954
-Observed-prevalence perturbation,120,20,Unconfounded,0,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Unconfounded,0,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,120,20,Unconfounded,0,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Observed-prevalence perturbation,120,20,Unconfounded,0.04,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Unconfounded,0.04,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Unconfounded,0.04,MaAsLin 3,Observed prevalence,100,0.008,0.0272659924344291,0.00272659924344291,0.0026558654828519,0.0133441345171481
 Observed-prevalence perturbation,120,20,Unconfounded,0.04,ZINQ,Observed prevalence,100,0.009,0.0287623491264661,0.00287623491264661,0.00336257957121264,0.0146374204287874
-Observed-prevalence perturbation,120,20,Unconfounded,0.08,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,120,20,Unconfounded,0.08,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,120,20,Unconfounded,0.08,MaAsLin 3,Observed prevalence,100,0.035,0.0672324476737388,0.00672324476737388,0.0218224402559472,0.0481775597440528
 Observed-prevalence perturbation,120,20,Unconfounded,0.08,ZINQ,Observed prevalence,100,0.042,0.0741006686265994,0.00741006686265994,0.0274762689491865,0.0565237310508135
-Observed-prevalence perturbation,120,20,Unconfounded,0.12,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Unconfounded,0.12,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Unconfounded,0.12,MaAsLin 3,Observed prevalence,100,0.152,0.135199067595852,0.0135199067595852,0.125500982751213,0.178499017248787
 Observed-prevalence perturbation,120,20,Unconfounded,0.12,ZINQ,Observed prevalence,100,0.17,0.142488702369803,0.0142488702369803,0.142072214335519,0.197927785664481
-Observed-prevalence perturbation,120,20,Unconfounded,0.16,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Unconfounded,0.16,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Unconfounded,0.16,MaAsLin 3,Observed prevalence,100,0.422,0.190469913316481,0.0190469913316481,0.38466789698997,0.45933210301003
 Observed-prevalence perturbation,120,20,Unconfounded,0.16,ZINQ,Observed prevalence,100,0.44,0.196946385566932,0.0196946385566932,0.401398508428881,0.478601491571119
-Observed-prevalence perturbation,120,20,Unconfounded,0.2,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,120,20,Unconfounded,0.2,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,120,20,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.728,0.18427033281447,0.018427033281447,0.691883014768364,0.764116985231636
 Observed-prevalence perturbation,120,20,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.745,0.175450358457395,0.0175450358457395,0.710611729742351,0.779388270257649
-Observed-prevalence perturbation,120,20,Unconfounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Unconfounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Unconfounded,0.24,MaAsLin 3,Observed prevalence,100,0.898,0.0942594742444943,0.00942594742444943,0.879525143048079,0.916474856951921
 Observed-prevalence perturbation,120,20,Unconfounded,0.24,ZINQ,Observed prevalence,100,0.903,0.0936951859958017,0.00936951859958017,0.884635743544823,0.921364256455177
-Observed-prevalence perturbation,120,20,Unconfounded,0.28,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Unconfounded,0.28,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Unconfounded,0.28,MaAsLin 3,Observed prevalence,100,0.974,0.0579445921340012,0.00579445921340012,0.962642859941736,0.985357140058264
 Observed-prevalence perturbation,120,20,Unconfounded,0.28,ZINQ,Observed prevalence,100,0.975,0.0557320429022713,0.00557320429022713,0.964076519591155,0.985923480408845
-Observed-prevalence perturbation,120,20,Unconfounded,0.32,DASRA,Structural absence,100,0.004,0.0196946385566932,0.00196946385566932,0.000139850842888125,0.00786014915711188
+Observed-prevalence perturbation,120,20,Unconfounded,0.32,SACAT,Structural absence,100,0.004,0.0196946385566932,0.00196946385566932,0.000139850842888125,0.00786014915711188
 Observed-prevalence perturbation,120,20,Unconfounded,0.32,MaAsLin 3,Observed prevalence,100,0.995,0.021904291355759,0.0021904291355759,0.990706758894271,0.999293241105729
 Observed-prevalence perturbation,120,20,Unconfounded,0.32,ZINQ,Observed prevalence,100,0.995,0.021904291355759,0.0021904291355759,0.990706758894271,0.999293241105729
-Observed-prevalence perturbation,60,40,Unconfounded,0,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,60,40,Unconfounded,0,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,60,40,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,40,Unconfounded,0,ZINQ,Observed prevalence,100,0,0,0,0,0
-Observed-prevalence perturbation,60,40,Unconfounded,0.04,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,60,40,Unconfounded,0.04,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,60,40,Unconfounded,0.04,MaAsLin 3,Observed prevalence,100,0.005,0.018118576883487,0.0018118576883487,0.00144875893083655,0.00855124106916345
 Observed-prevalence perturbation,60,40,Unconfounded,0.04,ZINQ,Observed prevalence,100,0.006,0.0204494943258218,0.00204494943258218,0.00199189911213893,0.0100081008878611
-Observed-prevalence perturbation,60,40,Unconfounded,0.08,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,40,Unconfounded,0.08,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,40,Unconfounded,0.08,MaAsLin 3,Observed prevalence,100,0.007,0.0213437474581095,0.00213437474581095,0.00281662549821054,0.0111833745017895
 Observed-prevalence perturbation,60,40,Unconfounded,0.08,ZINQ,Observed prevalence,100,0.0105,0.0249190608964222,0.00249190608964222,0.00561586406430126,0.0153841359356987
-Observed-prevalence perturbation,60,40,Unconfounded,0.12,DASRA,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
+Observed-prevalence perturbation,60,40,Unconfounded,0.12,SACAT,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Observed-prevalence perturbation,60,40,Unconfounded,0.12,MaAsLin 3,Observed prevalence,100,0.0315,0.0562529460507976,0.00562529460507976,0.0204744225740437,0.0425255774259563
 Observed-prevalence perturbation,60,40,Unconfounded,0.12,ZINQ,Observed prevalence,100,0.0415,0.0611567781619627,0.00611567781619627,0.0295132714802553,0.0534867285197447
-Observed-prevalence perturbation,60,40,Unconfounded,0.16,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,40,Unconfounded,0.16,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,40,Unconfounded,0.16,MaAsLin 3,Observed prevalence,100,0.099,0.101249766180052,0.0101249766180052,0.0791550458287099,0.11884495417129
 Observed-prevalence perturbation,60,40,Unconfounded,0.16,ZINQ,Observed prevalence,100,0.1255,0.110438748506659,0.0110438748506659,0.103854005292695,0.147145994707305
-Observed-prevalence perturbation,60,40,Unconfounded,0.2,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,60,40,Unconfounded,0.2,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,60,40,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.292,0.14208405536118,0.014208405536118,0.264151525149209,0.319848474850791
 Observed-prevalence perturbation,60,40,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.3225,0.136214143646293,0.0136214143646293,0.295802027845327,0.349197972154673
-Observed-prevalence perturbation,60,40,Unconfounded,0.24,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,60,40,Unconfounded,0.24,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,60,40,Unconfounded,0.24,MaAsLin 3,Observed prevalence,100,0.574,0.164298324379585,0.0164298324379585,0.541797528421601,0.606202471578399
 Observed-prevalence perturbation,60,40,Unconfounded,0.24,ZINQ,Observed prevalence,100,0.5945,0.155032580479398,0.0155032580479398,0.564113614226038,0.624886385773962
-Observed-prevalence perturbation,60,40,Unconfounded,0.28,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,40,Unconfounded,0.28,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,40,Unconfounded,0.28,MaAsLin 3,Observed prevalence,100,0.7605,0.11198281794611,0.011198281794611,0.738551367682562,0.782448632317438
 Observed-prevalence perturbation,60,40,Unconfounded,0.28,ZINQ,Observed prevalence,100,0.772,0.111309923142095,0.0111309923142095,0.75018325506415,0.793816744935851
-Observed-prevalence perturbation,60,40,Unconfounded,0.32,DASRA,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
+Observed-prevalence perturbation,60,40,Unconfounded,0.32,SACAT,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Observed-prevalence perturbation,60,40,Unconfounded,0.32,MaAsLin 3,Observed prevalence,100,0.9035,0.0759635079854435,0.00759635079854435,0.888611152434853,0.918388847565147
 Observed-prevalence perturbation,60,40,Unconfounded,0.32,ZINQ,Observed prevalence,100,0.9085,0.0728409780330281,0.00728409780330281,0.894223168305527,0.922776831694473
-Observed-prevalence perturbation,80,40,Unconfounded,0,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,80,40,Unconfounded,0,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,80,40,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Unconfounded,0,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Observed-prevalence perturbation,80,40,Unconfounded,0.04,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,80,40,Unconfounded,0.04,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,80,40,Unconfounded,0.04,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,80,40,Unconfounded,0.04,ZINQ,Observed prevalence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
-Observed-prevalence perturbation,80,40,Unconfounded,0.08,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,80,40,Unconfounded,0.08,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,80,40,Unconfounded,0.08,MaAsLin 3,Observed prevalence,100,0.017,0.0356894574592746,0.00356894574592746,0.0100048663379822,0.0239951336620178
 Observed-prevalence perturbation,80,40,Unconfounded,0.08,ZINQ,Observed prevalence,100,0.019,0.0360835170406129,0.00360835170406129,0.0119276306600399,0.0260723693399601
-Observed-prevalence perturbation,80,40,Unconfounded,0.12,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,80,40,Unconfounded,0.12,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,80,40,Unconfounded,0.12,MaAsLin 3,Observed prevalence,100,0.0725,0.0760033890791401,0.00760033890791401,0.0576033357404886,0.0873966642595115
 Observed-prevalence perturbation,80,40,Unconfounded,0.12,ZINQ,Observed prevalence,100,0.082,0.0811906348781631,0.00811906348781631,0.06608663556388,0.09791336443612
-Observed-prevalence perturbation,80,40,Unconfounded,0.16,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,40,Unconfounded,0.16,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Unconfounded,0.16,MaAsLin 3,Observed prevalence,100,0.242,0.130407287396298,0.0130407287396298,0.216440171670326,0.267559828329674
 Observed-prevalence perturbation,80,40,Unconfounded,0.16,ZINQ,Observed prevalence,100,0.2755,0.132286611094046,0.0132286611094046,0.249571824225567,0.301428175774433
-Observed-prevalence perturbation,80,40,Unconfounded,0.2,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,40,Unconfounded,0.2,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.5385,0.143874068110787,0.0143874068110787,0.510300682650286,0.566699317349714
 Observed-prevalence perturbation,80,40,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.552,0.143534038478753,0.0143534038478753,0.523867328458164,0.580132671541836
-Observed-prevalence perturbation,80,40,Unconfounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,40,Unconfounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Unconfounded,0.24,MaAsLin 3,Observed prevalence,100,0.7595,0.110026397199981,0.0110026397199981,0.737934826148804,0.781065173851196
 Observed-prevalence perturbation,80,40,Unconfounded,0.24,ZINQ,Observed prevalence,100,0.77,0.104446593573419,0.0104446593573419,0.74952846765961,0.79047153234039
-Observed-prevalence perturbation,80,40,Unconfounded,0.28,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,80,40,Unconfounded,0.28,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,80,40,Unconfounded,0.28,MaAsLin 3,Observed prevalence,100,0.914,0.0647762270895704,0.00647762270895704,0.901303859490444,0.926696140509556
 Observed-prevalence perturbation,80,40,Unconfounded,0.28,ZINQ,Observed prevalence,100,0.9175,0.0600399698517411,0.00600399698517411,0.905732165909059,0.929267834090941
-Observed-prevalence perturbation,80,40,Unconfounded,0.32,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,80,40,Unconfounded,0.32,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,80,40,Unconfounded,0.32,MaAsLin 3,Observed prevalence,100,0.9675,0.039167472590032,0.0039167472590032,0.959823175372354,0.975176824627646
 Observed-prevalence perturbation,80,40,Unconfounded,0.32,ZINQ,Observed prevalence,100,0.968,0.0392608474362709,0.00392608474362709,0.960304873902491,0.975695126097509
-Observed-prevalence perturbation,120,40,Unconfounded,0,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,120,40,Unconfounded,0,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,120,40,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Observed-prevalence perturbation,120,40,Unconfounded,0,ZINQ,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
-Observed-prevalence perturbation,120,40,Unconfounded,0.04,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,40,Unconfounded,0.04,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,40,Unconfounded,0.04,MaAsLin 3,Observed prevalence,100,0.004,0.0153741222957161,0.00153741222957161,0.000986672030039635,0.00701332796996037
 Observed-prevalence perturbation,120,40,Unconfounded,0.04,ZINQ,Observed prevalence,100,0.0045,0.0160412977131912,0.00160412977131912,0.00135590564821453,0.00764409435178547
-Observed-prevalence perturbation,120,40,Unconfounded,0.08,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,120,40,Unconfounded,0.08,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,120,40,Unconfounded,0.08,MaAsLin 3,Observed prevalence,100,0.0285,0.0439553262650922,0.00439553262650922,0.0198847560520419,0.0371152439479581
 Observed-prevalence perturbation,120,40,Unconfounded,0.08,ZINQ,Observed prevalence,100,0.0355,0.0493876645949311,0.00493876645949311,0.0258200177393935,0.0451799822606065
-Observed-prevalence perturbation,120,40,Unconfounded,0.12,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,120,40,Unconfounded,0.12,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,120,40,Unconfounded,0.12,MaAsLin 3,Observed prevalence,100,0.19,0.143019388386839,0.0143019388386839,0.16196819987618,0.21803180012382
 Observed-prevalence perturbation,120,40,Unconfounded,0.12,ZINQ,Observed prevalence,100,0.2025,0.145187965942586,0.0145187965942586,0.174043158675253,0.230956841324747
-Observed-prevalence perturbation,120,40,Unconfounded,0.16,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,120,40,Unconfounded,0.16,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,120,40,Unconfounded,0.16,MaAsLin 3,Observed prevalence,100,0.53,0.165297405676049,0.0165297405676049,0.497601708487494,0.562398291512506
 Observed-prevalence perturbation,120,40,Unconfounded,0.16,ZINQ,Observed prevalence,100,0.5455,0.159718028052091,0.0159718028052091,0.51419526650179,0.57680473349821
-Observed-prevalence perturbation,120,40,Unconfounded,0.2,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,120,40,Unconfounded,0.2,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,120,40,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.795,0.109059338866231,0.0109059338866231,0.773624369582219,0.816375630417781
 Observed-prevalence perturbation,120,40,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.804,0.104369197050324,0.0104369197050324,0.783543637378137,0.824456362621864
-Observed-prevalence perturbation,120,40,Unconfounded,0.24,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,120,40,Unconfounded,0.24,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,120,40,Unconfounded,0.24,MaAsLin 3,Observed prevalence,100,0.9265,0.0557116493992763,0.00557116493992763,0.915580516717742,0.937419483282258
 Observed-prevalence perturbation,120,40,Unconfounded,0.24,ZINQ,Observed prevalence,100,0.93,0.053654336998866,0.0053654336998866,0.919483749948222,0.940516250051778
-Observed-prevalence perturbation,120,40,Unconfounded,0.28,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,40,Unconfounded,0.28,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,40,Unconfounded,0.28,MaAsLin 3,Observed prevalence,100,0.984,0.0274137766736937,0.00274137766736937,0.978626899771956,0.989373100228044
 Observed-prevalence perturbation,120,40,Unconfounded,0.28,ZINQ,Observed prevalence,100,0.9845,0.0272428287292586,0.00272428287292586,0.979160405569065,0.989839594430935
-Observed-prevalence perturbation,120,40,Unconfounded,0.32,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,120,40,Unconfounded,0.32,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,120,40,Unconfounded,0.32,MaAsLin 3,Observed prevalence,100,0.9975,0.0109521456778795,0.00109521456778795,0.995353379447136,0.999646620552864
 Observed-prevalence perturbation,120,40,Unconfounded,0.32,ZINQ,Observed prevalence,100,0.9975,0.0109521456778795,0.00109521456778795,0.995353379447136,0.999646620552864
-Observed-prevalence perturbation,60,20,Confounded,0,DASRA,Structural absence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
+Observed-prevalence perturbation,60,20,Confounded,0,SACAT,Structural absence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
 Observed-prevalence perturbation,60,20,Confounded,0,MaAsLin 3,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
 Observed-prevalence perturbation,60,20,Confounded,0,ZINQ,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
-Observed-prevalence perturbation,60,20,Confounded,0.04,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,60,20,Confounded,0.04,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,60,20,Confounded,0.04,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Confounded,0.04,ZINQ,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
-Observed-prevalence perturbation,60,20,Confounded,0.08,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,60,20,Confounded,0.08,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,60,20,Confounded,0.08,MaAsLin 3,Observed prevalence,100,0.004,0.0196946385566932,0.00196946385566932,0.000139850842888125,0.00786014915711188
 Observed-prevalence perturbation,60,20,Confounded,0.08,ZINQ,Observed prevalence,100,0.008,0.0272659924344291,0.00272659924344291,0.0026558654828519,0.0133441345171481
-Observed-prevalence perturbation,60,20,Confounded,0.12,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Confounded,0.12,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Confounded,0.12,MaAsLin 3,Observed prevalence,100,0.022,0.0483672817035849,0.00483672817035849,0.0125200127860974,0.0314799872139026
 Observed-prevalence perturbation,60,20,Confounded,0.12,ZINQ,Observed prevalence,100,0.033,0.0603943271133535,0.00603943271133535,0.0211627118857827,0.0448372881142173
-Observed-prevalence perturbation,60,20,Confounded,0.16,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,60,20,Confounded,0.16,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,60,20,Confounded,0.16,MaAsLin 3,Observed prevalence,100,0.05,0.0846859915908007,0.00846859915908007,0.0334015456482031,0.0665984543517969
 Observed-prevalence perturbation,60,20,Confounded,0.16,ZINQ,Observed prevalence,100,0.08,0.0994936676326182,0.00994936676326182,0.0604992411440068,0.0995007588559932
-Observed-prevalence perturbation,60,20,Confounded,0.2,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Confounded,0.2,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0.167,0.187517002596101,0.0187517002596101,0.130246667491164,0.203753332508836
 Observed-prevalence perturbation,60,20,Confounded,0.2,ZINQ,Observed prevalence,100,0.191,0.196481679820411,0.0196481679820411,0.152489590755199,0.229510409244801
-Observed-prevalence perturbation,60,20,Confounded,0.24,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,60,20,Confounded,0.24,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,60,20,Confounded,0.24,MaAsLin 3,Observed prevalence,100,0.343,0.19656391768932,0.019656391768932,0.304473472132893,0.381526527867107
 Observed-prevalence perturbation,60,20,Confounded,0.24,ZINQ,Observed prevalence,100,0.382,0.201198429618146,0.0201198429618146,0.342565107794843,0.421434892205157
-Observed-prevalence perturbation,60,20,Confounded,0.28,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Confounded,0.28,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Confounded,0.28,MaAsLin 3,Observed prevalence,100,0.563,0.199319549538631,0.0199319549538631,0.523933368290428,0.602066631709572
 Observed-prevalence perturbation,60,20,Confounded,0.28,ZINQ,Observed prevalence,100,0.597,0.19460137967059,0.019460137967059,0.558858129584564,0.635141870415436
-Observed-prevalence perturbation,60,20,Confounded,0.32,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,20,Confounded,0.32,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,20,Confounded,0.32,MaAsLin 3,Observed prevalence,100,0.758,0.168283070803904,0.0168283070803904,0.725016518122435,0.790983481877565
 Observed-prevalence perturbation,60,20,Confounded,0.32,ZINQ,Observed prevalence,100,0.783,0.162091756032617,0.0162091756032617,0.751230015817607,0.814769984182393
-Observed-prevalence perturbation,80,20,Confounded,0,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Confounded,0,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Confounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,80,20,Confounded,0,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Observed-prevalence perturbation,80,20,Confounded,0.04,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Confounded,0.04,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Confounded,0.04,MaAsLin 3,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
 Observed-prevalence perturbation,80,20,Confounded,0.04,ZINQ,Observed prevalence,100,0.004,0.0196946385566932,0.00196946385566932,0.000139850842888125,0.00786014915711188
-Observed-prevalence perturbation,80,20,Confounded,0.08,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,80,20,Confounded,0.08,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,80,20,Confounded,0.08,MaAsLin 3,Observed prevalence,100,0.008,0.0272659924344291,0.00272659924344291,0.0026558654828519,0.0133441345171481
 Observed-prevalence perturbation,80,20,Confounded,0.08,ZINQ,Observed prevalence,100,0.015,0.0358870281282637,0.00358870281282637,0.00796614248686032,0.0220338575131397
-Observed-prevalence perturbation,80,20,Confounded,0.12,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Confounded,0.12,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Confounded,0.12,MaAsLin 3,Observed prevalence,100,0.037,0.0719918626153559,0.00719918626153559,0.0228895949273902,0.0511104050726098
 Observed-prevalence perturbation,80,20,Confounded,0.12,ZINQ,Observed prevalence,100,0.045,0.0729950876996722,0.00729950876996722,0.0306929628108643,0.0593070371891357
-Observed-prevalence perturbation,80,20,Confounded,0.16,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Confounded,0.16,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Confounded,0.16,MaAsLin 3,Observed prevalence,100,0.135,0.143107644728708,0.0143107644728708,0.106950901633173,0.163049098366827
 Observed-prevalence perturbation,80,20,Confounded,0.16,ZINQ,Observed prevalence,100,0.157,0.153908670281693,0.0153908670281693,0.126833900624788,0.187166099375212
-Observed-prevalence perturbation,80,20,Confounded,0.2,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Confounded,0.2,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0.324,0.187552012987751,0.0187552012987751,0.287239805454401,0.360760194545599
 Observed-prevalence perturbation,80,20,Confounded,0.2,ZINQ,Observed prevalence,100,0.351,0.192534924025998,0.0192534924025998,0.313263154890904,0.388736845109096
-Observed-prevalence perturbation,80,20,Confounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Confounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Confounded,0.24,MaAsLin 3,Observed prevalence,100,0.548,0.193573518516111,0.0193573518516111,0.510059590370842,0.585940409629158
 Observed-prevalence perturbation,80,20,Confounded,0.24,ZINQ,Observed prevalence,100,0.578,0.180672145729286,0.0180672145729286,0.54258825943706,0.61341174056294
-Observed-prevalence perturbation,80,20,Confounded,0.28,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Confounded,0.28,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Confounded,0.28,MaAsLin 3,Observed prevalence,100,0.775,0.129782257429259,0.0129782257429259,0.749562677543865,0.800437322456135
 Observed-prevalence perturbation,80,20,Confounded,0.28,ZINQ,Observed prevalence,100,0.79,0.126730446462585,0.0126730446462585,0.765160832493334,0.814839167506667
-Observed-prevalence perturbation,80,20,Confounded,0.32,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,20,Confounded,0.32,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,20,Confounded,0.32,MaAsLin 3,Observed prevalence,100,0.91,0.094815077861588,0.0094815077861588,0.891416244739129,0.928583755260871
 Observed-prevalence perturbation,80,20,Confounded,0.32,ZINQ,Observed prevalence,100,0.915,0.0925235432774062,0.00925235432774062,0.896865385517628,0.933134614482372
-Observed-prevalence perturbation,120,20,Confounded,0,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Confounded,0,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Confounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,120,20,Confounded,0,ZINQ,Observed prevalence,100,0.002,0.02,0.002,0,0.00592
-Observed-prevalence perturbation,120,20,Confounded,0.04,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Confounded,0.04,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Confounded,0.04,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,120,20,Confounded,0.04,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Observed-prevalence perturbation,120,20,Confounded,0.08,DASRA,Structural absence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
+Observed-prevalence perturbation,120,20,Confounded,0.08,SACAT,Structural absence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
 Observed-prevalence perturbation,120,20,Confounded,0.08,MaAsLin 3,Observed prevalence,100,0.018,0.0386122919665369,0.00386122919665369,0.0104319907745588,0.0255680092254412
 Observed-prevalence perturbation,120,20,Confounded,0.08,ZINQ,Observed prevalence,100,0.028,0.055194788218315,0.0055194788218315,0.0171818215092103,0.0388181784907897
-Observed-prevalence perturbation,120,20,Confounded,0.12,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Confounded,0.12,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Confounded,0.12,MaAsLin 3,Observed prevalence,100,0.089,0.119675487140108,0.0119675487140108,0.0655436045205388,0.112456395479461
 Observed-prevalence perturbation,120,20,Confounded,0.12,ZINQ,Observed prevalence,100,0.103,0.12748935388312,0.012748935388312,0.0780120866389085,0.127987913361092
-Observed-prevalence perturbation,120,20,Confounded,0.16,DASRA,Structural absence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
+Observed-prevalence perturbation,120,20,Confounded,0.16,SACAT,Structural absence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
 Observed-prevalence perturbation,120,20,Confounded,0.16,MaAsLin 3,Observed prevalence,100,0.335,0.206155281280883,0.0206155281280883,0.294593564868947,0.375406435131053
 Observed-prevalence perturbation,120,20,Confounded,0.16,ZINQ,Observed prevalence,100,0.362,0.205863542133613,0.0205863542133613,0.321650745741812,0.402349254258188
-Observed-prevalence perturbation,120,20,Confounded,0.2,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Confounded,0.2,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0.611,0.183068679500731,0.0183068679500731,0.575118538817857,0.646881461182143
 Observed-prevalence perturbation,120,20,Confounded,0.2,ZINQ,Observed prevalence,100,0.635,0.183333333333333,0.0183333333333333,0.599066666666667,0.670933333333333
-Observed-prevalence perturbation,120,20,Confounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Confounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Confounded,0.24,MaAsLin 3,Observed prevalence,100,0.847,0.115867391984339,0.0115867391984339,0.824289991171069,0.86971000882893
 Observed-prevalence perturbation,120,20,Confounded,0.24,ZINQ,Observed prevalence,100,0.855,0.108595254467814,0.0108595254467814,0.833715330124309,0.876284669875692
-Observed-prevalence perturbation,120,20,Confounded,0.28,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,20,Confounded,0.28,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,20,Confounded,0.28,MaAsLin 3,Observed prevalence,100,0.958,0.0622474696252584,0.00622474696252585,0.945799495953449,0.970200504046551
 Observed-prevalence perturbation,120,20,Confounded,0.28,ZINQ,Observed prevalence,100,0.96,0.0603022689155527,0.00603022689155527,0.948180755292552,0.971819244707448
-Observed-prevalence perturbation,120,20,Confounded,0.32,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Observed-prevalence perturbation,120,20,Confounded,0.32,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Observed-prevalence perturbation,120,20,Confounded,0.32,MaAsLin 3,Observed prevalence,100,0.987,0.0337997668989631,0.00337997668989631,0.980375245687803,0.993624754312197
 Observed-prevalence perturbation,120,20,Confounded,0.32,ZINQ,Observed prevalence,100,0.988,0.032659863237109,0.0032659863237109,0.981598666805527,0.994401333194473
-Observed-prevalence perturbation,60,40,Confounded,0,DASRA,Structural absence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
+Observed-prevalence perturbation,60,40,Confounded,0,SACAT,Structural absence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
 Observed-prevalence perturbation,60,40,Confounded,0,MaAsLin 3,Observed prevalence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
 Observed-prevalence perturbation,60,40,Confounded,0,ZINQ,Observed prevalence,100,0.003,0.0119341628287971,0.00119341628287971,0.000660904085555769,0.00533909591444423
-Observed-prevalence perturbation,60,40,Confounded,0.04,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,40,Confounded,0.04,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,40,Confounded,0.04,MaAsLin 3,Observed prevalence,100,0.0025,0.0109521456778795,0.00109521456778795,0.000353379447135615,0.00464662055286439
 Observed-prevalence perturbation,60,40,Confounded,0.04,ZINQ,Observed prevalence,100,0.0035,0.0146594334781051,0.00146594334781051,0.000626751038291392,0.00637324896170861
-Observed-prevalence perturbation,60,40,Confounded,0.08,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,60,40,Confounded,0.08,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,60,40,Confounded,0.08,MaAsLin 3,Observed prevalence,100,0.005,0.018118576883487,0.0018118576883487,0.00144875893083655,0.00855124106916345
 Observed-prevalence perturbation,60,40,Confounded,0.08,ZINQ,Observed prevalence,100,0.01,0.0246182981958666,0.00246182981958666,0.00517481355361016,0.0148251864463898
-Observed-prevalence perturbation,60,40,Confounded,0.12,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,60,40,Confounded,0.12,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,60,40,Confounded,0.12,MaAsLin 3,Observed prevalence,100,0.0225,0.0385173449057156,0.00385173449057156,0.0149506003984797,0.0300493996015203
 Observed-prevalence perturbation,60,40,Confounded,0.12,ZINQ,Observed prevalence,100,0.0325,0.0428616519994413,0.00428616519994413,0.0240991162081095,0.0409008837918905
-Observed-prevalence perturbation,60,40,Confounded,0.16,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,60,40,Confounded,0.16,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,60,40,Confounded,0.16,MaAsLin 3,Observed prevalence,100,0.065,0.0824192289027827,0.00824192289027827,0.0488458311350546,0.0811541688649454
 Observed-prevalence perturbation,60,40,Confounded,0.16,ZINQ,Observed prevalence,100,0.089,0.100146357543811,0.0100146357543811,0.0693713139214129,0.108628686078587
-Observed-prevalence perturbation,60,40,Confounded,0.2,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,60,40,Confounded,0.2,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,60,40,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0.206,0.139855625412766,0.0139855625412766,0.178588297419098,0.233411702580902
 Observed-prevalence perturbation,60,40,Confounded,0.2,ZINQ,Observed prevalence,100,0.253,0.14316410023452,0.014316410023452,0.224939836354034,0.281060163645966
-Observed-prevalence perturbation,60,40,Confounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,40,Confounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,40,Confounded,0.24,MaAsLin 3,Observed prevalence,100,0.47,0.148901703051769,0.0148901703051769,0.440815266201853,0.499184733798147
 Observed-prevalence perturbation,60,40,Confounded,0.24,ZINQ,Observed prevalence,100,0.492,0.141906214583343,0.0141906214583343,0.464186381941665,0.519813618058335
-Observed-prevalence perturbation,60,40,Confounded,0.28,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,60,40,Confounded,0.28,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,60,40,Confounded,0.28,MaAsLin 3,Observed prevalence,100,0.676,0.125223033347736,0.0125223033347736,0.651456285463844,0.700543714536156
 Observed-prevalence perturbation,60,40,Confounded,0.28,ZINQ,Observed prevalence,100,0.6915,0.109879410484789,0.0109879410484789,0.669963635544981,0.713036364455019
-Observed-prevalence perturbation,60,40,Confounded,0.32,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,60,40,Confounded,0.32,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,60,40,Confounded,0.32,MaAsLin 3,Observed prevalence,100,0.827,0.0894483655580699,0.00894483655580699,0.809468120350618,0.844531879649382
 Observed-prevalence perturbation,60,40,Confounded,0.32,ZINQ,Observed prevalence,100,0.836,0.0876402195387944,0.00876402195387944,0.818822516970396,0.853177483029604
-Observed-prevalence perturbation,80,40,Confounded,0,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,80,40,Confounded,0,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,80,40,Confounded,0,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Confounded,0,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Observed-prevalence perturbation,80,40,Confounded,0.04,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,80,40,Confounded,0.04,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,80,40,Confounded,0.04,MaAsLin 3,Observed prevalence,100,0.003,0.0138898989531707,0.00138898989531707,0.00027757980517854,0.00572242019482146
 Observed-prevalence perturbation,80,40,Confounded,0.04,ZINQ,Observed prevalence,100,0.003,0.0138898989531707,0.00138898989531707,0.00027757980517854,0.00572242019482146
-Observed-prevalence perturbation,80,40,Confounded,0.08,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,40,Confounded,0.08,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Confounded,0.08,MaAsLin 3,Observed prevalence,100,0.006,0.0178093154605032,0.00178093154605032,0.00250937416974138,0.00949062583025862
 Observed-prevalence perturbation,80,40,Confounded,0.08,ZINQ,Observed prevalence,100,0.0125,0.0287579589334883,0.00287579589334883,0.00686344004903629,0.0181365599509637
-Observed-prevalence perturbation,80,40,Confounded,0.12,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,40,Confounded,0.12,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Confounded,0.12,MaAsLin 3,Observed prevalence,100,0.037,0.057568580094887,0.0057568580094887,0.0257165583014022,0.0482834416985979
 Observed-prevalence perturbation,80,40,Confounded,0.12,ZINQ,Observed prevalence,100,0.048,0.0635323825805678,0.00635323825805678,0.0355476530142087,0.0604523469857913
-Observed-prevalence perturbation,80,40,Confounded,0.16,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Observed-prevalence perturbation,80,40,Confounded,0.16,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Observed-prevalence perturbation,80,40,Confounded,0.16,MaAsLin 3,Observed prevalence,100,0.1695,0.134820306895939,0.0134820306895939,0.143075219848396,0.195924780151604
 Observed-prevalence perturbation,80,40,Confounded,0.16,ZINQ,Observed prevalence,100,0.1955,0.136162224993394,0.0136162224993394,0.168812203901295,0.222187796098705
-Observed-prevalence perturbation,80,40,Confounded,0.2,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,80,40,Confounded,0.2,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,80,40,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0.406,0.157678870691752,0.0157678870691752,0.375094941344417,0.436905058655583
 Observed-prevalence perturbation,80,40,Confounded,0.2,ZINQ,Observed prevalence,100,0.4285,0.160689015168927,0.0160689015168927,0.39700495302689,0.45999504697311
-Observed-prevalence perturbation,80,40,Confounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,40,Confounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Confounded,0.24,MaAsLin 3,Observed prevalence,100,0.661,0.136807023270597,0.0136807023270597,0.634185823438963,0.687814176561037
 Observed-prevalence perturbation,80,40,Confounded,0.24,ZINQ,Observed prevalence,100,0.672,0.137679176187089,0.0137679176187089,0.645014881467331,0.69898511853267
-Observed-prevalence perturbation,80,40,Confounded,0.28,DASRA,Structural absence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
+Observed-prevalence perturbation,80,40,Confounded,0.28,SACAT,Structural absence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
 Observed-prevalence perturbation,80,40,Confounded,0.28,MaAsLin 3,Observed prevalence,100,0.8435,0.090357035915273,0.0090357035915273,0.825790020960607,0.861209979039394
 Observed-prevalence perturbation,80,40,Confounded,0.28,ZINQ,Observed prevalence,100,0.8485,0.0883218974873025,0.00883218974873025,0.831188908092489,0.865811091907511
-Observed-prevalence perturbation,80,40,Confounded,0.32,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,80,40,Confounded,0.32,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,80,40,Confounded,0.32,MaAsLin 3,Observed prevalence,100,0.942,0.0530484817326699,0.00530484817326699,0.931602497580397,0.952397502419603
 Observed-prevalence perturbation,80,40,Confounded,0.32,ZINQ,Observed prevalence,100,0.9475,0.0504399833385373,0.00504399833385373,0.937613763265647,0.957386236734353
-Observed-prevalence perturbation,120,40,Confounded,0,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,40,Confounded,0,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,40,Confounded,0,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,120,40,Confounded,0,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Observed-prevalence perturbation,120,40,Confounded,0.04,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,40,Confounded,0.04,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,40,Confounded,0.04,MaAsLin 3,Observed prevalence,100,0.004,0.0136329962172145,0.00136329962172145,0.00132793274142595,0.00667206725857405
 Observed-prevalence perturbation,120,40,Confounded,0.04,ZINQ,Observed prevalence,100,0.005,0.0150755672288882,0.00150755672288882,0.00204518882313792,0.00795481117686208
-Observed-prevalence perturbation,120,40,Confounded,0.08,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,40,Confounded,0.08,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,40,Confounded,0.08,MaAsLin 3,Observed prevalence,100,0.0325,0.0625126249875038,0.00625126249875038,0.0202475255024493,0.0447524744975507
 Observed-prevalence perturbation,120,40,Confounded,0.08,ZINQ,Observed prevalence,100,0.0355,0.064859989067361,0.0064859989067361,0.0227874421427973,0.0482125578572028
-Observed-prevalence perturbation,120,40,Confounded,0.12,DASRA,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
+Observed-prevalence perturbation,120,40,Confounded,0.12,SACAT,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Observed-prevalence perturbation,120,40,Confounded,0.12,MaAsLin 3,Observed prevalence,100,0.134,0.118892192911703,0.0118892192911703,0.110697130189306,0.157302869810694
 Observed-prevalence perturbation,120,40,Confounded,0.12,ZINQ,Observed prevalence,100,0.1485,0.122979632049335,0.0122979632049335,0.12439599211833,0.17260400788167
-Observed-prevalence perturbation,120,40,Confounded,0.16,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,120,40,Confounded,0.16,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,120,40,Confounded,0.16,MaAsLin 3,Observed prevalence,100,0.3965,0.156388373072691,0.0156388373072691,0.365847878877753,0.427152121122248
 Observed-prevalence perturbation,120,40,Confounded,0.16,ZINQ,Observed prevalence,100,0.414,0.154246293932526,0.0154246293932526,0.383767726389225,0.444232273610775
-Observed-prevalence perturbation,120,40,Confounded,0.2,DASRA,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
+Observed-prevalence perturbation,120,40,Confounded,0.2,SACAT,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Observed-prevalence perturbation,120,40,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0.6985,0.128207336810813,0.0128207336810813,0.673371361985081,0.723628638014919
 Observed-prevalence perturbation,120,40,Confounded,0.2,ZINQ,Observed prevalence,100,0.7085,0.123920592039068,0.0123920592039068,0.684211563960343,0.732788436039657
-Observed-prevalence perturbation,120,40,Confounded,0.24,DASRA,Structural absence,100,0,0,0,0,0
+Observed-prevalence perturbation,120,40,Confounded,0.24,SACAT,Structural absence,100,0,0,0,0,0
 Observed-prevalence perturbation,120,40,Confounded,0.24,MaAsLin 3,Observed prevalence,100,0.8745,0.0821107283926511,0.00821107283926511,0.85840629723504,0.89059370276496
 Observed-prevalence perturbation,120,40,Confounded,0.24,ZINQ,Observed prevalence,100,0.88,0.0807164884961649,0.00807164884961649,0.864179568254752,0.895820431745248
-Observed-prevalence perturbation,120,40,Confounded,0.28,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,120,40,Confounded,0.28,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,120,40,Confounded,0.28,MaAsLin 3,Observed prevalence,100,0.967,0.0409606857581484,0.00409606857581484,0.958971705591403,0.975028294408597
 Observed-prevalence perturbation,120,40,Confounded,0.28,ZINQ,Observed prevalence,100,0.9685,0.0406108658396053,0.00406108658396053,0.960540270295437,0.976459729704563
-Observed-prevalence perturbation,120,40,Confounded,0.32,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Observed-prevalence perturbation,120,40,Confounded,0.32,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Observed-prevalence perturbation,120,40,Confounded,0.32,MaAsLin 3,Observed prevalence,100,0.9905,0.0197138622201831,0.00197138622201831,0.986636083004844,0.994363916995156
 Observed-prevalence perturbation,120,40,Confounded,0.32,ZINQ,Observed prevalence,100,0.9905,0.0197138622201831,0.00197138622201831,0.986636083004844,0.994363916995156
-Structural perturbation with matched prevalence,60,20,Unconfounded,0,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Structural perturbation with matched prevalence,60,20,Unconfounded,0,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,20,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,20,Unconfounded,0,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.05,DASRA,Structural absence,100,0.005,0.021904291355759,0.0021904291355759,0.00070675889427123,0.00929324110572877
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.05,SACAT,Structural absence,100,0.005,0.021904291355759,0.0021904291355759,0.00070675889427123,0.00929324110572877
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.05,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.05,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.1,DASRA,Structural absence,100,0.009,0.0287623491264661,0.00287623491264661,0.00336257957121264,0.0146374204287874
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.1,SACAT,Structural absence,100,0.009,0.0287623491264661,0.00287623491264661,0.00336257957121264,0.0146374204287874
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.1,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.1,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.15,DASRA,Structural absence,100,0.025,0.0557320429022713,0.00557320429022713,0.0140765195911548,0.0359234804088452
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.15,SACAT,Structural absence,100,0.025,0.0557320429022713,0.00557320429022713,0.0140765195911548,0.0359234804088452
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.15,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.2,DASRA,Structural absence,100,0.049,0.0797660721273541,0.00797660721273541,0.0333658498630386,0.0646341501369614
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.2,SACAT,Structural absence,100,0.049,0.0797660721273541,0.00797660721273541,0.0333658498630386,0.0646341501369614
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.25,DASRA,Structural absence,100,0.103,0.110513036846932,0.0110513036846932,0.0813394447780014,0.124660555221999
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.25,SACAT,Structural absence,100,0.103,0.110513036846932,0.0110513036846932,0.0813394447780014,0.124660555221999
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.25,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.25,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.3,DASRA,Structural absence,100,0.179,0.152616903362371,0.0152616903362371,0.149087086940975,0.208912913059025
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.3,SACAT,Structural absence,100,0.179,0.152616903362371,0.0152616903362371,0.149087086940975,0.208912913059025
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.3,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.3,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.35,DASRA,Structural absence,100,0.252,0.182286266153769,0.0182286266153769,0.216271891833861,0.287728108166139
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.35,SACAT,Structural absence,100,0.252,0.182286266153769,0.0182286266153769,0.216271891833861,0.287728108166139
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.35,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.35,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.4,DASRA,Structural absence,100,0.366,0.192914907708455,0.0192914907708455,0.328188678089143,0.403811321910857
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.4,SACAT,Structural absence,100,0.366,0.192914907708455,0.0192914907708455,0.328188678089143,0.403811321910857
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.4,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.4,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.45,DASRA,Structural absence,100,0.427,0.199926754264423,0.0199926754264423,0.387814356164173,0.466185643835827
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.45,SACAT,Structural absence,100,0.427,0.199926754264423,0.0199926754264423,0.387814356164173,0.466185643835827
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.45,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.45,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Unconfounded,0.5,DASRA,Structural absence,100,0.503,0.222227020150225,0.0222227020150225,0.459443504050556,0.546556495949444
+Structural perturbation with matched prevalence,60,20,Unconfounded,0.5,SACAT,Structural absence,100,0.503,0.222227020150225,0.0222227020150225,0.459443504050556,0.546556495949444
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.5,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,20,Unconfounded,0.5,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Unconfounded,0,DASRA,Structural absence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
+Structural perturbation with matched prevalence,80,20,Unconfounded,0,SACAT,Structural absence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
 Structural perturbation with matched prevalence,80,20,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Unconfounded,0,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.05,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.05,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.05,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.05,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.1,DASRA,Structural absence,100,0.006,0.0238683256575942,0.00238683256575942,0.00132180817111154,0.0106781918288885
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.1,SACAT,Structural absence,100,0.006,0.0238683256575942,0.00238683256575942,0.00132180817111154,0.0106781918288885
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.1,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.1,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.15,DASRA,Structural absence,100,0.037,0.0630135467237567,0.00630135467237567,0.0246493448421437,0.0493506551578563
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.15,SACAT,Structural absence,100,0.037,0.0630135467237567,0.00630135467237567,0.0246493448421437,0.0493506551578563
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.15,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.2,DASRA,Structural absence,100,0.083,0.108297196770197,0.0108297196770197,0.0617737494330413,0.104226250566959
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.2,SACAT,Structural absence,100,0.083,0.108297196770197,0.0108297196770197,0.0617737494330413,0.104226250566959
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.25,DASRA,Structural absence,100,0.188,0.163472420680775,0.0163472420680775,0.155959405546568,0.220040594453432
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.25,SACAT,Structural absence,100,0.188,0.163472420680775,0.0163472420680775,0.155959405546568,0.220040594453432
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.25,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.25,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.3,DASRA,Structural absence,100,0.255,0.189829801494269,0.0189829801494269,0.217793358907123,0.292206641092877
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.3,SACAT,Structural absence,100,0.255,0.189829801494269,0.0189829801494269,0.217793358907123,0.292206641092877
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.3,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.3,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.35,DASRA,Structural absence,100,0.397,0.176643794974605,0.0176643794974605,0.362377816184977,0.431622183815023
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.35,SACAT,Structural absence,100,0.397,0.176643794974605,0.0176643794974605,0.362377816184977,0.431622183815023
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.35,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.35,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.4,DASRA,Structural absence,100,0.529,0.216629367418831,0.0216629367418831,0.486540643985909,0.571459356014091
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.4,SACAT,Structural absence,100,0.529,0.216629367418831,0.0216629367418831,0.486540643985909,0.571459356014091
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.4,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.4,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.45,DASRA,Structural absence,100,0.619,0.174480469805174,0.0174480469805174,0.584801827918186,0.653198172081814
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.45,SACAT,Structural absence,100,0.619,0.174480469805174,0.0174480469805174,0.584801827918186,0.653198172081814
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.45,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.45,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,20,Unconfounded,0.5,DASRA,Structural absence,100,0.659,0.182626737507204,0.0182626737507204,0.623205159448588,0.694794840551412
+Structural perturbation with matched prevalence,80,20,Unconfounded,0.5,SACAT,Structural absence,100,0.659,0.182626737507204,0.0182626737507204,0.623205159448588,0.694794840551412
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.5,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Unconfounded,0.5,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,120,20,Unconfounded,0,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Structural perturbation with matched prevalence,120,20,Unconfounded,0,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Unconfounded,0,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.05,DASRA,Structural absence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.05,SACAT,Structural absence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.05,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.05,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.1,DASRA,Structural absence,100,0.019,0.0442559132612339,0.00442559132612339,0.0103258410007982,0.0276741589992018
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.1,SACAT,Structural absence,100,0.019,0.0442559132612339,0.00442559132612339,0.0103258410007982,0.0276741589992018
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.1,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.1,ZINQ,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.15,DASRA,Structural absence,100,0.067,0.0954045082898088,0.00954045082898088,0.0483007163751975,0.0856992836248025
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.15,SACAT,Structural absence,100,0.067,0.0954045082898088,0.00954045082898088,0.0483007163751975,0.0856992836248025
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.15,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.2,DASRA,Structural absence,100,0.203,0.176071037087336,0.0176071037087336,0.168490076730882,0.237509923269118
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.2,SACAT,Structural absence,100,0.203,0.176071037087336,0.0176071037087336,0.168490076730882,0.237509923269118
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.2,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.25,DASRA,Structural absence,100,0.375,0.184431969883617,0.0184431969883617,0.338851333902811,0.411148666097189
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.25,SACAT,Structural absence,100,0.375,0.184431969883617,0.0184431969883617,0.338851333902811,0.411148666097189
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.25,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.25,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.3,DASRA,Structural absence,100,0.545,0.196625573518849,0.0196625573518849,0.506461387590306,0.583538612409694
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.3,SACAT,Structural absence,100,0.545,0.196625573518849,0.0196625573518849,0.506461387590306,0.583538612409694
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.3,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.3,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.35,DASRA,Structural absence,100,0.678,0.177854781302959,0.0177854781302959,0.64314046286462,0.71285953713538
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.35,SACAT,Structural absence,100,0.678,0.177854781302959,0.0177854781302959,0.64314046286462,0.71285953713538
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.35,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.35,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.4,DASRA,Structural absence,100,0.767,0.166396751133785,0.0166396751133785,0.734386236777778,0.799613763222222
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.4,SACAT,Structural absence,100,0.767,0.166396751133785,0.0166396751133785,0.734386236777778,0.799613763222222
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.4,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.4,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.45,DASRA,Structural absence,100,0.849,0.122676383014397,0.0122676383014397,0.824955428929178,0.873044571070822
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.45,SACAT,Structural absence,100,0.849,0.122676383014397,0.0122676383014397,0.824955428929178,0.873044571070822
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.45,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.45,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Unconfounded,0.5,DASRA,Structural absence,100,0.906,0.0896908269804914,0.00896908269804914,0.888420597911824,0.923579402088176
+Structural perturbation with matched prevalence,120,20,Unconfounded,0.5,SACAT,Structural absence,100,0.906,0.0896908269804914,0.00896908269804914,0.888420597911824,0.923579402088176
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.5,MaAsLin 3,Observed prevalence,100,0.004,0.0196946385566932,0.00196946385566932,0.000139850842888125,0.00786014915711188
 Structural perturbation with matched prevalence,120,20,Unconfounded,0.5,ZINQ,Observed prevalence,100,0.004,0.0196946385566932,0.00196946385566932,0.000139850842888125,0.00786014915711188
-Structural perturbation with matched prevalence,60,40,Unconfounded,0,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Structural perturbation with matched prevalence,60,40,Unconfounded,0,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Unconfounded,0,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Unconfounded,0,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.05,DASRA,Structural absence,100,0.004,0.0169371983181601,0.00169371983181601,0.000680309129640611,0.00731969087035939
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.05,SACAT,Structural absence,100,0.004,0.0169371983181601,0.00169371983181601,0.000680309129640611,0.00731969087035939
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.05,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.05,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.1,DASRA,Structural absence,100,0.0115,0.0254802359534292,0.00254802359534292,0.00650587375312788,0.0164941262468721
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.1,SACAT,Structural absence,100,0.0115,0.0254802359534292,0.00254802359534292,0.00650587375312788,0.0164941262468721
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.1,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.1,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.15,DASRA,Structural absence,100,0.031,0.0563090318750649,0.00563090318750649,0.0199634297524873,0.0420365702475127
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.15,SACAT,Structural absence,100,0.031,0.0563090318750649,0.00563090318750649,0.0199634297524873,0.0420365702475127
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.15,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.15,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.2,DASRA,Structural absence,100,0.0765,0.0842240278583663,0.00842240278583663,0.0599920905397602,0.0930079094602398
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.2,SACAT,Structural absence,100,0.0765,0.0842240278583663,0.00842240278583663,0.0599920905397602,0.0930079094602398
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.2,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.25,DASRA,Structural absence,100,0.1595,0.113193987419292,0.0113193987419292,0.137313978465819,0.181686021534181
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.25,SACAT,Structural absence,100,0.1595,0.113193987419292,0.0113193987419292,0.137313978465819,0.181686021534181
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.25,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.25,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.3,DASRA,Structural absence,100,0.2505,0.149493251764862,0.0149493251764862,0.221199322654087,0.279800677345913
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.3,SACAT,Structural absence,100,0.2505,0.149493251764862,0.0149493251764862,0.221199322654087,0.279800677345913
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.3,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.3,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.35,DASRA,Structural absence,100,0.3395,0.15493481848764,0.015493481848764,0.309132775576423,0.369867224423578
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.35,SACAT,Structural absence,100,0.3395,0.15493481848764,0.015493481848764,0.309132775576423,0.369867224423578
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.35,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.35,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.4,DASRA,Structural absence,100,0.446,0.156456984116363,0.0156456984116363,0.415334431113193,0.476665568886807
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.4,SACAT,Structural absence,100,0.446,0.156456984116363,0.0156456984116363,0.415334431113193,0.476665568886807
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.4,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.4,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.45,DASRA,Structural absence,100,0.525,0.14363604398379,0.014363604398379,0.496847335379177,0.553152664620823
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.45,SACAT,Structural absence,100,0.525,0.14363604398379,0.014363604398379,0.496847335379177,0.553152664620823
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.45,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.45,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,40,Unconfounded,0.5,DASRA,Structural absence,100,0.6125,0.130920401447412,0.0130920401447412,0.586839601316307,0.638160398683693
+Structural perturbation with matched prevalence,60,40,Unconfounded,0.5,SACAT,Structural absence,100,0.6125,0.130920401447412,0.0130920401447412,0.586839601316307,0.638160398683693
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.5,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,40,Unconfounded,0.5,ZINQ,Observed prevalence,100,0.002,0.0121439181269781,0.00121439181269781,0,0.00438020795288771
-Structural perturbation with matched prevalence,80,40,Unconfounded,0,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Structural perturbation with matched prevalence,80,40,Unconfounded,0,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,80,40,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,80,40,Unconfounded,0,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.05,DASRA,Structural absence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.05,SACAT,Structural absence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.05,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.05,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.1,DASRA,Structural absence,100,0.0125,0.026944574611786,0.0026944574611786,0.00721886337608995,0.0177811366239101
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.1,SACAT,Structural absence,100,0.0125,0.026944574611786,0.0026944574611786,0.00721886337608995,0.0177811366239101
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.1,MaAsLin 3,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.1,ZINQ,Observed prevalence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.15,DASRA,Structural absence,100,0.055,0.0676070045979488,0.00676070045979488,0.041749027098802,0.068250972901198
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.15,SACAT,Structural absence,100,0.055,0.0676070045979488,0.00676070045979488,0.041749027098802,0.068250972901198
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.15,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.2,DASRA,Structural absence,100,0.133,0.112416074194813,0.0112416074194813,0.110966449457817,0.155033550542183
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.2,SACAT,Structural absence,100,0.133,0.112416074194813,0.0112416074194813,0.110966449457817,0.155033550542183
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.2,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.25,DASRA,Structural absence,100,0.245,0.124823107158923,0.0124823107158923,0.220534670996851,0.269465329003149
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.25,SACAT,Structural absence,100,0.245,0.124823107158923,0.0124823107158923,0.220534670996851,0.269465329003149
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.25,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.25,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.3,DASRA,Structural absence,100,0.3985,0.150664353696379,0.0150664353696379,0.36896978667551,0.42803021332449
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.3,SACAT,Structural absence,100,0.3985,0.150664353696379,0.0150664353696379,0.36896978667551,0.42803021332449
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.3,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.3,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.35,DASRA,Structural absence,100,0.533,0.141995162814183,0.0141995162814183,0.50516894808842,0.56083105191158
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.35,SACAT,Structural absence,100,0.533,0.141995162814183,0.0141995162814183,0.50516894808842,0.56083105191158
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.35,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.35,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.4,DASRA,Structural absence,100,0.614,0.132588830524287,0.0132588830524287,0.58801258921724,0.63998741078276
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.4,SACAT,Structural absence,100,0.614,0.132588830524287,0.0132588830524287,0.58801258921724,0.63998741078276
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.4,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.4,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.45,DASRA,Structural absence,100,0.7005,0.142221729007983,0.0142221729007983,0.672624541114435,0.728375458885565
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.45,SACAT,Structural absence,100,0.7005,0.142221729007983,0.0142221729007983,0.672624541114435,0.728375458885565
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.45,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.45,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,80,40,Unconfounded,0.5,DASRA,Structural absence,100,0.7635,0.110063113207327,0.0110063113207327,0.741927629811364,0.785072370188636
+Structural perturbation with matched prevalence,80,40,Unconfounded,0.5,SACAT,Structural absence,100,0.7635,0.110063113207327,0.0110063113207327,0.741927629811364,0.785072370188636
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.5,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Unconfounded,0.5,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,40,Unconfounded,0,DASRA,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
+Structural perturbation with matched prevalence,120,40,Unconfounded,0,SACAT,Structural absence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Unconfounded,0,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,40,Unconfounded,0,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.05,DASRA,Structural absence,100,0.0055,0.015723301886761,0.0015723301886761,0.00241823283019484,0.00858176716980516
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.05,SACAT,Structural absence,100,0.0055,0.015723301886761,0.0015723301886761,0.00241823283019484,0.00858176716980516
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.05,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.05,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.1,DASRA,Structural absence,100,0.029,0.0456048021572069,0.00456048021572069,0.0200614587771875,0.0379385412228125
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.1,SACAT,Structural absence,100,0.029,0.0456048021572069,0.00456048021572069,0.0200614587771875,0.0379385412228125
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.1,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.1,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.15,DASRA,Structural absence,100,0.1335,0.112379003394942,0.0112379003394942,0.111473715334591,0.155526284665409
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.15,SACAT,Structural absence,100,0.1335,0.112379003394942,0.0112379003394942,0.111473715334591,0.155526284665409
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.15,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.2,DASRA,Structural absence,100,0.308,0.154351036356231,0.0154351036356231,0.277747196874179,0.338252803125821
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.2,SACAT,Structural absence,100,0.308,0.154351036356231,0.0154351036356231,0.277747196874179,0.338252803125821
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.2,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.2,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.25,DASRA,Structural absence,100,0.501,0.141774468787578,0.0141774468787578,0.473212204117635,0.528787795882365
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.25,SACAT,Structural absence,100,0.501,0.141774468787578,0.0141774468787578,0.473212204117635,0.528787795882365
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.25,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.25,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.3,DASRA,Structural absence,100,0.665,0.132096536478043,0.0132096536478043,0.639109078850304,0.690890921149696
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.3,SACAT,Structural absence,100,0.665,0.132096536478043,0.0132096536478043,0.639109078850304,0.690890921149696
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.3,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.3,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.35,DASRA,Structural absence,100,0.763,0.119049264057899,0.0119049264057899,0.739666344244652,0.786333655755348
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.35,SACAT,Structural absence,100,0.763,0.119049264057899,0.0119049264057899,0.739666344244652,0.786333655755348
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.35,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.35,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.4,DASRA,Structural absence,100,0.834,0.0971513450158248,0.00971513450158249,0.814958336376898,0.853041663623102
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.4,SACAT,Structural absence,100,0.834,0.0971513450158248,0.00971513450158249,0.814958336376898,0.853041663623102
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.4,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.4,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.45,DASRA,Structural absence,100,0.8925,0.0708444732773093,0.00708444732773093,0.878614483237647,0.906385516762353
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.45,SACAT,Structural absence,100,0.8925,0.0708444732773093,0.00708444732773093,0.878614483237647,0.906385516762353
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.45,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.45,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,40,Unconfounded,0.5,DASRA,Structural absence,100,0.922,0.0636911740868832,0.00636911740868832,0.909516529878971,0.934483470121029
+Structural perturbation with matched prevalence,120,40,Unconfounded,0.5,SACAT,Structural absence,100,0.922,0.0636911740868832,0.00636911740868832,0.909516529878971,0.934483470121029
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.5,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,40,Unconfounded,0.5,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Confounded,0,DASRA,Structural absence,100,0,0,0,0,0
+Structural perturbation with matched prevalence,60,20,Confounded,0,SACAT,Structural absence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Confounded,0.05,DASRA,Structural absence,100,0.005,0.021904291355759,0.0021904291355759,0.00070675889427123,0.00929324110572877
+Structural perturbation with matched prevalence,60,20,Confounded,0.05,SACAT,Structural absence,100,0.005,0.021904291355759,0.0021904291355759,0.00070675889427123,0.00929324110572877
 Structural perturbation with matched prevalence,60,20,Confounded,0.05,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,20,Confounded,0.05,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,20,Confounded,0.1,DASRA,Structural absence,100,0.006,0.0277797979063414,0.00277797979063414,0.00055515961035708,0.0114448403896429
+Structural perturbation with matched prevalence,60,20,Confounded,0.1,SACAT,Structural absence,100,0.006,0.0277797979063414,0.00277797979063414,0.00055515961035708,0.0114448403896429
 Structural perturbation with matched prevalence,60,20,Confounded,0.1,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0.1,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,20,Confounded,0.15,DASRA,Structural absence,100,0.011,0.034509550720186,0.0034509550720186,0.00423612805884354,0.0177638719411565
+Structural perturbation with matched prevalence,60,20,Confounded,0.15,SACAT,Structural absence,100,0.011,0.034509550720186,0.0034509550720186,0.00423612805884354,0.0177638719411565
 Structural perturbation with matched prevalence,60,20,Confounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0.15,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,20,Confounded,0.2,DASRA,Structural absence,100,0.038,0.0707535200966044,0.00707535200966044,0.0241323100610655,0.0518676899389345
+Structural perturbation with matched prevalence,60,20,Confounded,0.2,SACAT,Structural absence,100,0.038,0.0707535200966044,0.00707535200966044,0.0241323100610655,0.0518676899389345
 Structural perturbation with matched prevalence,60,20,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0.2,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Confounded,0.25,DASRA,Structural absence,100,0.091,0.121518174223721,0.0121518174223721,0.0671824378521506,0.114817562147849
+Structural perturbation with matched prevalence,60,20,Confounded,0.25,SACAT,Structural absence,100,0.091,0.121518174223721,0.0121518174223721,0.0671824378521506,0.114817562147849
 Structural perturbation with matched prevalence,60,20,Confounded,0.25,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0.25,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Confounded,0.3,DASRA,Structural absence,100,0.119,0.144735914162605,0.0144735914162605,0.0906317608241295,0.147368239175871
+Structural perturbation with matched prevalence,60,20,Confounded,0.3,SACAT,Structural absence,100,0.119,0.144735914162605,0.0144735914162605,0.0906317608241295,0.147368239175871
 Structural perturbation with matched prevalence,60,20,Confounded,0.3,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0.3,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Confounded,0.35,DASRA,Structural absence,100,0.19,0.156669890360128,0.0156669890360128,0.159292701489415,0.220707298510585
+Structural perturbation with matched prevalence,60,20,Confounded,0.35,SACAT,Structural absence,100,0.19,0.156669890360128,0.0156669890360128,0.159292701489415,0.220707298510585
 Structural perturbation with matched prevalence,60,20,Confounded,0.35,MaAsLin 3,Observed prevalence,100,0.002,0.02,0.002,0,0.00592
 Structural perturbation with matched prevalence,60,20,Confounded,0.35,ZINQ,Observed prevalence,100,0.002,0.02,0.002,0,0.00592
-Structural perturbation with matched prevalence,60,20,Confounded,0.4,DASRA,Structural absence,100,0.258,0.181564469447237,0.0181564469447237,0.222413363988342,0.293586636011658
+Structural perturbation with matched prevalence,60,20,Confounded,0.4,SACAT,Structural absence,100,0.258,0.181564469447237,0.0181564469447237,0.222413363988342,0.293586636011658
 Structural perturbation with matched prevalence,60,20,Confounded,0.4,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0.4,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,20,Confounded,0.45,DASRA,Structural absence,100,0.351,0.20572365498946,0.020572365498946,0.310678163622066,0.391321836377934
+Structural perturbation with matched prevalence,60,20,Confounded,0.45,SACAT,Structural absence,100,0.351,0.20572365498946,0.020572365498946,0.310678163622066,0.391321836377934
 Structural perturbation with matched prevalence,60,20,Confounded,0.45,MaAsLin 3,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
 Structural perturbation with matched prevalence,60,20,Confounded,0.45,ZINQ,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
-Structural perturbation with matched prevalence,60,20,Confounded,0.5,DASRA,Structural absence,100,0.419,0.210192312135359,0.0210192312135359,0.37780230682147,0.46019769317853
+Structural perturbation with matched prevalence,60,20,Confounded,0.5,SACAT,Structural absence,100,0.419,0.210192312135359,0.0210192312135359,0.37780230682147,0.46019769317853
 Structural perturbation with matched prevalence,60,20,Confounded,0.5,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,20,Confounded,0.5,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Confounded,0,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Structural perturbation with matched prevalence,80,20,Confounded,0,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Confounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Confounded,0,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Confounded,0.05,DASRA,Structural absence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
+Structural perturbation with matched prevalence,80,20,Confounded,0.05,SACAT,Structural absence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
 Structural perturbation with matched prevalence,80,20,Confounded,0.05,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Confounded,0.05,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Confounded,0.1,DASRA,Structural absence,100,0.008,0.0272659924344291,0.00272659924344291,0.0026558654828519,0.0133441345171481
+Structural perturbation with matched prevalence,80,20,Confounded,0.1,SACAT,Structural absence,100,0.008,0.0272659924344291,0.00272659924344291,0.0026558654828519,0.0133441345171481
 Structural perturbation with matched prevalence,80,20,Confounded,0.1,MaAsLin 3,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
 Structural perturbation with matched prevalence,80,20,Confounded,0.1,ZINQ,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
-Structural perturbation with matched prevalence,80,20,Confounded,0.15,DASRA,Structural absence,100,0.024,0.0653197264742181,0.00653197264742181,0.0111973336110533,0.0368026663889467
+Structural perturbation with matched prevalence,80,20,Confounded,0.15,SACAT,Structural absence,100,0.024,0.0653197264742181,0.00653197264742181,0.0111973336110533,0.0368026663889467
 Structural perturbation with matched prevalence,80,20,Confounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,20,Confounded,0.15,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,20,Confounded,0.2,DASRA,Structural absence,100,0.074,0.0916955877241692,0.00916955877241692,0.0560276648060628,0.0919723351939372
+Structural perturbation with matched prevalence,80,20,Confounded,0.2,SACAT,Structural absence,100,0.074,0.0916955877241692,0.00916955877241692,0.0560276648060628,0.0919723351939372
 Structural perturbation with matched prevalence,80,20,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Confounded,0.2,ZINQ,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
-Structural perturbation with matched prevalence,80,20,Confounded,0.25,DASRA,Structural absence,100,0.114,0.127144235282834,0.0127144235282834,0.0890797298845646,0.138920270115435
+Structural perturbation with matched prevalence,80,20,Confounded,0.25,SACAT,Structural absence,100,0.114,0.127144235282834,0.0127144235282834,0.0890797298845646,0.138920270115435
 Structural perturbation with matched prevalence,80,20,Confounded,0.25,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,20,Confounded,0.25,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,20,Confounded,0.3,DASRA,Structural absence,100,0.225,0.167799182526512,0.0167799182526512,0.192111360224804,0.257888639775196
+Structural perturbation with matched prevalence,80,20,Confounded,0.3,SACAT,Structural absence,100,0.225,0.167799182526512,0.0167799182526512,0.192111360224804,0.257888639775196
 Structural perturbation with matched prevalence,80,20,Confounded,0.3,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Confounded,0.3,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Confounded,0.35,DASRA,Structural absence,100,0.294,0.190066442396475,0.0190066442396475,0.256746977290291,0.331253022709709
+Structural perturbation with matched prevalence,80,20,Confounded,0.35,SACAT,Structural absence,100,0.294,0.190066442396475,0.0190066442396475,0.256746977290291,0.331253022709709
 Structural perturbation with matched prevalence,80,20,Confounded,0.35,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Confounded,0.35,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Confounded,0.4,DASRA,Structural absence,100,0.436,0.214861947691201,0.0214861947691201,0.393887058252525,0.478112941747476
+Structural perturbation with matched prevalence,80,20,Confounded,0.4,SACAT,Structural absence,100,0.436,0.214861947691201,0.0214861947691201,0.393887058252525,0.478112941747476
 Structural perturbation with matched prevalence,80,20,Confounded,0.4,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,20,Confounded,0.4,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Confounded,0.45,DASRA,Structural absence,100,0.513,0.193664815095723,0.0193664815095723,0.475041696241238,0.550958303758762
+Structural perturbation with matched prevalence,80,20,Confounded,0.45,SACAT,Structural absence,100,0.513,0.193664815095723,0.0193664815095723,0.475041696241238,0.550958303758762
 Structural perturbation with matched prevalence,80,20,Confounded,0.45,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,80,20,Confounded,0.45,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,80,20,Confounded,0.5,DASRA,Structural absence,100,0.625,0.194559850312276,0.0194559850312276,0.586866269338794,0.663133730661206
+Structural perturbation with matched prevalence,80,20,Confounded,0.5,SACAT,Structural absence,100,0.625,0.194559850312276,0.0194559850312276,0.586866269338794,0.663133730661206
 Structural perturbation with matched prevalence,80,20,Confounded,0.5,MaAsLin 3,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
 Structural perturbation with matched prevalence,80,20,Confounded,0.5,ZINQ,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
-Structural perturbation with matched prevalence,120,20,Confounded,0,DASRA,Structural absence,100,0.001,0.01,0.001,0,0.00296
+Structural perturbation with matched prevalence,120,20,Confounded,0,SACAT,Structural absence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Confounded,0,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Confounded,0,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Confounded,0.05,DASRA,Structural absence,100,0.004,0.0196946385566932,0.00196946385566932,0.000139850842888125,0.00786014915711188
+Structural perturbation with matched prevalence,120,20,Confounded,0.05,SACAT,Structural absence,100,0.004,0.0196946385566932,0.00196946385566932,0.000139850842888125,0.00786014915711188
 Structural perturbation with matched prevalence,120,20,Confounded,0.05,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Confounded,0.05,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,120,20,Confounded,0.1,DASRA,Structural absence,100,0.015,0.0385992097056273,0.00385992097056273,0.00743455489769706,0.022565445102303
+Structural perturbation with matched prevalence,120,20,Confounded,0.1,SACAT,Structural absence,100,0.015,0.0385992097056273,0.00385992097056273,0.00743455489769706,0.022565445102303
 Structural perturbation with matched prevalence,120,20,Confounded,0.1,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Confounded,0.1,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Confounded,0.15,DASRA,Structural absence,100,0.062,0.0885118265224678,0.00885118265224678,0.0446516820015963,0.0793483179984037
+Structural perturbation with matched prevalence,120,20,Confounded,0.15,SACAT,Structural absence,100,0.062,0.0885118265224678,0.00885118265224678,0.0446516820015963,0.0793483179984037
 Structural perturbation with matched prevalence,120,20,Confounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Confounded,0.15,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Confounded,0.2,DASRA,Structural absence,100,0.142,0.15254077116852,0.015254077116852,0.11210200885097,0.17189799114903
+Structural perturbation with matched prevalence,120,20,Confounded,0.2,SACAT,Structural absence,100,0.142,0.15254077116852,0.015254077116852,0.11210200885097,0.17189799114903
 Structural perturbation with matched prevalence,120,20,Confounded,0.2,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Confounded,0.2,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Confounded,0.25,DASRA,Structural absence,100,0.311,0.202955436219159,0.0202955436219159,0.271220734501045,0.350779265498955
+Structural perturbation with matched prevalence,120,20,Confounded,0.25,SACAT,Structural absence,100,0.311,0.202955436219159,0.0202955436219159,0.271220734501045,0.350779265498955
 Structural perturbation with matched prevalence,120,20,Confounded,0.25,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Confounded,0.25,ZINQ,Observed prevalence,100,0.002,0.014070529413629,0.0014070529413629,0,0.00475782376507128
-Structural perturbation with matched prevalence,120,20,Confounded,0.3,DASRA,Structural absence,100,0.431,0.172149218805528,0.0172149218805528,0.397258753114117,0.464741246885884
+Structural perturbation with matched prevalence,120,20,Confounded,0.3,SACAT,Structural absence,100,0.431,0.172149218805528,0.0172149218805528,0.397258753114117,0.464741246885884
 Structural perturbation with matched prevalence,120,20,Confounded,0.3,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Confounded,0.3,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Confounded,0.35,DASRA,Structural absence,100,0.564,0.186146461289236,0.0186146461289236,0.52751529358731,0.60048470641269
+Structural perturbation with matched prevalence,120,20,Confounded,0.35,SACAT,Structural absence,100,0.564,0.186146461289236,0.0186146461289236,0.52751529358731,0.60048470641269
 Structural perturbation with matched prevalence,120,20,Confounded,0.35,MaAsLin 3,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
 Structural perturbation with matched prevalence,120,20,Confounded,0.35,ZINQ,Observed prevalence,100,0.003,0.0171446607997765,0.00171446607997765,0,0.0063603535167562
-Structural perturbation with matched prevalence,120,20,Confounded,0.4,DASRA,Structural absence,100,0.7,0.17865942997556,0.017865942997556,0.66498275172479,0.73501724827521
+Structural perturbation with matched prevalence,120,20,Confounded,0.4,SACAT,Structural absence,100,0.7,0.17865942997556,0.017865942997556,0.66498275172479,0.73501724827521
 Structural perturbation with matched prevalence,120,20,Confounded,0.4,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Confounded,0.4,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,120,20,Confounded,0.45,DASRA,Structural absence,100,0.777,0.154301947197989,0.0154301947197989,0.746756818349194,0.807243181650806
+Structural perturbation with matched prevalence,120,20,Confounded,0.45,SACAT,Structural absence,100,0.777,0.154301947197989,0.0154301947197989,0.746756818349194,0.807243181650806
 Structural perturbation with matched prevalence,120,20,Confounded,0.45,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,20,Confounded,0.45,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,20,Confounded,0.5,DASRA,Structural absence,100,0.825,0.138808057286588,0.0138808057286588,0.797793620771829,0.852206379228171
+Structural perturbation with matched prevalence,120,20,Confounded,0.5,SACAT,Structural absence,100,0.825,0.138808057286588,0.0138808057286588,0.797793620771829,0.852206379228171
 Structural perturbation with matched prevalence,120,20,Confounded,0.5,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,120,20,Confounded,0.5,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,40,Confounded,0,DASRA,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
+Structural perturbation with matched prevalence,60,40,Confounded,0,SACAT,Structural absence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,60,40,Confounded,0,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Confounded,0,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Confounded,0.05,DASRA,Structural absence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
+Structural perturbation with matched prevalence,60,40,Confounded,0.05,SACAT,Structural absence,100,0.002,0.00984731927834662,0.000984731927834662,6.99254214440626e-05,0.00393007457855594
 Structural perturbation with matched prevalence,60,40,Confounded,0.05,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Confounded,0.05,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Confounded,0.1,DASRA,Structural absence,100,0.011,0.031446603773522,0.0031446603773522,0.00483646566038969,0.0171635343396103
+Structural perturbation with matched prevalence,60,40,Confounded,0.1,SACAT,Structural absence,100,0.011,0.031446603773522,0.0031446603773522,0.00483646566038969,0.0171635343396103
 Structural perturbation with matched prevalence,60,40,Confounded,0.1,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Confounded,0.1,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Confounded,0.15,DASRA,Structural absence,100,0.0275,0.0494285526612081,0.00494285526612081,0.0178120036784032,0.0371879963215968
+Structural perturbation with matched prevalence,60,40,Confounded,0.15,SACAT,Structural absence,100,0.0275,0.0494285526612081,0.00494285526612081,0.0178120036784032,0.0371879963215968
 Structural perturbation with matched prevalence,60,40,Confounded,0.15,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Confounded,0.15,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Confounded,0.2,DASRA,Structural absence,100,0.056,0.0660119364780019,0.00660119364780019,0.0430616604503116,0.0689383395496884
+Structural perturbation with matched prevalence,60,40,Confounded,0.2,SACAT,Structural absence,100,0.056,0.0660119364780019,0.00660119364780019,0.0430616604503116,0.0689383395496884
 Structural perturbation with matched prevalence,60,40,Confounded,0.2,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Confounded,0.2,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,60,40,Confounded,0.25,DASRA,Structural absence,100,0.0995,0.10087871505682,0.010087871505682,0.0797277718488632,0.119272228151137
+Structural perturbation with matched prevalence,60,40,Confounded,0.25,SACAT,Structural absence,100,0.0995,0.10087871505682,0.010087871505682,0.0797277718488632,0.119272228151137
 Structural perturbation with matched prevalence,60,40,Confounded,0.25,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Confounded,0.25,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,60,40,Confounded,0.3,DASRA,Structural absence,100,0.1935,0.134962583666359,0.0134962583666359,0.167047333601394,0.219952666398606
+Structural perturbation with matched prevalence,60,40,Confounded,0.3,SACAT,Structural absence,100,0.1935,0.134962583666359,0.0134962583666359,0.167047333601394,0.219952666398606
 Structural perturbation with matched prevalence,60,40,Confounded,0.3,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Confounded,0.3,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,40,Confounded,0.35,DASRA,Structural absence,100,0.2585,0.150429519722827,0.0150429519722827,0.229015814134326,0.287984185865674
+Structural perturbation with matched prevalence,60,40,Confounded,0.35,SACAT,Structural absence,100,0.2585,0.150429519722827,0.0150429519722827,0.229015814134326,0.287984185865674
 Structural perturbation with matched prevalence,60,40,Confounded,0.35,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Confounded,0.35,ZINQ,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
-Structural perturbation with matched prevalence,60,40,Confounded,0.4,DASRA,Structural absence,100,0.372,0.148786335855729,0.0148786335855729,0.342837878172277,0.401162121827723
+Structural perturbation with matched prevalence,60,40,Confounded,0.4,SACAT,Structural absence,100,0.372,0.148786335855729,0.0148786335855729,0.342837878172277,0.401162121827723
 Structural perturbation with matched prevalence,60,40,Confounded,0.4,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,60,40,Confounded,0.4,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,60,40,Confounded,0.45,DASRA,Structural absence,100,0.438,0.148242226021325,0.0148242226021325,0.40894452369982,0.46705547630018
+Structural perturbation with matched prevalence,60,40,Confounded,0.45,SACAT,Structural absence,100,0.438,0.148242226021325,0.0148242226021325,0.40894452369982,0.46705547630018
 Structural perturbation with matched prevalence,60,40,Confounded,0.45,MaAsLin 3,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
 Structural perturbation with matched prevalence,60,40,Confounded,0.45,ZINQ,Observed prevalence,100,0.001,0.01,0.001,0,0.00296
-Structural perturbation with matched prevalence,60,40,Confounded,0.5,DASRA,Structural absence,100,0.53,0.147196014438797,0.0147196014438797,0.501149581169996,0.558850418830004
+Structural perturbation with matched prevalence,60,40,Confounded,0.5,SACAT,Structural absence,100,0.53,0.147196014438797,0.0147196014438797,0.501149581169996,0.558850418830004
 Structural perturbation with matched prevalence,60,40,Confounded,0.5,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,60,40,Confounded,0.5,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,80,40,Confounded,0,DASRA,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
+Structural perturbation with matched prevalence,80,40,Confounded,0,SACAT,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Structural perturbation with matched prevalence,80,40,Confounded,0,MaAsLin 3,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Structural perturbation with matched prevalence,80,40,Confounded,0,ZINQ,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
-Structural perturbation with matched prevalence,80,40,Confounded,0.05,DASRA,Structural absence,100,0.002,0.0121439181269781,0.00121439181269781,0,0.00438020795288771
+Structural perturbation with matched prevalence,80,40,Confounded,0.05,SACAT,Structural absence,100,0.002,0.0121439181269781,0.00121439181269781,0,0.00438020795288771
 Structural perturbation with matched prevalence,80,40,Confounded,0.05,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Confounded,0.05,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,40,Confounded,0.1,DASRA,Structural absence,100,0.017,0.0303348317978198,0.00303348317978198,0.0110543729676273,0.0229456270323727
+Structural perturbation with matched prevalence,80,40,Confounded,0.1,SACAT,Structural absence,100,0.017,0.0303348317978198,0.00303348317978198,0.0110543729676273,0.0229456270323727
 Structural perturbation with matched prevalence,80,40,Confounded,0.1,MaAsLin 3,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,80,40,Confounded,0.1,ZINQ,Observed prevalence,100,0.0025,0.0109521456778795,0.00109521456778795,0.000353379447135615,0.00464662055286439
-Structural perturbation with matched prevalence,80,40,Confounded,0.15,DASRA,Structural absence,100,0.035,0.0538891492235719,0.00538891492235719,0.0244377267521799,0.0455622732478201
+Structural perturbation with matched prevalence,80,40,Confounded,0.15,SACAT,Structural absence,100,0.035,0.0538891492235719,0.00538891492235719,0.0244377267521799,0.0455622732478201
 Structural perturbation with matched prevalence,80,40,Confounded,0.15,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Confounded,0.15,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,40,Confounded,0.2,DASRA,Structural absence,100,0.107,0.102745149065859,0.0102745149065859,0.0868619507830916,0.127138049216908
+Structural perturbation with matched prevalence,80,40,Confounded,0.2,SACAT,Structural absence,100,0.107,0.102745149065859,0.0102745149065859,0.0868619507830916,0.127138049216908
 Structural perturbation with matched prevalence,80,40,Confounded,0.2,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,80,40,Confounded,0.2,ZINQ,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
-Structural perturbation with matched prevalence,80,40,Confounded,0.25,DASRA,Structural absence,100,0.191,0.128978112621303,0.0128978112621303,0.165720289926225,0.216279710073775
+Structural perturbation with matched prevalence,80,40,Confounded,0.25,SACAT,Structural absence,100,0.191,0.128978112621303,0.0128978112621303,0.165720289926225,0.216279710073775
 Structural perturbation with matched prevalence,80,40,Confounded,0.25,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Confounded,0.25,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,40,Confounded,0.3,DASRA,Structural absence,100,0.32,0.147709789175199,0.0147709789175199,0.291048881321661,0.348951118678339
+Structural perturbation with matched prevalence,80,40,Confounded,0.3,SACAT,Structural absence,100,0.32,0.147709789175199,0.0147709789175199,0.291048881321661,0.348951118678339
 Structural perturbation with matched prevalence,80,40,Confounded,0.3,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,80,40,Confounded,0.3,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,80,40,Confounded,0.35,DASRA,Structural absence,100,0.4155,0.151706621443822,0.0151706621443822,0.385765502197011,0.445234497802989
+Structural perturbation with matched prevalence,80,40,Confounded,0.35,SACAT,Structural absence,100,0.4155,0.151706621443822,0.0151706621443822,0.385765502197011,0.445234497802989
 Structural perturbation with matched prevalence,80,40,Confounded,0.35,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,80,40,Confounded,0.35,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,80,40,Confounded,0.4,DASRA,Structural absence,100,0.536,0.133537722132449,0.0133537722132449,0.50982660646204,0.56217339353796
+Structural perturbation with matched prevalence,80,40,Confounded,0.4,SACAT,Structural absence,100,0.536,0.133537722132449,0.0133537722132449,0.50982660646204,0.56217339353796
 Structural perturbation with matched prevalence,80,40,Confounded,0.4,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Confounded,0.4,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,80,40,Confounded,0.45,DASRA,Structural absence,100,0.6335,0.134099126610041,0.0134099126610041,0.607216571184432,0.659783428815568
+Structural perturbation with matched prevalence,80,40,Confounded,0.45,SACAT,Structural absence,100,0.6335,0.134099126610041,0.0134099126610041,0.607216571184432,0.659783428815568
 Structural perturbation with matched prevalence,80,40,Confounded,0.45,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,80,40,Confounded,0.45,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,80,40,Confounded,0.5,DASRA,Structural absence,100,0.7055,0.109842633072974,0.0109842633072974,0.683970843917697,0.727029156082303
+Structural perturbation with matched prevalence,80,40,Confounded,0.5,SACAT,Structural absence,100,0.7055,0.109842633072974,0.0109842633072974,0.683970843917697,0.727029156082303
 Structural perturbation with matched prevalence,80,40,Confounded,0.5,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,80,40,Confounded,0.5,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,40,Confounded,0,DASRA,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
+Structural perturbation with matched prevalence,120,40,Confounded,0,SACAT,Structural absence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Structural perturbation with matched prevalence,120,40,Confounded,0,MaAsLin 3,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,120,40,Confounded,0,ZINQ,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
-Structural perturbation with matched prevalence,120,40,Confounded,0.05,DASRA,Structural absence,100,0.0045,0.0175450358457395,0.00175450358457395,0.00106117297423506,0.00793882702576494
+Structural perturbation with matched prevalence,120,40,Confounded,0.05,SACAT,Structural absence,100,0.0045,0.0175450358457395,0.00175450358457395,0.00106117297423506,0.00793882702576494
 Structural perturbation with matched prevalence,120,40,Confounded,0.05,MaAsLin 3,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
 Structural perturbation with matched prevalence,120,40,Confounded,0.05,ZINQ,Observed prevalence,100,0.0015,0.00857233039988826,0.000857233039988827,0,0.0031801767583781
-Structural perturbation with matched prevalence,120,40,Confounded,0.1,DASRA,Structural absence,100,0.018,0.0365977313421739,0.00365977313421739,0.0108268446569339,0.0251731553430661
+Structural perturbation with matched prevalence,120,40,Confounded,0.1,SACAT,Structural absence,100,0.018,0.0365977313421739,0.00365977313421739,0.0108268446569339,0.0251731553430661
 Structural perturbation with matched prevalence,120,40,Confounded,0.1,MaAsLin 3,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,120,40,Confounded,0.1,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,120,40,Confounded,0.15,DASRA,Structural absence,100,0.0835,0.0884932800050976,0.00884932800050976,0.0661553171190009,0.100844682880999
+Structural perturbation with matched prevalence,120,40,Confounded,0.15,SACAT,Structural absence,100,0.0835,0.0884932800050976,0.00884932800050976,0.0661553171190009,0.100844682880999
 Structural perturbation with matched prevalence,120,40,Confounded,0.15,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Confounded,0.15,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Confounded,0.2,DASRA,Structural absence,100,0.2435,0.151866335434763,0.0151866335434763,0.213734198254787,0.273265801745213
+Structural perturbation with matched prevalence,120,40,Confounded,0.2,SACAT,Structural absence,100,0.2435,0.151866335434763,0.0151866335434763,0.213734198254787,0.273265801745213
 Structural perturbation with matched prevalence,120,40,Confounded,0.2,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Confounded,0.2,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Confounded,0.25,DASRA,Structural absence,100,0.424,0.165065031567757,0.0165065031567757,0.39164725381272,0.45635274618728
+Structural perturbation with matched prevalence,120,40,Confounded,0.25,SACAT,Structural absence,100,0.424,0.165065031567757,0.0165065031567757,0.39164725381272,0.45635274618728
 Structural perturbation with matched prevalence,120,40,Confounded,0.25,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Confounded,0.25,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Confounded,0.3,DASRA,Structural absence,100,0.591,0.130535029549137,0.0130535029549137,0.565415134208369,0.616584865791631
+Structural perturbation with matched prevalence,120,40,Confounded,0.3,SACAT,Structural absence,100,0.591,0.130535029549137,0.0130535029549137,0.565415134208369,0.616584865791631
 Structural perturbation with matched prevalence,120,40,Confounded,0.3,MaAsLin 3,Observed prevalence,100,0,0,0,0,0
 Structural perturbation with matched prevalence,120,40,Confounded,0.3,ZINQ,Observed prevalence,100,0,0,0,0,0
-Structural perturbation with matched prevalence,120,40,Confounded,0.35,DASRA,Structural absence,100,0.7065,0.12505655286366,0.012505655286366,0.681988915638723,0.731011084361277
+Structural perturbation with matched prevalence,120,40,Confounded,0.35,SACAT,Structural absence,100,0.7065,0.12505655286366,0.012505655286366,0.681988915638723,0.731011084361277
 Structural perturbation with matched prevalence,120,40,Confounded,0.35,MaAsLin 3,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
 Structural perturbation with matched prevalence,120,40,Confounded,0.35,ZINQ,Observed prevalence,100,0.001,0.00703526470681449,0.000703526470681449,0,0.00237891188253564
-Structural perturbation with matched prevalence,120,40,Confounded,0.4,DASRA,Structural absence,100,0.78,0.110782341881399,0.0110782341881399,0.758286660991246,0.801713339008754
+Structural perturbation with matched prevalence,120,40,Confounded,0.4,SACAT,Structural absence,100,0.78,0.110782341881399,0.0110782341881399,0.758286660991246,0.801713339008754
 Structural perturbation with matched prevalence,120,40,Confounded,0.4,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Confounded,0.4,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Confounded,0.45,DASRA,Structural absence,100,0.8555,0.073476100697692,0.0073476100697692,0.841098684263253,0.869901315736748
+Structural perturbation with matched prevalence,120,40,Confounded,0.45,SACAT,Structural absence,100,0.8555,0.073476100697692,0.0073476100697692,0.841098684263253,0.869901315736748
 Structural perturbation with matched prevalence,120,40,Confounded,0.45,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Confounded,0.45,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
-Structural perturbation with matched prevalence,120,40,Confounded,0.5,DASRA,Structural absence,100,0.889,0.0783607302186755,0.00783607302186755,0.87364129687714,0.90435870312286
+Structural perturbation with matched prevalence,120,40,Confounded,0.5,SACAT,Structural absence,100,0.889,0.0783607302186755,0.00783607302186755,0.87364129687714,0.90435870312286
 Structural perturbation with matched prevalence,120,40,Confounded,0.5,MaAsLin 3,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148
 Structural perturbation with matched prevalence,120,40,Confounded,0.5,ZINQ,Observed prevalence,100,5e-04,0.005,5e-04,0,0.00148

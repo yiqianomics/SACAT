@@ -200,7 +200,7 @@ analysis_input <- list(
 )
 saveRDS(
     analysis_input,
-    file.path(output_directory, "korean_hypertension_dasra_input.rds"),
+    file.path(output_directory, "korean_hypertension_sacat_input.rds"),
     compress = "xz"
 )
 write_count_csv(

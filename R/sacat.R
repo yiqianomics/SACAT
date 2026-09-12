@@ -1,15 +1,15 @@
-# DASRA: Depth-Aware Structural-Absence and Relative-Abundance Analysis
+# SACAT: Depth-Aware Structural-Absence and Relative-Abundance Analysis
 
-#' DASRA: Depth-Aware Structural-Absence and Relative-Abundance Analysis
+#' SACAT: Depth-Aware Structural-Absence and Relative-Abundance Analysis
 #'
-#' DASRA provides depth-aware inference for structural-absence and
+#' SACAT provides depth-aware inference for structural-absence and
 #' relative-abundance associations in microbiome count data. It reports the
 #' two components separately and combines them in an omnibus analysis.
 #'
 #' @keywords internal
 #' @import stats
 #' @importFrom Rcpp evalCpp
-#' @useDynLib DASRA, .registration = TRUE
+#' @useDynLib SACAT, .registration = TRUE
 "_PACKAGE"
 
 # --------------------------------------------------------------------------
@@ -18,14 +18,14 @@
 
 # Internal names follow the computation they support: count_* functions are
 # count-model and quadrature primitives, zt_* functions form the shared
-# zero-truncated count and structural engine, and .dasra_* functions coordinate
+# zero-truncated count and structural engine, and .sacat_* functions coordinate
 # the package-level analysis. None of these helpers is exported.
 
 count_clamp <- function(x, lo, hi) {
     pmin(pmax(x, lo), hi)
 }
 
-.dasra_validate_conditional_present_starts <- function(
+.sacat_validate_conditional_present_starts <- function(
         starts, argument = "conditional_present_starts") {
     valid <- is.numeric(starts) && !is.logical(starts) &&
         length(starts) == 1L && !is.na(starts) && is.finite(starts) &&
@@ -40,9 +40,9 @@ count_clamp <- function(x, lo, hi) {
     as.integer(round(starts))
 }
 
-.dasra_resolve_structural_conditional_present_starts <- function(starts) {
+.sacat_resolve_structural_conditional_present_starts <- function(starts) {
     if (is.numeric(starts) && !is.logical(starts)) {
-        count <- .dasra_validate_conditional_present_starts(
+        count <- .sacat_validate_conditional_present_starts(
             starts, "structural_conditional_present_starts"
         )
         return(list(
@@ -63,7 +63,7 @@ count_clamp <- function(x, lo, hi) {
     list(mode = mode, count = if (mode == "adaptive") 1L else 5L)
 }
 
-.dasra_validate_positive_integer <- function(value, name, minimum = 1L) {
+.sacat_validate_positive_integer <- function(value, name, minimum = 1L) {
     valid <- is.numeric(value) && !is.logical(value) &&
         length(value) == 1L && !is.na(value) && is.finite(value) &&
         abs(value - round(value)) <= 1e-8 && value >= minimum &&
@@ -75,8 +75,8 @@ count_clamp <- function(x, lo, hi) {
     as.integer(round(value))
 }
 
-.dasra_select_conditional_present_starts <- function(bank, starts) {
-    starts <- .dasra_validate_conditional_present_starts(starts)
+.sacat_select_conditional_present_starts <- function(bank, starts) {
+    starts <- .sacat_validate_conditional_present_starts(starts)
     if (starts == 1L) bank[1L] else bank
 }
 
@@ -93,7 +93,7 @@ count_row_log_sum_exp <- function(x) {
     out
 }
 
-.dasra_count_gh_cache <- new.env(parent = emptyenv())
+.sacat_count_gh_cache <- new.env(parent = emptyenv())
 
 make_count_gh_rule <- function(Q = 21L) {
     Q <- as.integer(Q)
@@ -101,9 +101,9 @@ make_count_gh_rule <- function(Q = 21L) {
         stop("Q must be one integer at least 3.")
     }
     cache_key <- as.character(Q)
-    if (exists(cache_key, envir = .dasra_count_gh_cache,
+    if (exists(cache_key, envir = .sacat_count_gh_cache,
                inherits = FALSE)) {
-        return(get(cache_key, envir = .dasra_count_gh_cache,
+        return(get(cache_key, envir = .sacat_count_gh_cache,
                    inherits = FALSE))
     }
     J <- matrix(0, Q, Q)
@@ -124,11 +124,11 @@ make_count_gh_rule <- function(Q = 21L) {
         log_weight = log(weight),
         log_raw_weight = log(weight) + 0.5 * log(pi)
     )
-    assign(cache_key, rule, envir = .dasra_count_gh_cache)
+    assign(cache_key, rule, envir = .sacat_count_gh_cache)
     rule
 }
 
-.dasra_structural_gh_cache <- new.env(parent = emptyenv())
+.sacat_structural_gh_cache <- new.env(parent = emptyenv())
 
 make_structural_gh_rule <- function(Q = 1001L) {
     Q <- as.integer(Q)
@@ -136,9 +136,9 @@ make_structural_gh_rule <- function(Q = 1001L) {
         stop("Q must be one integer at least 3.")
     }
     cache_key <- as.character(Q)
-    if (exists(cache_key, envir = .dasra_structural_gh_cache,
+    if (exists(cache_key, envir = .sacat_structural_gh_cache,
                inherits = FALSE)) {
-        return(get(cache_key, envir = .dasra_structural_gh_cache,
+        return(get(cache_key, envir = .sacat_structural_gh_cache,
                    inherits = FALSE))
     }
     package_rule <- statmod::gauss.quad(Q, kind = "hermite")
@@ -147,7 +147,7 @@ make_structural_gh_rule <- function(Q = 1001L) {
         is.unsorted(node, strictly = TRUE)) {
         stop("The Gauss-Hermite node rule is invalid.")
     }
-    log_raw_weight <- dasra_gh_log_weights_cpp(node, Q)
+    log_raw_weight <- sacat_gh_log_weights_cpp(node, Q)
     if (length(log_raw_weight) != Q || any(!is.finite(log_raw_weight))) {
         stop("The Gauss-Hermite log weights are invalid.")
     }
@@ -161,12 +161,12 @@ make_structural_gh_rule <- function(Q = 1001L) {
         provider = "statmod::gauss.quad",
         weight_scale = "log-domain Hermite recurrence"
     )
-    assign(cache_key, rule, envir = .dasra_structural_gh_cache)
+    assign(cache_key, rule, envir = .sacat_structural_gh_cache)
     rule
 }
 
-.dasra_make_abundance_gh_rule <- function(Q = 41L) {
-    Q <- .dasra_validate_positive_integer(
+.sacat_make_abundance_gh_rule <- function(Q = 41L) {
+    Q <- .sacat_validate_positive_integer(
         Q, "abundance_quadrature_points", minimum = 3L
     )
     if (identical(Q, 41L)) {
@@ -175,8 +175,8 @@ make_structural_gh_rule <- function(Q = 1001L) {
     make_structural_gh_rule(Q)
 }
 
-.dasra_higher_order_quadrature_points <- function(Q) {
-    Q <- .dasra_validate_positive_integer(
+.sacat_higher_order_quadrature_points <- function(Q) {
+    Q <- .sacat_validate_positive_integer(
         Q, "quadrature_points", minimum = 3L
     )
     comparison_Q <- max(2001, 2 * as.double(Q) - 1)
@@ -293,7 +293,7 @@ count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
             return_nodes = TRUE
         ))
     }
-    dasra_count_log_hy_adaptive_cpp(
+    sacat_count_log_hy_adaptive_cpp(
         y = as.numeric(y),
         N = as.numeric(N),
         eta = as.numeric(eta),
@@ -350,7 +350,7 @@ cauchy_combination <- function(ps) {
 # Relative-abundance engine
 # --------------------------------------------------------------------------
 
-.dasra_abundance_control <- function(quadrature_Q = 41L) {
+.sacat_abundance_control <- function(quadrature_Q = 41L) {
     list(
         quadrature_Q = as.integer(quadrature_Q),
         derivative_base = 1e-4,
@@ -363,7 +363,7 @@ cauchy_combination <- function(ps) {
 
 # Stable linear algebra for the mark-likelihood sandwich.
 
-.dasra_abundance_condition_number <- function(x) {
+.sacat_abundance_condition_number <- function(x) {
     singular_values <- tryCatch(
         svd(x, nu = 0, nv = 0)$d,
         error = function(e) numeric()
@@ -375,7 +375,7 @@ cauchy_combination <- function(ps) {
     max(singular_values) / min(singular_values)
 }
 
-.dasra_abundance_equilibrated_solve <- function(
+.sacat_abundance_equilibrated_solve <- function(
         A, rhs, condition_limit = 1e12, backward_tolerance = 1e-8) {
     if (!is.matrix(A) || nrow(A) != ncol(A) || !nrow(A) ||
         any(!is.finite(A)) || !is.numeric(rhs) || any(!is.finite(rhs)) ||
@@ -407,7 +407,7 @@ cauchy_combination <- function(ps) {
         ))
     }
 
-    raw_condition <- .dasra_abundance_condition_number(A)
+    raw_condition <- .sacat_abundance_condition_number(A)
     row_scale <- apply(abs(A), 1L, max)
     if (any(!is.finite(row_scale)) || any(row_scale <= 0)) {
         return(list(
@@ -555,8 +555,8 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_mean_log_relative <- function(location, sigma, gh) {
-    dasra_mean_log_relative_cpp(
+.sacat_abundance_mean_log_relative <- function(location, sigma, gh) {
+    sacat_mean_log_relative_cpp(
         location = as.numeric(location),
         sigma = as.numeric(sigma),
         z = sqrt(2) * as.numeric(gh$node),
@@ -564,7 +564,7 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_designs <- function(group, z) {
+.sacat_abundance_designs <- function(group, z) {
     group <- as.numeric(group)
     n <- length(group)
     if (is.null(z)) {
@@ -590,7 +590,7 @@ cauchy_combination <- function(ps) {
     list(X_b = X_b, X_eta = X_eta)
 }
 
-.dasra_abundance_empty_fit <- function(status, n = 0L,
+.sacat_abundance_empty_fit <- function(status, n = 0L,
                                        diagnostics = list()) {
     diagnostic_value <- function(name, default) {
         value <- diagnostics[[name]]
@@ -653,7 +653,7 @@ cauchy_combination <- function(ps) {
 
 # Fit the zero-truncated conditional mark model for one taxon.
 
-.dasra_abundance_mark_effect <- function(beta, X_b, gh_effect) {
+.sacat_abundance_mark_effect <- function(beta, X_b, gh_effect) {
     p_eta <- ncol(X_b) + 1L
     coefficient <- beta[seq_len(p_eta)]
     sigma <- exp(beta[p_eta + 1L])
@@ -664,15 +664,15 @@ cauchy_combination <- function(ps) {
     baseline <- as.numeric(X_b %*% baseline_coefficient)
     group_effect <- coefficient[2L]
     mean(
-        .dasra_abundance_mean_log_relative(
+        .sacat_abundance_mean_log_relative(
             baseline + group_effect, sigma, gh_effect
-        ) - .dasra_abundance_mean_log_relative(
+        ) - .sacat_abundance_mean_log_relative(
             baseline, sigma, gh_effect
         )
     )
 }
 
-.dasra_abundance_quadrature_diagnostic <- function(
+.sacat_abundance_quadrature_diagnostic <- function(
         beta, y, N, X_eta, X_b, gh, fitted_effect,
         check_quadrature = FALSE) {
     Q <- as.integer(gh$Q)
@@ -692,7 +692,7 @@ cauchy_combination <- function(ps) {
     if (!should_check) return(result)
 
     comparison_Q <- tryCatch(
-        .dasra_higher_order_quadrature_points(Q),
+        .sacat_higher_order_quadrature_points(Q),
         error = function(e) NA_integer_
     )
     result$quadrature_checked <- TRUE
@@ -709,7 +709,7 @@ cauchy_combination <- function(ps) {
             high_conditional <- zt_beta_loglik_by_sample_inference(
                 beta, y, N, X_eta, high_gh
             )
-            high_effect <- .dasra_abundance_mark_effect(
+            high_effect <- .sacat_abundance_mark_effect(
                 beta, X_b, high_gh
             )
             differences <- c(
@@ -741,7 +741,7 @@ cauchy_combination <- function(ps) {
     result
 }
 
-.dasra_abundance_mark_linearization <- function(
+.sacat_abundance_mark_linearization <- function(
         beta, y, N, X_eta, gh, lower, upper, control) {
     step_info <- zt_inference_steps(
         beta, length(y), lower, upper,
@@ -797,7 +797,7 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_polish_mark_root <- function(
+.sacat_abundance_polish_mark_root <- function(
         beta, linearization, beta_fit, y, N, X_eta, gh, control,
         max_iterations = 4L) {
     positive_count <- sum(y > 0)
@@ -822,7 +822,7 @@ cauchy_combination <- function(ps) {
             ))
         }
 
-        root_solve <- .dasra_abundance_equilibrated_solve(
+        root_solve <- .sacat_abundance_equilibrated_solve(
             linearization$information,
             score_sum,
             condition_limit = control$jacobian_condition_limit,
@@ -857,7 +857,7 @@ cauchy_combination <- function(ps) {
                 trial_nll > current_nll + objective_tolerance) {
                 next
             }
-            trial_linearization <- .dasra_abundance_mark_linearization(
+            trial_linearization <- .sacat_abundance_mark_linearization(
                 trial_beta, y, N, X_eta, gh,
                 beta_fit$lower, beta_fit$upper, control
             )
@@ -921,7 +921,7 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_fit_taxon <- function(
+.sacat_abundance_fit_taxon <- function(
         y, N, group, z, gh_fit, gh_effect, control,
         min_positive_samples = 3L, check_quadrature = FALSE) {
     y <- as.numeric(y)
@@ -934,7 +934,7 @@ cauchy_combination <- function(ps) {
     ) as.integer(gh_fit$Q) else NA_integer_
     empty_fit <- function(status, diagnostics = list()) {
         diagnostics$quadrature_Q <- quadrature_Q
-        .dasra_abundance_empty_fit(status, n, diagnostics)
+        .sacat_abundance_empty_fit(status, n, diagnostics)
     }
     z <- if (is.null(z)) {
         matrix(numeric(), nrow = n, ncol = 0L)
@@ -948,7 +948,7 @@ cauchy_combination <- function(ps) {
         return(empty_fit("invalid_input"))
     }
 
-    design <- .dasra_abundance_designs(group, z)
+    design <- .sacat_abundance_designs(group, z)
     X_eta <- design$X_eta
     positive <- y > 0
     positive_count <- sum(positive)
@@ -989,7 +989,7 @@ cauchy_combination <- function(ps) {
     }
 
     beta <- beta_fit$par
-    linearization <- .dasra_abundance_mark_linearization(
+    linearization <- .sacat_abundance_mark_linearization(
         beta, y, N, X_eta, gh_fit,
         beta_fit$lower, beta_fit$upper, control
     )
@@ -1003,7 +1003,7 @@ cauchy_combination <- function(ps) {
         ))
     }
 
-    root_polish <- .dasra_abundance_polish_mark_root(
+    root_polish <- .sacat_abundance_polish_mark_root(
         beta, linearization, beta_fit, y, N, X_eta, gh_fit, control
     )
     if (!isTRUE(root_polish$ok)) {
@@ -1024,13 +1024,13 @@ cauchy_combination <- function(ps) {
     linearization <- root_polish$linearization
 
     effect <- tryCatch(
-        .dasra_abundance_mark_effect(beta, design$X_b, gh_effect),
+        .sacat_abundance_mark_effect(beta, design$X_b, gh_effect),
         error = function(e) NA_real_
     )
     effect_gradient <- tryCatch(
         as.numeric(zt_central_derivative_matrix_fixed(
             function(value) {
-                .dasra_abundance_mark_effect(
+                .sacat_abundance_mark_effect(
                     value, design$X_b, gh_effect
                 )
             },
@@ -1048,7 +1048,7 @@ cauchy_combination <- function(ps) {
         ))
     }
 
-    influence_solve <- .dasra_abundance_equilibrated_solve(
+    influence_solve <- .sacat_abundance_equilibrated_solve(
         linearization$information,
         t(linearization$score),
         condition_limit = control$jacobian_condition_limit,
@@ -1114,7 +1114,7 @@ cauchy_combination <- function(ps) {
             character()
         }
     ))
-    quadrature_diagnostic <- .dasra_abundance_quadrature_diagnostic(
+    quadrature_diagnostic <- .sacat_abundance_quadrature_diagnostic(
         beta = beta,
         y = y,
         N = N,
@@ -1179,7 +1179,7 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_lts_reference <- function(
+.sacat_abundance_lts_reference <- function(
         values, order_key = seq_along(values)) {
     values <- as.numeric(values)
     finite <- which(is.finite(values))
@@ -1209,7 +1209,7 @@ cauchy_combination <- function(ps) {
     list(index = index, pilot = mean(values[window]))
 }
 
-.dasra_abundance_kernel_mode <- function(
+.sacat_abundance_kernel_mode <- function(
         values, initial, bandwidth, max_iterations = 500L) {
     background <- initial
     converged <- FALSE
@@ -1267,21 +1267,21 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_abundance_background <- function(
+.sacat_abundance_background <- function(
         values, standard_errors, n_samples, order_key) {
     ordering <- order(as.character(order_key), method = "radix")
     ordered_values <- values[ordering]
     ordered_se <- standard_errors[ordering]
     ordered_key <- order_key[ordering]
 
-    lts <- .dasra_abundance_lts_reference(ordered_values, ordered_key)
+    lts <- .sacat_abundance_lts_reference(ordered_values, ordered_key)
     if (!is.finite(lts$pilot)) {
         return(list(formed = FALSE, reason = "background_pilot_unavailable"))
     }
 
     bandwidth <- median(ordered_se[lts$index]) *
         sqrt(2 * log(log(max(n_samples, 4L))))
-    mode <- .dasra_abundance_kernel_mode(
+    mode <- .sacat_abundance_kernel_mode(
         values = ordered_values,
         initial = lts$pilot,
         bandwidth = bandwidth
@@ -1307,10 +1307,10 @@ cauchy_combination <- function(ps) {
 
 # Center taxon effects against a robust cross-taxon reference.
 
-.dasra_abundance_correct <- function(
+.sacat_abundance_correct <- function(
         fits, taxa, n_samples, keep_diagnostics,
         min_reference_taxa = 4L) {
-    min_reference_taxa <- .dasra_validate_positive_integer(
+    min_reference_taxa <- .sacat_validate_positive_integer(
         min_reference_taxa, "min_reference_taxa", minimum = 3L
     )
     p_taxa <- length(fits)
@@ -1346,7 +1346,7 @@ cauchy_combination <- function(ps) {
         for (j in eligible) phi_matrix[, j] <- fits[[j]]$phi
         for (j in eligible) {
             others <- setdiff(eligible, j)
-            background_fit <- .dasra_abundance_background(
+            background_fit <- .sacat_abundance_background(
                 values = raw_delta[others],
                 standard_errors = raw_se[others],
                 n_samples = n_samples,
@@ -1498,7 +1498,7 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.dasra_taxon_lapply <- function(index, fit_one, cluster = NULL) {
+.sacat_taxon_lapply <- function(index, fit_one, cluster = NULL) {
     if (is.null(cluster)) {
         lapply(index, fit_one)
     } else {
@@ -1506,11 +1506,11 @@ cauchy_combination <- function(ps) {
     }
 }
 
-.dasra_progress <- function(verbose, ...) {
+.sacat_progress <- function(verbose, ...) {
     if (isTRUE(verbose)) message(...)
 }
 
-.dasra_abundance_arm <- function(
+.sacat_abundance_arm <- function(
         Y, N, g, z, keep_diagnostics,
         min_positive_samples = 3L, min_reference_taxa = 4L,
         quadrature_points = 41L,
@@ -1518,11 +1518,11 @@ cauchy_combination <- function(ps) {
         check_quadrature = keep_diagnostics) {
     taxa <- colnames(Y)
     n_samples <- nrow(Y)
-    control <- .dasra_abundance_control(quadrature_points)
-    gh_fit <- .dasra_make_abundance_gh_rule(control$quadrature_Q)
+    control <- .sacat_abundance_control(quadrature_points)
+    gh_fit <- .sacat_make_abundance_gh_rule(control$quadrature_Q)
     gh_effect <- gh_fit
     worker_count <- if (is.null(cluster)) 1L else length(cluster)
-    .dasra_progress(
+    .sacat_progress(
         verbose,
         sprintf(
             "Relative-abundance arm: fitting %d taxa with %d worker%s.",
@@ -1531,7 +1531,7 @@ cauchy_combination <- function(ps) {
     )
     fit_one <- function(j) {
         tryCatch(
-            .dasra_abundance_fit_taxon(
+            .sacat_abundance_fit_taxon(
                 y = as.numeric(Y[, j]),
                 N = N,
                 group = g,
@@ -1543,7 +1543,7 @@ cauchy_combination <- function(ps) {
                 check_quadrature = check_quadrature
             ),
             error = function(e) {
-                .dasra_abundance_empty_fit(
+                .sacat_abundance_empty_fit(
                     paste0(
                         "relative_abundance_fit_error: ",
                         conditionMessage(e)
@@ -1554,7 +1554,7 @@ cauchy_combination <- function(ps) {
             }
         )
     }
-    fits <- .dasra_taxon_lapply(
+    fits <- .sacat_taxon_lapply(
         seq_len(ncol(Y)), fit_one, cluster = cluster
     )
     names(fits) <- taxa
@@ -1581,7 +1581,7 @@ cauchy_combination <- function(ps) {
             call. = FALSE
         )
     }
-    result <- .dasra_abundance_correct(
+    result <- .sacat_abundance_correct(
         fits = fits,
         taxa = taxa,
         n_samples = n_samples,
@@ -1589,7 +1589,7 @@ cauchy_combination <- function(ps) {
         min_reference_taxa = min_reference_taxa
     )
     result$warning <- numerical_warning
-    .dasra_progress(
+    .sacat_progress(
         verbose,
         sprintf(
             "Relative-abundance arm complete: %d of %d tests formed.",
@@ -2138,7 +2138,7 @@ zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L,
         c(intercept_only, log(0.5)),
         c(intercept_only, log(2))
     )
-    starts <- .dasra_select_conditional_present_starts(
+    starts <- .sacat_select_conditional_present_starts(
         starts, conditional_present_starts
     )
     fn_unscaled <- function(beta) zt_beta_nll(beta, y, N, X_eta, gh)
@@ -3514,7 +3514,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
         comparison_Q <- NA_integer_
         quadrature_diagnostic <- tryCatch(
             {
-                comparison_Q <- .dasra_higher_order_quadrature_points(Q)
+                comparison_Q <- .sacat_higher_order_quadrature_points(Q)
                 high_gh <- make_structural_gh_rule(comparison_Q)
                 base_conditional <- zt_beta_loglik_by_sample(
                     beta, y, N, X_eta, gh
@@ -3610,7 +3610,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 # Public interface
 # --------------------------------------------------------------------------
 
-.dasra_encode_group <- function(group, reference, n) {
+.sacat_encode_group <- function(group, reference, n) {
     if (length(group) != n || anyNA(group)) {
         stop("`group` must have one non-missing value per sample.",
              call. = FALSE)
@@ -3687,7 +3687,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
     )
 }
 
-.dasra_validate_design <- function(g, z) {
+.sacat_validate_design <- function(g, z) {
     n <- length(g)
     restricted <- count_design_matrix(g = g, z = z, include_group = FALSE,
                                       n = n)
@@ -3705,7 +3705,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 
 # Numerical failures are recorded at the taxon level so that other taxa can
 # still be analyzed.
-.dasra_structural_arm <- function(
+.sacat_structural_arm <- function(
         Y, N, g, z, keep_diagnostics,
         conditional_present_starts = 1L,
         min_positive_samples = 3L,
@@ -3716,7 +3716,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
     J <- ncol(Y)
     n_samples <- nrow(Y)
     worker_count <- if (is.null(cluster)) 1L else length(cluster)
-    .dasra_progress(
+    .sacat_progress(
         verbose,
         sprintf(
             "Structural-absence arm: fitting %d taxa with %d worker%s.",
@@ -3746,7 +3746,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
             }
         )
     }
-    fits <- .dasra_taxon_lapply(
+    fits <- .sacat_taxon_lapply(
         seq_len(J), fit_one, cluster = cluster
     )
     names(fits) <- colnames(Y)
@@ -3814,7 +3814,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
         warning = numerical_warning,
         diagnostics = if (keep_diagnostics) fits else NULL
     )
-    .dasra_progress(
+    .sacat_progress(
         verbose,
         sprintf(
             "Structural-absence arm complete: %d of %d results returned.",
@@ -3826,7 +3826,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 
 #' Depth-Aware Structural-Absence and Relative-Abundance Analysis
 #'
-#' Fits DASRA to microbiome count data and tests a binary group contrast in
+#' Fits SACAT to microbiome count data and tests a binary group contrast in
 #' structural-absence probability, relative abundance conditional on presence,
 #' or both. Sequencing depth enters the latent-state count model so that an
 #' observed zero can receive different posterior support for structural absence
@@ -3898,7 +3898,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' @param metadata Sample metadata in a data frame. Row names must contain all
 #'   sample names in `counts`. Variables used by `formula`, `group`, or a
 #'   metadata-based `library_size` must be complete. Prepare a complete analysis
-#'   set before calling `dasra()` while keeping counts, metadata, and any named
+#'   set before calling `sacat()` while keeping counts, metadata, and any named
 #'   depth vector aligned.
 #' @param formula A one-sided formula containing `group` as an additive main
 #'   effect and any adjustment terms, for example `~ disease + age + sex`.
@@ -3956,13 +3956,13 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   nondefault rules and fitted latent-scale standard deviations above two
 #'   trigger a fixed-fit higher-order comparison.
 #' @param store_plot_data Logical. If `TRUE`, prepare and retain the small set of
-#'   covariate-standardized summaries used by `plot.dasra()`. This option
+#'   covariate-standardized summaries used by `plot.sacat()`. This option
 #'   requires `component = "all"`. Structural companion summaries reuse the
 #'   configured worker pool. Higher-order quadrature comparisons remain
 #'   controlled by `full_output`. This setting only controls the stored plotting
 #'   summaries; the default `FALSE` keeps the fitted object compact.
 #'
-#' @return An object of class `dasra` with elements:
+#' @return An object of class `sacat` with elements:
 #'   \describe{
 #'     \item{results}{A taxon-level table for the requested analyses. Adjusted
 #'       p-values use the `p_adj_` prefix and the method recorded in
@@ -4019,7 +4019,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   row.names = samples
 #' )
 #'
-#' fit <- dasra(
+#' fit <- sacat(
 #'   counts = counts,
 #'   metadata = metadata,
 #'   formula = ~ group,
@@ -4032,7 +4032,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' }
 #'
 #' @export
-dasra <- function(counts, metadata, formula, group, library_size,
+sacat <- function(counts, metadata, formula, group, library_size,
                   taxa_are_rows = TRUE, reference = NULL,
                   p_adjust_method = "BH",
                   component = c("all", "structural_absence",
@@ -4188,9 +4188,9 @@ dasra <- function(counts, metadata, formula, group, library_size,
         stop("The covariate model matrix contains non-finite values.",
              call. = FALSE)
     }
-    group_info <- .dasra_encode_group(metadata[[group]], reference, nrow(Y))
+    group_info <- .sacat_encode_group(metadata[[group]], reference, nrow(Y))
     g <- group_info$g
-    .dasra_validate_design(g, z)
+    .sacat_validate_design(g, z)
     if (is.character(library_size)) {
         if (length(library_size) != 1L ||
             !(library_size %in% colnames(metadata))) {
@@ -4247,26 +4247,26 @@ dasra <- function(counts, metadata, formula, group, library_size,
         stop("`full_output` must be TRUE or FALSE.", call. = FALSE)
     }
     full_output <- isTRUE(full_output)
-    start_info <- .dasra_resolve_structural_conditional_present_starts(
+    start_info <- .sacat_resolve_structural_conditional_present_starts(
         structural_conditional_present_starts
     )
-    min_positive_samples <- .dasra_validate_positive_integer(
+    min_positive_samples <- .sacat_validate_positive_integer(
         min_positive_samples, "min_positive_samples"
     )
-    min_reference_taxa <- .dasra_validate_positive_integer(
+    min_reference_taxa <- .sacat_validate_positive_integer(
         min_reference_taxa, "min_reference_taxa", minimum = 3L
     )
-    structural_quadrature_points <- .dasra_validate_positive_integer(
+    structural_quadrature_points <- .sacat_validate_positive_integer(
         structural_quadrature_points,
         "structural_quadrature_points",
         minimum = 3L
     )
-    abundance_quadrature_points <- .dasra_validate_positive_integer(
+    abundance_quadrature_points <- .sacat_validate_positive_integer(
         abundance_quadrature_points,
         "abundance_quadrature_points",
         minimum = 3L
     )
-    workers <- .dasra_validate_positive_integer(workers, "workers")
+    workers <- .sacat_validate_positive_integer(workers, "workers")
     if (length(verbose) != 1L || is.na(verbose) || !is.logical(verbose)) {
         stop("`verbose` must be TRUE or FALSE.", call. = FALSE)
     }
@@ -4314,18 +4314,18 @@ dasra <- function(counts, metadata, formula, group, library_size,
             add = TRUE
         )
         main_package_path <- normalizePath(
-            getNamespaceInfo(asNamespace("DASRA"), "path"),
+            getNamespaceInfo(asNamespace("SACAT"), "path"),
             winslash = "/",
             mustWork = TRUE
         )
         library_paths <- unique(c(dirname(main_package_path), .libPaths()))
         initialize_worker <- function(paths) {
             .libPaths(paths)
-            loadNamespace("DASRA")
+            loadNamespace("SACAT")
             list(
-                version = as.character(getNamespaceVersion("DASRA")),
+                version = as.character(getNamespaceVersion("SACAT")),
                 path = normalizePath(
-                    find.package("DASRA"),
+                    find.package("SACAT"),
                     winslash = "/",
                     mustWork = TRUE
                 )
@@ -4338,14 +4338,14 @@ dasra <- function(counts, metadata, formula, group, library_size,
                 initialize_worker,
                 library_paths
             )
-            main_version <- as.character(getNamespaceVersion("DASRA"))
+            main_version <- as.character(getNamespaceVersion("SACAT"))
             if (any(vapply(
                 worker_information,
                 function(value) !identical(value$version, main_version),
                 logical(1)
             ))) {
                 stop(sprintf(
-                    "Parallel workers loaded a different DASRA version than %s.",
+                    "Parallel workers loaded a different SACAT version than %s.",
                     main_version
                 ))
             }
@@ -4355,7 +4355,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
                 logical(1)
             ))) {
                 stop(
-                    "Parallel workers loaded DASRA from a different installation."
+                    "Parallel workers loaded SACAT from a different installation."
                 )
             }
             invisible(worker_information)
@@ -4403,7 +4403,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
         Y_retained <- Y[, retained, drop = FALSE]
 
         if (run_structural) {
-            structural_retained <- .dasra_structural_arm(
+            structural_retained <- .sacat_structural_arm(
                 Y_retained, N, g, z, keep_component_details,
                 conditional_present_starts = start_info$count,
                 min_positive_samples = min_positive_samples,
@@ -4422,7 +4422,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
         }
 
         if (run_abundance) {
-            abundance_retained <- .dasra_abundance_arm(
+            abundance_retained <- .sacat_abundance_arm(
                 Y_retained, N, g, z, keep_component_details,
                 min_positive_samples = min_positive_samples,
                 min_reference_taxa = min_reference_taxa,
@@ -4634,7 +4634,7 @@ dasra <- function(counts, metadata, formula, group, library_size,
         call = call
     )
     if (store_plot_data) {
-        object$plot_data <- .dasra_prepare_plot_data(
+        object$plot_data <- .sacat_prepare_plot_data(
             Y = Y,
             N = N,
             results = results,
@@ -4657,13 +4657,13 @@ dasra <- function(counts, metadata, formula, group, library_size,
             object$fits$relative_abundance <- abundance$diagnostics
         }
     }
-    class(object) <- "dasra"
+    class(object) <- "sacat"
     object
 }
 
 #' @export
 #' @noRd
-print.dasra <- function(x, ...) {
+print.sacat <- function(x, ...) {
     contrast <- x$settings$contrast
     retained_n <- sum(x$diagnostics$retained)
     adjustment_label <- if (identical(
@@ -4675,7 +4675,7 @@ print.dasra <- function(x, ...) {
     }
 
     cat(
-        "DASRA fit\n",
+        "SACAT fit\n",
         sprintf(
             "  Samples: %d; taxa: %d; retained taxa: %d\n",
             x$settings$n_samples,
@@ -4743,7 +4743,7 @@ print.dasra <- function(x, ...) {
 
 #' @export
 #' @noRd
-as.data.frame.dasra <- function(x, row.names = NULL, optional = FALSE,
+as.data.frame.sacat <- function(x, row.names = NULL, optional = FALSE,
                                 ...) {
     as.data.frame(
         x$results,

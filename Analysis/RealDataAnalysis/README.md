@@ -10,7 +10,7 @@ multiplicity, and reporting workflow.
 The first group in each contrast is the reference group. Numeric variables
 ending in `_z` are standardized within the final cohort.
 
-| Dataset | Analysis contrast | Samples, reference / comparison | Tested taxa | Primary DASRA adjustment variables | Publication |
+| Dataset | Analysis contrast | Samples, reference / comparison | Tested taxa | Primary SACAT adjustment variables | Publication |
 |---|---|---:|---:|---|---|
 | [Baxter colorectal cancer](crc_baxter/README.md) | No-lesion control / colorectal cancer | 172 / 120 | 126 | `age_z`, sex | Baxter et al. 2016, [doi:10.1186/s13073-016-0290-3](https://doi.org/10.1186/s13073-016-0290-3) |
 | [Schubert *C. difficile* infection](cdi_schubert/README.md) | Nondiarrheal healthy control / CDI | 152 / 91 | 88 | `age_z`, sex, recent antibiotics | Schubert et al. 2014, [doi:10.1128/mBio.01021-14](https://doi.org/10.1128/mBio.01021-14) |
@@ -49,7 +49,7 @@ restrictions, and any handling of repeated observations.
 Some comparison methods require a complete composition for normalization.
 For these methods, [`analysis.R`](analysis.R) adds an `Other_unmodeled` row
 equal to the part of the original library represented outside the tested taxa.
-DASRA receives the retained tested taxa and the original library size. Its
+SACAT receives the retained tested taxa and the original library size. Its
 target-excluded abundance reference is formed from the retained tested taxa.
 
 ## Reproducing the workflow
@@ -133,14 +133,14 @@ unavailable result is assigned an operational p-value of one for harmonized
 BH adjustment, and a discovery requires both an available result and a
 BH-adjusted p-value no greater than 0.05.
 
-The DASRA combined result is available when at least one component forms. Its
+The SACAT combined result is available when at least one component forms. Its
 `components_used` field records whether one or both components entered the
 Bonferroni minimum-p omnibus test; an unformed component contributes its
 operational p-value of one.
 
 The 15 exported result sets are:
 
-1. DASRA structural absence, present-conditional abundance, and combined;
+1. SACAT structural absence, present-conditional abundance, and combined;
 2. MaAsLin3 prevalence, abundance, and combined;
 3. ZINQ prevalence, abundance, and combined; and
 4. the primary differential abundance result from ANCOM-BC2, LinDA, corncob,
@@ -171,7 +171,7 @@ Each `figs/` directory contains two standard PDF figures:
 
 - `*_upset.pdf` compares discoveries across the 15 result sets. Every
   nonempty intersection pattern is displayed in one continuous matrix.
-- `*_dasra_profile.pdf` displays the DASRA structural and
+- `*_sacat_profile.pdf` displays the SACAT structural and
   present-conditional components. It displays up to 24 significant combined
   results; when no combined discovery exists, it displays the 10 strongest
   available combined results as a descriptive profile.
@@ -190,10 +190,10 @@ The Schubert CDI directory also contains a detailed component figure, a
 [`summarize_datasets.R`](summarize_datasets.R) reads only completed result
 tables and writes:
 
-- dataset-level DASRA availability and human-readable unavailability reasons;
+- dataset-level SACAT availability and human-readable unavailability reasons;
 - pooled availability for the primary result from each method, using the common
   taxon-by-dataset result grid;
-- DASRA component and omnibus unavailability reasons, with counts, percentages
+- SACAT component and omnibus unavailability reasons, with counts, percentages
   of all results, and percentages among unavailable results;
 - structural-only, present-conditional-only, both-component, and omnibus-only
   counts among discoveries with both components available;
@@ -203,8 +203,8 @@ tables and writes:
 - PDF overviews of method availability and signal categories by dataset.
 
 The availability outputs are `method_availability.csv`,
-`dasra_unavailability_reasons.csv`, and `method_availability.pdf`. MaAsLin3 and
-ZINQ contribute their package-provided combined results; DASRA contributes its
+`sacat_unavailability_reasons.csv`, and `method_availability.pdf`. MaAsLin3 and
+ZINQ contribute their package-provided combined results; SACAT contributes its
 omnibus result, and the other methods contribute their primary
 differential-abundance results.
 
@@ -212,4 +212,4 @@ Availability percentages weight each of the 688 prespecified taxon-by-dataset
 results equally. For signal-category summaries, the pooled percentage weights
 each classified discovery equally. The dataset-averaged percentage averages
 within-dataset percentages among datasets with at least one classified
-combined DASRA discovery.
+combined SACAT discovery.

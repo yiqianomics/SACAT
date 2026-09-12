@@ -1,6 +1,6 @@
 # Plot-data preparation ----------------------------------------------------
 
-.dasra_plot_profile_failure <- function(status) {
+.sacat_plot_profile_failure <- function(status) {
     list(
         reference = NA_real_,
         comparison = NA_real_,
@@ -8,20 +8,20 @@
     )
 }
 
-.dasra_structural_plot_profile <- function(y, N, fit) {
+.sacat_structural_plot_profile <- function(y, N, fit) {
     if (is.null(fit) || !isTRUE(fit$tested) || !isTRUE(fit$regular)) {
         reason <- if (is.null(fit$reason)) "unavailable" else fit$reason
-        return(.dasra_plot_profile_failure(reason))
+        return(.sacat_plot_profile_failure(reason))
     }
     stored <- fit$diagnostics$fit
     if (is.null(stored) || is.null(stored$conditional_present$par) ||
         is.null(stored$X_eta) || is.null(stored$quadrature)) {
-        return(.dasra_plot_profile_failure("fit_details_unavailable"))
+        return(.sacat_plot_profile_failure("fit_details_unavailable"))
     }
 
     X_eta <- stored$X_eta
     if (!("Group" %in% colnames(X_eta))) {
-        return(.dasra_plot_profile_failure("group_design_unavailable"))
+        return(.sacat_plot_profile_failure("group_design_unavailable"))
     }
 
     companion <- tryCatch(
@@ -43,7 +43,7 @@
         } else {
             companion$reason
         }
-        return(.dasra_plot_profile_failure(reason))
+        return(.sacat_plot_profile_failure(reason))
     }
 
     components <- zt_beta_detection_components(
@@ -53,7 +53,7 @@
         stored$quadrature
     )
     if (is.null(components)) {
-        return(.dasra_plot_profile_failure(
+        return(.sacat_plot_profile_failure(
             "companion_detection_components_unavailable"
         ))
     }
@@ -62,7 +62,7 @@
         error = function(e) NA_real_
     )
     if (!is.finite(finite_nll)) {
-        return(.dasra_plot_profile_failure(
+        return(.sacat_plot_profile_failure(
             "companion_objective_unavailable"
         ))
     }
@@ -72,7 +72,7 @@
         y = y
     )
     if (isTRUE(zero_limit_comparison$dominated)) {
-        return(.dasra_plot_profile_failure(
+        return(.sacat_plot_profile_failure(
             "companion_zero_limit_dominated"
         ))
     }
@@ -87,7 +87,7 @@
         as.numeric(X_comparison %*% companion$par)
     ))
     if (!is.finite(reference) || !is.finite(comparison)) {
-        return(.dasra_plot_profile_failure(
+        return(.sacat_plot_profile_failure(
             "companion_standardization_unavailable"
         ))
     }
@@ -95,10 +95,10 @@
     list(reference = reference, comparison = comparison, status = "ok")
 }
 
-.dasra_abundance_plot_profile <- function(taxon, abundance_fits) {
+.sacat_abundance_plot_profile <- function(taxon, abundance_fits) {
     if (is.null(abundance_fits$taxon) ||
         is.null(abundance_fits$raw_fits)) {
-        return(.dasra_plot_profile_failure("fit_details_unavailable"))
+        return(.sacat_plot_profile_failure("fit_details_unavailable"))
     }
     detail_index <- match(taxon, abundance_fits$taxon$taxon)
     raw_fit <- abundance_fits$raw_fits[[taxon]]
@@ -110,22 +110,22 @@
         } else {
             abundance_fits$taxon$reason[[detail_index]]
         }
-        return(.dasra_plot_profile_failure(reason))
+        return(.sacat_plot_profile_failure(reason))
     }
 
     theta <- raw_fit$theta
     X_eta <- raw_fit$solver_diagnostics$X_eta
     if (is.null(theta) || is.null(X_eta) ||
         !("Group" %in% colnames(X_eta))) {
-        return(.dasra_plot_profile_failure("group_design_unavailable"))
+        return(.sacat_plot_profile_failure("group_design_unavailable"))
     }
     p_eta <- ncol(X_eta)
     if (length(theta) != p_eta + 1L) {
-        return(.dasra_plot_profile_failure("parameter_layout_unavailable"))
+        return(.sacat_plot_profile_failure("parameter_layout_unavailable"))
     }
 
     sigma <- exp(theta[[p_eta + 1L]])
-    gh <- .dasra_make_abundance_gh_rule(raw_fit$quadrature_Q)
+    gh <- .sacat_make_abundance_gh_rule(raw_fit$quadrature_Q)
     X_reference <- X_comparison <- X_eta
     X_reference[, "Group"] <- 0
     X_comparison[, "Group"] <- 1
@@ -135,15 +135,15 @@
     location_comparison <- as.numeric(
         X_comparison %*% theta[seq_len(p_eta)]
     )
-    reference <- 100 * exp(mean(.dasra_abundance_mean_log_relative(
+    reference <- 100 * exp(mean(.sacat_abundance_mean_log_relative(
         location_reference, sigma, gh
     )))
-    comparison <- 100 * exp(mean(.dasra_abundance_mean_log_relative(
+    comparison <- 100 * exp(mean(.sacat_abundance_mean_log_relative(
         location_comparison, sigma, gh
     )))
     if (!is.finite(reference) || !is.finite(comparison) ||
         reference <= 0 || comparison <= 0) {
-        return(.dasra_plot_profile_failure(
+        return(.sacat_plot_profile_failure(
             "abundance_standardization_unavailable"
         ))
     }
@@ -151,29 +151,29 @@
     list(reference = reference, comparison = comparison, status = "ok")
 }
 
-.dasra_prepare_plot_data <- function(Y, N, results, structural_fits,
+.sacat_prepare_plot_data <- function(Y, N, results, structural_fits,
                                      abundance_fits, contrast,
                                      cluster = NULL) {
     taxa <- results$taxon
     structural_one <- function(j) {
         tryCatch(
-            .dasra_structural_plot_profile(
+            .sacat_structural_plot_profile(
                 y = Y[, j],
                 N = N,
                 fit = structural_fits[[taxa[[j]]]]
             ),
-            error = function(e) .dasra_plot_profile_failure(
+            error = function(e) .sacat_plot_profile_failure(
                 paste0("plot_profile_error: ", conditionMessage(e))
             )
         )
     }
-    structural <- .dasra_taxon_lapply(
+    structural <- .sacat_taxon_lapply(
         seq_along(taxa), structural_one, cluster = cluster
     )
     abundance <- lapply(taxa, function(taxon) {
         tryCatch(
-            .dasra_abundance_plot_profile(taxon, abundance_fits),
-            error = function(e) .dasra_plot_profile_failure(
+            .sacat_abundance_plot_profile(taxon, abundance_fits),
+            error = function(e) .sacat_plot_profile_failure(
                 paste0("plot_profile_error: ", conditionMessage(e))
             )
         )
@@ -212,18 +212,18 @@
 
 # Plot specification -------------------------------------------------------
 
-.dasra_plot_stars <- function(p) {
+.sacat_plot_stars <- function(p) {
     if (!is.finite(p) || p > 0.05) return("")
     if (p <= 0.001) return("***")
     if (p <= 0.01) return("**")
     "*"
 }
 
-.dasra_plot_adjustment_label <- function(method) {
+.sacat_plot_adjustment_label <- function(method) {
     if (identical(method, "none")) "p" else paste(method, "adjusted p")
 }
 
-.dasra_plot_component_bh_guide <- function(
+.sacat_plot_component_bh_guide <- function(
         retained, raw_p, adjusted_p, z, alpha) {
     n_taxa <- length(retained)
     if (!is.numeric(raw_p) || !is.numeric(adjusted_p) || !is.numeric(z) ||
@@ -295,7 +295,7 @@
     guide
 }
 
-.dasra_plot_component_guides <- function(x, alpha, show) {
+.sacat_plot_component_guides <- function(x, alpha, show) {
     if (length(show) != 1L || is.na(show) || !is.logical(show)) {
         stop("`show_component_guides` must be TRUE or FALSE.",
              call. = FALSE)
@@ -322,7 +322,7 @@
     check_component <- function(raw_p, adjusted_p, z) {
         tryCatch(
             list(
-                guide = .dasra_plot_component_bh_guide(
+                guide = .sacat_plot_component_bh_guide(
                     retained, raw_p, adjusted_p, z, alpha
                 ),
                 problem = NULL
@@ -366,7 +366,7 @@
     )
 }
 
-.dasra_plot_validate_integer <- function(value, name) {
+.sacat_plot_validate_integer <- function(value, name) {
     if (length(value) != 1L || is.na(value) || !is.numeric(value) ||
         !is.finite(value) || value < 1 || value != as.integer(value)) {
         stop(sprintf("`%s` must be one positive integer.", name),
@@ -375,7 +375,7 @@
     as.integer(value)
 }
 
-.dasra_plot_select <- function(x, features, selection, max_features,
+.sacat_plot_select <- function(x, features, selection, max_features,
                                alpha) {
     results <- x$results
     diagnostics <- x$diagnostics
@@ -445,7 +445,7 @@
     indices
 }
 
-.dasra_plot_color_limits <- function(data, p_color_limits) {
+.sacat_plot_color_limits <- function(data, p_color_limits) {
     if (is.character(p_color_limits)) {
         if (length(p_color_limits) != 1L ||
             !identical(p_color_limits, "adaptive")) {
@@ -496,7 +496,7 @@
     setNames(as.numeric(p_color_limits), c("lower", "upper"))
 }
 
-.dasra_plot_palette_function <- function(palette, limits) {
+.sacat_plot_palette_function <- function(palette, limits) {
     if (!is.character(palette) || length(palette) < 2L || anyNA(palette)) {
         stop("`evidence_palette` must contain at least two colors.",
              call. = FALSE)
@@ -522,12 +522,12 @@
     }
 }
 
-.dasra_plot_build_spec <- function(x, features, selection, max_features,
+.sacat_plot_build_spec <- function(x, features, selection, max_features,
                                    alpha, p_color_limits,
                                    evidence_palette, group_colors,
                                    show_component_guides = TRUE) {
-    if (!inherits(x, "dasra")) {
-        stop("`x` must be a `dasra` result.", call. = FALSE)
+    if (!inherits(x, "sacat")) {
+        stop("`x` must be a `sacat` result.", call. = FALSE)
     }
     required_results <- c(
         "taxon", "p_omnibus", "p_adj_omnibus",
@@ -546,7 +546,7 @@
         stop(
             paste(
                 "This fit does not contain plotting summaries; rerun",
-                "`dasra(..., component = \"all\", store_plot_data = TRUE)`."
+                "`sacat(..., component = \"all\", store_plot_data = TRUE)`."
             ),
             call. = FALSE
         )
@@ -575,7 +575,7 @@
              call. = FALSE)
     }
     selection <- match.arg(selection, c("significant", "top", "all"))
-    max_features <- .dasra_plot_validate_integer(
+    max_features <- .sacat_plot_validate_integer(
         max_features, "max_features"
     )
     if (length(alpha) != 1L || is.na(alpha) || !is.numeric(alpha) ||
@@ -591,10 +591,10 @@
              call. = FALSE)
     }
 
-    indices <- .dasra_plot_select(
+    indices <- .sacat_plot_select(
         x, features, selection, max_features, alpha
     )
-    component_guides <- .dasra_plot_component_guides(
+    component_guides <- .sacat_plot_component_guides(
         x, alpha, show_component_guides
     )
     profile_index <- match(x$results$taxon[indices], profiles$feature)
@@ -610,7 +610,7 @@
             feature_label = gsub("_", " ", results$taxon, fixed = TRUE),
             stars = vapply(
                 results$p_adj_omnibus,
-                .dasra_plot_stars,
+                .sacat_plot_stars,
                 character(1)
             ),
             z_structural = results$z_structural_absence,
@@ -626,8 +626,8 @@
             names(profiles), "feature"
         ), drop = FALSE]
     )
-    limits <- .dasra_plot_color_limits(data, p_color_limits)
-    color_function <- .dasra_plot_palette_function(
+    limits <- .sacat_plot_color_limits(data, p_color_limits)
+    color_function <- .sacat_plot_palette_function(
         evidence_palette, limits
     )
     data$color_structural <- rep(NA_character_, nrow(data))
@@ -646,7 +646,7 @@
     list(
         data = data,
         contrast = fitted_contrast,
-        adjustment_label = .dasra_plot_adjustment_label(
+        adjustment_label = .sacat_plot_adjustment_label(
             x$settings$p_adjust_method
         ),
         color_limits = limits,
@@ -660,7 +660,7 @@
 
 # Grid drawing -------------------------------------------------------------
 
-.dasra_plot_format_abundance_tick <- function(exponent) {
+.sacat_plot_format_abundance_tick <- function(exponent) {
     if (exponent >= -2L && exponent <= 2L) {
         return(paste0(
             format(10 ^ exponent, scientific = FALSE, trim = TRUE),
@@ -670,7 +670,7 @@
     paste0("10^", exponent, "*'%'")
 }
 
-.dasra_plot_abundance_scale <- function(values, max_ticks = 4L) {
+.sacat_plot_abundance_scale <- function(values, max_ticks = 4L) {
     values <- values[is.finite(values) & values > 0]
     limits <- if (length(values)) {
         c(floor(log10(min(values))), ceiling(log10(max(values))))
@@ -692,12 +692,12 @@
         domain = domain,
         ticks = ticks,
         labels = vapply(
-            ticks, .dasra_plot_format_abundance_tick, character(1)
+            ticks, .sacat_plot_format_abundance_tick, character(1)
         )
     )
 }
 
-.dasra_plot_axis <- function(at, labels, reversed = FALSE,
+.sacat_plot_axis <- function(at, labels, reversed = FALSE,
                              domain = range(at), gp_text, gp_line) {
     if (length(domain) != 2L || any(!is.finite(domain)) ||
         domain[[1L]] >= domain[[2L]]) {
@@ -741,7 +741,7 @@
     grid::popViewport()
 }
 
-.dasra_plot_header_groups <- function(title, contrast, colors, gp_title,
+.sacat_plot_header_groups <- function(title, contrast, colors, gp_title,
                                       gp_small) {
     label_widths <- vapply(contrast, function(label) {
         grid::convertWidth(
@@ -793,7 +793,7 @@
     }
 }
 
-.dasra_plot_draw_header <- function(spec, columns, gp_title, gp_small,
+.sacat_plot_draw_header <- function(spec, columns, gp_title, gp_small,
                                     gp_tiny) {
     data <- spec$data
     grid::pushViewport(grid::viewport(
@@ -807,7 +807,7 @@
     grid::pushViewport(grid::viewport(
         layout.pos.row = 1L, layout.pos.col = columns[[2L]]
     ))
-    .dasra_plot_header_groups(
+    .sacat_plot_header_groups(
         "Structural-absence\nprobability", spec$contrast, spec$group_colors,
         gp_title, gp_small
     )
@@ -939,7 +939,7 @@
     grid::pushViewport(grid::viewport(
         layout.pos.row = 1L, layout.pos.col = columns[[4L]]
     ))
-    .dasra_plot_header_groups(
+    .sacat_plot_header_groups(
         "Present-conditional\nrelative abundance", spec$contrast,
         spec$group_colors, gp_title, gp_small
     )
@@ -947,7 +947,7 @@
     invisible(data)
 }
 
-.dasra_plot_draw <- function(spec) {
+.sacat_plot_draw <- function(spec) {
     data <- spec$data
     n <- nrow(data)
     ink <- "#1A1C1F"
@@ -1003,9 +1003,9 @@
         width = grid::unit(1, "npc") - grid::unit(4, "mm"),
         height = grid::unit(1, "npc") - grid::unit(4, "mm"),
         layout = layout,
-        name = "dasra-association-profile"
+        name = "sacat-association-profile"
     ))
-    .dasra_plot_draw_header(
+    .sacat_plot_draw_header(
         spec, columns, gp_title, gp_small, gp_tiny
     )
 
@@ -1024,7 +1024,7 @@
     z_limit <- 2 * z_step
     z_ticks <- seq(-z_limit, z_limit, by = z_step)
     z_domain <- c(-1.035, 1.035) * z_limit
-    abundance_scale <- .dasra_plot_abundance_scale(c(
+    abundance_scale <- .sacat_plot_abundance_scale(c(
         data$abundance_reference,
         data$abundance_comparison
     ))
@@ -1033,7 +1033,7 @@
     grid::pushViewport(grid::viewport(
         layout.pos.row = 2L, layout.pos.col = columns[[2L]]
     ))
-    .dasra_plot_axis(
+    .sacat_plot_axis(
         structural_ticks,
         paste0(round(100 * structural_ticks), "%"),
         reversed = TRUE,
@@ -1046,7 +1046,7 @@
     grid::pushViewport(grid::viewport(
         layout.pos.row = 2L, layout.pos.col = columns[[3L]]
     ))
-    .dasra_plot_axis(
+    .sacat_plot_axis(
         z_ticks,
         format(z_ticks, trim = TRUE, scientific = FALSE),
         domain = z_domain,
@@ -1066,7 +1066,7 @@
     grid::pushViewport(grid::viewport(
         layout.pos.row = 2L, layout.pos.col = columns[[4L]]
     ))
-    .dasra_plot_axis(
+    .sacat_plot_axis(
         abundance_scale$ticks,
         abundance_scale$labels,
         domain = abundance_domain,
@@ -1291,7 +1291,7 @@
     invisible(spec)
 }
 
-.dasra_plot_open_device <- function(file, width, height, dpi) {
+.sacat_plot_open_device <- function(file, width, height, dpi) {
     extension <- tolower(sub("^.*\\.", "", file))
     if (identical(extension, "pdf")) {
         grDevices::pdf(
@@ -1315,16 +1315,16 @@
     invisible(NULL)
 }
 
-#' Plot a DASRA dual-component association profile
+#' Plot a SACAT dual-component association profile
 #'
-#' Draws a publication-oriented, taxon-aligned summary of a DASRA analysis.
+#' Draws a publication-oriented, taxon-aligned summary of a SACAT analysis.
 #' The center displays the structural-absence and relative-abundance component
 #' Z-statistics on one standardized scale. Their colors encode the corresponding
 #' component adjusted p-values. Feature superscripts encode the primary omnibus
 #' adjusted p-value. For BH-adjusted fits, component-specific lane gates mark
 #' the exact family-wide BH discovery boundaries on the component Z-statistic
 #' axis. The side panels show covariate-standardized group summaries prepared
-#' when [dasra()] was called with `store_plot_data = TRUE`.
+#' when [sacat()] was called with `store_plot_data = TRUE`.
 #'
 #' The structural side panel provides a descriptive unrestricted companion
 #' fit, and the central score statistic provides structural inference. The
@@ -1332,7 +1332,7 @@
 #' mean relative abundance, expressed as a percentage on a log scale, from the
 #' fitted mark model. Paired points represent these positive values on the log
 #' scale. The central abundance statistic retains the target-excluded
-#' reference correction used by DASRA.
+#' reference correction used by SACAT.
 #' Side-panel segments provide descriptive fitted group summaries, and the
 #' abundance connector links its two fitted group means. Component inference is
 #' carried by the central Z-statistics. An omitted central marker or `--`
@@ -1345,7 +1345,7 @@
 #' abundance adjustments produce component-specific gates. The omnibus stars
 #' use the separately adjusted omnibus family.
 #'
-#' @param x A `dasra` object fitted with `component = "all"` and
+#' @param x A `sacat` object fitted with `component = "all"` and
 #'   `store_plot_data = TRUE`.
 #' @param features Optional character vector of feature names to display. The
 #'   supplied order is preserved and overrides `selection` and `max_features`.
@@ -1388,7 +1388,7 @@
 #' @param ... Reserved for future graphical options.
 #'
 #' @usage
-#' \method{plot}{dasra}(
+#' \method{plot}{sacat}(
 #'   x,
 #'   features = NULL,
 #'   selection = c("significant", "top", "all"),
@@ -1414,19 +1414,19 @@
 #'
 #' @examples
 #' \dontrun{
-#' fit <- dasra(
+#' fit <- sacat(
 #'   counts, metadata, ~ group + age, "group", "library_size",
 #'   component = "all", store_plot_data = TRUE
 #' )
 #' plot(fit)
 #' plot(fit, p_color_limits = c(1e-8, 1))
-#' plot(fit, file = "dasra-profile.pdf", width = 7.2, height = 6.5)
+#' plot(fit, file = "sacat-profile.pdf", width = 7.2, height = 6.5)
 #' }
 #'
-#' @method plot dasra
+#' @method plot sacat
 #' @export
 #' @importFrom graphics plot
-plot.dasra <- function(
+plot.sacat <- function(
         x,
         features = NULL,
         selection = c("significant", "top", "all"),
@@ -1446,7 +1446,7 @@ plot.dasra <- function(
         show_component_guides = TRUE,
         ...) {
     selection <- match.arg(selection)
-    spec <- .dasra_plot_build_spec(
+    spec <- .sacat_plot_build_spec(
         x = x,
         features = features,
         selection = selection,
@@ -1487,9 +1487,9 @@ plot.dasra <- function(
             dpi <= 0) {
             stop("`dpi` must be one positive number.", call. = FALSE)
         }
-        .dasra_plot_open_device(file, width, height, dpi)
+        .sacat_plot_open_device(file, width, height, dpi)
         on.exit(grDevices::dev.off(), add = TRUE)
     }
-    .dasra_plot_draw(spec)
+    .sacat_plot_draw(spec)
     invisible(spec)
 }

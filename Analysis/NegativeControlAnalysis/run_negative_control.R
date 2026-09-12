@@ -11,7 +11,7 @@ scenario_table <- data.frame(
     stringsAsFactors = FALSE
 )
 
-method_names <- c("DASRA", "ZINQ", "MaAsLin3")
+method_names <- c("SACAT", "ZINQ", "MaAsLin3")
 reference_group <- "H"
 comparison_group <- "Case"
 depth_sdlog <- 0.45
@@ -19,11 +19,11 @@ minimum_depth <- 300L
 maximum_depth <- 30000L
 minimum_source_prevalence <- 0.10
 minimum_mean_abundance <- 1e-5
-required_dasra_version <- "0.6.0"
+required_sacat_version <- "0.6.0"
 checkpoint_schema_version <- 6L
 checkpoint_definition <- paste(
     "balanced and fourfold depth; public input version 3;",
-    "DASRA 0.6.0; within-family BH"
+    "SACAT 0.6.0; within-family BH"
 )
 
 `%||%` <- function(x, y) {
@@ -218,20 +218,20 @@ failure_result <- function(taxa, reason) {
     )
 }
 
-empty_dasra_diagnostics <- function(taxa, reason) {
+empty_sacat_diagnostics <- function(taxa, reason) {
     data.frame(
         taxon = taxa,
-        dasra_retained = FALSE,
-        dasra_formed_structural_absence = FALSE,
-        dasra_regular_structural_absence = FALSE,
-        dasra_nonregular_structural_absence = FALSE,
-        dasra_formed_relative_abundance = FALSE,
-        dasra_formed_omnibus = FALSE,
-        dasra_both_components_formed = FALSE,
-        dasra_reason_structural_absence = reason,
-        dasra_reason_relative_abundance = reason,
-        dasra_warning_structural_absence = "",
-        dasra_warning_relative_abundance = "",
+        sacat_retained = FALSE,
+        sacat_formed_structural_absence = FALSE,
+        sacat_regular_structural_absence = FALSE,
+        sacat_nonregular_structural_absence = FALSE,
+        sacat_formed_relative_abundance = FALSE,
+        sacat_formed_omnibus = FALSE,
+        sacat_both_components_formed = FALSE,
+        sacat_reason_structural_absence = reason,
+        sacat_reason_relative_abundance = reason,
+        sacat_warning_structural_absence = "",
+        sacat_warning_relative_abundance = "",
         stringsAsFactors = FALSE
     )
 }
@@ -282,8 +282,8 @@ run_with_warnings <- function(expression) {
     list(value = value, warnings = unique(warnings))
 }
 
-run_dasra <- function(counts, metadata, taxa) {
-    outcome <- run_with_warnings(DASRA::dasra(
+run_sacat <- function(counts, metadata, taxa) {
+    outcome <- run_with_warnings(SACAT::sacat(
         counts = counts,
         metadata = metadata,
         formula = ~ group,
@@ -302,16 +302,16 @@ run_dasra <- function(counts, metadata, taxa) {
         )
         return(list(
             result = failure_result(taxa, failure_reason),
-            diagnostics = empty_dasra_diagnostics(taxa, failure_reason),
+            diagnostics = empty_sacat_diagnostics(taxa, failure_reason),
             warnings = outcome$warnings
         ))
     }
     fit <- outcome$value
     if (!is.data.frame(fit$results) || !is.data.frame(fit$diagnostics)) {
         return(list(
-            result = failure_result(taxa, "DASRA returned incomplete output"),
-            diagnostics = empty_dasra_diagnostics(
-                taxa, "DASRA returned incomplete output"
+            result = failure_result(taxa, "SACAT returned incomplete output"),
+            diagnostics = empty_sacat_diagnostics(
+                taxa, "SACAT returned incomplete output"
             ),
             warnings = outcome$warnings
         ))
@@ -322,7 +322,7 @@ run_dasra <- function(counts, metadata, taxa) {
     native_p <- rep(NA_real_, length(taxa))
     available <- rep(FALSE, length(taxa))
     reason <- rep("taxon not returned", length(taxa))
-    diagnostics <- empty_dasra_diagnostics(taxa, "taxon not returned")
+    diagnostics <- empty_sacat_diagnostics(taxa, "taxon not returned")
     has_result <- !is.na(result_index)
     has_diagnostic <- !is.na(diagnostic_index)
     if ("p_omnibus" %in% names(fit$results)) {
@@ -351,11 +351,11 @@ run_dasra <- function(counts, metadata, taxa) {
         formed_omnibus[has_diagnostic] <- omnibus_values
         reason[has_diagnostic & !retained] <- "taxon was not retained"
         reason[has_diagnostic & retained & !formed_omnibus] <-
-            "no DASRA component was formed"
+            "no SACAT component was formed"
         reason[has_result & has_diagnostic & diagnostic_ok &
                    !is.finite(native_p)] <- "invalid omnibus p-value"
     } else {
-        reason[has_result] <- "DASRA diagnostics were incomplete"
+        reason[has_result] <- "SACAT diagnostics were incomplete"
     }
 
     if (any(has_diagnostic)) {
@@ -364,14 +364,14 @@ run_dasra <- function(counts, metadata, taxa) {
         ]
         target <- which(has_diagnostic)
         logical_fields <- c(
-            dasra_retained = "retained",
-            dasra_formed_structural_absence = "formed_structural_absence",
-            dasra_regular_structural_absence =
+            sacat_retained = "retained",
+            sacat_formed_structural_absence = "formed_structural_absence",
+            sacat_regular_structural_absence =
                 "regular_structural_absence",
-            dasra_nonregular_structural_absence =
+            sacat_nonregular_structural_absence =
                 "nonregular_structural_absence",
-            dasra_formed_relative_abundance = "formed_relative_abundance",
-            dasra_formed_omnibus = "formed_omnibus"
+            sacat_formed_relative_abundance = "formed_relative_abundance",
+            sacat_formed_omnibus = "formed_omnibus"
         )
         for (field in names(logical_fields)) {
             source_field <- logical_fields[[field]]
@@ -381,16 +381,16 @@ run_dasra <- function(counts, metadata, taxa) {
                 diagnostics[[field]][target] <- values
             }
         }
-        diagnostics$dasra_both_components_formed <-
-            diagnostics$dasra_retained &
-            diagnostics$dasra_formed_structural_absence &
-            diagnostics$dasra_formed_relative_abundance
+        diagnostics$sacat_both_components_formed <-
+            diagnostics$sacat_retained &
+            diagnostics$sacat_formed_structural_absence &
+            diagnostics$sacat_formed_relative_abundance
         reason_fields <- c(
-            dasra_reason_structural_absence = "reason_structural_absence",
-            dasra_reason_relative_abundance = "reason_relative_abundance",
-            dasra_warning_structural_absence =
+            sacat_reason_structural_absence = "reason_structural_absence",
+            sacat_reason_relative_abundance = "reason_relative_abundance",
+            sacat_warning_structural_absence =
                 "warning_structural_absence",
-            dasra_warning_relative_abundance =
+            sacat_warning_relative_abundance =
                 "warning_relative_abundance"
         )
         for (field in names(reason_fields)) {
@@ -667,8 +667,8 @@ run_unit <- function(analysis_input, scenario, replicate, result_directory,
         work_root, scenario, sprintf("rep_%04d", replicate)
     )
 
-    dasra <- run_timed_method(
-        "DASRA", function() run_dasra(counts, metadata, taxa), taxa
+    sacat <- run_timed_method(
+        "SACAT", function() run_sacat(counts, metadata, taxa), taxa
     )
     zinq <- run_timed_method(
         "ZINQ", function() run_zinq(counts, metadata, taxa), taxa
@@ -678,7 +678,7 @@ run_unit <- function(analysis_input, scenario, replicate, result_directory,
         function() run_maaslin3(counts, metadata, taxa, work_directory),
         taxa
     )
-    method_results <- list(dasra, zinq, maaslin)
+    method_results <- list(sacat, zinq, maaslin)
     taxon_pvalues <- do.call(rbind, lapply(method_results, `[[`, "result"))
     taxon_pvalues$dataset <- analysis_input$dataset_id
     taxon_pvalues$dataset_label <- analysis_input$label
@@ -725,19 +725,19 @@ run_unit <- function(analysis_input, scenario, replicate, result_directory,
     }, method_results, method_names))
 
     diagnostics <- make_taxon_diagnostics(counts, metadata, taxa)
-    dasra_diagnostics <- dasra$diagnostics %||%
-        empty_dasra_diagnostics(taxa, "DASRA diagnostics were unavailable")
-    dasra_diagnostics <- dasra_diagnostics[
-        match(taxa, dasra_diagnostics$taxon), , drop = FALSE
+    sacat_diagnostics <- sacat$diagnostics %||%
+        empty_sacat_diagnostics(taxa, "SACAT diagnostics were unavailable")
+    sacat_diagnostics <- sacat_diagnostics[
+        match(taxa, sacat_diagnostics$taxon), , drop = FALSE
     ]
-    if (anyNA(dasra_diagnostics$taxon)) {
-        dasra_diagnostics <- empty_dasra_diagnostics(
-            taxa, "DASRA diagnostics were incomplete"
+    if (anyNA(sacat_diagnostics$taxon)) {
+        sacat_diagnostics <- empty_sacat_diagnostics(
+            taxa, "SACAT diagnostics were incomplete"
         )
     }
     diagnostics <- cbind(
         diagnostics,
-        dasra_diagnostics[, setdiff(names(dasra_diagnostics), "taxon"),
+        sacat_diagnostics[, setdiff(names(sacat_diagnostics), "taxon"),
                           drop = FALSE]
     )
     diagnostics$dataset <- analysis_input$dataset_id
@@ -748,15 +748,15 @@ run_unit <- function(analysis_input, scenario, replicate, result_directory,
         "dataset", "dataset_label", "replicate", "scenario", "taxon",
         "observed_prevalence", "prevalence_H", "prevalence_Case",
         "positive_samples_H", "positive_samples_Case", "total_count",
-        "dasra_retained", "dasra_formed_structural_absence",
-        "dasra_regular_structural_absence",
-        "dasra_nonregular_structural_absence",
-        "dasra_formed_relative_abundance", "dasra_formed_omnibus",
-        "dasra_both_components_formed",
-        "dasra_reason_structural_absence",
-        "dasra_reason_relative_abundance",
-        "dasra_warning_structural_absence",
-        "dasra_warning_relative_abundance"
+        "sacat_retained", "sacat_formed_structural_absence",
+        "sacat_regular_structural_absence",
+        "sacat_nonregular_structural_absence",
+        "sacat_formed_relative_abundance", "sacat_formed_omnibus",
+        "sacat_both_components_formed",
+        "sacat_reason_structural_absence",
+        "sacat_reason_relative_abundance",
+        "sacat_warning_structural_absence",
+        "sacat_warning_relative_abundance"
     )]
     depth_diagnostics <- data.frame(
         dataset = analysis_input$dataset_id,
@@ -792,7 +792,7 @@ run_unit <- function(analysis_input, scenario, replicate, result_directory,
     atomic_save_rds(list(
         schema_version = checkpoint_schema_version,
         analysis_definition = checkpoint_definition,
-        DASRA_version = as.character(utils::packageVersion("DASRA")),
+        SACAT_version = as.character(utils::packageVersion("SACAT")),
         dataset_id = analysis_input$dataset_id,
         evaluation_taxa = taxa,
         replicate = as.integer(replicate),
@@ -812,7 +812,7 @@ checkpoint_is_current <- function(path, analysis_input, scenario, replicate) {
     !is.null(object) &&
         identical(object$schema_version, checkpoint_schema_version) &&
         identical(object$analysis_definition, checkpoint_definition) &&
-        identical(object$DASRA_version, required_dasra_version) &&
+        identical(object$SACAT_version, required_sacat_version) &&
         identical(object$dataset_id, analysis_input$dataset_id) &&
         identical(object$evaluation_taxa, analysis_input$evaluation_taxa) &&
         identical(object$scenario, scenario) &&
@@ -940,12 +940,12 @@ aggregate_checkpoints <- function(result_directory, analysis_input,
         fourfold_max_taxon_replicates_below_18 =
             max(below_18_by_taxon),
         sampling_bin = "Other_unmodeled excluded from method inputs",
-        DASRA_omnibus_definition = paste(
+        SACAT_omnibus_definition = paste(
             "Bonferroni omnibus p-value when at least one component",
             "is formed"
         ),
         MaAsLin3_input = "taxon relative abundance with normalization NONE",
-        DASRA_version = as.character(utils::packageVersion("DASRA")),
+        SACAT_version = as.character(utils::packageVersion("SACAT")),
         ZINQ_version = as.character(utils::packageVersion("ZINQ")),
         maaslin3_version = as.character(utils::packageVersion("maaslin3")),
         R_version = paste(R.version$major, R.version$minor, sep = "."),
@@ -969,7 +969,7 @@ run_negative_control <- function(dataset_directory, workers = 7L,
         stop("This analysis requires exactly 100 randomizations.",
              call. = FALSE)
     }
-    required_packages <- c("DASRA", "ZINQ", "maaslin3")
+    required_packages <- c("SACAT", "ZINQ", "maaslin3")
     missing_packages <- required_packages[!vapply(
         required_packages, requireNamespace, logical(1), quietly = TRUE
     )]
@@ -986,11 +986,11 @@ run_negative_control <- function(dataset_directory, workers = 7L,
         character(1)
     )
     if (!identical(
-        package_versions[["DASRA"]],
-        required_dasra_version
+        package_versions[["SACAT"]],
+        required_sacat_version
     )) {
         stop(
-            "This analysis requires DASRA ", required_dasra_version, ".",
+            "This analysis requires SACAT ", required_sacat_version, ".",
             call. = FALSE
         )
     }
@@ -1198,13 +1198,13 @@ run_negative_control <- function(dataset_directory, workers = 7L,
              call. = FALSE)
     }
     required_diagnostics <- c(
-        "dasra_regular_structural_absence",
-        "dasra_nonregular_structural_absence",
-        "dasra_warning_structural_absence",
-        "dasra_warning_relative_abundance"
+        "sacat_regular_structural_absence",
+        "sacat_nonregular_structural_absence",
+        "sacat_warning_structural_absence",
+        "sacat_warning_relative_abundance"
     )
     if (!all(required_diagnostics %in% names(diagnostics))) {
-        stop("The completed DASRA diagnostics are incomplete.",
+        stop("The completed SACAT diagnostics are incomplete.",
              call. = FALSE)
     }
     unlink(file.path(result_directory, ".checkpoints"),

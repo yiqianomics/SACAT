@@ -1,4 +1,4 @@
-Package: DASRA
+Package: SACAT
 Type: Package
 Title: Depth-Aware Structural-Absence and Relative-Abundance Analysis
 Version: 0.6.0
@@ -9,10 +9,10 @@ Authors@R:
         person("Zihan", "Zhu", email = "zihan.zhu@yale.edu",
                role = "aut")
     )
-URL: https://github.com/yiqianomics/DASRA
-BugReports: https://github.com/yiqianomics/DASRA/issues
+URL: https://github.com/yiqianomics/SACAT
+BugReports: https://github.com/yiqianomics/SACAT/issues
 Description: Provides depth-aware taxon-level inference for microbiome count
-    data. DASRA separates group differences in structural-absence probability
+    data. SACAT separates group differences in structural-absence probability
     from differences in mean log relative abundance among samples in which a
     taxon is present. It accounts for finite-depth nondetection, centers
     abundance effects against a target-excluded cross-taxon reference, reports

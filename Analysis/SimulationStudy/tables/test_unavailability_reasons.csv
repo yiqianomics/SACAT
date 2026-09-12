@@ -1,12 +1,12 @@
 method,component,reason,unavailable_tests,percent_of_component_unavailability
-DASRA structural absence,Structural absence,Structural nuisance fit not optimal,11000,51.025
-DASRA structural absence,Structural absence,Persistent structural boundary,10521,48.803
-DASRA structural absence,Structural absence,Gradient criterion not met,24,0.111
-DASRA structural absence,Structural absence,Unstable inference derivative,13,0.06
-DASRA present-conditional abundance,Present-conditional abundance,Nonpositive conditional information,16986,79.646
-DASRA present-conditional abundance,Present-conditional abundance,Root refinement did not close,3220,15.098
-DASRA present-conditional abundance,Present-conditional abundance,Root refinement found no descent,1024,4.801
-DASRA present-conditional abundance,Present-conditional abundance,Gradient criterion not met,91,0.427
-DASRA present-conditional abundance,Present-conditional abundance,Persistent conditional boundary,3,0.014
-DASRA present-conditional abundance,Present-conditional abundance,Background mode did not converge,3,0.014
+SACAT structural absence,Structural absence,Structural nuisance fit not optimal,11000,51.025
+SACAT structural absence,Structural absence,Persistent structural boundary,10521,48.803
+SACAT structural absence,Structural absence,Gradient criterion not met,24,0.111
+SACAT structural absence,Structural absence,Unstable inference derivative,13,0.06
+SACAT present-conditional abundance,Present-conditional abundance,Nonpositive conditional information,16986,79.646
+SACAT present-conditional abundance,Present-conditional abundance,Root refinement did not close,3220,15.098
+SACAT present-conditional abundance,Present-conditional abundance,Root refinement found no descent,1024,4.801
+SACAT present-conditional abundance,Present-conditional abundance,Gradient criterion not met,91,0.427
+SACAT present-conditional abundance,Present-conditional abundance,Persistent conditional boundary,3,0.014
+SACAT present-conditional abundance,Present-conditional abundance,Background mode did not converge,3,0.014
 edgeR,General abundance,Excluded by edgeR filterByExpr,261586,100

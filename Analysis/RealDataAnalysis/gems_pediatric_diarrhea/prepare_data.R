@@ -157,7 +157,7 @@ analysis_input <- list(
     preprocessing = preprocessing
 )
 saveRDS(analysis_input,
-        file.path(output_directory, "gems_pediatric_diarrhea_dasra_input.rds"),
+        file.path(output_directory, "gems_pediatric_diarrhea_sacat_input.rds"),
         compress = "xz")
 write_count_csv(
     taxon_counts,

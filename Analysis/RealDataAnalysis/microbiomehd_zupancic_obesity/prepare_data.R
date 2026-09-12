@@ -249,7 +249,7 @@ analysis_input <- list(
 saveRDS(
     analysis_input,
     file.path(output_directory,
-              "microbiomehd_zupancic_obesity_dasra_input.rds"),
+              "microbiomehd_zupancic_obesity_sacat_input.rds"),
     compress = "xz"
 )
 write_count_csv(

@@ -547,9 +547,9 @@ prepare_qiita_dataset <- function(dataset_directory, configuration) {
         planned_adjustment_variables = names(configuration$covariates),
         numeric_covariate_standardization =
             numeric_covariate_standardization,
-        dasra_input_orientation = "taxa by samples",
-        dasra_group_column = "group",
-        dasra_library_size_column = "library_size",
+        sacat_input_orientation = "taxa by samples",
+        sacat_group_column = "group",
+        sacat_library_size_column = "library_size",
         library_size_definition =
             "sum of the full downloaded BIOM feature table before filtering",
         sample_counts = as.list(observed_group_counts),
@@ -570,8 +570,8 @@ prepare_qiita_dataset <- function(dataset_directory, configuration) {
             "cohort selection", "repeated-sample rule", "reference samples",
             "comparison samples", "source features", "prevalence rule",
             "taxonomic aggregation", "two-group positive-count support rule",
-            "retained taxon bins", "DASRA count orientation",
-            "DASRA library-size definition"
+            "retained taxon bins", "SACAT count orientation",
+            "SACAT library-size definition"
         ),
         value = c(
             configuration$dataset_title,
@@ -590,7 +590,7 @@ prepare_qiita_dataset <- function(dataset_directory, configuration) {
             "genus when resolved; otherwise deepest resolved higher-rank bin",
             preprocessing$group_support_filter,
             as.character(nrow(taxon_counts)),
-            preprocessing$dasra_input_orientation,
+            preprocessing$sacat_input_orientation,
             preprocessing$library_size_definition
         ),
         stringsAsFactors = FALSE
@@ -608,7 +608,7 @@ prepare_qiita_dataset <- function(dataset_directory, configuration) {
 
     saveRDS(
         analysis_input,
-        file.path(output_directory, paste0(prefix, "_dasra_input.rds")),
+        file.path(output_directory, paste0(prefix, "_sacat_input.rds")),
         compress = "xz"
     )
     write_qiita_count_csv(

@@ -10,7 +10,7 @@ Each dataset directory contains:
 - `analysis.R`: the dataset-specific entry point;
 - `results/`: taxon-level results, randomization summaries, diagnostics, depth summaries, and analysis settings.
 
-`run_negative_control.R` is the shared analysis engine used by every dataset-specific `analysis.R` entry point. It generates the randomized counts, runs DASRA, ZINQ, and MaAsLin3 under the common design, validates each completed unit, and writes the result tables.
+`run_negative_control.R` is the shared analysis engine used by every dataset-specific `analysis.R` entry point. It generates the randomized counts, runs SACAT, ZINQ, and MaAsLin3 under the common design, validates each completed unit, and writes the result tables.
 
 ZINQ 2.0 is available from the [ZINQ-v2 repository](https://github.com/wdl2459/ZINQ-v2), and MaAsLin3 1.5.3 is available from the [MaAsLin3 repository](https://github.com/biobakery/maaslin3). The combined figure requires an R build with Cairo graphics.
 
@@ -54,15 +54,15 @@ Each of 100 randomizations assigns 100 samples to `H` and 100 to `Case`. The sam
 | Balanced | 4,000 | 4,000 |
 | Fourfold | 1,500 | 6,000 |
 
-Library sizes follow a log-normal distribution with `sdlog = 0.45` and are limited to 300-30,000 reads. Counts are sampled from the 30 target genera together with `Other_unmodeled`; the latter preserves the remaining community mass but is not tested. DASRA, ZINQ, and MaAsLin3 analyze the same 30 target taxa in every randomization.
+Library sizes follow a log-normal distribution with `sdlog = 0.45` and are limited to 300-30,000 reads. Counts are sampled from the 30 target genera together with `Other_unmodeled`; the latter preserves the remaining community mass but is not tested. SACAT, ZINQ, and MaAsLin3 analyze the same 30 target taxa in every randomization.
 
-DASRA uses its public Bonferroni omnibus result. An unavailable component contributes a p-value of 1, and the omnibus is formed when at least one component is formed. MaAsLin3 requires both component fits and a combined p-value. An unavailable method result is represented by an analysis p-value of 1 in the common 30-taxon family. Within each randomization, depth setting, and method, Benjamini-Hochberg adjustment is applied to these 30 p-values. A family incurs a Type I error when at least one adjusted p-value is at most 0.05.
+SACAT uses its public Bonferroni omnibus result. An unavailable component contributes a p-value of 1, and the omnibus is formed when at least one component is formed. MaAsLin3 requires both component fits and a combined p-value. An unavailable method result is represented by an analysis p-value of 1 in the common 30-taxon family. Within each randomization, depth setting, and method, Benjamini-Hochberg adjustment is applied to these 30 p-values. A family incurs a Type I error when at least one adjusted p-value is at most 0.05.
 
 Randomization and count-generation seeds are deterministic functions of the dataset, randomization, and depth setting. Each dataset analysis uses seven independent R workers.
 
 ## Software requirements
 
-The analysis requires R, DASRA 0.6.0, ZINQ, maaslin3, and ggplot2.
+The analysis requires R, SACAT 0.6.0, ZINQ, maaslin3, and ggplot2.
 
 ## Running the analyses
 
@@ -78,7 +78,7 @@ Each completed `results` directory contains:
 
 - `taxon_pvalues.csv`: taxon-level p-values, availability, and status;
 - `replicate_metrics.csv`: BH rejection counts, familywise Type I error, and availability by randomization, setting, and method;
-- `diagnostics.csv`: generated positive-count and DASRA component diagnostics;
+- `diagnostics.csv`: generated positive-count and SACAT component diagnostics;
 - `depth_diagnostics.csv`: realized group sizes and library-depth summaries;
 - `analysis_settings.csv`: design constants and software versions.
 

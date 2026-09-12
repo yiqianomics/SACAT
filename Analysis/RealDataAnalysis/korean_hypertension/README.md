@@ -37,6 +37,6 @@ in both groups.
 
 The analysis RDS and accompanying summary tables are written to `processed/`.
 
-For readability, the DASRA profile figure uses the display labels “Normal BP”
+For readability, the SACAT profile figure uses the display labels “Normal BP”
 and “High BP”; the model and exported tables retain the full group labels
 `Normotension` and `Hypertension`.

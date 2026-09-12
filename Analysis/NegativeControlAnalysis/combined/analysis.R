@@ -9,8 +9,8 @@ scenario_labels <- c(
     balanced = "Balanced depth",
     fourfold = "Fourfold depth difference"
 )
-method_order <- c("DASRA", "ZINQ", "MaAsLin3")
-required_dasra_version <- "0.6.0"
+method_order <- c("SACAT", "ZINQ", "MaAsLin3")
+required_sacat_version <- "0.6.0"
 dataset_order <- c(
     "NogueraJulianHIV",
     "BaxterE_2016",
@@ -247,13 +247,13 @@ validate_dataset_outputs <- function(dataset, result, catalog_entry, root) {
     diagnostics <- utils::read.csv(diagnostics_path, check.names = FALSE)
     required_diagnostics <- c(
         "dataset", "replicate", "scenario", "taxon",
-        "positive_samples_H", "positive_samples_Case", "dasra_retained",
-        "dasra_formed_structural_absence",
-        "dasra_regular_structural_absence",
-        "dasra_nonregular_structural_absence",
-        "dasra_formed_relative_abundance", "dasra_formed_omnibus",
-        "dasra_warning_structural_absence",
-        "dasra_warning_relative_abundance"
+        "positive_samples_H", "positive_samples_Case", "sacat_retained",
+        "sacat_formed_structural_absence",
+        "sacat_regular_structural_absence",
+        "sacat_nonregular_structural_absence",
+        "sacat_formed_relative_abundance", "sacat_formed_omnibus",
+        "sacat_warning_structural_absence",
+        "sacat_warning_relative_abundance"
     )
     if (!all(required_diagnostics %in% names(diagnostics)) ||
         nrow(diagnostics) != replicates * length(scenario_order) *
@@ -263,42 +263,42 @@ validate_dataset_outputs <- function(dataset, result, catalog_entry, root) {
         stop("Diagnostics are incomplete for ", dataset, ".",
              call. = FALSE)
     }
-    dasra_result <- result[result$method == "DASRA", , drop = FALSE]
+    sacat_result <- result[result$method == "SACAT", , drop = FALSE]
     diagnostic_key <- paste(
         diagnostics$replicate, diagnostics$scenario, diagnostics$taxon,
         sep = "\r"
     )
     result_key <- paste(
-        dasra_result$replicate, dasra_result$scenario, dasra_result$taxon,
+        sacat_result$replicate, sacat_result$scenario, sacat_result$taxon,
         sep = "\r"
     )
     diagnostic_index <- match(result_key, diagnostic_key)
     logical_fields <- c(
-        "dasra_retained", "dasra_formed_structural_absence",
-        "dasra_regular_structural_absence",
-        "dasra_nonregular_structural_absence",
-        "dasra_formed_relative_abundance", "dasra_formed_omnibus"
+        "sacat_retained", "sacat_formed_structural_absence",
+        "sacat_regular_structural_absence",
+        "sacat_nonregular_structural_absence",
+        "sacat_formed_relative_abundance", "sacat_formed_omnibus"
     )
     if (anyDuplicated(diagnostic_key) || anyNA(diagnostic_index) ||
         any(!vapply(
             diagnostics[, logical_fields, drop = FALSE],
             is.logical, logical(1)
         )) || anyNA(as.matrix(diagnostics[, logical_fields, drop = FALSE]))) {
-        stop("DASRA diagnostics are invalid for ", dataset, ".",
+        stop("SACAT diagnostics are invalid for ", dataset, ".",
              call. = FALSE)
     }
-    expected_omnibus <- diagnostics$dasra_formed_structural_absence |
-        diagnostics$dasra_formed_relative_abundance
-    expected_nonregular <- diagnostics$dasra_formed_structural_absence &
-        !diagnostics$dasra_regular_structural_absence
+    expected_omnibus <- diagnostics$sacat_formed_structural_absence |
+        diagnostics$sacat_formed_relative_abundance
+    expected_nonregular <- diagnostics$sacat_formed_structural_absence &
+        !diagnostics$sacat_regular_structural_absence
     expected_available <-
-        diagnostics$dasra_retained[diagnostic_index] &
-        diagnostics$dasra_formed_omnibus[diagnostic_index]
-    if (any(diagnostics$dasra_formed_omnibus != expected_omnibus) ||
-        any(diagnostics$dasra_nonregular_structural_absence !=
+        diagnostics$sacat_retained[diagnostic_index] &
+        diagnostics$sacat_formed_omnibus[diagnostic_index]
+    if (any(diagnostics$sacat_formed_omnibus != expected_omnibus) ||
+        any(diagnostics$sacat_nonregular_structural_absence !=
                 expected_nonregular) ||
-        any(dasra_result$available != expected_available)) {
-        stop("DASRA availability is inconsistent for ", dataset, ".",
+        any(sacat_result$available != expected_available)) {
+        stop("SACAT availability is inconsistent for ", dataset, ".",
              call. = FALSE)
     }
 
@@ -348,7 +348,7 @@ validate_dataset_outputs <- function(dataset, result, catalog_entry, root) {
         "fourfold_fraction_records_at_least_20",
         "fourfold_fraction_records_at_least_18",
         "fourfold_max_taxon_replicates_below_18",
-        "DASRA_omnibus_definition", "DASRA_version"
+        "SACAT_omnibus_definition", "SACAT_version"
     )
     minimum_positive_both <- fourfold$minimum_both
     below_18_by_taxon <- tapply(
@@ -378,13 +378,13 @@ validate_dataset_outputs <- function(dataset, result, catalog_entry, root) {
         any(!is.finite(settings_numbers)) ||
         any(abs(settings_numbers - expected_settings_numbers) > tolerance) ||
         !identical(as.character(settings$scenarios), "balanced | fourfold") ||
-        !identical(as.character(settings$DASRA_omnibus_definition),
+        !identical(as.character(settings$SACAT_omnibus_definition),
                    paste(
                        "Bonferroni omnibus p-value when at least one",
                        "component is formed"
                    )) ||
-        !identical(as.character(settings$DASRA_version),
-                   required_dasra_version)) {
+        !identical(as.character(settings$SACAT_version),
+                   required_sacat_version)) {
         stop("The analysis settings are inconsistent for ", dataset, ".",
              call. = FALSE)
     }

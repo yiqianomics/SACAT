@@ -1,4 +1,4 @@
 library(testthat)
-library(DASRA)
+library(SACAT)
 
-test_check("DASRA")
+test_check("SACAT")

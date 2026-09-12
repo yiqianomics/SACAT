@@ -13,7 +13,7 @@
     encoded <- NULL
 
     fit <- with_mocked_bindings(
-        dasra(
+        sacat(
             counts = counts,
             metadata = metadata,
             formula = ~ group,
@@ -22,7 +22,7 @@
             reference = reference,
             component = "structural_absence"
         ),
-        .dasra_structural_arm = function(
+        .sacat_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
                 conditional_present_starts = 1L, ...) {
             encoded <<- g
@@ -36,7 +36,7 @@
                 diagnostics = NULL
             )
         },
-        .package = "DASRA"
+        .package = "SACAT"
     )
 
     list(g = encoded, contrast = fit$settings$contrast)
@@ -61,7 +61,7 @@
         rownames(scenario)
 
     local_mocked_bindings(
-        .dasra_structural_arm = function(
+        .sacat_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
                 conditional_present_starts = 1L, ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
@@ -75,7 +75,7 @@
                 diagnostics = NULL
             )
         },
-        .dasra_abundance_arm = function(
+        .sacat_abundance_arm = function(
                 Y, N, g, z, keep_diagnostics, ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
             list(
@@ -89,7 +89,7 @@
                 diagnostics = NULL
             )
         },
-        .package = "DASRA"
+        .package = "SACAT"
     )
 
     samples <- paste0("Sample_", seq_len(6L))
@@ -107,7 +107,7 @@
         row.names = samples
     )
 
-    dasra(
+    sacat(
         counts = counts,
         metadata = metadata,
         formula = ~ group,
@@ -120,7 +120,7 @@
 }
 
 .make_warning_abundance_fit <- function() {
-    fit <- DASRA:::.dasra_abundance_empty_fit("ok", 6L)
+    fit <- SACAT:::.sacat_abundance_empty_fit("ok", 6L)
     fit$available <- TRUE
     fit$status <- "ok"
     fit$raw_delta <- 0.1
@@ -224,7 +224,7 @@ test_that("component arms retain warning codes without full output", {
     structural <- NULL
     expect_warning(
         structural <- with_mocked_bindings(
-            DASRA:::.dasra_structural_arm(
+            SACAT:::.sacat_structural_arm(
                 Y = matrix(
                     c(1, 0, 2, 1, 0, 2),
                     ncol = 1L,
@@ -250,7 +250,7 @@ test_that("component arms retain warning codes without full output", {
                     )
                 )
             },
-            .package = "DASRA"
+            .package = "SACAT"
         ),
         "warning_structural_absence"
     )
@@ -264,7 +264,7 @@ test_that("component arms retain warning codes without full output", {
     abundance <- NULL
     expect_warning(
         abundance <- with_mocked_bindings(
-            DASRA:::.dasra_abundance_arm(
+            SACAT:::.sacat_abundance_arm(
                 Y = matrix(
                     c(1, 0, 2, 1, 0, 2),
                     ncol = 1L,
@@ -275,8 +275,8 @@ test_that("component arms retain warning codes without full output", {
                 z = NULL,
                 keep_diagnostics = FALSE
             ),
-            .dasra_abundance_fit_taxon = function(...) abundance_fit,
-            .package = "DASRA"
+            .sacat_abundance_fit_taxon = function(...) abundance_fit,
+            .package = "SACAT"
         ),
         "warning_relative_abundance"
     )
@@ -303,7 +303,7 @@ test_that("print separates regular and nonregular structural results", {
 })
 
 test_that("public numerical and formation controls have stable defaults", {
-    defaults <- formals(DASRA::dasra)
+    defaults <- formals(SACAT::sacat)
 
     expect_false("conditional_present_starts" %in% names(defaults))
     expect_identical(
@@ -321,7 +321,7 @@ test_that("public numerical and formation controls have stable defaults", {
     expect_identical(eval(defaults$workers), 1L)
     expect_identical(eval(defaults$verbose), FALSE)
     expect_identical(eval(defaults$store_plot_data), FALSE)
-    expect_identical(getNamespaceExports("DASRA"), "dasra")
+    expect_identical(getNamespaceExports("SACAT"), "sacat")
 })
 
 test_that("plot summaries are an explicit dual-component opt-in", {
@@ -339,14 +339,14 @@ test_that("plot summaries are an explicit dual-component opt-in", {
     )
 
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             component = "structural_absence", store_plot_data = TRUE
         ),
         "requires `component = \"all\"`"
     )
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             store_plot_data = 1L
         ),
@@ -370,7 +370,7 @@ test_that("public controls are checked and recorded", {
     captured <- NULL
 
     fit <- with_mocked_bindings(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             component = "structural_absence",
             structural_conditional_present_starts = "full",
@@ -378,7 +378,7 @@ test_that("public controls are checked and recorded", {
             min_reference_taxa = 3L,
             structural_quadrature_points = 31L
         ),
-        .dasra_structural_arm = function(
+        .sacat_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
                 conditional_present_starts, min_positive_samples,
                 quadrature_points, cluster, verbose,
@@ -401,7 +401,7 @@ test_that("public controls are checked and recorded", {
                 diagnostics = NULL
             )
         },
-        .package = "DASRA"
+        .package = "SACAT"
     )
 
     expect_identical(captured$starts, 5L)
@@ -420,35 +420,35 @@ test_that("public controls are checked and recorded", {
     expect_identical(fit$settings$workers_used, 1L)
 
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             min_positive_samples = 0L
         ),
         "min_positive_samples"
     )
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             min_reference_taxa = 2L
         ),
         "min_reference_taxa"
     )
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             structural_quadrature_points = 2L
         ),
         "structural_quadrature_points"
     )
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             abundance_quadrature_points = 2L
         ),
         "abundance_quadrature_points"
     )
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             conditional_present_starts = "full"
         ),
@@ -472,12 +472,12 @@ test_that("the abundance quadrature control is passed and recorded", {
     captured_Q <- NULL
 
     fit <- with_mocked_bindings(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             component = "relative_abundance",
             abundance_quadrature_points = 31L
         ),
-        .dasra_abundance_arm = function(
+        .sacat_abundance_arm = function(
                 Y, N, g, z, keep_diagnostics,
                 min_positive_samples, min_reference_taxa,
                 quadrature_points, cluster, verbose,
@@ -495,7 +495,7 @@ test_that("the abundance quadrature control is passed and recorded", {
                 diagnostics = NULL
             )
         },
-        .package = "DASRA"
+        .package = "SACAT"
     )
 
     expect_identical(captured_Q, 31L)
@@ -519,11 +519,11 @@ test_that("only metadata used by the analysis must be complete", {
     )
 
     expect_no_error(with_mocked_bindings(
-        dasra(
+        sacat(
             counts, metadata, ~ group, "group", "reads",
             component = "structural_absence"
         ),
-        .dasra_structural_arm = function(Y, ...) {
+        .sacat_structural_arm = function(Y, ...) {
             list(
                 p = rep(0.5, ncol(Y)),
                 formed = rep(TRUE, ncol(Y)),
@@ -534,12 +534,12 @@ test_that("only metadata used by the analysis must be complete", {
                 diagnostics = NULL
             )
         },
-        .package = "DASRA"
+        .package = "SACAT"
     ))
 
     metadata$age[2L] <- NA
     expect_error(
-        dasra(
+        sacat(
             counts, metadata, ~ group + age, "group", "reads",
             component = "structural_absence"
         ),

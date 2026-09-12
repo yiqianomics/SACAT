@@ -42,5 +42,5 @@ Run from the repository root:
 Rscript Analysis/RealDataAnalysis/microbiomehd_zupancic_obesity/prepare_data.R
 ```
 
-The DASRA input and readable count, metadata, taxonomy, and preprocessing
+The SACAT input and readable count, metadata, taxonomy, and preprocessing
 tables are written to `processed/`.

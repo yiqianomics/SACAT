@@ -1,6 +1,6 @@
 method,component,simulation_target,multiplicity_family,analysis_configuration
-DASRA,Structural absence,Structural-absence probability,Fifty focal taxa within each method-component setting,group + z; original library size supplied
-DASRA,Present-conditional abundance,Present-conditional relative abundance,Fifty focal taxa within each method-component setting,group + z; original library size supplied
+SACAT,Structural absence,Structural-absence probability,Fifty focal taxa within each method-component setting,group + z; original library size supplied
+SACAT,Present-conditional abundance,Present-conditional relative abundance,Fifty focal taxa within each method-component setting,group + z; original library size supplied
 ZINQ,Observed prevalence,Observed prevalence,Fifty focal taxa within each method-component setting,group + z + standardized log depth; Firth model
 ZINQ,Detected-sample quantile abundance,Detected-sample abundance quantiles,Fifty focal taxa within each method-component setting,group + z + standardized log depth; three quantiles
 MaAsLin 3,Observed prevalence,Observed prevalence,Fifty focal taxa within each method-component setting,TSS and log transform; z and standardized log depth

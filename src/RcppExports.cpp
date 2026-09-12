@@ -8,20 +8,20 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// dasra_gh_log_weights_cpp
-Rcpp::NumericVector dasra_gh_log_weights_cpp(const Rcpp::NumericVector& node, const int order);
-RcppExport SEXP _DASRA_dasra_gh_log_weights_cpp(SEXP nodeSEXP, SEXP orderSEXP) {
+// sacat_gh_log_weights_cpp
+Rcpp::NumericVector sacat_gh_log_weights_cpp(const Rcpp::NumericVector& node, const int order);
+RcppExport SEXP _SACAT_sacat_gh_log_weights_cpp(SEXP nodeSEXP, SEXP orderSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type node(nodeSEXP);
     Rcpp::traits::input_parameter< const int >::type order(orderSEXP);
-    rcpp_result_gen = Rcpp::wrap(dasra_gh_log_weights_cpp(node, order));
+    rcpp_result_gen = Rcpp::wrap(sacat_gh_log_weights_cpp(node, order));
     return rcpp_result_gen;
 END_RCPP
 }
-// dasra_count_log_hy_adaptive_cpp
-Rcpp::NumericVector dasra_count_log_hy_adaptive_cpp(const Rcpp::NumericVector& y, const Rcpp::NumericVector& N, const Rcpp::NumericVector& eta, const double sigma, const Rcpp::NumericVector& node, const Rcpp::NumericVector& log_raw_weight, const int iterations, const double score_tolerance, const double bracket_tolerance);
-RcppExport SEXP _DASRA_dasra_count_log_hy_adaptive_cpp(SEXP ySEXP, SEXP NSEXP, SEXP etaSEXP, SEXP sigmaSEXP, SEXP nodeSEXP, SEXP log_raw_weightSEXP, SEXP iterationsSEXP, SEXP score_toleranceSEXP, SEXP bracket_toleranceSEXP) {
+// sacat_count_log_hy_adaptive_cpp
+Rcpp::NumericVector sacat_count_log_hy_adaptive_cpp(const Rcpp::NumericVector& y, const Rcpp::NumericVector& N, const Rcpp::NumericVector& eta, const double sigma, const Rcpp::NumericVector& node, const Rcpp::NumericVector& log_raw_weight, const int iterations, const double score_tolerance, const double bracket_tolerance);
+RcppExport SEXP _SACAT_sacat_count_log_hy_adaptive_cpp(SEXP ySEXP, SEXP NSEXP, SEXP etaSEXP, SEXP sigmaSEXP, SEXP nodeSEXP, SEXP log_raw_weightSEXP, SEXP iterationsSEXP, SEXP score_toleranceSEXP, SEXP bracket_toleranceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type y(ySEXP);
@@ -33,13 +33,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type iterations(iterationsSEXP);
     Rcpp::traits::input_parameter< const double >::type score_tolerance(score_toleranceSEXP);
     Rcpp::traits::input_parameter< const double >::type bracket_tolerance(bracket_toleranceSEXP);
-    rcpp_result_gen = Rcpp::wrap(dasra_count_log_hy_adaptive_cpp(y, N, eta, sigma, node, log_raw_weight, iterations, score_tolerance, bracket_tolerance));
+    rcpp_result_gen = Rcpp::wrap(sacat_count_log_hy_adaptive_cpp(y, N, eta, sigma, node, log_raw_weight, iterations, score_tolerance, bracket_tolerance));
     return rcpp_result_gen;
 END_RCPP
 }
-// dasra_count_moments_adaptive_cpp
-Rcpp::List dasra_count_moments_adaptive_cpp(const Rcpp::NumericVector& y, const Rcpp::NumericVector& N, const Rcpp::NumericVector& eta, const double sigma, const Rcpp::NumericVector& node, const Rcpp::NumericVector& log_raw_weight, const bool need_moments, const int iterations, const double score_tolerance, const double bracket_tolerance);
-RcppExport SEXP _DASRA_dasra_count_moments_adaptive_cpp(SEXP ySEXP, SEXP NSEXP, SEXP etaSEXP, SEXP sigmaSEXP, SEXP nodeSEXP, SEXP log_raw_weightSEXP, SEXP need_momentsSEXP, SEXP iterationsSEXP, SEXP score_toleranceSEXP, SEXP bracket_toleranceSEXP) {
+// sacat_count_moments_adaptive_cpp
+Rcpp::List sacat_count_moments_adaptive_cpp(const Rcpp::NumericVector& y, const Rcpp::NumericVector& N, const Rcpp::NumericVector& eta, const double sigma, const Rcpp::NumericVector& node, const Rcpp::NumericVector& log_raw_weight, const bool need_moments, const int iterations, const double score_tolerance, const double bracket_tolerance);
+RcppExport SEXP _SACAT_sacat_count_moments_adaptive_cpp(SEXP ySEXP, SEXP NSEXP, SEXP etaSEXP, SEXP sigmaSEXP, SEXP nodeSEXP, SEXP log_raw_weightSEXP, SEXP need_momentsSEXP, SEXP iterationsSEXP, SEXP score_toleranceSEXP, SEXP bracket_toleranceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type y(ySEXP);
@@ -52,33 +52,33 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type iterations(iterationsSEXP);
     Rcpp::traits::input_parameter< const double >::type score_tolerance(score_toleranceSEXP);
     Rcpp::traits::input_parameter< const double >::type bracket_tolerance(bracket_toleranceSEXP);
-    rcpp_result_gen = Rcpp::wrap(dasra_count_moments_adaptive_cpp(y, N, eta, sigma, node, log_raw_weight, need_moments, iterations, score_tolerance, bracket_tolerance));
+    rcpp_result_gen = Rcpp::wrap(sacat_count_moments_adaptive_cpp(y, N, eta, sigma, node, log_raw_weight, need_moments, iterations, score_tolerance, bracket_tolerance));
     return rcpp_result_gen;
 END_RCPP
 }
-// dasra_mean_log_relative_cpp
-Rcpp::NumericVector dasra_mean_log_relative_cpp(const Rcpp::NumericVector& location, const double sigma, const Rcpp::NumericVector& z, const Rcpp::NumericVector& weight);
-RcppExport SEXP _DASRA_dasra_mean_log_relative_cpp(SEXP locationSEXP, SEXP sigmaSEXP, SEXP zSEXP, SEXP weightSEXP) {
+// sacat_mean_log_relative_cpp
+Rcpp::NumericVector sacat_mean_log_relative_cpp(const Rcpp::NumericVector& location, const double sigma, const Rcpp::NumericVector& z, const Rcpp::NumericVector& weight);
+RcppExport SEXP _SACAT_sacat_mean_log_relative_cpp(SEXP locationSEXP, SEXP sigmaSEXP, SEXP zSEXP, SEXP weightSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type location(locationSEXP);
     Rcpp::traits::input_parameter< const double >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type z(zSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type weight(weightSEXP);
-    rcpp_result_gen = Rcpp::wrap(dasra_mean_log_relative_cpp(location, sigma, z, weight));
+    rcpp_result_gen = Rcpp::wrap(sacat_mean_log_relative_cpp(location, sigma, z, weight));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_DASRA_dasra_gh_log_weights_cpp", (DL_FUNC) &_DASRA_dasra_gh_log_weights_cpp, 2},
-    {"_DASRA_dasra_count_log_hy_adaptive_cpp", (DL_FUNC) &_DASRA_dasra_count_log_hy_adaptive_cpp, 9},
-    {"_DASRA_dasra_count_moments_adaptive_cpp", (DL_FUNC) &_DASRA_dasra_count_moments_adaptive_cpp, 10},
-    {"_DASRA_dasra_mean_log_relative_cpp", (DL_FUNC) &_DASRA_dasra_mean_log_relative_cpp, 4},
+    {"_SACAT_sacat_gh_log_weights_cpp", (DL_FUNC) &_SACAT_sacat_gh_log_weights_cpp, 2},
+    {"_SACAT_sacat_count_log_hy_adaptive_cpp", (DL_FUNC) &_SACAT_sacat_count_log_hy_adaptive_cpp, 9},
+    {"_SACAT_sacat_count_moments_adaptive_cpp", (DL_FUNC) &_SACAT_sacat_count_moments_adaptive_cpp, 10},
+    {"_SACAT_sacat_mean_log_relative_cpp", (DL_FUNC) &_SACAT_sacat_mean_log_relative_cpp, 4},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_DASRA(DllInfo *dll) {
+RcppExport void R_init_SACAT(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

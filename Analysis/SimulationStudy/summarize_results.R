@@ -97,30 +97,30 @@ if (
 }
 
 method_order <- c(
-    "DASRA", "ZINQ", "MaAsLin 3", "ANCOM-BC2", "DESeq2",
+    "SACAT", "ZINQ", "MaAsLin 3", "ANCOM-BC2", "DESeq2",
     "edgeR", "LinDA", "corncob", "metagenomeSeq"
 )
 method_component_order <- c(
-    "DASRA structural absence", "DASRA present-conditional abundance",
+    "SACAT structural absence", "SACAT present-conditional abundance",
     "ZINQ Firth prevalence", "ZINQ quantile abundance",
     "MaAsLin 3 prevalence", "MaAsLin 3 abundance",
     "ANCOM-BC2", "DESeq2", "edgeR", "LinDA", "corncob",
     "metagenomeSeq"
 )
 method_colors <- c(
-    "DASRA" = "#0072B2", "ZINQ" = "#D55E00",
+    "SACAT" = "#0072B2", "ZINQ" = "#D55E00",
     "MaAsLin 3" = "#009E73", "ANCOM-BC2" = "#CC79A7",
     "DESeq2" = "#56B4E9", "edgeR" = "#882255",
     "LinDA" = "#B79F00", "corncob" = "#000000",
     "metagenomeSeq" = "#777777"
 )
 method_shapes <- c(
-    "DASRA" = 16, "ZINQ" = 17, "MaAsLin 3" = 15,
+    "SACAT" = 16, "ZINQ" = 17, "MaAsLin 3" = 15,
     "ANCOM-BC2" = 18, "DESeq2" = 3, "edgeR" = 7,
     "LinDA" = 8, "corncob" = 1, "metagenomeSeq" = 4
 )
 method_linetypes <- c(
-    "DASRA" = 1, "ZINQ" = 2, "MaAsLin 3" = 4,
+    "SACAT" = 1, "ZINQ" = 2, "MaAsLin 3" = 4,
     "ANCOM-BC2" = 5, "DESeq2" = 6, "edgeR" = 3,
     "LinDA" = 7, "corncob" = 8, "metagenomeSeq" = 9
 )
@@ -128,7 +128,7 @@ sample_colors <- c("60" = "#0072B2", "80" = "#D55E00", "120" = "#009E73")
 
 short_method <- function(method) {
     data.table::fcase(
-        method == "DASRA", "DASRA",
+        method == "SACAT", "SACAT",
         method == "ZINQ", "ZINQ",
         method == "MaAsLin 3", "MaAsLin 3",
         default = method
@@ -148,7 +148,7 @@ is_structural_component <- function(component) {
 
 short_method_label <- function(method_label) {
     data.table::fcase(
-        grepl("^DASRA ", method_label), "DASRA",
+        grepl("^SACAT ", method_label), "SACAT",
         grepl("^ZINQ ", method_label), "ZINQ",
         grepl("^MaAsLin 3 ", method_label), "MaAsLin 3",
         default = method_label
@@ -401,7 +401,7 @@ main_mechanism[, signal_label := factor(
     levels = c("10 taxa (20%)", "20 taxa (40%)")
 )]
 mechanism_method_labels <- c(
-    "DASRA" = "DASRA: structural",
+    "SACAT" = "SACAT: structural",
     "ZINQ" = "ZINQ: prevalence",
     "MaAsLin 3" = "MaAsLin 3: prevalence"
 )
@@ -426,13 +426,13 @@ make_main_mechanism_panel <- function(experiment_name, x_label, panel_tag) {
         ) +
         ggplot2::scale_x_continuous(breaks = scales::breaks_pretty(4)) +
         ggplot2::scale_color_manual(
-            values = method_colors[c("DASRA", "ZINQ", "MaAsLin 3")],
-            breaks = c("DASRA", "ZINQ", "MaAsLin 3"),
+            values = method_colors[c("SACAT", "ZINQ", "MaAsLin 3")],
+            breaks = c("SACAT", "ZINQ", "MaAsLin 3"),
             labels = mechanism_method_labels
         ) +
         ggplot2::scale_shape_manual(
-            values = method_shapes[c("DASRA", "ZINQ", "MaAsLin 3")],
-            breaks = c("DASRA", "ZINQ", "MaAsLin 3"),
+            values = method_shapes[c("SACAT", "ZINQ", "MaAsLin 3")],
+            breaks = c("SACAT", "ZINQ", "MaAsLin 3"),
             labels = mechanism_method_labels
         ) +
         ggplot2::scale_linetype_manual(values = c(1, 2)) +
@@ -474,13 +474,13 @@ save_pdf(main_mechanism_plot, "main_mechanism_separation.pdf", 178, 184)
 specificity_structural <- metric_rows(
         "abundance_comparison", "present_conditional_abundance",
         "designated_signal_bh_rejection"
-    )[method == "DASRA" & component == "structural_absence"]
+    )[method == "SACAT" & component == "structural_absence"]
 specificity_structural[, panel :=
     "Structural component under abundance perturbation"]
 specificity_abundance <- metric_rows(
         "component_specificity", "structural_only",
         "designated_signal_bh_rejection"
-    )[method == "DASRA" & component == "present_conditional_abundance"]
+    )[method == "SACAT" & component == "present_conditional_abundance"]
 specificity_abundance[, panel :=
     "Abundance component under structural perturbation"]
 specificity <- data.table::rbindlist(
@@ -903,7 +903,7 @@ joint_structural_key <- c(
     "method", "component", "metric"
 )
 valid_joint_structural_component <-
-    (joint_structural$method == "DASRA" &
+    (joint_structural$method == "SACAT" &
         joint_structural$component == "structural_absence") |
     (joint_structural$method %in% c("ZINQ", "MaAsLin 3") &
         joint_structural$component == "observed_prevalence")
@@ -924,9 +924,9 @@ if (
 plot_joint_structural_metric <- function(
         metric_name, panel_tag, y_limit) {
     data <- joint_structural[metric == metric_name]
-    method_breaks <- c("DASRA", "ZINQ", "MaAsLin 3")
+    method_breaks <- c("SACAT", "ZINQ", "MaAsLin 3")
     method_labels <- c(
-        "DASRA: structural", "ZINQ: prevalence",
+        "SACAT: structural", "ZINQ: prevalence",
         "MaAsLin 3: prevalence"
     )
     dodge <- ggplot2::position_dodge(width = 3.2)
@@ -1096,7 +1096,7 @@ write_table(scenario_descriptions, "simulation_design.csv")
 
 method_targets <- data.table::data.table(
     method = c(
-        "DASRA", "DASRA", "ZINQ", "ZINQ", "MaAsLin 3", "MaAsLin 3",
+        "SACAT", "SACAT", "ZINQ", "ZINQ", "MaAsLin 3", "MaAsLin 3",
         "ANCOM-BC2", "DESeq2", "edgeR", "LinDA", "corncob", "metagenomeSeq"
     ),
     component = c(

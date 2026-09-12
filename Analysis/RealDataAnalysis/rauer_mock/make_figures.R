@@ -40,7 +40,7 @@ dataset_directory <- locate_dataset_directory()
 table_directory <- file.path(dataset_directory, "table")
 figure_directory <- file.path(dataset_directory, "figs")
 input_file <- file.path(
-    dataset_directory, "processed", "rauer_mock_dasra_input.rds"
+    dataset_directory, "processed", "rauer_mock_sacat_input.rds"
 )
 nonnull_file <- file.path(table_directory, "rauer_mock_nonnull_results.csv")
 null_file <- file.path(table_directory, "rauer_mock_null_results.csv")
@@ -66,8 +66,8 @@ depth_labels <- c(
     `250` = "250", `100` = "100", `50` = "50"
 )
 method_order <- c(
-    "DASRA structural absence",
-    "DASRA present-conditional abundance",
+    "SACAT structural absence",
+    "SACAT present-conditional abundance",
     "MaAsLin3 prevalence",
     "MaAsLin3 abundance",
     "ZINQ prevalence",
@@ -135,11 +135,11 @@ validate_results(nonnull_results, "nonnull", 52L)
 validate_results(null_results, "null", 111L)
 
 method_colours <- c(
-    "DASRA" = "#0072B2",
+    "SACAT" = "#0072B2",
     "MaAsLin3" = "#D55E00",
     "ZINQ" = "#009E73"
 )
-method_shapes <- c("DASRA" = 16, "MaAsLin3" = 17, "ZINQ" = 15)
+method_shapes <- c("SACAT" = 16, "MaAsLin3" = 17, "ZINQ" = 15)
 
 base_theme <- ggplot2::theme_classic(
     base_family = "Helvetica", base_size = 9
@@ -286,8 +286,8 @@ null_operating <- stats::aggregate(
 null_definitions <- data.frame(
     method = method_order,
     method_component = c(
-        "DASRA structural",
-        "DASRA abundance",
+        "SACAT structural",
+        "SACAT abundance",
         "MaAsLin3 prevalence",
         "MaAsLin3 abundance",
         "ZINQ prevalence",
@@ -304,7 +304,7 @@ null_operating <- merge(null_operating, null_definitions, by = "method")
 null_operating$fwer_percent <- 100 * null_operating$any_discovery
 null_operating$availability_percent <- 100 * null_operating$available
 null_operating$value_label <- ifelse(
-    null_operating$method == "DASRA present-conditional abundance",
+    null_operating$method == "SACAT present-conditional abundance",
     sprintf(
         "%.1f (%d%%)",
         null_operating$fwer_percent,
@@ -323,10 +323,10 @@ null_operating$method_component <- factor(
     levels = c(
         "ZINQ abundance",
         "MaAsLin3 abundance",
-        "DASRA abundance",
+        "SACAT abundance",
         "ZINQ prevalence",
         "MaAsLin3 prevalence",
-        "DASRA structural"
+        "SACAT structural"
     )
 )
 
@@ -391,14 +391,14 @@ type1_panel <- ggplot2::ggplot(
 recovery_definitions <- data.frame(
     target_set = rep(c("Structural targets", "Abundance targets"), each = 3L),
     method = c(
-        "DASRA structural absence",
+        "SACAT structural absence",
         "MaAsLin3 prevalence",
         "ZINQ prevalence",
-        "DASRA present-conditional abundance",
+        "SACAT present-conditional abundance",
         "MaAsLin3 abundance",
         "ZINQ abundance"
     ),
-    display_method = rep(c("DASRA", "MaAsLin3", "ZINQ"), 2L),
+    display_method = rep(c("SACAT", "MaAsLin3", "ZINQ"), 2L),
     target = rep(c("Structural", "Abundance"), each = 3L),
     stringsAsFactors = FALSE
 )
@@ -435,7 +435,7 @@ make_recovery_panel <- function(target_name, title, show_y_title) {
         recovery_summary$target == target_name, , drop = FALSE
     ]
     availability_data <- panel_data[
-        as.character(panel_data$display_method) == "DASRA",
+        as.character(panel_data$display_method) == "SACAT",
         ,
         drop = FALSE
     ]
@@ -477,7 +477,7 @@ make_recovery_panel <- function(target_name, title, show_y_title) {
                 x = depth_position,
                 y = availability_percent,
                 group = 1,
-                linetype = "DASRA availability"
+                linetype = "SACAT availability"
             ),
             inherit.aes = FALSE,
             colour = "#777777",
@@ -512,7 +512,7 @@ make_recovery_panel <- function(target_name, title, show_y_title) {
         ggplot2::scale_colour_manual(values = method_colours, drop = FALSE) +
         ggplot2::scale_shape_manual(values = method_shapes, drop = FALSE) +
         ggplot2::scale_linetype_manual(
-            values = c("DASRA availability" = "22"), name = NULL
+            values = c("SACAT availability" = "22"), name = NULL
         ) +
         ggplot2::guides(
             colour = ggplot2::guide_legend(
@@ -563,16 +563,16 @@ abundance_panel <- make_recovery_panel(
 # Summary tables
 
 component_output_names <- c(
-    "DASRA structural absence" = "DASRA structural absence",
-    "DASRA present-conditional abundance" = "DASRA abundance",
+    "SACAT structural absence" = "SACAT structural absence",
+    "SACAT present-conditional abundance" = "SACAT abundance",
     "MaAsLin3 prevalence" = "MaAsLin3 prevalence",
     "MaAsLin3 abundance" = "MaAsLin3 abundance",
     "ZINQ prevalence" = "ZINQ prevalence",
     "ZINQ abundance" = "ZINQ abundance"
 )
 depth_method_name <- function(method) {
-    if (method == "DASRA present-conditional abundance") {
-        return("DASRA present-conditional abundance")
+    if (method == "SACAT present-conditional abundance") {
+        return("SACAT present-conditional abundance")
     }
     component_output_names[[method]]
 }
@@ -674,8 +674,8 @@ fdr_summary$fdp_percent <- 100 * fdr_summary$fdp
 nonnull_availability <- stats::aggregate(
     available ~ depth + target_set + method,
     nonnull_results[nonnull_results$method %in% c(
-        "DASRA structural absence",
-        "DASRA present-conditional abundance"
+        "SACAT structural absence",
+        "SACAT present-conditional abundance"
     ), ],
     mean
 )
@@ -778,10 +778,10 @@ for (index in seq_len(nrow(null_definitions))) {
 
 availability_order <- data.frame(
     method = c(
-        "DASRA structural absence",
-        "DASRA structural absence",
-        "DASRA present-conditional abundance",
-        "DASRA present-conditional abundance"
+        "SACAT structural absence",
+        "SACAT structural absence",
+        "SACAT present-conditional abundance",
+        "SACAT present-conditional abundance"
     ),
     target_set = c(
         "Structural targets",
@@ -800,7 +800,7 @@ availability_order <- data.frame(
 for (index in seq_len(nrow(availability_order))) {
     definition <- availability_order[index, ]
     append_depth_row(
-        "DASRA availability: nonnull allocations",
+        "SACAT availability: nonnull allocations",
         definition$component,
         if (definition$target_set == "Structural targets") {
             "Structural target set (8 taxa)"
@@ -817,12 +817,12 @@ for (index in seq_len(nrow(availability_order))) {
 }
 
 for (method in c(
-    "DASRA structural absence", "DASRA present-conditional abundance"
+    "SACAT structural absence", "SACAT present-conditional abundance"
 )) {
     append_depth_row(
-        "DASRA availability: complete-null allocations",
+        "SACAT availability: complete-null allocations",
         "All 11 taxa",
-        if (method == "DASRA structural absence") {
+        if (method == "SACAT structural absence") {
             "Structural-absence component"
         } else {
             "Abundance component"

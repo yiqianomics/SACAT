@@ -1,4 +1,4 @@
-"dataset","dataset_label","signal_category","dasra_discoveries_in_category","significant_in_at_least_one_comparison_method","not_significant_in_any_comparison_method","percent_in_category_not_significant_in_any_comparison_method"
+"dataset","dataset_label","signal_category","sacat_discoveries_in_category","significant_in_at_least_one_comparison_method","not_significant_in_any_comparison_method","percent_in_category_not_significant_in_any_comparison_method"
 "crc_baxter","Baxter colorectal cancer","Structural absence only",1,1,0,0
 "crc_baxter","Baxter colorectal cancer","Present-conditional abundance only",4,4,0,0
 "crc_baxter","Baxter colorectal cancer","Both components",0,0,0,

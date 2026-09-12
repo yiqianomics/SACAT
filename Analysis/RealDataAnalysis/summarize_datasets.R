@@ -20,9 +20,9 @@ output_directory <- file.path(real_data_directory, "summary")
 dir.create(output_directory, recursive = TRUE, showWarnings = FALSE)
 
 expected_methods <- c(
-    "DASRA structural absence",
-    "DASRA present-conditional abundance",
-    "DASRA combined",
+    "SACAT structural absence",
+    "SACAT present-conditional abundance",
+    "SACAT combined",
     "MaAsLin3 prevalence",
     "MaAsLin3 abundance",
     "MaAsLin3 combined",
@@ -37,7 +37,7 @@ expected_methods <- c(
     "metagenomeSeq"
 )
 expected_families <- c(
-    "DASRA", "MaAsLin3", "ZINQ", "ANCOM-BC2", "LinDA", "corncob",
+    "SACAT", "MaAsLin3", "ZINQ", "ANCOM-BC2", "LinDA", "corncob",
     "edgeR", "DESeq2", "metagenomeSeq"
 )
 expected_dataset_ids <- c(
@@ -214,7 +214,7 @@ humanize_unavailable_reason <- function(reason) {
         structural_absence_persistent_boundary =
             "Structural-absence fit remained on a parameter boundary",
         `one or both components were unavailable` =
-            "One or both DASRA components were unavailable"
+            "One or both SACAT components were unavailable"
     )
     translated <- unname(descriptions[reason])
     missing_translation <- is.na(translated)
@@ -224,16 +224,16 @@ humanize_unavailable_reason <- function(reason) {
     translated
 }
 
-dasra_methods <- c(
-    "DASRA structural absence",
-    "DASRA present-conditional abundance",
-    "DASRA combined"
+sacat_methods <- c(
+    "SACAT structural absence",
+    "SACAT present-conditional abundance",
+    "SACAT combined"
 )
-dasra_result_labels <- c(
-    "DASRA structural absence" = "Structural absence component",
-    "DASRA present-conditional abundance" =
+sacat_result_labels <- c(
+    "SACAT structural absence" = "Structural absence component",
+    "SACAT present-conditional abundance" =
         "Present-conditional abundance component",
-    "DASRA combined" = "Combined omnibus test"
+    "SACAT combined" = "Combined omnibus test"
 )
 
 availability_rows <- list()
@@ -259,11 +259,11 @@ comparison_methods <- c(
 )
 
 # Availability is compared across the same prespecified taxon--dataset grid.
-# DASRA contributes its omnibus result; MaAsLin3 and ZINQ contribute their
+# SACAT contributes its omnibus result; MaAsLin3 and ZINQ contribute their
 # package-provided combined results; each remaining family contributes its
 # primary differential-abundance result.
 availability_result_labels <- c(
-    "DASRA combined" = "DASRA",
+    "SACAT combined" = "SACAT",
     "MaAsLin3 combined" = "MaAsLin3",
     "ZINQ combined" = "ZINQ",
     "ANCOM-BC2" = "ANCOM-BC2",
@@ -273,13 +273,13 @@ availability_result_labels <- c(
     "DESeq2" = "DESeq2",
     "metagenomeSeq" = "metagenomeSeq"
 )
-dasra_availability_result_sets <- dasra_methods
+sacat_availability_result_sets <- sacat_methods
 
 for (dataset_input in completed_datasets) {
     dataset_id <- dataset_input$dataset
     results <- dataset_input$results
 
-    for (method_name in dasra_methods) {
+    for (method_name in sacat_methods) {
         method_rows <- results[results$method == method_name, , drop = FALSE]
         unavailable_rows <- method_rows[!method_rows$available, , drop = FALSE]
         unavailable_reasons <- table(humanize_unavailable_reason(
@@ -298,7 +298,7 @@ for (dataset_input in completed_datasets) {
                 reference_samples = dataset_input$reference_samples,
                 comparison_samples = dataset_input$comparison_samples,
                 tested_taxa = dataset_input$tested_taxa,
-                dasra_result = unname(dasra_result_labels[[method_name]]),
+                sacat_result = unname(sacat_result_labels[[method_name]]),
                 available_taxa = sum(method_rows$available),
                 unavailable_taxa = unavailable_count,
                 availability_percent =
@@ -316,14 +316,14 @@ for (dataset_input in completed_datasets) {
     }
 
     structural_rows <- results[
-        results$method == "DASRA structural absence", , drop = FALSE
+        results$method == "SACAT structural absence", , drop = FALSE
     ]
     abundance_rows <- results[
-        results$method == "DASRA present-conditional abundance",
+        results$method == "SACAT present-conditional abundance",
         , drop = FALSE
     ]
     combined_discoveries <- results[
-        results$method == "DASRA combined" &
+        results$method == "SACAT combined" &
             results$available & results$significant,
         , drop = FALSE
     ]
@@ -368,7 +368,7 @@ for (dataset_input in completed_datasets) {
             data.frame(
                 dataset = dataset_id,
                 dataset_label = dataset_input$dataset_label,
-                dasra_combined_bh_discoveries =
+                sacat_combined_bh_discoveries =
                     total_combined_discoveries,
                 discoveries_with_both_components_available =
                     two_component_discovery_count,
@@ -409,11 +409,11 @@ for (dataset_input in completed_datasets) {
             data.frame(
                 dataset = dataset_id,
                 dataset_label = dataset_input$dataset_label,
-                dasra_combined_bh_discoveries =
+                sacat_combined_bh_discoveries =
                     total_combined_discoveries,
                 comparison_overlap_status = overlap_name,
                 taxa = count,
-                percent_of_dasra_combined_discoveries =
+                percent_of_sacat_combined_discoveries =
                     if (total_combined_discoveries > 0L) {
                         100 * count / total_combined_discoveries
                     } else {
@@ -431,7 +431,7 @@ for (dataset_input in completed_datasets) {
                 dataset = dataset_id,
                 dataset_label = dataset_input$dataset_label,
                 signal_category = category_name,
-                dasra_discoveries_in_category = category_total,
+                sacat_discoveries_in_category = category_total,
                 significant_in_at_least_one_comparison_method = sum(
                     in_category & significant_in_comparison_method
                 ),
@@ -505,8 +505,8 @@ method_availability_rows <- lapply(
 )
 method_availability_summary <- do.call(rbind, method_availability_rows)
 
-dasra_unavailability_rows <- lapply(
-    dasra_availability_result_sets,
+sacat_unavailability_rows <- lapply(
+    sacat_availability_result_sets,
     function(result_set) {
         result_rows <- all_results[
             all_results$method == result_set, , drop = FALSE
@@ -517,7 +517,7 @@ dasra_unavailability_rows <- lapply(
         reasons <- trimws(unavailable_rows$reason)
         if (!nrow(unavailable_rows)) {
             return(data.frame(
-                dasra_result = character(0),
+                sacat_result = character(0),
                 result_set = character(0),
                 taxon_dataset_results = integer(0),
                 unavailable_results = integer(0),
@@ -531,14 +531,14 @@ dasra_unavailability_rows <- lapply(
         if (anyNA(reasons) || any(!nzchar(reasons)) ||
             any(reasons == "Available")) {
             stop(sprintf(
-                "Unavailable DASRA reasons are incomplete for %s.", result_set
+                "Unavailable SACAT reasons are incomplete for %s.", result_set
             ), call. = FALSE)
         }
         reason_counts <- sort(table(reasons), decreasing = TRUE)
 
         data.frame(
-            dasra_result = unname(
-                dasra_result_labels[[result_set]]
+            sacat_result = unname(
+                sacat_result_labels[[result_set]]
             ),
             result_set = result_set,
             taxon_dataset_results = nrow(result_rows),
@@ -553,16 +553,16 @@ dasra_unavailability_rows <- lapply(
         )
     }
 )
-dasra_unavailability_summary <- do.call(rbind, dasra_unavailability_rows)
+sacat_unavailability_summary <- do.call(rbind, sacat_unavailability_rows)
 
 reason_totals_by_result <- stats::setNames(
-    integer(length(dasra_availability_result_sets)),
-    dasra_availability_result_sets
+    integer(length(sacat_availability_result_sets)),
+    sacat_availability_result_sets
 )
-if (nrow(dasra_unavailability_summary)) {
+if (nrow(sacat_unavailability_summary)) {
     observed_reason_totals <- tapply(
-        dasra_unavailability_summary$results_with_reason,
-        dasra_unavailability_summary$result_set,
+        sacat_unavailability_summary$results_with_reason,
+        sacat_unavailability_summary$result_set,
         sum
     )
     reason_totals_by_result[names(observed_reason_totals)] <- as.integer(
@@ -571,7 +571,7 @@ if (nrow(dasra_unavailability_summary)) {
 }
 expected_unavailable_by_result <- stats::setNames(
     vapply(
-        dasra_availability_result_sets,
+        sacat_availability_result_sets,
         function(result_set) {
             sum(
                 all_results$method == result_set &
@@ -580,19 +580,19 @@ expected_unavailable_by_result <- stats::setNames(
         },
         integer(1)
     ),
-    dasra_availability_result_sets
+    sacat_availability_result_sets
 )
 if (!identical(
     unname(reason_totals_by_result),
     unname(expected_unavailable_by_result)
 )) {
-    stop("DASRA unavailability reasons do not match availability totals.",
+    stop("SACAT unavailability reasons do not match availability totals.",
          call. = FALSE)
 }
 
 equal_dataset_rows <- lapply(
     list(
-        "DASRA signal category" = list(
+        "SACAT signal category" = list(
             data = signal_category_summary,
             label_column = "signal_category",
             percentage_column = "percent_of_two_component_discoveries"
@@ -600,7 +600,7 @@ equal_dataset_rows <- lapply(
         "Overlap with comparison methods" = list(
             data = comparison_overlap_summary,
             label_column = "comparison_overlap_status",
-            percentage_column = "percent_of_dasra_combined_discoveries"
+            percentage_column = "percent_of_sacat_combined_discoveries"
         )
     ),
     function(section) {
@@ -642,12 +642,12 @@ overall_signal_rows <- lapply(signal_categories, function(category_name) {
         , drop = FALSE
     ]
     dataset_discovery_counts <- unique(signal_category_summary[c(
-        "dataset", "dasra_combined_bh_discoveries",
+        "dataset", "sacat_combined_bh_discoveries",
         "discoveries_with_both_components_available",
         "discoveries_with_one_component_available"
     )])
     total_combined_discoveries <- sum(
-        dataset_discovery_counts$dasra_combined_bh_discoveries
+        dataset_discovery_counts$sacat_combined_bh_discoveries
     )
     total_two_component_discoveries <- sum(
         dataset_discovery_counts$discoveries_with_both_components_available
@@ -667,17 +667,17 @@ overall_signal_rows <- lapply(signal_categories, function(category_name) {
         category_overlap_rows$not_significant_in_any_comparison_method
     )
     equal_dataset_percent <- equal_dataset_summary$equal_dataset_mean_percent[
-        equal_dataset_summary$summary_type == "DASRA signal category" &
+        equal_dataset_summary$summary_type == "SACAT signal category" &
             equal_dataset_summary$classification == category_name
     ]
     equal_dataset_n <- equal_dataset_summary$datasets_contributing[
-        equal_dataset_summary$summary_type == "DASRA signal category" &
+        equal_dataset_summary$summary_type == "SACAT signal category" &
             equal_dataset_summary$classification == category_name
     ]
     data.frame(
         signal_category = category_name,
         datasets_included = length(unique(signal_category_summary$dataset)),
-        all_dasra_combined_bh_discoveries = total_combined_discoveries,
+        all_sacat_combined_bh_discoveries = total_combined_discoveries,
         discoveries_with_both_components_available =
             total_two_component_discoveries,
         discoveries_with_one_component_available =
@@ -721,8 +721,8 @@ availability_summary$percent_of_unavailable_taxa <- round(
 signal_category_summary$percent_of_two_component_discoveries <- round(
     signal_category_summary$percent_of_two_component_discoveries, 2
 )
-comparison_overlap_summary$percent_of_dasra_combined_discoveries <- round(
-    comparison_overlap_summary$percent_of_dasra_combined_discoveries, 2
+comparison_overlap_summary$percent_of_sacat_combined_discoveries <- round(
+    comparison_overlap_summary$percent_of_sacat_combined_discoveries, 2
 )
 signal_overlap_summary$
     percent_in_category_not_significant_in_any_comparison_method <- round(
@@ -756,29 +756,29 @@ method_availability_output <- method_availability_summary[, c(
 method_availability_output$availability_percent <- round(
     method_availability_output$availability_percent, 2
 )
-dasra_unavailability_output <- dasra_unavailability_summary
-dasra_unavailability_output$percent_of_all_results <- round(
-    dasra_unavailability_output$percent_of_all_results, 2
+sacat_unavailability_output <- sacat_unavailability_summary
+sacat_unavailability_output$percent_of_all_results <- round(
+    sacat_unavailability_output$percent_of_all_results, 2
 )
-dasra_unavailability_output$percent_of_unavailable_results <- round(
-    dasra_unavailability_output$percent_of_unavailable_results, 2
+sacat_unavailability_output$percent_of_unavailable_results <- round(
+    sacat_unavailability_output$percent_of_unavailable_results, 2
 )
 
 utils::write.csv(
     availability_summary,
-    file.path(output_directory, "dasra_availability_by_dataset.csv"),
+    file.path(output_directory, "sacat_availability_by_dataset.csv"),
     row.names = FALSE, quote = TRUE, na = ""
 )
 utils::write.csv(
     signal_category_summary,
-    file.path(output_directory, "dasra_signal_categories_by_dataset.csv"),
+    file.path(output_directory, "sacat_signal_categories_by_dataset.csv"),
     row.names = FALSE, quote = TRUE, na = ""
 )
 utils::write.csv(
     comparison_overlap_summary,
     file.path(
         output_directory,
-        "dasra_combined_discovery_comparison_overlap_by_dataset.csv"
+        "sacat_combined_discovery_comparison_overlap_by_dataset.csv"
     ),
     row.names = FALSE, quote = TRUE, na = ""
 )
@@ -786,7 +786,7 @@ utils::write.csv(
     signal_overlap_summary,
     file.path(
         output_directory,
-        "dasra_signal_category_comparison_overlap_by_dataset.csv"
+        "sacat_signal_category_comparison_overlap_by_dataset.csv"
     ),
     row.names = FALSE, quote = TRUE, na = ""
 )
@@ -798,7 +798,7 @@ utils::write.csv(
 utils::write.csv(
     overall_signal_summary,
     file.path(
-        output_directory, "dasra_signal_overall_descriptive_summary.csv"
+        output_directory, "sacat_signal_overall_descriptive_summary.csv"
     ),
     row.names = FALSE, quote = TRUE, na = ""
 )
@@ -808,8 +808,8 @@ utils::write.csv(
     row.names = FALSE, quote = TRUE, na = ""
 )
 utils::write.csv(
-    dasra_unavailability_output,
-    file.path(output_directory, "dasra_unavailability_reasons.csv"),
+    sacat_unavailability_output,
+    file.path(output_directory, "sacat_unavailability_reasons.csv"),
     row.names = FALSE, quote = TRUE, na = ""
 )
 
@@ -899,7 +899,7 @@ signal_plot <- ggplot2::ggplot(
     )
 
 signal_figure_file <- file.path(
-    output_directory, "dasra_signal_categories_by_dataset.pdf"
+    output_directory, "sacat_signal_categories_by_dataset.pdf"
 )
 grDevices::pdf(
     signal_figure_file,
@@ -919,11 +919,11 @@ method_plot_data$method <- factor(
 )
 method_plot_data$plot_group <- "Comparison method"
 method_plot_data$plot_group[
-    method_plot_data$result_set == "DASRA combined"
-] <- "DASRA"
+    method_plot_data$result_set == "SACAT combined"
+] <- "SACAT"
 
 availability_colors <- c(
-    "DASRA" = "#0072B2",
+    "SACAT" = "#0072B2",
     "Comparison method" = "#606060"
 )
 method_availability_plot <- ggplot2::ggplot(
@@ -970,7 +970,7 @@ method_availability_plot <- ggplot2::ggplot(
 
 reason_totals <- stats::aggregate(
     results_with_reason ~ unavailable_reason,
-    dasra_unavailability_summary,
+    sacat_unavailability_summary,
     sum
 )
 reason_totals <- reason_totals[order(
@@ -985,16 +985,16 @@ wrapped_reason_labels <- stats::setNames(vapply(
     character(1)
 ), reason_order)
 
-dasra_result_plot_labels <- stats::setNames(vapply(
-    dasra_availability_result_sets,
+sacat_result_plot_labels <- stats::setNames(vapply(
+    sacat_availability_result_sets,
     function(result_set) {
         result_rows <- all_results[
             all_results$method == result_set, , drop = FALSE
         ]
-        result_name <- if (result_set == "DASRA structural absence") {
+        result_name <- if (result_set == "SACAT structural absence") {
             "Structural-absence\ncomponent"
         } else if (
-            result_set == "DASRA present-conditional abundance"
+            result_set == "SACAT present-conditional abundance"
         ) {
             "Present-conditional\nabundance component"
         } else {
@@ -1008,16 +1008,16 @@ dasra_result_plot_labels <- stats::setNames(vapply(
         )
     },
     character(1)
-), dasra_availability_result_sets)
+), sacat_availability_result_sets)
 
-reason_plot_data <- dasra_unavailability_summary
+reason_plot_data <- sacat_unavailability_summary
 reason_plot_data$reason_label <- factor(
     unname(wrapped_reason_labels[reason_plot_data$unavailable_reason]),
     levels = rev(unname(wrapped_reason_labels))
 )
 reason_plot_data$result_label <- factor(
-    unname(dasra_result_plot_labels[reason_plot_data$result_set]),
-    levels = unname(dasra_result_plot_labels)
+    unname(sacat_result_plot_labels[reason_plot_data$result_set]),
+    levels = unname(sacat_result_plot_labels)
 )
 reason_plot_data$cell_label <- sprintf(
     "%d (%.1f%%)",
@@ -1039,11 +1039,11 @@ reason_grid$result_label <- factor(
     levels = levels(reason_plot_data$result_label)
 )
 
-dasra_result_cell_colors <- stats::setNames(
+sacat_result_cell_colors <- stats::setNames(
     c("#DCEEF8", "#F8E2D5", "#DCEFE8"),
-    unname(dasra_result_plot_labels)
+    unname(sacat_result_plot_labels)
 )
-dasra_reason_plot <- ggplot2::ggplot(
+sacat_reason_plot <- ggplot2::ggplot(
     reason_plot_data,
     ggplot2::aes(x = result_label, y = reason_label)
 ) +
@@ -1069,13 +1069,13 @@ dasra_reason_plot <- ggplot2::ggplot(
         size = 3.05,
         color = "grey10"
     ) +
-    ggplot2::scale_fill_manual(values = dasra_result_cell_colors) +
+    ggplot2::scale_fill_manual(values = sacat_result_cell_colors) +
     ggplot2::scale_x_discrete(position = "top", drop = FALSE) +
     ggplot2::scale_y_discrete(drop = FALSE) +
     ggplot2::labs(
         x = NULL,
         y = NULL,
-        title = "DASRA unavailability reasons",
+        title = "SACAT unavailability reasons",
         subtitle = paste(
             "Cells show count (percentage of unavailable results",
             "within each result set)"
@@ -1100,7 +1100,7 @@ dasra_reason_plot <- ggplot2::ggplot(
 
 method_availability_figure <- patchwork::wrap_plots(
     patchwork::free(method_availability_plot, side = "l"),
-    dasra_reason_plot,
+    sacat_reason_plot,
     ncol = 1,
     heights = c(0.82, 1.35)
 ) +
