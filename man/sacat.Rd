@@ -153,7 +153,13 @@ sample standardization.
 
 Taxon-specific effects are centered against a target-excluded cross-taxon
 reference. The standard error uses centered, sample-aligned
-influence contributions with a first-order standard-normal Wald reference.
+influence contributions. A sandwich-adjusted profile likelihood-ratio test
+compares the fitted likelihood with a constrained fit whose raw abundance
+contrast equals the estimated reference. The likelihood-ratio statistic is
+multiplied by the raw contrast's inverse-information variance divided by
+the reference-corrected sandwich variance and compared with a chi-squared
+distribution with one degree of freedom. \code{z_relative_abundance} is its
+signed square root, with the sign of the reference-corrected effect.
 A positive \code{estimate_relative_abundance} indicates that the target taxon's
 present-conditional contrast exceeds the shared compositional background.
 The reported effect is the taxon's present-conditional contrast relative to

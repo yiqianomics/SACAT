@@ -4,18 +4,23 @@ This directory contains the simulation program, cluster submission template, fig
 
 ## Study design
 
-Each simulation contains 50 focal taxa in two equally sized groups. The design crosses three sample sizes (60, 80, or 120 observations per group), two signal fractions (20% or 40%, corresponding to 10 or 20 perturbed taxa), and unconfounded or confounded covariate structures. The 45 base settings and 12 design strata define 540 settings, each evaluated in 100 independent Monte Carlo replications.
+Each simulation contains 50 focal taxa in two equally sized groups, with 10 taxa designated for perturbation. The design crosses three sample sizes (60, 80, or 120 observations per group) and two covariate settings. Without a covariate, the data-generating model and fitted models contain only the group effect. With a covariate, a standard-normal variable is generated independently of group, standardized across samples, and included in both data generation and analysis. Library sizes have a target median of 8,000 reads in both groups.
 
 The experiments cover:
 
 - observed-prevalence perturbations with fixed structural-absence probabilities;
 - structural-absence perturbations calibrated to preserve expected observed prevalence;
 - present-conditional abundance perturbations;
-- structural-only perturbations for component specificity;
-- a global null with unequal library-size distributions;
-- correlated-community global-null, abundance, and structural experiments.
+- structural-only perturbations for component specificity.
 
-The effect grids and common design constants are recorded in [`tables/simulation_design.csv`](tables/simulation_design.csv) and [`tables/simulation_constants.csv`](tables/simulation_constants.csv).
+| Experiment | Effect levels |
+|---|---|
+| Observed-prevalence difference with fixed structural absence | 0, 0.08, 0.16, 0.24, 0.32 |
+| Structural-absence difference with matched observed prevalence | 0, 0.10, 0.20, 0.35, 0.50 |
+| Absolute present-conditional mean log-abundance difference | 0, 0.20, 0.40, 0.75, 1.40 |
+| Structural-only difference | 0, 0.10, 0.20, 0.35, 0.50 |
+
+The 20 experiment-effect combinations and six design strata give 120 settings, each evaluated in 100 independent replications. Abundance effects are positive for five target taxa and negative for five. Each experiment includes its zero-effect endpoint. Baseline profiles retain a fixed 20-taxon template pool, of which 10 taxa are perturbed.
 
 ## Programs
 
@@ -23,7 +28,7 @@ The effect grids and common design constants are recorded in [`tables/simulation
 - `submit.slurm` is the SLURM array template used for the 100 replications.
 - `summarize_results.R` validates the completed grid and creates the figures and CSV tables.
 
-The simulation program uses SACAT 0.6.0 and the packages listed in its `replicate_packages` and `summary_packages` objects. The supplied SLURM file provides a portable 100-task array template. Load the required R environment before submission and add any cluster-specific partition or resource options locally.
+The simulation program uses SACAT 0.7.0 and the packages listed in its `replicate_packages` and `summary_packages` objects. The supplied SLURM file provides a portable 100-task array template. Load the required R environment before submission and add any cluster-specific partition or resource options locally. All methods include the covariate only when it is present; MaAsLin 3 and ZINQ also adjust for standardized log sequencing depth.
 
 ZINQ 2.0 is available from the [ZINQ-v2 repository](https://github.com/wdl2459/ZINQ-v2), and MaAsLin3 1.5.3 is available from the [MaAsLin3 repository](https://github.com/biobakery/maaslin3).
 
@@ -33,7 +38,7 @@ From `Analysis/SimulationStudy`, set the repository and output directories and r
 
 ```bash
 export SACAT_PROJECT_ROOT=/path/to/SACAT
-export SACAT_SIMULATION_ROOT=/path/to/sacat_simulation_output
+export SACAT_SIMULATION_ROOT=/path/to/sacat_internal_validation_output
 Rscript run_simulation.R preflight
 Rscript run_simulation.R design
 sbatch submit.slurm
@@ -47,15 +52,17 @@ Rscript run_simulation.R summarize
 
 ## Simulation results
 
-The full simulation result archive contains the complete taxon-level results, simulation truth, replication-level metrics, setting summaries, completion records, method-status summaries, and software information.
+The full simulation result archive contains taxon-level results, simulation truth, replication-level metrics, setting summaries, completion records, method-status summaries, and software information. Counts and latent states are retained in the dataset files.
 
-Extract the supplied archive into `results_data/`, or place the output of the `summarize` step under `results_data/source/`, and run:
+With `SACAT_SIMULATION_ROOT` set to the run directory, create figures and tables from its `summary/` directory with:
 
 ```bash
 Rscript summarize_results.R
 ```
 
-The script verifies all 54,000 setting-replication combinations before creating the figures and tables below.
+The script checks the setting grid against the saved design and verifies all 100 replications. New figures and tables are written to `report/` within the run directory.
+
+The figures and tables already in this directory accompany the SACAT 0.6.0 result archive. Their 540-setting design, covariate structures, and software versions are recorded in `tables/`. To reproduce those outputs, extract the archive into `results_data/source/` and run the figure script without `SACAT_SIMULATION_ROOT` set; the reproduced files are written to `simulation_report/`. The figure script reads the design and software information supplied with each set of results. `SACAT_SIMULATION_SOURCE` and `SACAT_SIMULATION_REPORT_ROOT` can specify other input and output directories.
 
 ## Figures
 
@@ -88,7 +95,7 @@ Design and implementation records:
 
 - `simulation_constants.csv` and `simulation_design.csv`;
 - `method_targets.csv` and `software_versions.csv`;
-- `confounding_design.csv`;
+- `confounding_design.csv` (covariate-generation summaries);
 - `test_availability.csv` and `test_unavailability_reasons.csv`.
 
 Numerical values underlying the figures:
@@ -107,7 +114,8 @@ Within each replication, setting, method, and component, Benjamini-Hochberg adju
 - Power is the proportion of directly perturbed taxa rejected after adjustment.
 - The false discovery proportion is the number of false discoveries divided by the total number of discoveries, with zero assigned when no discovery occurs. The empirical false discovery rate is its mean over 100 replications.
 - Under a global null, familywise Type I error is the probability of at least one rejection. It equals the empirical false discovery rate because all 50 focal taxa are null.
+- `type1_error` and `type1_error_bh` report the mean rejection proportion among null taxa before and after BH adjustment. `familywise_type1_error_raw` and `familywise_type1_error_bh` record whether any null taxon is rejected. Each is computed within replication before averaging.
 - Marginal Type I error in the component-specificity experiment is the mean rejection probability for the non-target SACAT component among taxa designated for the other component.
 - Monte Carlo intervals equal the replication-level mean plus or minus 1.96 Monte Carlo standard errors, truncated to the parameter range.
 
-For the global-null summaries, the two signal-template strata are averaged within replication before the Monte Carlo mean and interval are computed.
+The global-null figures use the zero-effect abundance experiment. For result archives containing multiple signal-template strata, those strata are averaged within replication before the Monte Carlo mean and interval are computed.

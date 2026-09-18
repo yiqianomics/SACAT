@@ -117,8 +117,6 @@ test_that("cross-taxon correction uses sample-aligned covariance", {
     kernel_weight_se <- sqrt(sum(
         (fits[[1L]]$phi - kernel_background)^2
     ))
-    expected_z <- expected_estimate / expected_se
-    expected_p <- 2 * pnorm(-abs(expected_z))
     covariance_free_se <- sqrt(
         sum(fits[[1L]]$phi^2) + sum(phi_background^2)
     )
@@ -127,8 +125,7 @@ test_that("cross-taxon correction uses sample-aligned covariance", {
     expect_identical(corrected$reason[1L], "ok")
     expect_equal(corrected$estimate[1L], expected_estimate, tolerance = 1e-14)
     expect_equal(corrected$se[1L], expected_se, tolerance = 1e-14)
-    expect_equal(corrected$z[1L], expected_z, tolerance = 1e-14)
-    expect_equal(corrected$p[1L], expected_p, tolerance = 1e-14)
+    expect_equal(corrected$background[1L], background$estimate)
     expect_gt(abs(expected_se - covariance_free_se), 1e-4)
     expect_gt(abs(expected_se - kernel_weight_se), 1e-6)
     expect_setequal(

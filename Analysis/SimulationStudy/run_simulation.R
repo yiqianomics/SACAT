@@ -2,11 +2,9 @@
 
 # SACAT simulation study
 #
-# The design crosses three sample sizes, two signal densities and
-# confounded/unconfounded covariate structures with an estimand-separation
-# study, component-specificity checks, a depth-imbalanced global-null experiment
-# and a correlated-community robustness study. One Slurm array task runs one
-# complete independent replication over the full setting grid.
+# The design crosses three sample sizes and covariate presence with four
+# experiments on mechanism separation, abundance power and component specificity.
+# One Slurm array task runs one replication over the complete setting grid.
 #
 # Usage
 #   Rscript run_simulation.R replicate <replication_id>
@@ -148,18 +146,16 @@ as_numeric_column <- function(data, candidates) {
 }
 
 CONFIG <- list(
-    script_version = "sacat-simulation-study-v1",
+    script_version = "sacat-internal-validation-0.7.0",
     root = Sys.getenv(
         "SACAT_SIMULATION_ROOT",
-        "sacat_simulation_output"
+        "sacat_internal_validation_output"
     ),
     n_taxa = env_int("SACAT_SIMULATION_N_TAXA", 50L, 30L),
     sample_sizes_per_group = c(60L, 80L, 120L),
-    signal_fractions = c(0.20, 0.40),
-    confounding_levels = c("unconfounded", "confounded"),
-    confounder_group_shift = env_num(
-        "SACAT_SIMULATION_CONFOUNDER_GROUP_SHIFT", 0.80, 0
-    ),
+    signal_fractions = 0.20,
+    template_pool_fraction = 0.40,
+    covariate_levels = c("without_covariate", "with_covariate"),
     alpha = env_num("SACAT_SIMULATION_ALPHA", 0.05, 0),
     base_seed = env_int("SACAT_SIMULATION_BASE_SEED", 202608190L, 1L),
     save_datasets = env_flag("SACAT_SIMULATION_SAVE_DATASETS", TRUE),
@@ -176,20 +172,10 @@ CONFIG <- list(
     ),
     zinq_taus = c(0.25, 0.50, 0.75),
     gh_order_truth = 81L,
-    observed_prevalence_differences = c(
-        0, 0.04, 0.08, 0.12, 0.16, 0.20, 0.24, 0.28, 0.32
-    ),
-    matched_structural_differences = c(
-        0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45,
-        0.50
-    ),
-    abundance_effects = c(
-        0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.75, 0.90, 1.05,
-        1.20, 1.40
-    ),
-    specificity_structural_differences = c(
-        0, 0.10, 0.20, 0.30, 0.40, 0.45, 0.50
-    ),
+    observed_prevalence_differences = c(0, 0.08, 0.16, 0.24, 0.32),
+    matched_structural_differences = c(0, 0.10, 0.20, 0.35, 0.50),
+    abundance_effects = c(0, 0.20, 0.40, 0.75, 1.40),
+    specificity_structural_differences = c(0, 0.10, 0.20, 0.35, 0.50),
     joint_abundance_effects = c(0.40, 0.80),
     joint_structural_differences = c(0.20, 0.35),
     joint_correlation = 0.40,
@@ -235,8 +221,8 @@ if (max(CONFIG$signal_counts) >= CONFIG$n_taxa / 2) {
         call. = FALSE
     )
 }
-if (!all(CONFIG$confounding_levels %in% c("unconfounded", "confounded"))) {
-    stop("Unknown confounding level.", call. = FALSE)
+if (!all(CONFIG$covariate_levels %in% c("without_covariate", "with_covariate"))) {
+    stop("Unknown covariate level.", call. = FALSE)
 }
 if (CONFIG$probability_guard >= 0.95) {
     stop("SACAT_SIMULATION_PROBABILITY_GUARD must be below 0.95.",
@@ -270,9 +256,9 @@ check_packages <- function(packages) {
 
     if ("SACAT" %in% packages) {
         installed_sacat <- as.character(utils::packageVersion("SACAT"))
-        if (!identical(installed_sacat, "0.6.0")) {
+        if (!identical(installed_sacat, "0.7.0")) {
             stopf(
-                "This simulation requires SACAT 0.6.0, but SACAT %s was found in %s.",
+                "This simulation requires SACAT 0.7.0, but SACAT %s was found in %s.",
                 installed_sacat,
                 normalizePath(
                     system.file(package = "SACAT"),
@@ -371,53 +357,6 @@ make_base_setting_grid <- function() {
         )
     }
 
-    add(
-        "CAL_DEPTH_NULL", "calibration", "taxonwise",
-        "depth_imbalanced_null", 0L, 0,
-        "null", TRUE, "neutral",
-        paste(
-            "No biological group effect; the two groups have different",
-            "library-size distributions."
-        )
-    )
-    add(
-        "ROBUST_JOINT_NULL", "joint_robustness", "joint_lognormal",
-        "joint_global_null", 0L, 0,
-        "null", TRUE, "neutral",
-        paste(
-            "Correlated lognormal absolute abundances, structural states,",
-            "closure and multinomial sequencing under the global null."
-        )
-    )
-    for (k in seq_along(CONFIG$joint_abundance_effects)) {
-        value <- CONFIG$joint_abundance_effects[k]
-        add(
-            paste0("ROBUST_JOINT_ABUND_E", format_setting_value(value)),
-            "joint_robustness", "joint_lognormal",
-            "joint_abundance", k, value,
-            "direct_log_absolute_abundance_effect", TRUE, "abundance",
-            paste(
-                "Balanced direct log-absolute-abundance effects under a",
-                "correlated lognormal community followed by closure and",
-                "multinomial sequencing."
-            )
-        )
-    }
-    for (k in seq_along(CONFIG$joint_structural_differences)) {
-        value <- CONFIG$joint_structural_differences[k]
-        add(
-            paste0("ROBUST_JOINT_STRUCT_D", format_setting_value(value)),
-            "joint_robustness", "joint_lognormal",
-            "joint_structural", k, value,
-            "standardized_structural_absence_probability_difference", FALSE,
-            "structural",
-            paste(
-                "Structural-absence effects under a correlated lognormal",
-                "community followed by closure and multinomial sequencing."
-            )
-        )
-    }
-
     out <- do.call(rbind, rows)
     out$base_setting_index <- seq_len(nrow(out))
     rownames(out) <- NULL
@@ -428,7 +367,7 @@ make_design_grid <- function() {
     design <- expand.grid(
         n_per_group = CONFIG$sample_sizes_per_group,
         signal_fraction = CONFIG$signal_fractions,
-        confounding = CONFIG$confounding_levels,
+        covariate = CONFIG$covariate_levels,
         KEEP.OUT.ATTRS = FALSE,
         stringsAsFactors = FALSE
     )
@@ -437,12 +376,12 @@ make_design_grid <- function() {
     design$n_signal_target <- as.integer(round(
         CONFIG$n_taxa * design$signal_fraction
     ))
-    design$confounded <- design$confounding == "confounded"
+    design$with_covariate <- design$covariate == "with_covariate"
     design$design_id <- sprintf(
         "N%03d_S%02d_%s",
         design$n_per_group,
         as.integer(round(100 * design$signal_fraction)),
-        ifelse(design$confounded, "C", "U")
+        ifelse(design$with_covariate, "Z", "N")
     )
     design$sample_size_label <- sprintf(
         "n/group = %d", design$n_per_group
@@ -450,13 +389,13 @@ make_design_grid <- function() {
     design$signal_fraction_label <- sprintf(
         "%d%% signal taxa", as.integer(round(100 * design$signal_fraction))
     )
-    design$confounding_label <- ifelse(
-        design$confounded, "Confounded", "Unconfounded"
+    design$covariate_label <- ifelse(
+        design$with_covariate, "With covariate", "Without covariate"
     )
     design$design_panel <- paste(
         design$sample_size_label,
         design$signal_fraction_label,
-        design$confounding_label,
+        design$covariate_label,
         sep = "; "
     )
     design$design_index <- seq_len(nrow(design))
@@ -530,44 +469,44 @@ method_configuration <- function() {
         ),
         configuration = c(
             paste(
-                "component='all'; formula=~group+z in both confounded and",
-                "unconfounded strata; original total library size supplied;",
+                "component='all'; formula=~group or ~group+z according to",
+                "covariate presence; original total library size supplied;",
                 "package formation diagnostics retained"
             ),
             paste(
                 "official Firth prevalence and quantile rank-score components;",
-                "taus=0.25,0.50,0.75; z and standardized log depth adjusted;",
+                "taus=0.25,0.50,0.75; optional z and standardized log depth adjusted;",
                 "quantile-only weighted Cauchy combination"
             ),
             paste(
                 "TSS normalization; LOG transform; augmentation;",
                 "standardization; median-comparison abundance correction;",
-                "prevalence warning retained; z and log depth adjusted"
+                "prevalence warning retained; optional z and log depth adjusted"
             ),
             paste(
-                "design=~group+z; filterByExpr; TMM normalization; robust",
+                "design=~group or ~group+z; filterByExpr; TMM normalization; robust",
                 "dispersion estimation and quasi-likelihood test"
             ),
             paste(
-                "design=~z+group; positive-count size factors; Wald test;",
+                "design=~group or ~z+group; positive-count size factors; Wald test;",
                 "Cook's handling and independent filtering retained"
             ),
             paste(
-                "fix_formula='group+z'; ANCOM-BC2 structural-zero detection;",
+                "fix_formula='group' or 'group+z'; ANCOM-BC2 structural-zero detection;",
                 "negative lower bound and pseudocount sensitivity retained;",
                 "no manual prevalence filtering"
             ),
             paste(
-                "formula=~group+z; count input; default winsorization and",
+                "formula=~group or ~group+z; count input; default winsorization and",
                 "adaptive zero handling; compositional-bias correction;",
                 "no manual prevalence filtering"
             ),
             paste(
-                "beta-binomial mean model ~group+z and dispersion model",
-                "~group+z; robust Wald inference"
+                "beta-binomial mean and dispersion models ~group or ~group+z;",
+                "robust Wald inference"
             ),
             paste(
-                "CSS normalization; model=~group+z in the zero-inflated",
+                "CSS normalization; model=~group or ~group+z in the zero-inflated",
                 "Gaussian fitZig procedure; MRcoefs extraction and moderated",
                 "inference"
             )
@@ -606,7 +545,9 @@ make_taxon_template <- local({
     )) {
         role <- match.arg(role)
         n_signal <- as.integer(n_signal)
-        maximum_signal <- max(CONFIG$signal_counts)
+        maximum_signal <- as.integer(round(
+            CONFIG$n_taxa * CONFIG$template_pool_fraction
+        ))
         if (length(n_signal) != 1L || is.na(n_signal) ||
             n_signal < 0L || n_signal > maximum_signal) {
             stop("Invalid signal count for the taxon template.", call. = FALSE)
@@ -768,10 +709,10 @@ solve_present_log_effect_shift <- function(
 }
 
 make_replication_design <- function(
-        replication_id, n_per_group, confounding) {
+        replication_id, n_per_group, covariate) {
     n_per_group <- as.integer(n_per_group)
-    confounding <- match.arg(
-        as.character(confounding), CONFIG$confounding_levels
+    covariate <- match.arg(
+        as.character(covariate), CONFIG$covariate_levels
     )
     set.seed(
         CONFIG$base_seed + replication_id * 100003L +
@@ -785,14 +726,12 @@ make_replication_design <- function(
         levels = c("control", "case")
     )
 
-    base_noise <- stats::rnorm(n)
-    group_centered <- group_numeric - mean(group_numeric)
-    base_noise <- stats::residuals(stats::lm(base_noise ~ group_centered))
-    z_raw <- base_noise
-    if (confounding == "confounded") {
-        z_raw <- z_raw + CONFIG$confounder_group_shift * group_centered
+    z_draw <- stats::rnorm(n)
+    z <- if (covariate == "with_covariate") {
+        as.numeric(scale(z_draw))
+    } else {
+        rep(0, n)
     }
-    z <- as.numeric(scale(z_raw))
 
     reference_depth <- as.integer(round(exp(stats::rnorm(
         n0, log(CONFIG$depth_median), CONFIG$depth_sdlog
@@ -811,18 +750,22 @@ make_replication_design <- function(
     ))
 
     sample_names <- sprintf("Sample_%03d", seq_len(n))
-    group_z_correlation <- suppressWarnings(stats::cor(group_numeric, z))
+    group_z_correlation <- if (covariate == "with_covariate") {
+        stats::cor(group_numeric, z)
+    } else {
+        NA_real_
+    }
     z_mean_reference <- mean(z[group_numeric == 0])
     z_mean_comparison <- mean(z[group_numeric == 1])
     make_metadata <- function(depth) {
-        data.frame(
+        metadata <- data.frame(
             group = group,
             group_num = group_numeric,
             z = z,
             reads = as.integer(depth),
             log_depth = as.numeric(scale(log(depth))),
-            confounding = confounding,
-            confounded = confounding == "confounded",
+            covariate = covariate,
+            with_covariate = covariate == "with_covariate",
             n_per_group = n_per_group,
             total_sample_size = n,
             group_z_correlation = group_z_correlation,
@@ -832,14 +775,16 @@ make_replication_design <- function(
             row.names = sample_names,
             check.names = FALSE
         )
+        if (covariate == "without_covariate") metadata$z <- NULL
+        metadata
     }
 
     list(
         replication = replication_id,
         n = n,
         n_per_group = n_per_group,
-        confounding = confounding,
-        confounded = confounding == "confounded",
+        covariate = covariate,
+        with_covariate = covariate == "with_covariate",
         group_numeric = group_numeric,
         group = group,
         z = z,
@@ -856,6 +801,10 @@ make_replication_design <- function(
             c(reference_depth, imbalanced_case_depth)
         )
     )
+}
+
+design_covariate <- function(metadata) {
+    if ("z" %in% names(metadata)) metadata$z else rep(0, nrow(metadata))
 }
 
 scenario_seed_offset <- function(scenario) {
@@ -883,7 +832,7 @@ make_effect_vectors <- function(setting, metadata, template) {
     target <- setting$effect_parameter
     scenario <- setting$scenario
 
-    all_z <- metadata$z
+    all_z <- design_covariate(metadata)
     all_depth <- metadata$reads
 
     if (scenario == "observed_prevalence_only") {
@@ -1047,7 +996,7 @@ make_truth_rows <- function(
     J <- nrow(template)
     reference <- metadata$group_num == 0
     comparison <- metadata$group_num == 1
-    all_z <- metadata$z
+    all_z <- design_covariate(metadata)
     all_depth <- metadata$reads
     rows <- vector("list", J)
 
@@ -1154,11 +1103,11 @@ make_truth_rows <- function(
             total_sample_size = setting$total_sample_size,
             signal_fraction = setting$signal_fraction,
             n_signal_target = setting$n_signal_target,
-            confounding = setting$confounding,
-            confounded = setting$confounded,
+            covariate = setting$covariate,
+            with_covariate = setting$with_covariate,
             sample_size_label = setting$sample_size_label,
             signal_fraction_label = setting$signal_fraction_label,
-            confounding_label = setting$confounding_label,
+            covariate_label = setting$covariate_label,
             design_panel = setting$design_panel,
             template_role = setting$template_role,
             group_z_correlation = metadata$group_z_correlation[1L],
@@ -1245,10 +1194,10 @@ simulate_taxonwise_setting <- function(
     effects <- make_effect_vectors(setting, metadata, template)
 
     eta <- outer(rep(1, n), template$baseline_eta) +
-        outer(metadata$z, template$eta_z) +
+        outer(design_covariate(metadata), template$eta_z) +
         outer(metadata$group_num, effects$zeta)
     rho_linear <- outer(rep(1, n), logit(template$baseline_rho)) +
-        outer(metadata$z, template$rho_z) +
+        outer(design_covariate(metadata), template$rho_z) +
         outer(metadata$group_num, effects$delta)
     rho <- expit(rho_linear)
 
@@ -1341,7 +1290,7 @@ simulate_joint_setting <- function(
     effects <- make_effect_vectors(setting, metadata, template)
 
     rho_linear <- outer(rep(1, n), logit(template$baseline_rho)) +
-        outer(metadata$z, template$rho_z) +
+        outer(design_covariate(metadata), template$rho_z) +
         outer(metadata$group_num, effects$delta)
     rho <- expit(rho_linear)
 
@@ -1370,7 +1319,7 @@ simulate_joint_setting <- function(
     log_absolute <- outer(
         rep(1, n), log(template$baseline_probability)
     ) +
-        outer(metadata$z, template$eta_z) +
+        outer(design_covariate(metadata), template$eta_z) +
         outer(metadata$group_num, effects$absolute_effect) +
         correlated_normal
     absolute_weight <- exp(log_absolute)
@@ -1403,7 +1352,7 @@ simulate_joint_setting <- function(
 
     eta_working <- outer(
         rep(1, n), template$baseline_eta
-    ) + outer(metadata$z, template$eta_z)
+    ) + outer(design_covariate(metadata), template$eta_z)
 
     truth <- make_truth_rows(
         setting = setting,
@@ -1482,13 +1431,37 @@ method_result_template <- function(taxa, method, component, status,
 
 valid_p <- function(x) is.finite(x) & x >= 0 & x <= 1
 
+analysis_terms <- function(simulation, group = "group", depth = FALSE) {
+    c(
+        group,
+        if (isTRUE(simulation$setting$with_covariate)) "z",
+        if (depth) "log_depth"
+    )
+}
+
+analysis_formula <- function(simulation, response = NULL,
+                             group = "group", depth = FALSE) {
+    stats::reformulate(
+        analysis_terms(simulation, group, depth),
+        response = response
+    )
+}
+
+analysis_formula_text <- function(simulation, depth = FALSE,
+                                  include_tilde = TRUE) {
+    paste0(
+        if (include_tilde) "~ " else "",
+        paste(analysis_terms(simulation, depth = depth), collapse = " + ")
+    )
+}
+
 run_sacat <- function(simulation) {
     taxa <- simulation$evaluation_taxa
     captured <- safe_capture(
         SACAT::sacat(
             counts = simulation$counts[taxa, , drop = FALSE],
             metadata = simulation$metadata,
-            formula = ~ group + z,
+            formula = analysis_formula(simulation),
             group = "group",
             library_size = "reads",
             taxa_are_rows = TRUE,
@@ -1507,6 +1480,9 @@ run_sacat <- function(simulation) {
             method_result_template(
                 taxa, "SACAT", "present_conditional_abundance", status,
                 captured$elapsed
+            ),
+            method_result_template(
+                taxa, "SACAT", "omnibus", status, captured$elapsed
             )
         ))
     }
@@ -1571,7 +1547,21 @@ run_sacat <- function(simulation) {
     abundance$warning <- as.character(
         diagnostics$warning_relative_abundance
     )
-    rbind(structural, abundance)
+    omnibus <- method_result_template(
+        taxa, "SACAT", "omnibus", "unavailable", captured$elapsed
+    )
+    omnibus$p_value <- as.numeric(result$p_omnibus)
+    omnibus$package_q_value <- as.numeric(result$p_adj_omnibus)
+    omnibus$available <- valid_p(omnibus$p_value) &
+        (structural$available | abundance$available)
+    omnibus$status <- ifelse(
+        omnibus$available, "ok",
+        ifelse(
+            !structural$available & !abundance$available,
+            "both_components_unavailable", "nonfinite_p_value"
+        )
+    )
+    rbind(structural, abundance, omnibus)
 }
 
 run_zinq <- function(simulation, replication_id) {
@@ -1588,7 +1578,7 @@ run_zinq <- function(simulation, replication_id) {
         data <- data.frame(
             y = as.numeric(relative_abundance[j, ]),
             group_num = simulation$metadata$group_num,
-            z = simulation$metadata$z,
+            z = design_covariate(simulation$metadata),
             log_depth = simulation$metadata$log_depth
         )
         set.seed(
@@ -1597,8 +1587,12 @@ run_zinq <- function(simulation, replication_id) {
         )
         captured <- safe_capture(
             ZINQ::ZINQ_tests(
-                formula.logistic = y ~ group_num + z + log_depth,
-                formula.quantile = y ~ group_num + z + log_depth,
+                formula.logistic = analysis_formula(
+                    simulation, "y", "group_num", depth = TRUE
+                ),
+                formula.quantile = analysis_formula(
+                    simulation, "y", "group_num", depth = TRUE
+                ),
                 C = "group_num",
                 y_CorD = "C",
                 data = data,
@@ -1795,12 +1789,12 @@ run_maaslin3 <- function(simulation, replication_id, temporary_root) {
     }, add = TRUE)
 
     input_data <- as.data.frame(t(simulation$counts))
-    metadata <- simulation$metadata[, c("group", "z", "log_depth"), drop = FALSE]
+    metadata <- simulation$metadata[, analysis_terms(simulation, depth = TRUE), drop = FALSE]
     arguments <- list(
         input_data = input_data,
         input_metadata = metadata,
         output = output_dir,
-        formula = "~ group + z + log_depth",
+        formula = analysis_formula_text(simulation, depth = TRUE),
         min_abundance = 0,
         min_prevalence = 0,
         max_prevalence = 1.01,
@@ -1874,7 +1868,7 @@ run_edger <- function(simulation) {
     taxa <- simulation$evaluation_taxa
     captured <- safe_capture({
         design <- stats::model.matrix(
-            ~ group + z, data = simulation$metadata
+            analysis_formula(simulation), data = simulation$metadata
         )
         coefficient <- grep("^group", colnames(design))
         if (length(coefficient) != 1L) {
@@ -1923,11 +1917,15 @@ run_edger <- function(simulation) {
 run_deseq2 <- function(simulation) {
     taxa <- simulation$evaluation_taxa
     captured <- safe_capture({
-        col_data <- simulation$metadata[, c("group", "z"), drop = FALSE]
+        col_data <- simulation$metadata[, analysis_terms(simulation), drop = FALSE]
         dds <- DESeq2::DESeqDataSetFromMatrix(
             countData = round(simulation$counts),
             colData = col_data,
-            design = ~ z + group
+            design = if (isTRUE(simulation$setting$with_covariate)) {
+                ~ z + group
+            } else {
+                ~ group
+            }
         )
         dds <- DESeq2::DESeq(
             dds,
@@ -2005,8 +2003,8 @@ run_ancombc2 <- function(simulation) {
             assay_name = "counts",
             tax_level = NULL,
             aggregate_data = NULL,
-            meta_data = simulation$metadata[, c("group", "z"), drop = FALSE],
-            fix_formula = "group + z",
+            meta_data = simulation$metadata,
+            fix_formula = analysis_formula_text(simulation, include_tilde = FALSE),
             rand_formula = NULL,
             p_adj_method = "BH",
             pseudo = 0,
@@ -2131,8 +2129,8 @@ run_linda <- function(simulation) {
     arguments <- if ("feature.dat" %in% linda_formals) {
         list(
             feature.dat = simulation$counts,
-            meta.dat = simulation$metadata[, c("group", "z"), drop = FALSE],
-            formula = "~ group + z",
+            meta.dat = simulation$metadata[, analysis_terms(simulation), drop = FALSE],
+            formula = analysis_formula_text(simulation),
             feature.dat.type = "count",
             prev.filter = 0,
             mean.abund.filter = 0,
@@ -2146,8 +2144,8 @@ run_linda <- function(simulation) {
     } else {
         list(
             otu.tab = simulation$counts,
-            meta = simulation$metadata[, c("group", "z"), drop = FALSE],
-            formula = "~ group + z",
+            meta = simulation$metadata[, analysis_terms(simulation), drop = FALSE],
+            formula = analysis_formula_text(simulation),
             type = "count",
             adaptive = TRUE,
             p.adj.method = "BH",
@@ -2227,12 +2225,12 @@ run_corncob <- function(simulation) {
             W = as.numeric(simulation$counts[taxa[j], ]),
             M = as.numeric(simulation$depth),
             group = simulation$metadata$group,
-            z = simulation$metadata$z
+            z = design_covariate(simulation$metadata)
         )
         captured <- safe_capture(
             corncob::bbdml(
-                formula = cbind(W, M - W) ~ group + z,
-                phi.formula = ~ group + z,
+                formula = analysis_formula(simulation, "cbind(W, M - W)"),
+                phi.formula = analysis_formula(simulation),
                 data = data,
                 method = "trust",
                 robust = isTRUE(CONFIG$corncob_robust)
@@ -2309,7 +2307,7 @@ run_metagenomeseq <- function(simulation) {
     taxa <- simulation$evaluation_taxa
     captured <- safe_capture({
         pheno <- Biobase::AnnotatedDataFrame(
-            simulation$metadata[, c("group", "z"), drop = FALSE]
+            simulation$metadata[, analysis_terms(simulation), drop = FALSE]
         )
         object <- metagenomeSeq::newMRexperiment(
             counts = simulation$counts,
@@ -2320,7 +2318,7 @@ run_metagenomeseq <- function(simulation) {
         )
         object <- metagenomeSeq::cumNorm(object, p = percentile)
         design <- stats::model.matrix(
-            ~ group + z, data = simulation$metadata
+            analysis_formula(simulation), data = simulation$metadata
         )
         coefficient <- grep("^group", colnames(design))
         if (length(coefficient) != 1L) {
@@ -2468,8 +2466,8 @@ analyze_setting <- function(simulation, replication_id, temporary_root) {
     context_columns <- c(
         "setting_id", "base_setting_id", "design_id", "n_per_group",
         "total_sample_size", "signal_fraction", "n_signal_target",
-        "confounding", "confounded", "sample_size_label",
-        "signal_fraction_label", "confounding_label", "design_panel",
+        "covariate", "with_covariate", "sample_size_label",
+        "signal_fraction_label", "covariate_label", "design_panel",
         "template_role", "study", "dgp", "scenario", "effect_level",
         "effect_index", "effect_parameter", "effect_measure"
     )
@@ -2486,12 +2484,16 @@ analyze_setting <- function(simulation, replication_id, temporary_root) {
         sort = FALSE
     )
     result$truth_for_component <- ifelse(
-        result$component == "structural_absence",
-        result$truth_structural,
+        result$component == "omnibus",
+        result$truth_structural | result$truth_abundance,
         ifelse(
-            result$component == "observed_prevalence",
-            result$truth_observed_prevalence,
-            result$truth_abundance
+            result$component == "structural_absence",
+            result$truth_structural,
+            ifelse(
+                result$component == "observed_prevalence",
+                result$truth_observed_prevalence,
+                result$truth_abundance
+            )
         )
     )
     result
@@ -2602,14 +2604,14 @@ run_replication <- function(replication_id) {
     started <- proc.time()[["elapsed"]]
 
     design_specs <- unique(SETTINGS[, c(
-        "design_id", "n_per_group", "confounding"
+        "design_id", "n_per_group", "covariate"
     ), drop = FALSE])
     designs <- setNames(
         lapply(seq_len(nrow(design_specs)), function(i) {
             make_replication_design(
                 replication_id = replication_id,
                 n_per_group = design_specs$n_per_group[i],
-                confounding = design_specs$confounding[i]
+                covariate = design_specs$covariate[i]
             )
         }),
         design_specs$design_id
@@ -2674,7 +2676,7 @@ run_replication <- function(replication_id) {
         errors,
         SETTINGS[, c(
             "setting_id", "base_setting_id", "design_id", "n_per_group",
-            "signal_fraction", "n_signal_target", "confounding",
+            "signal_fraction", "n_signal_target", "covariate",
             "scenario", "effect_parameter"
         )],
         by = "setting_id", all.x = TRUE, sort = FALSE
@@ -2743,6 +2745,7 @@ method_display_name <- function(method, component) {
         "SACAT::structural_absence" = "SACAT structural absence",
         "SACAT::present_conditional_abundance" =
             "SACAT present-conditional abundance",
+        "SACAT::omnibus" = "SACAT omnibus",
         "ZINQ::observed_prevalence" = "ZINQ Firth prevalence",
         "ZINQ::detected_quantile_abundance" = "ZINQ quantile abundance",
         "MaAsLin 3::observed_prevalence" = "MaAsLin 3 prevalence",
@@ -2797,6 +2800,18 @@ make_replicate_metrics <- function(results) {
         } else {
             NA_real_
         },
+        type1_error_bh = if (sum(!truth_for_component) > 0) {
+            sum(!truth_for_component & reject_bh, na.rm = TRUE) /
+                sum(!truth_for_component)
+        } else {
+            NA_real_
+        },
+        familywise_type1_error_raw = as.numeric(any(
+            !truth_for_component & reject_raw, na.rm = TRUE
+        )),
+        familywise_type1_error_bh = as.numeric(any(
+            !truth_for_component & reject_bh, na.rm = TRUE
+        )),
         discoveries = sum(reject_bh, na.rm = TRUE),
         true_discoveries = sum(
             truth_for_component & reject_bh, na.rm = TRUE
@@ -2847,8 +2862,8 @@ make_replicate_metrics <- function(results) {
     ), by = .(
         replication, setting_id, base_setting_id, design_id,
         n_per_group, total_sample_size, signal_fraction, n_signal_target,
-        confounding, confounded, sample_size_label,
-        signal_fraction_label, confounding_label, design_panel,
+        covariate, with_covariate, sample_size_label,
+        signal_fraction_label, covariate_label, design_panel,
         template_role, study, dgp, scenario,
         effect_level, effect_index, effect_parameter, effect_measure,
         method, component, method_label
@@ -2860,9 +2875,9 @@ aggregate_metric <- function(metrics, value_columns) {
     groups <- c(
         "setting_id", "base_setting_id", "design_id",
         "n_per_group", "total_sample_size", "signal_fraction",
-        "n_signal_target", "confounding", "confounded",
+        "n_signal_target", "covariate", "with_covariate",
         "sample_size_label", "signal_fraction_label",
-        "confounding_label", "design_panel", "template_role",
+        "covariate_label", "design_panel", "template_role",
         "study", "dgp", "scenario", "effect_level", "effect_index",
         "effect_parameter", "effect_measure", "method", "component",
         "method_label"
@@ -2906,7 +2921,7 @@ summarize_completed_replications <- function() {
     previous_outputs <- list.files(
         CONFIG$summary_dir,
         pattern = paste0(
-            "^(all_|combined_|base_|confounding_|design_|replicate_|setting_|method_|",
+            "^(all_|combined_|base_|covariate_|design_|replicate_|setting_|method_|",
             "truth_|simulation_|package_|session_|fig_)"
         ),
         full.names = TRUE
@@ -2962,7 +2977,7 @@ summarize_completed_replications <- function() {
         metrics_parts[[n_completed]] <- make_replicate_metrics(result)
         failure_parts[[n_completed]] <- result[, .N, by = .(
             method_label, component, design_id, n_per_group,
-            signal_fraction, n_signal_target, confounding, dgp, scenario,
+            signal_fraction, n_signal_target, covariate, dgp, scenario,
             effect_parameter, status, available
         )]
         truth_value <- data.table::as.data.table(object$truth)
@@ -2998,7 +3013,7 @@ summarize_completed_replications <- function() {
         failure_parts, fill = TRUE, use.names = TRUE
     )[, .(N = sum(N)), by = .(
         method_label, component, design_id, n_per_group, signal_fraction,
-        n_signal_target, confounding, dgp, scenario,
+        n_signal_target, covariate, dgp, scenario,
         effect_parameter, status, available
     )][order(method_label, design_id, scenario, effect_parameter, -N)]
     rm(metrics_parts, failure_parts,
@@ -3010,6 +3025,8 @@ summarize_completed_replications <- function() {
         c(
             "availability", "signal_availability", "null_availability",
             "raw_signal_rejection_rate", "type1_error",
+            "type1_error_bh", "familywise_type1_error_raw",
+            "familywise_type1_error_bh",
             "power", "fdp", "power_by", "fdp_by",
             "designated_signal_raw_rejection",
             "designated_signal_bh_rejection",
@@ -3048,15 +3065,15 @@ summarize_completed_replications <- function() {
     ), by = .(
         setting_id, base_setting_id, design_id,
         n_per_group, total_sample_size, signal_fraction, n_signal_target,
-        confounding, confounded, sample_size_label,
-        signal_fraction_label, confounding_label, design_panel,
+        covariate, with_covariate, sample_size_label,
+        signal_fraction_label, covariate_label, design_panel,
         template_role, study, dgp, scenario,
         effect_level, effect_index, effect_parameter,
         effect_measure, scenario_signal
     )]
 
-    confounding_summary <- unique(truth[, .(
-        replication, n_per_group, confounding, confounding_label,
+    covariate_summary <- unique(truth[, .(
+        replication, n_per_group, covariate, covariate_label,
         group_z_correlation, z_mean_difference
     )])[, .(
         n_replications = data.table::uniqueN(replication),
@@ -3064,7 +3081,7 @@ summarize_completed_replications <- function() {
         sd_group_z_correlation = stats::sd(group_z_correlation, na.rm = TRUE),
         mean_z_mean_difference = mean(z_mean_difference, na.rm = TRUE),
         sd_z_mean_difference = stats::sd(z_mean_difference, na.rm = TRUE)
-    ), by = .(n_per_group, confounding, confounding_label)]
+    ), by = .(n_per_group, covariate, covariate_label)]
 
     data.table::fwrite(
         metrics,
@@ -3083,8 +3100,8 @@ summarize_completed_replications <- function() {
         file.path(CONFIG$summary_dir, "truth_summary.csv")
     )
     data.table::fwrite(
-        confounding_summary,
-        file.path(CONFIG$summary_dir, "confounding_design_summary.csv")
+        covariate_summary,
+        file.path(CONFIG$summary_dir, "covariate_design_summary.csv")
     )
     data.table::fwrite(
         setting_status,
@@ -3149,7 +3166,7 @@ run_preflight <- function() {
         design <- make_replication_design(
             replication_id = 9991L,
             n_per_group = setting$n_per_group,
-            confounding = setting$confounding
+            covariate = setting$covariate
         )
         template <- make_taxon_template(
             n_signal = setting$n_signal_target,
@@ -3196,7 +3213,7 @@ run_preflight <- function() {
             scenario = setting$scenario,
             n_per_group = setting$n_per_group,
             signal_fraction = setting$signal_fraction,
-            confounding = setting$confounding,
+            covariate = setting$covariate,
             target = target,
             maximum_calibration_error = achieved,
             stringsAsFactors = FALSE
@@ -3217,17 +3234,17 @@ run_preflight <- function() {
             SETTINGS$effect_parameter == 0 &
             SETTINGS$n_per_group == min(CONFIG$sample_sizes_per_group) &
             abs(SETTINGS$signal_fraction - max(CONFIG$signal_fractions)) < 1e-12 &
-            SETTINGS$confounding == "confounded",
+            SETTINGS$covariate == "with_covariate",
         , drop = FALSE
     ]
     if (nrow(selected) != 1L) {
-        stop("Could not identify the hardest abundance global-null setting.",
+        stop("Could not identify the abundance global-null preflight setting.",
              call. = FALSE)
     }
     design <- make_replication_design(
         replication_id = 9999L,
         n_per_group = selected$n_per_group,
-        confounding = selected$confounding
+        covariate = selected$covariate
     )
     template <- make_taxon_template(
         n_signal = selected$n_signal_target,
@@ -3257,7 +3274,7 @@ run_preflight <- function() {
         representative_status = collapse_text(status)
     ), by = .(method, component)]
     print(selected[, c(
-        "setting_id", "n_per_group", "signal_fraction", "confounding"
+        "setting_id", "n_per_group", "signal_fraction", "covariate"
     )], row.names = FALSE)
     print(status)
     failed_methods <- status[

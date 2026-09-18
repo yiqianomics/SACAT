@@ -1,3 +1,9 @@
+# SACAT 0.7.0
+
+- The relative-abundance component uses a sandwich-adjusted profile
+  likelihood-ratio test. `z_relative_abundance` reports its signed square root;
+  detailed output includes the profile statistics and constrained fits.
+
 # SACAT 0.6.0
 
 - `plot.sacat()` provides a publication-oriented dual-component association

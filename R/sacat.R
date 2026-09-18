@@ -1371,17 +1371,8 @@ cauchy_combination <- function(ps) {
 
             corrected <- raw_delta[j] - background_fit$estimate
             se <- sqrt(variance)
-            z_value <- corrected / se
-            p_value <- 2 * pnorm(-abs(z_value))
-            if (!is.finite(p_value) || p_value < 0 || p_value > 1) {
-                reason[j] <- "nonfinite_p_value"
-                next
-            }
-
-            corrected_p[j] <- p_value
             corrected_estimate[j] <- corrected
             corrected_se[j] <- se
-            corrected_z[j] <- z_value
             formed[j] <- TRUE
             reason[j] <- "ok"
             background_size[j] <- length(others)
@@ -1494,6 +1485,7 @@ cauchy_combination <- function(ps) {
         estimate = corrected_estimate,
         se = corrected_se,
         z = corrected_z,
+        background = background_estimate,
         diagnostics = diagnostics
     )
 }
@@ -1587,6 +1579,10 @@ cauchy_combination <- function(ps) {
         n_samples = n_samples,
         keep_diagnostics = keep_diagnostics,
         min_reference_taxa = min_reference_taxa
+    )
+    result <- .sacat_abundance_profile_tests(
+        result, fits, Y, N, .sacat_abundance_designs(g, z)$X_b,
+        gh_fit, cluster
     )
     result$warning <- numerical_warning
     .sacat_progress(
@@ -3851,7 +3847,13 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'
 #' Taxon-specific effects are centered against a target-excluded cross-taxon
 #' reference. The standard error uses centered, sample-aligned
-#' influence contributions with a first-order standard-normal Wald reference.
+#' influence contributions. A sandwich-adjusted profile likelihood-ratio test
+#' compares the fitted likelihood with a constrained fit whose raw abundance
+#' contrast equals the estimated reference. The likelihood-ratio statistic is
+#' multiplied by the raw contrast's inverse-information variance divided by
+#' the reference-corrected sandwich variance and compared with a chi-squared
+#' distribution with one degree of freedom. `z_relative_abundance` is its
+#' signed square root, with the sign of the reference-corrected effect.
 #' A positive `estimate_relative_abundance` indicates that the target taxon's
 #' present-conditional contrast exceeds the shared compositional background.
 #' The reported effect is the taxon's present-conditional contrast relative to
@@ -4615,8 +4617,9 @@ sacat <- function(counts, metadata, formula, group, library_size,
         settings$abundance_score_tolerance <- 1e-8
         settings$abundance_jacobian_condition_limit <- 1e12
         settings$abundance_variance <- "centered HC0 sandwich"
+        settings$abundance_test <- "sandwich-adjusted profile likelihood ratio"
         settings$abundance_reference_distribution <-
-            "standard normal first-order approximation"
+            "chi-squared with one degree of freedom"
         settings$abundance_reference_method <- paste(
             "target-excluded least-trimmed-squares-initialized",
             "Gaussian kernel mode"

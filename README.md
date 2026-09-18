@@ -170,8 +170,9 @@ analyses must be compared directly.
 Feature width adapts to the longest displayed name and its significance
 superscript. The side profiles are covariate-standardized model summaries for
 the fitted groups; the central symbols carry the fitted structural score
-statistic and the reference-corrected abundance Wald statistic. The abundance
-side panel shows the fitted present-conditional geometric mean relative
+statistic and the signed square root of the adjusted abundance likelihood-ratio
+statistic. The abundance side panel shows the fitted present-conditional
+geometric mean relative
 abundance, standardized over the observed covariate distribution, as a
 percentage of total reads. A log scale with paired group points represents
 these positive values. Side-panel segments provide descriptive fitted group
@@ -224,3 +225,10 @@ users should assess null calibration before interpreting its discoveries.
 
 SACAT reports the reference-centered test as its abundance result. Detailed
 output also records the raw taxon estimate and the target-excluded background.
+The abundance test compares the fitted likelihood with a constrained fit whose
+raw contrast equals that background. Its likelihood-ratio statistic is scaled
+by the raw contrast's inverse-information variance divided by the corrected
+sandwich variance, then compared with a chi-squared distribution with one degree
+of freedom. `z_relative_abundance` reports the signed square root of this
+statistic. With `full_output = TRUE`, the abundance output includes the profile
+statistics and constrained fits.

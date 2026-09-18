@@ -21,9 +21,19 @@ script_path <- if (length(script_argument)) {
     normalizePath("summarize_results.R", mustWork = TRUE)
 }
 study_dir <- dirname(script_path)
-source_dir <- file.path(study_dir, "results_data", "source")
-figure_dir <- file.path(study_dir, "figures")
-table_dir <- file.path(study_dir, "tables")
+run_root <- Sys.getenv("SACAT_SIMULATION_ROOT", "")
+source_dir <- Sys.getenv(
+    "SACAT_SIMULATION_SOURCE",
+    if (nzchar(run_root)) file.path(run_root, "summary") else
+        file.path(study_dir, "results_data", "source")
+)
+report_dir <- Sys.getenv(
+    "SACAT_SIMULATION_REPORT_ROOT",
+    if (nzchar(run_root)) file.path(run_root, "report") else
+        file.path(study_dir, "simulation_report")
+)
+figure_dir <- file.path(report_dir, "figures")
+table_dir <- file.path(report_dir, "tables")
 dir.create(figure_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(table_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -62,7 +72,9 @@ input_files <- c(
     truth_summary = "truth_summary.csv",
     failure_summary = "method_failure_summary.csv",
     simulation_design = "simulation_design.csv",
-    confounding_summary = "confounding_design_summary.csv",
+    confounding_summary = if (file.exists(
+        file.path(source_dir, "covariate_design_summary.csv")
+    )) "covariate_design_summary.csv" else "confounding_design_summary.csv",
     package_versions = "package_versions.csv",
     completion_status = "setting_completion_status.csv"
 )
@@ -85,12 +97,51 @@ confounding_summary <- data.table::fread(input_paths[["confounding_summary"]])
 package_versions <- data.table::fread(input_paths[["package_versions"]])
 completion_status <- data.table::fread(input_paths[["completion_status"]])
 
-expected_settings <- 540L
+new_covariate_design <- "covariate" %in% names(simulation_design)
+if (new_covariate_design) {
+    for (data in list(
+        metrics, setting_summary, truth_summary, failure_summary,
+        simulation_design, confounding_summary
+    )) {
+        old_names <- intersect(
+            c("covariate", "with_covariate", "covariate_label"),
+            names(data)
+        )
+        new_names <- c(
+            covariate = "confounding", with_covariate = "confounded",
+            covariate_label = "confounding_label"
+        )
+        data.table::setnames(data, old_names, unname(new_names[old_names]))
+    }
+}
+covariate_values <- if (new_covariate_design) {
+    c("without_covariate", "with_covariate")
+} else {
+    c("unconfounded", "confounded")
+}
+covariate_labels <- if (new_covariate_design) {
+    c("Without covariate", "With covariate")
+} else {
+    c("Unconfounded", "Confounded")
+}
+has_joint <- any(simulation_design$study == "joint_robustness")
+if (!has_joint) {
+    figure_files <- figure_files[!grepl("^correlated_community_", figure_files)]
+    table_files <- setdiff(table_files, "correlated_community_summary.csv")
+}
+if (!any(abs(simulation_design$signal_fraction - 0.40) < 1e-12)) {
+    figure_files <- setdiff(figure_files, "abundance_fdr_signal40.pdf")
+}
+expected_settings <- data.table::uniqueN(simulation_design$setting_id)
 expected_replications <- 100L
 if (
     data.table::uniqueN(completion_status$setting_id) != expected_settings ||
     data.table::uniqueN(completion_status$replication) != expected_replications ||
     nrow(completion_status) != expected_settings * expected_replications ||
+    data.table::uniqueN(completion_status, by = c("setting_id", "replication")) !=
+        expected_settings * expected_replications ||
+    !setequal(completion_status$setting_id, simulation_design$setting_id) ||
+    !setequal(completion_status$replication, seq_len(expected_replications)) ||
     !all(completion_status$success)
 ) {
     stop("The simulation completion grid is incomplete.", call. = FALSE)
@@ -102,6 +153,7 @@ method_order <- c(
 )
 method_component_order <- c(
     "SACAT structural absence", "SACAT present-conditional abundance",
+    "SACAT omnibus",
     "ZINQ Firth prevalence", "ZINQ quantile abundance",
     "MaAsLin 3 prevalence", "MaAsLin 3 abundance",
     "ANCOM-BC2", "DESeq2", "edgeR", "LinDA", "corncob",
@@ -163,6 +215,7 @@ component_name <- function(component) {
         component == "detected_quantile_abundance", "Detected-sample quantile abundance",
         component == "detected_log_abundance", "Detected log abundance",
         component == "general_abundance", "General abundance",
+        component == "omnibus", "Omnibus",
         default = gsub("_", " ", component)
     )
 }
@@ -178,8 +231,8 @@ prepare_design_fields <- function(data) {
     )]
     data[, confounding_short := factor(
         confounding,
-        levels = c("unconfounded", "confounded"),
-        labels = c("Unconfounded", "Confounded")
+        levels = covariate_values,
+        labels = covariate_labels
     )]
     data[, design_column := factor(
         paste0(as.integer(round(100 * signal_fraction)), "%, ",
@@ -573,12 +626,13 @@ abundance_metric_data <- function(signal_fraction_value, metric_name) {
 }
 
 plot_abundance_fdr <- function(data, filename) {
+    if (!nrow(data)) return(invisible(NULL))
     signal_text <- paste0(
         as.integer(round(100 * unique(data$signal_fraction))), "% signal taxa"
     )
     data[, confounding_signal := factor(
         paste(as.character(confounding_short), signal_text, sep = "\n"),
-        levels = paste(c("Unconfounded", "Confounded"), signal_text, sep = "\n")
+        levels = paste(covariate_labels, signal_text, sep = "\n")
     )]
     plot <- ggplot2::ggplot(
         data,
@@ -656,12 +710,13 @@ main_abundance[, design_row := factor(
         as.integer(round(100 * signal_fraction)), "%)\n",
         as.character(confounding_short)
     ),
-    levels = c(
-        "10 taxa (20%)\nUnconfounded",
-        "10 taxa (20%)\nConfounded",
-        "20 taxa (40%)\nUnconfounded",
-        "20 taxa (40%)\nConfounded"
-    )
+    levels = unlist(lapply(
+        sort(unique(simulation_design$signal_fraction)),
+        function(fraction) paste0(
+            as.integer(round(50 * fraction)), " taxa (",
+            as.integer(round(100 * fraction)), "%)\n", covariate_labels
+        )
+    ))
 )]
 
 plot_main_abundance <- function(filename) {
@@ -796,11 +851,20 @@ null_abundance <- plot_null_family_rejection(
 null_structural <- plot_null_family_rejection(
     "structural", "global_null_family_rejection_structural.pdf", 0.12
 )
+null_omnibus <- if (any(null_metrics$component == "omnibus")) {
+    data <- summarize_null_family(null_metrics[component == "omnibus"])
+    data[, component_family := "omnibus"]
+    data
+} else {
+    NULL
+}
 null_output <- data.table::rbindlist(
-    list(null_abundance, null_structural), fill = TRUE
+    list(null_abundance, null_structural, null_omnibus), fill = TRUE
 )[, .(
-    component_family = ifelse(
-        component_family == "abundance", "Abundance", "Structural or prevalence"
+    component_family = data.table::fcase(
+        component_family == "abundance", "Abundance",
+        component_family == "omnibus", "Omnibus",
+        default = "Structural or prevalence"
     ),
     null_mechanism = as.character(null_scenario),
     samples_per_group = n_per_group,
@@ -817,6 +881,7 @@ null_output <- data.table::rbindlist(
 )]
 write_table(null_output, "global_null_family_rejection_summary.csv")
 
+if (has_joint) {
 joint_abundance <- prepare_design_fields(setting_summary[
     study == "joint_robustness" & scenario == "joint_abundance" &
         metric %in% c("power", "fdp") & is_abundance_component(component)
@@ -908,8 +973,10 @@ valid_joint_structural_component <-
     (joint_structural$method %in% c("ZINQ", "MaAsLin 3") &
         joint_structural$component == "observed_prevalence")
 if (
-    nrow(joint_structural) != 144L ||
-    data.table::uniqueN(joint_structural, by = joint_structural_key) != 144L ||
+    nrow(joint_structural) !=
+        sum(simulation_design$scenario == "joint_structural") * 6L ||
+    data.table::uniqueN(joint_structural, by = joint_structural_key) !=
+        nrow(joint_structural) ||
     !all(valid_joint_structural_component) ||
     data.table::uniqueN(
         joint_structural[, .(method, component)]
@@ -1042,6 +1109,7 @@ joint_output <- data.table::rbindlist(
     interval_upper = ci_upper
 )]
 write_table(joint_output, "correlated_community_summary.csv")
+}
 
 scenario_descriptions <- data.table::data.table(
     study = c(
@@ -1084,7 +1152,7 @@ data.table::setnames(effect_grids, "scenario", "source_scenario")
 scenario_descriptions[, row_order := .I]
 scenario_descriptions <- merge(
     scenario_descriptions, effect_grids,
-    by = "source_scenario", all.x = TRUE, sort = FALSE
+    by = "source_scenario", all = FALSE, sort = FALSE
 )
 data.table::setorder(scenario_descriptions, row_order)
 scenario_descriptions[, c("source_scenario", "row_order") := NULL]
@@ -1127,6 +1195,32 @@ method_targets <- data.table::data.table(
         "group + z; CSS normalization; fitZig"
     )
 )
+if (new_covariate_design) {
+    method_targets[, analysis_configuration := c(
+        "group or group + z; original library size supplied",
+        "group or group + z; original library size supplied",
+        "group + standardized log depth, with optional z; Firth model",
+        "group + standardized log depth, with optional z; three quantiles",
+        "TSS and log transform; group + standardized log depth, with optional z",
+        "TSS and log transform; group + standardized log depth, with optional z",
+        "group or group + z; ANCOM-BC2 structural-zero and sensitivity procedures",
+        "group or z + group; positive-count size factors; Wald test",
+        "group or group + z; filterByExpr; TMM; quasi-likelihood test",
+        "group or group + z; count input; adaptive zero handling",
+        "group or group + z in mean and dispersion models; robust Wald test",
+        "group or group + z; CSS normalization; fitZig"
+    )]
+    omnibus_target <- data.table::copy(method_targets[1L])
+    omnibus_target[, `:=`(
+        component = "Omnibus",
+        simulation_target = "Structural absence or present-conditional abundance",
+        analysis_configuration = paste(
+            "Bonferroni combination of the two SACAT components;",
+            "group or group + z; original library size supplied"
+        )
+    )]
+    method_targets <- data.table::rbindlist(list(method_targets, omnibus_target))
+}
 write_table(method_targets, "method_targets.csv")
 
 simulation_constants <- data.table::data.table(
@@ -1137,8 +1231,20 @@ simulation_constants <- data.table::data.table(
         "Multiplicity adjustment"
     ),
     value = c(
-        "50", "60, 80, 120", "10 (20%) or 20 (40%)",
-        "Unconfounded and confounded", "100", "45", "540", "0.05",
+        as.character(unique(metrics$n_taxa)[1L]),
+        paste(sort(unique(simulation_design$n_per_group)), collapse = ", "),
+        paste(
+            sprintf(
+                "%d (%g%%)",
+                sort(unique(simulation_design$n_signal_target)),
+                100 * sort(unique(simulation_design$signal_fraction))
+            ),
+            collapse = " or "
+        ),
+        paste(covariate_labels, collapse = " and "),
+        as.character(expected_replications),
+        as.character(data.table::uniqueN(simulation_design$base_setting_id)),
+        as.character(expected_settings), "0.05",
         "Benjamini-Hochberg within each 50-taxon method-component family"
     )
 )
@@ -1212,7 +1318,7 @@ confounding_table <- confounding_summary[, .(
     sd_z_mean_difference = round(sd_z_mean_difference, 6)
 )]
 confounding_table[, confounding_order := match(
-    covariate_structure, c("Unconfounded", "Confounded")
+    covariate_structure, covariate_labels
 )]
 data.table::setorder(confounding_table, confounding_order, samples_per_group)
 confounding_table[, confounding_order := NULL]
@@ -1234,5 +1340,5 @@ if (any(!file.exists(output_paths))) {
 }
 message(
     "Created ", length(figure_files), " figures and ",
-    length(table_files), " CSV tables in ", study_dir
+    length(table_files), " CSV tables in ", report_dir
 )
