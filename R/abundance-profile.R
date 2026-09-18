@@ -117,6 +117,95 @@
          effect = .sacat_abundance_effect_derivatives(beta, X_b, gh))
 }
 
+.sacat_abundance_profile_numeric_fit <- function(fit, y, N, X_b, target, gh) {
+    X <- fit$solver_diagnostics$X_eta
+    p <- length(fit$theta)
+    nuisance <- setdiff(seq_len(p), 2L)
+    positive_count <- sum(y > 0)
+    lower <- c(-80, rep(-40, p - 3L), log(1e-6))
+    upper <- c(40, rep(40, p - 3L), log(128))
+    objective <- function(lambda) {
+        decoded <- .sacat_abundance_profile_decode(lambda, target, X_b, gh)
+        -sum(zt_beta_loglik_by_sample_inference(decoded$beta, y, N, X, gh))
+    }
+    derivative <- function(lambda, hessian = FALSE) {
+        steps <- zt_inference_steps(lambda, length(y), lower, upper)
+        value <- objective(lambda)
+        gradient <- as.numeric(zt_central_derivative_matrix_fixed(
+            objective, lambda, steps$step, value, steps$scheme
+        ))
+        information <- if (hessian) {
+            zt_central_hessian_fixed(
+                objective, lambda, steps$step, value, steps$scheme
+            )
+        } else NULL
+        list(nll = value, gradient = gradient, information = information)
+    }
+    fit_start <- function(start) {
+        optimization <- optim(
+            start[nuisance],
+            fn = function(value) objective(value) / positive_count,
+            gr = function(value) derivative(value)$gradient / positive_count,
+            method = "L-BFGS-B", lower = lower, upper = upper,
+            control = list(maxit = 200L, factr = 1e4, pgtol = 1e-8)
+        )
+        lambda <- optimization$par
+        result <- derivative(lambda, TRUE)
+        iterations <- 0L
+        for (iteration in seq_len(15L)) {
+            if (max(abs(result$gradient)) / positive_count <= 1e-7) break
+            chol(result$information)
+            direction <- -drop(solve(result$information, result$gradient))
+            accepted <- FALSE
+            for (step in 2^-(0:12)) {
+                trial <- lambda + step * direction
+                if (any(trial <= lower) || any(trial >= upper)) next
+                candidate <- tryCatch(
+                    derivative(trial, TRUE), error = function(e) NULL
+                )
+                if (!is.null(candidate) && is.finite(candidate$nll) &&
+                    candidate$nll <= result$nll + 1e-9 &&
+                    (candidate$nll < result$nll ||
+                     max(abs(candidate$gradient)) < max(abs(result$gradient)))) {
+                    lambda <- trial
+                    result <- candidate
+                    accepted <- TRUE
+                    iterations <- iterations + 1L
+                    break
+                }
+            }
+            if (!accepted) break
+        }
+        decoded <- .sacat_abundance_profile_decode(lambda, target, X_b, gh)
+        result$theta <- decoded$beta
+        result$effect <- decoded$effect$value
+        result$gradient <- -result$gradient
+        result$score_residue <- max(abs(result$gradient)) / positive_count
+        result$constraint_error <- abs(result$effect - target)
+        result$iterations <- iterations
+        result$fallback <- TRUE
+        result$numerical_derivatives <- TRUE
+        if (!is.finite(result$score_residue) || result$score_residue > 1e-6) {
+            stop("constrained nuisance fit did not converge")
+        }
+        if (!is.finite(result$constraint_error) || result$constraint_error > 1e-8) {
+            stop("abundance effect constraint did not converge")
+        }
+        chol(result$information)
+        result
+    }
+    candidate <- tryCatch(fit_start(fit$theta), error = function(e) NULL)
+    if (!is.null(candidate)) return(candidate)
+    candidates <- lapply(c(0.5, 2), function(sigma) {
+        start <- fit$theta
+        start[p] <- log(sigma)
+        tryCatch(fit_start(start), error = function(e) NULL)
+    })
+    candidates <- Filter(Negate(is.null), candidates)
+    if (!length(candidates)) stop("constrained abundance maximum unavailable")
+    candidates[[which.min(vapply(candidates, `[[`, numeric(1), "nll"))]]
+}
+
 .sacat_abundance_profile_fit <- function(fit, y, N, X_b, target, gh) {
     X <- fit$solver_diagnostics$X_eta
     p <- length(fit$theta)
@@ -211,7 +300,11 @@
         tryCatch(fit_start(start), error = function(e) NULL)
     })
     candidates <- Filter(Negate(is.null), candidates)
-    if (!length(candidates)) stop("constrained abundance maximum unavailable")
+    if (!length(candidates)) {
+        return(.sacat_abundance_profile_numeric_fit(
+            fit, y, N, X_b, target, gh
+        ))
+    }
     candidates[[which.min(vapply(candidates, `[[`, numeric(1), "nll"))]]
 }
 

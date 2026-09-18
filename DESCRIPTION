@@ -1,7 +1,7 @@
 Package: SACAT
 Type: Package
 Title: Structural-Absence and Conditional-Abundance Testing
-Version: 0.7.0
+Version: 0.7.1
 Authors@R:
     c(
         person("Yiqian", "Zhang", email = "zhang.16383@osu.edu",

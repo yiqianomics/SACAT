@@ -163,6 +163,82 @@ test_that("profile tests use the constrained contrast and signed likelihood root
     }
 })
 
+test_that("successful profile fits retain the analytic fitting path", {
+    local_mocked_bindings(
+        .sacat_abundance_profile_numeric_fit = function(...) {
+            stop("numerical fallback was called")
+        },
+        .package = "SACAT"
+    )
+    for (with_covariate in c(FALSE, TRUE)) {
+        input <- .abundance_profile_fixture(with_covariate)
+        for (target in c(0, input$fit$raw_delta)) {
+            restricted <- SACAT:::.sacat_abundance_profile_fit(
+                input$fit, input$y, input$N, input$X_b, target, input$gh
+            )
+            expect_lte(restricted$score_residue, 1e-6)
+            expect_lte(restricted$constraint_error, 1e-8)
+        }
+    }
+})
+
+test_that("profile fitting converges for dispersed positive counts", {
+    y <- c(1L, 1L, 1L, 1L, 3L, 1L, 1L, 1L, 22L, 10L, 2L, 22L,
+           18L, 16L, 0L, 7L, 165L, 470L, 34L, 370L, 418L, 305L, 0L,
+           294L, 131L, 224L, 28L, 473L, 249L, 218L, 0L, 208L)
+    group <- c(0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+               1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1)
+    z <- cbind(rep(c(1, 0), 16), rep(c(0, 0, 1, 1), 8),
+               rep(c(rep(1, 4), rep(0, 4)), 4),
+               rep(c(rep(0, 8), rep(1, 8)), 2))
+    depth <- rep(1000L, length(y))
+    control <- SACAT:::.sacat_abundance_control()
+    gh <- SACAT:::.sacat_make_abundance_gh_rule(control$quadrature_Q)
+    design <- SACAT:::.sacat_abundance_designs(group, z)
+    fit <- SACAT:::.sacat_abundance_fit_taxon(
+        y, depth, group, z, gh, gh, control
+    )
+    expect_true(fit$available)
+    numeric_fit <- SACAT:::.sacat_abundance_profile_numeric_fit
+    fallback_calls <- 0L
+    local_mocked_bindings(
+        .sacat_abundance_profile_numeric_fit = function(...) {
+            fallback_calls <<- fallback_calls + 1L
+            numeric_fit(...)
+        },
+        .package = "SACAT"
+    )
+    nuisance <- setdiff(seq_along(fit$theta), 2L)
+    for (target in c(0, -0.45)) {
+        restricted <- SACAT:::.sacat_abundance_profile_fit(
+            fit, y, depth, design$X_b, target, gh
+        )
+        expect_lte(restricted$score_residue, 1e-6)
+        expect_lte(restricted$constraint_error, 1e-8)
+        expect_equal(restricted$effect, target, tolerance = 1e-8)
+        expect_gt(min(eigen(restricted$information, symmetric = TRUE)$values), 0)
+        if (target == 0) expect_equal(restricted$theta[2L], 0)
+
+        objective <- function(lambda) {
+            beta <- SACAT:::.sacat_abundance_profile_decode(
+                lambda, target, design$X_b, gh
+            )$beta
+            -sum(SACAT:::zt_beta_loglik_by_sample_inference(
+                beta, y, depth, design$X_eta, gh
+            ))
+        }
+        expect_equal(restricted$nll, objective(restricted$theta[nuisance]))
+        for (step in c(1e-4, 1e-5)) {
+            gradient <- SACAT:::zt_central_derivative_matrix_fixed(
+                objective, restricted$theta[nuisance],
+                rep(step, length(nuisance))
+            )
+            expect_lte(max(abs(gradient)) / sum(y > 0), 1e-6)
+        }
+    }
+    expect_gt(fallback_calls, 0L)
+})
+
 test_that("profile inference preserves corrected effects and standard errors", {
     input <- .abundance_profile_family()
     corrected <- input$corrected

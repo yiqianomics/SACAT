@@ -28,7 +28,7 @@ The 20 experiment-effect combinations and six design strata give 120 settings, e
 - `submit.slurm` is the SLURM array template used for the 100 replications.
 - `summarize_results.R` validates the completed grid and creates the figures and CSV tables.
 
-The simulation program uses SACAT 0.7.0 and the packages listed in its `replicate_packages` and `summary_packages` objects. The supplied SLURM file provides a portable 100-task array template. Load the required R environment before submission and add any cluster-specific partition or resource options locally. All methods include the covariate only when it is present; MaAsLin 3 and ZINQ also adjust for standardized log sequencing depth.
+The simulation program uses SACAT 0.7.1 and the packages listed in its `replicate_packages` and `summary_packages` objects. The supplied SLURM file provides a portable 100-task array template. Load the required R environment before submission and add any cluster-specific partition or resource options locally. All methods include the covariate only when it is present; MaAsLin 3 and ZINQ also adjust for standardized log sequencing depth.
 
 ZINQ 2.0 is available from the [ZINQ-v2 repository](https://github.com/wdl2459/ZINQ-v2), and MaAsLin3 1.5.3 is available from the [MaAsLin3 repository](https://github.com/biobakery/maaslin3).
 

@@ -1,3 +1,8 @@
+# SACAT 0.7.1
+
+- Improved convergence of constrained abundance fits using derivatives of the
+  numerically evaluated likelihood.
+
 # SACAT 0.7.0
 
 - The relative-abundance component uses a sandwich-adjusted profile

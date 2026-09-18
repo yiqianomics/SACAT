@@ -146,7 +146,7 @@ as_numeric_column <- function(data, candidates) {
 }
 
 CONFIG <- list(
-    script_version = "sacat-internal-validation-0.7.0",
+    script_version = "sacat-internal-validation-0.7.1",
     root = Sys.getenv(
         "SACAT_SIMULATION_ROOT",
         "sacat_internal_validation_output"
@@ -256,9 +256,9 @@ check_packages <- function(packages) {
 
     if ("SACAT" %in% packages) {
         installed_sacat <- as.character(utils::packageVersion("SACAT"))
-        if (!identical(installed_sacat, "0.7.0")) {
+        if (!identical(installed_sacat, "0.7.1")) {
             stopf(
-                "This simulation requires SACAT 0.7.0, but SACAT %s was found in %s.",
+                "This simulation requires SACAT 0.7.1, but SACAT %s was found in %s.",
                 installed_sacat,
                 normalizePath(
                     system.file(package = "SACAT"),
