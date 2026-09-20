@@ -1,0 +1,4 @@
+method,component,datasets,replications_per_dataset,taxa_per_replication,type1_error,minimum_type1_error,maximum_type1_error,availability,minimum_availability,maximum_availability
+SACAT,SA,20,100,30,0.0245833333333333,0.002,0.044,0.999816666666667,0.998333333333333,1
+SACAT,RA,20,100,30,0.0463,0.0343333333333333,0.061,0.99785,0.983333333333333,1
+SACAT,omnibus,20,100,30,0.0329166666666667,0.015,0.048,1,1,1

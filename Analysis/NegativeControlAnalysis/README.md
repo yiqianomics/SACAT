@@ -1,91 +1,80 @@
-# Real-data negative-control analysis
+# Native-count negative-control analysis
 
-This directory contains reproducible negative-control analyses for 20 public microbiome datasets. Each dataset directory stores the standardized input, an executable entry point, and the complete result tables. Shared analysis code is kept at the top level, and `combined/analysis.R` validates the full experiment and produces the cross-dataset comparison.
+This directory contains SACAT negative-control analyses of 20 public human microbiome datasets. Each analysis uses 200 participants, a fixed panel of 30 genera, and 100 random assignments to two groups of 100. The published counts and sample library sizes remain fixed throughout the analysis.
 
-## Directory structure
+## Data and analysis design
 
-Each dataset directory contains:
+The supplied `analysis_input.rds` files contain the genus counts, sample identifiers, library sizes, selected taxa, and source information needed to run each analysis. Library size is taken from the full published count table before genus and panel selection; GEMS uses the published `totalCounts` vector. The `source` field records the public data location and dataset-specific preparation, and `metadata` identifies the selected profiles.
 
-- `analysis_input.rds`: the complete standardized input used in the experiment, including 200 sample-by-genus compositions, aligned sample identifiers and metadata, source information, and the 30-genus analysis panel;
-- `analysis.R`: the dataset-specific entry point;
-- `results/`: taxon-level results, randomization summaries, diagnostics, depth summaries, and analysis settings.
+Before group labels are assigned, genera with prevalence of at least 10% and mean relative abundance of at least `1e-5` are ranked by decreasing mean relative abundance, with genus name breaking ties. The first 30 genera form the fixed panel. Relative abundance is computed using the full library size.
 
-`run_negative_control.R` is the shared analysis engine used by every dataset-specific `analysis.R` entry point. It generates the randomized counts, runs SACAT, ZINQ, and MaAsLin3 under the common design, validates each completed unit, and writes the result tables.
+For each randomization, SACAT 0.7.1 fits `~ group` to groups `A` and `B`, with `A` as the reference. The analysis reports the structural-absence (SA) component, relative-abundance (RA) component, and Bonferroni omnibus test. Group assignments use the seed `202609190 + dataset_index * 100000 + replicate * 1009`; the dataset index is stored in each input.
 
-ZINQ 2.0 is available from the [ZINQ-v2 repository](https://github.com/wdl2459/ZINQ-v2), and MaAsLin3 1.5.3 is available from the [MaAsLin3 repository](https://github.com/biobakery/maaslin3). The combined figure requires an R build with Cairo graphics.
-
-The stored `analysis_input.rds` files contain the processed genus-level data required to rerun the analyses, so no download or preparation step is required.
+Global-null Type I error is the number of raw p-values below 0.05 divided by 30 in each randomization, averaged over the 100 randomizations. An unavailable test contributes a p-value of 1, keeping the denominator fixed. BH-adjusted p-values are also stored in the taxon-level tables. The reported Type I error uses raw p-values. Overall means give each dataset equal weight.
 
 ## Datasets
 
-Each analysis input represents 200 independent empirical profiles. When a public resource contains repeated observations, one profile per participant is represented. Exact sample identifiers and source metadata are stored in the corresponding `analysis_input.rds` file.
+Each input contains 200 selected profiles. Repeated visits are reduced to one profile per participant; the Goodrich and iMSMS selections also account for family and household membership.
 
-| Dataset | Public source, study overview, and stored analysis input |
+| Directory | Study and selected profiles |
 |---|---|
-| `NogueraJulianHIV` | Stool 16S profiles from the [Noguera-Julian HIV microbiome study](https://doi.org/10.1016/j.ebiom.2016.01.032) and its [public data archive](https://doi.org/10.5281/zenodo.1146764); 200 baseline profiles from 240 Barcelona and Stockholm participants. |
-| `BaxterE_2016` | Genus-level 16S stool data from the [Baxter colorectal-cancer study](https://doi.org/10.1186/s13073-016-0290-3); 200 profiles from the 292-sample primary cohort. |
-| `HMPV35Throat` | Public Human Microbiome Project V3-5 throat 16S data distributed by [HMP16SData](https://waldronlab.io/HMP16SData/reference/V35.html); 200 profiles sampled from a 202-participant earliest-visit cohort. |
-| `Qiita13631ASD` | Public [Qiita study 13631](https://qiita.ucsd.edu/public/?study_id=13631), a gut microbiome study of children with autism spectrum disorder and controls; 200 fecal profiles from 286 participants. |
-| `ArtPrize_2015_Forehead` | Central-forehead 16S profiles from the cross-sectional [ArtPrize study](https://doi.org/10.1128/mBio.00839-19) and its [public phyloseq object](https://doi.org/10.6084/m9.figshare.8127287.v1); 200 profiles from 372 participants. |
-| `MehtaRS_2018` | Stool relative-abundance profiles from curatedMetagenomicData and the [Mehta study of fecal-microbiome stability in adult men](https://pubmed.ncbi.nlm.nih.gov/29335554/); 200 profiles, one per participant, from 308 participants represented by 928 stool assays. |
-| `AsnicarF_2021` | Stool relative-abundance profiles from curatedMetagenomicData and the [Asnicar study of gut microbiome associations with diet and host metabolism](https://pubmed.ncbi.nlm.nih.gov/33432175/); 200 profiles from 1,098 independent participants. |
-| `LeChatelierE_2013` | Stool relative-abundance profiles from curatedMetagenomicData and the [Le Chatelier gut microbial richness study](https://pubmed.ncbi.nlm.nih.gov/23985870/); 200 profiles from 292 independent stool samples. |
-| `ORIGINS_2022_Healthy_Plaque` | Healthy-site subgingival-plaque 16S profiles from the public [ORIGINS study](https://doi.org/10.1038/s41522-022-00289-w); 200 profiles from 668 participants, with one healthy-site profile per participant. |
-| `NHANESOral_2011_2012` | CDC [NHANES Oral Microbiome](https://wwwn.cdc.gov/Nchs/Nhanes/omp/) genus-level oral-rinse data from the 2011-2012 survey cycle; 200 profiles from 4,887 participants with unique SEQN identifiers. |
-| `NielsenHB_2014` | Stool relative-abundance profiles from curatedMetagenomicData and the [Nielsen metagenome assembly study](https://pubmed.ncbi.nlm.nih.gov/24997787/); 200 profiles from 318 participants. |
-| `NHANESOral_2009_2010` | CDC [NHANES Oral Microbiome](https://wwwn.cdc.gov/Nchs/Nhanes/omp/) genus-level oral-rinse data from the 2009-2010 survey cycle; 200 profiles from 4,960 participants with unique SEQN identifiers. |
-| `JieZ_2017` | Stool relative-abundance profiles from curatedMetagenomicData and the [Jie atherosclerotic cardiovascular-disease study](https://pubmed.ncbi.nlm.nih.gov/29018189/); 200 profiles from 385 independent stool samples. |
-| `Qiita11993Colombia` | Public [Qiita study 11993](https://qiita.ucsd.edu/public/?study_id=11993), examining gut microbiota and cardiometabolic health in a Colombian population undergoing Westernization; 200 fecal profiles from 441 participants. |
-| `LiJ_2014` | Stool relative-abundance profiles from curatedMetagenomicData and the [Li integrated human gut microbial gene catalog](https://pubmed.ncbi.nlm.nih.gov/24997786/); 200 profiles from 249 participants. |
-| `Atlas1006` | The CC0 [HITChip Atlas 1006 dataset](https://doi.org/10.5061/dryad.pk75d), a population resource of adult stool microbiome profiles; 200 time-zero profiles from 1,006 participants. |
-| `SchirmerM_2016` | Stool relative-abundance profiles from curatedMetagenomicData and the [Schirmer study of the gut microbiome and inflammatory cytokine production](https://doi.org/10.1016/j.cell.2016.10.020); 200 profiles from 471 independent stool samples. |
-| `ZeeviD_2015` | Stool relative-abundance profiles from curatedMetagenomicData and the [Zeevi personalized-nutrition study of postprandial glycemic responses](https://pubmed.ncbi.nlm.nih.gov/26590418/); 200 profiles from 900 participants. |
-| `VilaAV_2018` | Stool relative-abundance profiles from curatedMetagenomicData and the [Vila study of gut microbiome composition and function in IBD and IBS](https://pubmed.ncbi.nlm.nih.gov/30567928/); 200 profiles from 355 participants. |
-| `YachidaS_2019` | Stool relative-abundance profiles from curatedMetagenomicData and the [Yachida study of stage-specific gut microbiome patterns in colorectal cancer](https://pubmed.ncbi.nlm.nih.gov/31171880/); 200 profiles from 616 independent participants. |
+| `BaxterE_2016` | [Baxter et al. (2016)](https://doi.org/10.1186/s13073-016-0290-3): stool 16S profiles from the 292-participant primary colorectal-cancer cohort. |
+| `cdi_schubert` | [Schubert et al. (2014)](https://doi.org/10.1128/mBio.01021-14): stool 16S profiles from 243 participants with CDI or healthy-control status and complete analysis covariates. |
+| `gems_pediatric_diarrhea` | [Pop et al. (2014)](https://doi.org/10.1186/gb-2014-15-6-r76): stool 16S profiles from 992 children in GEMS. |
+| `korean_hypertension` | [Song et al. (2023)](https://doi.org/10.3389/frmbi.2023.1072059): stool 16S profiles from 623 participants. |
+| `qiita_1939_pediatric_crohn` | [Gevers et al. (2014)](https://doi.org/10.1016/j.chom.2014.02.005): rectal mucosal profiles from 244 children with Crohn's disease or no IBD, complete analysis covariates, and no recorded antibiotic exposure during collection. |
+| `NogueraJulianHIV` | [Noguera-Julian et al. (2016)](https://doi.org/10.1016/j.ebiom.2016.01.032): baseline stool profiles from the Barcelona and Stockholm HIV cohorts. |
+| `ArtPrize_2015_Forehead` | [Dimitriu et al. (2019)](https://doi.org/10.1128/mBio.00839-19): forehead-skin profiles from 372 participants. |
+| `HMPV35Throat` | [HMP16SData](https://doi.org/10.1093/aje/kwz006): V3-5 throat profiles, using the earliest visit from each of 202 participants. |
+| `Qiita11993Colombia` | [de la Cuesta-Zuluaga et al. (2018)](https://doi.org/10.1038/s41598-018-29687-x): fecal profiles from 441 Colombian participants. |
+| `Qiita13631ASD` | [Dan et al. (2020)](https://doi.org/10.1080/19490976.2020.1747329): fecal profiles from 286 participants in an autism-spectrum-disorder study. |
+| `NHANESOral_2009_2010` | [Vogtmann et al. (2023)](https://doi.org/10.1016/S2666-5247(22)00333-0): oral-rinse profiles from the 2009-2010 survey cycle, identified by unique SEQN values. |
+| `NHANESOral_2011_2012` | [Vogtmann et al. (2023)](https://doi.org/10.1016/S2666-5247(22)00333-0): oral-rinse profiles from the 2011-2012 survey cycle, identified by unique SEQN values. |
+| `Goodrich_2014` | [Goodrich et al. (2014)](https://doi.org/10.1016/j.cell.2014.09.053): stool profiles selected from 532 twin families, with one profile per family. |
+| `Zeevi_2015_16S` | [Zeevi et al. (2015)](https://doi.org/10.1016/j.cell.2015.11.001): stool 16S profiles from 729 participants in the public source metadata. |
+| `Singh_2015_EDD` | [Singh et al. (2015)](https://doi.org/10.1186/s40168-015-0109-2): baseline stool profiles selected from 201 patient identifiers in the public source metadata. |
+| `AmericanGut_2018` | [McDonald et al. (2018)](https://doi.org/10.1128/mSystems.00031-18): human stool profiles selected from 9,511 participants in the deposited Deblur table. |
+| `HillBurns_2017` | [Hill-Burns et al. (2017)](https://doi.org/10.1002/mds.26942): stool profiles from 332 participants in a Parkinson's disease study. |
+| `Heinzel_2021_TREND` | [Heinzel et al. (2021)](https://doi.org/10.1002/ana.26128): stool profiles from 663 TREND participants. |
+| `Wallen_2020_Birmingham` | [Wallen et al. (2020)](https://doi.org/10.1038/s41531-020-0112-6): stool profiles from 507 participants in the Birmingham cohort. |
+| `iMSMS_2022` | [International Multiple Sclerosis Microbiome Study (2022)](https://doi.org/10.1016/j.cell.2022.08.021): healthy controls selected from 575 households, with one participant per household and the authors' participant-level pooled counts. |
 
-## Analysis design
-
-For each dataset, genera with prevalence of at least 0.10 and mean relative abundance of at least `1e-5` in the 200 stored compositions are ranked by decreasing mean abundance, with taxon name as the deterministic tie-break. The first 30 genera form the analysis panel. Community mass outside the panel is retained as `Other_unmodeled` during multinomial sampling.
-
-Each of 100 randomizations assigns 100 samples to `H` and 100 to `Case`. The same group assignment is used for both library-depth settings:
-
-| Setting | Median depth in H | Median depth in Case |
-|---|---:|---:|
-| Balanced | 4,000 | 4,000 |
-| Fourfold | 1,500 | 6,000 |
-
-Library sizes follow a log-normal distribution with `sdlog = 0.45` and are limited to 300-30,000 reads. Counts are sampled from the 30 target genera together with `Other_unmodeled`; the latter preserves the remaining community mass but is not tested. SACAT, ZINQ, and MaAsLin3 analyze the same 30 target taxa in every randomization.
-
-SACAT uses its public Bonferroni omnibus result. An unavailable component contributes a p-value of 1, and the omnibus is formed when at least one component is formed. MaAsLin3 requires both component fits and a combined p-value. An unavailable method result is represented by an analysis p-value of 1 in the common 30-taxon family. Within each randomization, depth setting, and method, Benjamini-Hochberg adjustment is applied to these 30 p-values. A family incurs a Type I error when at least one adjusted p-value is at most 0.05.
-
-Randomization and count-generation seeds are deterministic functions of the dataset, randomization, and depth setting. Each dataset analysis uses seven independent R workers.
-
-## Software requirements
-
-The analysis requires R, SACAT 0.6.0, ZINQ, maaslin3, and ggplot2.
+The inputs include the authors' published count-table processing. Details such as taxonomic assignments, source objects, and upstream feature filtering are recorded in each input's `source` field.
 
 ## Running the analyses
 
-From this directory, run one dataset through its entry point, for example:
+Model fitting requires R and SACAT 0.7.1. Summaries and the figure require `data.table`, `ggplot2`, `scales`, and an R build with Cairo graphics.
+
+From this directory, run one dataset with seven workers:
 
 ```sh
-Rscript SchirmerM_2016/analysis.R
+Rscript BaxterE_2016/analysis.R 7
 ```
 
-An interrupted run can be restarted from the completed randomization-setting units.
+To run all datasets sequentially, using seven workers for the randomizations within each dataset:
 
-Each completed `results` directory contains:
+```sh
+Rscript run_negative_control.R all 7
+```
 
-- `taxon_pvalues.csv`: taxon-level p-values, availability, and status;
-- `replicate_metrics.csv`: BH rejection counts, familywise Type I error, and availability by randomization, setting, and method;
-- `diagnostics.csv`: generated positive-count and SACAT component diagnostics;
-- `depth_diagnostics.csv`: realized group sizes and library-depth summaries;
-- `analysis_settings.csv`: design constants and software versions.
+Completed fits are saved in each dataset's `results/replicates/` directory and reused when a run is resumed. These local fit objects are excluded from Git; the complete result tables are included. Windows runs use one worker.
 
-After all 20 dataset analyses finish, run:
+To reproduce the combined summaries and figure from the supplied result tables:
 
 ```sh
 Rscript combined/analysis.R
 ```
 
-The combined script creates randomization-level and dataset-level Type I error summaries, positive-count support summaries for the fourfold-depth setting, method-availability tables, and `combined/negative_control_type1_error.pdf`. Figure intervals are 95% Monte Carlo intervals across the 100 randomizations.
+## Files and outputs
+
+Every dataset directory contains `analysis_input.rds`, an `analysis.R` entry point, and five result tables:
+
+- `taxon_pvalues.csv`: raw and BH-adjusted p-values, test availability, and raw-p rejection decisions for every genus, component, and randomization.
+- `replicate_metrics.csv`: rejection counts, Type I error, and availability for each randomization.
+- `diagnostics.csv`: SACAT's taxon-level fit diagnostics.
+- `depth_diagnostics.csv`: realized group sizes, library-depth summaries, and randomization seeds.
+- `analysis_settings.csv`: software version and fitted analysis settings.
+
+The shared fitting and export functions are in `run_negative_control.R`. The combined script writes `dataset_type1_error.csv`, `replicate_type1_error.csv`, `overall_type1_error.csv`, `availability_summary.csv`, `dataset_design.csv`, and `negative_control_type1_error.pdf` to `combined/`.
+
+The dataset-level table includes the Monte Carlo standard deviation across randomizations and its standard error, computed as that standard deviation divided by the square root of 100. Figure intervals are the mean plus or minus 1.96 Monte Carlo standard errors, limited to the interval from 0 to 1.

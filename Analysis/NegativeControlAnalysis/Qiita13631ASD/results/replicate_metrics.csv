@@ -1,601 +1,301 @@
-"dataset","dataset_label","replicate","scenario","method","n_taxa","n_available","availability_rate","n_bh_rejections","familywise_type_i_error"
-"Qiita13631ASD","ASD Dan 2020",1,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",1,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",1,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",1,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",1,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",1,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",2,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",2,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",2,"balanced","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",2,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",2,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",2,"fourfold","MaAsLin3",30,21,0.7,1,1
-"Qiita13631ASD","ASD Dan 2020",3,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",3,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",3,"balanced","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",3,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",3,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",3,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",4,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",4,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",4,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",4,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",4,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",4,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",5,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",5,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",5,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",5,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",5,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",5,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",6,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",6,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",6,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",6,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",6,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",6,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",7,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",7,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",7,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",7,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",7,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",7,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",8,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",8,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",8,"balanced","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",8,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",8,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",8,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",9,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",9,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",9,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",9,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",9,"fourfold","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",9,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",10,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",10,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",10,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",10,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",10,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",10,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",11,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",11,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",11,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",11,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",11,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",11,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",12,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",12,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",12,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",12,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",12,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",12,"fourfold","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",13,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",13,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",13,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",13,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",13,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",13,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",14,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",14,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",14,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",14,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",14,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",14,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",15,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",15,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",15,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",15,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",15,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",15,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",16,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",16,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",16,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",16,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",16,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",16,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",17,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",17,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",17,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",17,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",17,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",17,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",18,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",18,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",18,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",18,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",18,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",18,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",19,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",19,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",19,"balanced","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",19,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",19,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",19,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",20,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",20,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",20,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",20,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",20,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",20,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",21,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",21,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",21,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",21,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",21,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",21,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",22,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",22,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",22,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",22,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",22,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",22,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",23,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",23,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",23,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",23,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",23,"fourfold","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",23,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",24,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",24,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",24,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",24,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",24,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",24,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",25,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",25,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",25,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",25,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",25,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",25,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",26,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",26,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",26,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",26,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",26,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",26,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",27,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",27,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",27,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",27,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",27,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",27,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",28,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",28,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",28,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",28,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",28,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",28,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",29,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",29,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",29,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",29,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",29,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",29,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",30,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",30,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",30,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",30,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",30,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",30,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",31,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",31,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",31,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",31,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",31,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",31,"fourfold","MaAsLin3",30,26,0.866666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",32,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",32,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",32,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",32,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",32,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",32,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",33,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",33,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",33,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",33,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",33,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",33,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",34,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",34,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",34,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",34,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",34,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",34,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",35,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",35,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",35,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",35,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",35,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",35,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",36,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",36,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",36,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",36,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",36,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",36,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",37,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",37,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",37,"balanced","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",37,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",37,"fourfold","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",37,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",38,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",38,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",38,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",38,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",38,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",38,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",39,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",39,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",39,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",39,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",39,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",39,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",40,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",40,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",40,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",40,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",40,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",40,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",41,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",41,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",41,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",41,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",41,"fourfold","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",41,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",42,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",42,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",42,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",42,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",42,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",42,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",43,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",43,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",43,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",43,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",43,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",43,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",44,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",44,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",44,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",44,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",44,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",44,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",45,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",45,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",45,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",45,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",45,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",45,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",46,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",46,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",46,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",46,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",46,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",46,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",47,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",47,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",47,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",47,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",47,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",47,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",48,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",48,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",48,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",48,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",48,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",48,"fourfold","MaAsLin3",30,21,0.7,1,1
-"Qiita13631ASD","ASD Dan 2020",49,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",49,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",49,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",49,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",49,"fourfold","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",49,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",50,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",50,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",50,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",50,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",50,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",50,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",51,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",51,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",51,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",51,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",51,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",51,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",52,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",52,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",52,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",52,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",52,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",52,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",53,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",53,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",53,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",53,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",53,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",53,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",54,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",54,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",54,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",54,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",54,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",54,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",55,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",55,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",55,"balanced","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",55,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",55,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",55,"fourfold","MaAsLin3",30,25,0.833333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",56,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",56,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",56,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",56,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",56,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",56,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",57,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",57,"balanced","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",57,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",57,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",57,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",57,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",58,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",58,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",58,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",58,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",58,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",58,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",59,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",59,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",59,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",59,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",59,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",59,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",60,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",60,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",60,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",60,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",60,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",60,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",61,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",61,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",61,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",61,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",61,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",61,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",62,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",62,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",62,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",62,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",62,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",62,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",63,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",63,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",63,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",63,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",63,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",63,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",64,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",64,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",64,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",64,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",64,"fourfold","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",64,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",65,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",65,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",65,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",65,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",65,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",65,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",66,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",66,"balanced","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",66,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",66,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",66,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",66,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",67,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",67,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",67,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",67,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",67,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",67,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",68,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",68,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",68,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",68,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",68,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",68,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",69,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",69,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",69,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",69,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",69,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",69,"fourfold","MaAsLin3",30,26,0.866666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",70,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",70,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",70,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",70,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",70,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",70,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",71,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",71,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",71,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",71,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",71,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",71,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",72,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",72,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",72,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",72,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",72,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",72,"fourfold","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",73,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",73,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",73,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",73,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",73,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",73,"fourfold","MaAsLin3",30,26,0.866666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",74,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",74,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",74,"balanced","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",74,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",74,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",74,"fourfold","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",75,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",75,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",75,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",75,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",75,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",75,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",76,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",76,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",76,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",76,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",76,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",76,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",77,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",77,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",77,"balanced","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",77,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",77,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",77,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",78,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",78,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",78,"balanced","MaAsLin3",30,14,0.466666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",78,"fourfold","SACAT",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",78,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",78,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",79,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",79,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",79,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",79,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",79,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",79,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",80,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",80,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",80,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",80,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",80,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",80,"fourfold","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",81,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",81,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",81,"balanced","MaAsLin3",30,16,0.533333333333333,1,1
-"Qiita13631ASD","ASD Dan 2020",81,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",81,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",81,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",82,"balanced","SACAT",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",82,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",82,"balanced","MaAsLin3",30,13,0.433333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",82,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",82,"fourfold","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",82,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",83,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",83,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",83,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",83,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",83,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",83,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",84,"balanced","SACAT",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",84,"balanced","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",84,"balanced","MaAsLin3",30,15,0.5,1,1
-"Qiita13631ASD","ASD Dan 2020",84,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",84,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",84,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",85,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",85,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",85,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",85,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",85,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",85,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",86,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",86,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",86,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",86,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",86,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",86,"fourfold","MaAsLin3",30,20,0.666666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",87,"balanced","SACAT",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",87,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",87,"balanced","MaAsLin3",30,15,0.5,1,1
-"Qiita13631ASD","ASD Dan 2020",87,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",87,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",87,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",88,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",88,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",88,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",88,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",88,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",88,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",89,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",89,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",89,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",89,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",89,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",89,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",90,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",90,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",90,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",90,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",90,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",90,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",91,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",91,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",91,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",91,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",91,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",91,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",92,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",92,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",92,"balanced","MaAsLin3",30,17,0.566666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",92,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",92,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",92,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",93,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",93,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",93,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",93,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",93,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",93,"fourfold","MaAsLin3",30,19,0.633333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",94,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",94,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",94,"balanced","MaAsLin3",30,18,0.6,0,0
-"Qiita13631ASD","ASD Dan 2020",94,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",94,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",94,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",95,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",95,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",95,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",95,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",95,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",95,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",96,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",96,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",96,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",96,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",96,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",96,"fourfold","MaAsLin3",30,21,0.7,0,0
-"Qiita13631ASD","ASD Dan 2020",97,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",97,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",97,"balanced","MaAsLin3",30,15,0.5,0,0
-"Qiita13631ASD","ASD Dan 2020",97,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",97,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",97,"fourfold","MaAsLin3",30,24,0.8,0,0
-"Qiita13631ASD","ASD Dan 2020",98,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",98,"balanced","ZINQ",30,30,1,1,1
-"Qiita13631ASD","ASD Dan 2020",98,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",98,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",98,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",98,"fourfold","MaAsLin3",30,23,0.766666666666667,0,0
-"Qiita13631ASD","ASD Dan 2020",99,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",99,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",99,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",99,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",99,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",99,"fourfold","MaAsLin3",30,22,0.733333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",100,"balanced","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",100,"balanced","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",100,"balanced","MaAsLin3",30,16,0.533333333333333,0,0
-"Qiita13631ASD","ASD Dan 2020",100,"fourfold","SACAT",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",100,"fourfold","ZINQ",30,30,1,0,0
-"Qiita13631ASD","ASD Dan 2020",100,"fourfold","MaAsLin3",30,24,0.8,0,0
+"dataset","label","replicate","component","taxa","rejected_taxa","type1_error","availability"
+"Qiita13631ASD","Dan autism spectrum disorder",1,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",1,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",1,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",2,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",2,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",2,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",3,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",3,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",3,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",4,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",4,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",4,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",5,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",5,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",5,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",6,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",6,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",6,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",7,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",7,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",7,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",8,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",8,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",8,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",9,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",9,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",9,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",10,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",10,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",10,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",11,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",11,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",11,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",12,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",12,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",12,"omnibus",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",13,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",13,"RA",30,4,0.133333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",13,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",14,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",14,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",14,"omnibus",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",15,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",15,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",15,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",16,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",16,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",16,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",17,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",17,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",17,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",18,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",18,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",18,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",19,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",19,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",19,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",20,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",20,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",20,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",21,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",21,"RA",30,4,0.133333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",21,"omnibus",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",22,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",22,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",22,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",23,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",23,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",23,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",24,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",24,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",24,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",25,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",25,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",25,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",26,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",26,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",26,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",27,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",27,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",27,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",28,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",28,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",28,"omnibus",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",29,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",29,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",29,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",30,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",30,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",30,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",31,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",31,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",31,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",32,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",32,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",32,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",33,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",33,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",33,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",34,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",34,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",34,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",35,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",35,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",35,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",36,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",36,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",36,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",37,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",37,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",37,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",38,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",38,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",38,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",39,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",39,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",39,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",40,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",40,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",40,"omnibus",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",41,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",41,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",41,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",42,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",42,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",42,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",43,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",43,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",43,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",44,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",44,"RA",30,0,0,0.966666666666667
+"Qiita13631ASD","Dan autism spectrum disorder",44,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",45,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",45,"RA",30,1,0.0333333333333333,0.966666666666667
+"Qiita13631ASD","Dan autism spectrum disorder",45,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",46,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",46,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",46,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",47,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",47,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",47,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",48,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",48,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",48,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",49,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",49,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",49,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",50,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",50,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",50,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",51,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",51,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",51,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",52,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",52,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",52,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",53,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",53,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",53,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",54,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",54,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",54,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",55,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",55,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",55,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",56,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",56,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",56,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",57,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",57,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",57,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",58,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",58,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",58,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",59,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",59,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",59,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",60,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",60,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",60,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",61,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",61,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",61,"omnibus",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",62,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",62,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",62,"omnibus",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",63,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",63,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",63,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",64,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",64,"RA",30,0,0,0.966666666666667
+"Qiita13631ASD","Dan autism spectrum disorder",64,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",65,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",65,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",65,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",66,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",66,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",66,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",67,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",67,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",67,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",68,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",68,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",68,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",69,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",69,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",69,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",70,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",70,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",70,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",71,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",71,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",71,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",72,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",72,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",72,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",73,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",73,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",73,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",74,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",74,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",74,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",75,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",75,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",75,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",76,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",76,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",76,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",77,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",77,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",77,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",78,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",78,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",78,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",79,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",79,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",79,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",80,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",80,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",80,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",81,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",81,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",81,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",82,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",82,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",82,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",83,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",83,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",83,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",84,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",84,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",84,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",85,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",85,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",85,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",86,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",86,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",86,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",87,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",87,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",87,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",88,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",88,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",88,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",89,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",89,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",89,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",90,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",90,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",90,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",91,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",91,"RA",30,4,0.133333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",91,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",92,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",92,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",92,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",93,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",93,"RA",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",93,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",94,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",94,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",94,"omnibus",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",95,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",95,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",95,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",96,"SA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",96,"RA",30,3,0.1,1
+"Qiita13631ASD","Dan autism spectrum disorder",96,"omnibus",30,2,0.0666666666666667,1
+"Qiita13631ASD","Dan autism spectrum disorder",97,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",97,"RA",30,4,0.133333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",97,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",98,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",98,"RA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",98,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",99,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",99,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",99,"omnibus",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",100,"SA",30,0,0,1
+"Qiita13631ASD","Dan autism spectrum disorder",100,"RA",30,1,0.0333333333333333,1
+"Qiita13631ASD","Dan autism spectrum disorder",100,"omnibus",30,0,0,1

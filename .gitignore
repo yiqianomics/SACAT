@@ -23,3 +23,6 @@ Analysis/RealDataAnalysis/R_lib/
 # Local simulation result data and source archive
 /Analysis/SimulationStudy/results_data/
 /Analysis/SimulationStudy/simulation_report/
+
+# Local negative-control fit objects
+/Analysis/NegativeControlAnalysis/*/results/replicates/

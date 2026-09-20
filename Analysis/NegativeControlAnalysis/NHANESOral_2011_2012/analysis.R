@@ -1,11 +1,13 @@
 #!/usr/bin/env Rscript
 
-script_arguments <- commandArgs(trailingOnly = FALSE)
-script_file <- grep("^--file=", script_arguments, value = TRUE)
+script_file <- grep("^--file=", commandArgs(), value = TRUE)
 dataset_directory <- if (length(script_file)) {
-    normalizePath(dirname(sub("^--file=", "", script_file[[1L]])))
+    dirname(normalizePath(sub("^--file=", "", script_file[[1L]])))
 } else {
     normalizePath(getwd())
 }
 source(file.path(dataset_directory, "..", "run_negative_control.R"))
-run_negative_control(dataset_directory, workers = 7L, replicates = 100L)
+arguments <- commandArgs(trailingOnly = TRUE)
+stopifnot(length(arguments) <= 1L)
+workers <- if (length(arguments)) as.integer(arguments[[1L]]) else 7L
+run_negative_control(dataset_directory, workers = workers, replicates = 100L)
