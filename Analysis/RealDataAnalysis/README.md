@@ -73,7 +73,7 @@ do
 done
 ```
 
-Run all completed-analysis configurations:
+Fit all seven cohorts using the installed SACAT version (0.7.1 or later):
 
 ```sh
 Rscript Analysis/RealDataAnalysis/analysis.R
@@ -125,9 +125,10 @@ Dataset-specific fixed seeds provide reproducible random-number streams
 independent of execution order.
 
 [`software_versions.csv`](software_versions.csv) records the R version and
-direct package versions used to generate the reported outputs. Each
-`*_method_status.csv` also records the fitted method package version for that
-dataset.
+direct package versions used to generate the reported outputs, with the SACAT
+version identified by cohort. The CDI and mock-community results use SACAT
+0.7.1. Each `*_method_status.csv` also records the fitted method package version
+for that dataset.
 
 ## Human-cohort methods and multiplicity
 

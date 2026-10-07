@@ -23,15 +23,18 @@ count table and metadata are distributed in MicrobiomeHD version 3,
   table before feature filtering, taxonomic aggregation, prevalence
   filtering, or the two-group support filter.
 
+The reported SACAT results use version 0.7.1, including the sandwich-adjusted
+profile likelihood-ratio test for relative abundance.
+
 Download `cdi_schubert_results.tar.gz` from the Zenodo record and extract it
 as `raw/cdi_schubert_results/`. The preparation uses the RDP-assigned 100% de
 novo feature table and the accompanying metadata. It retains the publication's
 minimum depth of 1,450 reads and the unrarefied counts. One healthy sample with
 missing sex is excluded from the complete-case model.
 
-Features are aggregated to genus or the deepest resolved higher rank. Taxa
-must be observed in at least 5% of the final cohort and have positive counts in
-both groups.
+Features observed in at least 5% of the final cohort are aggregated to genus
+or the deepest resolved higher rank. The resulting taxon bins must also meet
+the 5% prevalence threshold and have positive counts in both groups.
 
 Run from the repository root:
 

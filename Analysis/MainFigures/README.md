@@ -1,8 +1,8 @@
 # Main manuscript figures
 
-Each R script generates one PDF from saved numerical inputs.
-The scripts resolve paths relative to their own location and can be run from
-any working directory. Model fitting is not repeated.
+Each R script generates one PDF from saved numerical inputs without refitting
+models. Paths are relative to the script, so either script can be run from any
+working directory.
 
 ## Generate the figures
 
@@ -48,7 +48,9 @@ for recomputing their summaries.
 
 Panels A and B show mock-community signal recovery. Panels C–F show method
 comparisons and component profiles for *Coprococcus*, *Enterococcus*, and
-*Faecalibacterium* in the Schubert CDI cohort. Inputs are in `data/real_data/`:
+*Faecalibacterium* in the Schubert CDI cohort. Panel C marks BH-adjusted
+p-values at or below 0.05. Panel D shows signed component statistics and their
+BH discovery thresholds. Inputs are in `data/real_data/`:
 
 - `rauer_mock_recovery.csv` contains discovery totals over 52 allocations for
   eight structural targets or three abundance targets at each sequencing depth.
@@ -59,7 +61,8 @@ comparisons and component profiles for *Coprococcus*, *Enterococcus*, and
   posterior SA probabilities (`gamma`) for the three displayed taxa. These
   probabilities come from the SA score-test fit with its SA group coefficient
   fixed at zero. Panel E averages `gamma` and `I(count = 0) - gamma` over all
-  samples in each group to obtain the estimated SA and ND shares.
+  samples in each group to obtain the estimated structural-absence (SA) and
+  nondetection despite presence (ND) shares.
 - `schubert_cdi_figure_fitted_abundance.csv` contains the fitted abundance
   markers in Panel F. Each is 100 times the exponential of the fitted mean log
   relative abundance conditional on presence, standardized over all 243

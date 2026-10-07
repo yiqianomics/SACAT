@@ -45,7 +45,8 @@ are the point estimates.
 
 ## Calculations
 
-Power is the proportion of affected taxa rejected. FDR is the mean
+Power is the proportion of affected taxa rejected, using component-specific
+truth. FDR is the mean
 replication-level false discovery proportion, with zero for no discoveries.
 Raw Type I error averages the proportion of null taxa with raw p < 0.05
 across replications. Monte Carlo standard errors use variation across
@@ -62,7 +63,7 @@ BH is then applied within each replication and test.
 ## Files and code
 
 - `code/`: simulation, native joint-test reconstruction, input preparation, summaries, and plotting.
-- `data/`: complete raw p-value families, simulated truth, designs, generator parameters, and software versions. The two `native_joint_*.rds` files contain the inputs for reconstructing the native joint tests.
+- `data/`: complete raw p-value families, component-specific truth labels, designs, generator parameters, and software versions. The two `native_joint_*.rds` files contain the inputs for reconstructing the native joint tests.
 - `tables/`: power, FDR, raw Type I error, availability, and complete setting- and replication-level summaries.
 - `figures/`: the three PDFs above.
 
@@ -90,7 +91,14 @@ sbatch code/submit.slurm
 ```
 
 New runs write to `output/`, or `METASPAR_ROOT` when specified. After all
-tasks finish, run `code/run_simulation.R summarize`, then
-`code/prepare_inputs.R`, `code/reconstruct_joint_tests.R`,
-`code/summarize_results.R`, and `code/plot_results.R`.
+tasks finish:
+
+```sh
+Rscript code/run_simulation.R summarize
+Rscript code/prepare_inputs.R "${METASPAR_ROOT:-output}"
+Rscript code/reconstruct_joint_tests.R
+Rscript code/summarize_results.R
+Rscript code/plot_results.R
+```
+
 Native joint reconstruction uses ZINQ 2.0 and maaslin3 1.5.3.

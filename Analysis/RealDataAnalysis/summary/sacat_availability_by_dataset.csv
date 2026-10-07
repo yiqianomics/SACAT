@@ -7,11 +7,12 @@
 "cdi_schubert","Schubert C. difficile infection",152,91,88,"Structural absence component",81,7,92.05,"Positive-count model design was rank deficient",2,28.57
 "cdi_schubert","Schubert C. difficile infection",152,91,88,"Structural absence component",81,7,92.05,"Structural-absence fit remained on a parameter boundary",2,28.57
 "cdi_schubert","Schubert C. difficile infection",152,91,88,"Structural absence component",81,7,92.05,"Structural-absence inference derivative was unstable",1,14.29
-"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",79,9,89.77,"Conditional-present fit had non-positive information",2,22.22
-"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",79,9,89.77,"Conditional-present fit retained a non-negligible gradient",3,33.33
-"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",79,9,89.77,"Conditional-present root refinement did not improve the objective",2,22.22
-"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",79,9,89.77,"Positive-count model design was rank deficient",2,22.22
-"cdi_schubert","Schubert C. difficile infection",152,91,88,"Combined omnibus test",84,4,95.45,"No SACAT component formed",4,100
+"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",78,10,88.64,"abundance profile failed: constrained likelihood exceeds unrestricted likelihood",1,10
+"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",78,10,88.64,"Conditional-present fit had non-positive information",2,20
+"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",78,10,88.64,"Conditional-present fit retained a non-negligible gradient",3,30
+"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",78,10,88.64,"Conditional-present root refinement did not improve the objective",2,20
+"cdi_schubert","Schubert C. difficile infection",152,91,88,"Present-conditional abundance component",78,10,88.64,"Positive-count model design was rank deficient",2,20
+"cdi_schubert","Schubert C. difficile infection",152,91,88,"Combined omnibus test",83,5,94.32,"No SACAT component formed",5,100
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Structural absence component",74,4,94.87,"Structural-absence inference derivative was unstable",1,25
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Structural absence component",74,4,94.87,"Structural-absence nuisance fit was not optimal",3,75
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",484,508,78,"Present-conditional abundance component",76,2,97.44,"Conditional-present fit had non-positive information",1,50

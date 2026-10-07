@@ -67,6 +67,9 @@ if (length(missing_packages)) {
         call. = FALSE
     )
 }
+if (!plot_only && utils::packageVersion("SACAT") < "0.7.1") {
+    stop("SACAT 0.7.1 or later is required.", call. = FALSE)
+}
 
 method_order <- c(
     "SACAT structural absence",

@@ -1693,7 +1693,7 @@ summarize_results <- function() {
 main <- function() {
     arguments <- commandArgs(trailingOnly = TRUE)
     if (!length(arguments)) stop(
-        "Usage: Rscript run_internal_joint.R replicate <id> | summarize | design | check",
+        "Usage: Rscript run_joint.R replicate <id> | summarize | design | check",
         call. = FALSE
     )
     mode <- arguments[1L]

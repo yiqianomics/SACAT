@@ -229,7 +229,7 @@
     if (!is.numeric(raw_p) || !is.numeric(adjusted_p) || !is.numeric(z) ||
         length(raw_p) != n_taxa || length(adjusted_p) != n_taxa ||
         length(z) != n_taxa) {
-        stop("the component p-values and Z-statistics are malformed",
+        stop("the component p-values and statistics are malformed",
              call. = FALSE)
     }
 
@@ -259,7 +259,7 @@
              call. = FALSE)
     }
     if (any(abs(raw_family[finite_z] - expected_p) > tolerance)) {
-        stop("raw p-values do not match the plotted Z-statistics",
+        stop("raw p-values do not match the plotted statistics",
              call. = FALSE)
     }
 
@@ -273,10 +273,10 @@
         critical_p / 2, lower.tail = FALSE
     )
     if (any(rejected & !finite_z)) {
-        stop("a BH discovery has no finite Z-statistic", call. = FALSE)
+        stop("a BH discovery has no finite statistic", call. = FALSE)
     }
     if (!is.finite(critical_z) || critical_z <= 0) {
-        stop("the BH boundary has no finite Z-statistic", call. = FALSE)
+        stop("the BH boundary has no finite statistic", call. = FALSE)
     }
 
     boundary_membership <- raw_family <= critical_p
@@ -816,9 +816,9 @@
     grid::pushViewport(grid::viewport(
         layout.pos.row = 1L, layout.pos.col = columns[[3L]]
     ))
-    grid::grid.text("Component Z-statistics", x = 0.5, y = 0.78,
+    grid::grid.text("Component statistics", x = 0.5, y = 0.78,
                     gp = gp_title)
-    component_labels <- parse(text = c("Z[j]^SA", "Z[j]^RA"))
+    component_labels <- c("SA", "RA")
     component_label_grobs <- lapply(component_labels, function(label) {
         grid::textGrob(label, gp = gp_small)
     })
@@ -1317,12 +1317,13 @@
 
 #' Plot a SACAT dual-component association profile
 #'
-#' Draws a publication-oriented, taxon-aligned summary of a SACAT analysis.
+#' Draws a taxon-aligned summary of a SACAT analysis.
 #' The center displays the structural-absence and relative-abundance component
-#' Z-statistics on one standardized scale. Their colors encode the corresponding
+#' statistics on one axis. SA uses its score statistic; RA uses the signed
+#' square root of its adjusted likelihood-ratio statistic. Colors encode
 #' component adjusted p-values. Feature superscripts encode the primary omnibus
 #' adjusted p-value. For BH-adjusted fits, component-specific lane gates mark
-#' the exact family-wide BH discovery boundaries on the component Z-statistic
+#' family-wide BH discovery boundaries on the component-statistic
 #' axis. The side panels show covariate-standardized group summaries prepared
 #' when [sacat()] was called with `store_plot_data = TRUE`.
 #'
@@ -1335,15 +1336,15 @@
 #' reference correction used by SACAT.
 #' Side-panel segments provide descriptive fitted group summaries, and the
 #' abundance connector links its two fitted group means. Component inference is
-#' carried by the central Z-statistics. An omitted central marker or `--`
+#' carried by the central statistics. An omitted central marker or `--`
 #' denotes an unavailable component or side summary.
 #'
 #' For a component with `m` finite family p-values and `k` BH discoveries at
 #' level `alpha`, the symmetric gates correspond to the two-sided raw-p boundary
 #' `alpha * k / m`. This boundary is exact because both component p-values are
-#' two-sided functions of the plotted Z-statistics. Separate structural and
-#' abundance adjustments produce component-specific gates. The omnibus stars
-#' use the separately adjusted omnibus family.
+#' two-sided normal-tail probabilities of the plotted statistics. Separate
+#' structural and abundance adjustments produce component-specific gates.
+#' The omnibus stars use the separately adjusted omnibus family.
 #'
 #' @param x A `sacat` object fitted with `component = "all"` and
 #'   `store_plot_data = TRUE`.

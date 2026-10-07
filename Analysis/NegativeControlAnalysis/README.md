@@ -59,7 +59,7 @@ Rscript run_negative_control.R all 7
 
 Completed fits are saved in each dataset's `results/replicates/` directory and reused when a run is resumed. These local fit objects are excluded from Git; the complete result tables are included. Windows runs use one worker.
 
-To reproduce the combined summaries and figure from the supplied result tables:
+To reproduce the combined summaries and PDF from the supplied result tables:
 
 ```sh
 Rscript combined/analysis.R

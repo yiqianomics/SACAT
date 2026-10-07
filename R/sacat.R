@@ -3832,8 +3832,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' distribution from positive counts, estimates structural-absence nuisance
 #' parameters from the detection indicators, and evaluates a
 #' nuisance-orthogonalized estimating-function statistic for the group effect
-#' with a matching empirical sandwich variance. At an exact finite interior
-#' nuisance root, its numerator equals the restricted target score. Positive
+#' with a matching empirical sandwich variance. Positive
 #' `z_structural_absence` values indicate greater structural absence in the
 #' comparison group.
 #'
@@ -3856,11 +3855,9 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' signed square root, with the sign of the reference-corrected effect.
 #' A positive `estimate_relative_abundance` indicates that the target taxon's
 #' present-conditional contrast exceeds the shared compositional background.
-#' The reported effect is the taxon's present-conditional contrast relative to
-#' this background. Interpretation uses the eligible target-excluded taxa as a
-#' stable common background. With `full_output = TRUE`, the detailed abundance
-#' table records the raw taxon estimate and the reference quantities used to
-#' construct the reported contrast.
+#' With `full_output = TRUE`, the detailed abundance table records the raw
+#' taxon estimate and the reference quantities used to construct the reported
+#' contrast.
 #'
 #' Taxa with positive counts in fewer than `min_positive_samples` samples are
 #' excluded before component fitting and omitted from the multiple-testing
@@ -3869,17 +3866,14 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' that family; the formation indicator and reason identify values assigned to
 #' unavailable component tests.
 #' Abundance-component availability is the proportion of retained taxa with
-#' `formed_relative_abundance = TRUE`. When availability is below 80%, review
-#' positive-count support and assess null calibration before interpreting
-#' relative-abundance discoveries.
+#' `formed_relative_abundance = TRUE`. The diagnostics record positive-count
+#' support and the reason for each unavailable test.
 #'
 #' Two structural outcomes are nonregular. A taxon with no observed zeros has
 #' no variation in its absence indicator (`no_observed_zeros`). An
-#' intercept-only structural nuisance equation with \eqn{C_0 \leq 0} has its
-#' exact solution at the zero structural-absence boundary.
-#'
-#' `structural_absence_boundary_at_zero` records this boundary solution. Both
-#' nonregular statuses use an operational p-value of one in the primary family
+#' intercept-only structural nuisance fit at zero absence probability is
+#' recorded as `structural_absence_boundary_at_zero`. Both nonregular statuses
+#' use an operational p-value of one in the primary family
 #' and are excluded from the Cauchy sensitivity combination; their signed
 #' statistic is undefined.
 #'

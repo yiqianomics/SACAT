@@ -86,12 +86,13 @@ Invisibly, the data and resolved graphical settings used to draw the
 figure.
 }
 \description{
-Draws a publication-oriented, taxon-aligned summary of a SACAT analysis.
+Draws a taxon-aligned summary of a SACAT analysis.
 The center displays the structural-absence and relative-abundance component
-Z-statistics on one standardized scale. Their colors encode the corresponding
+statistics on one axis. SA uses its score statistic; RA uses the signed
+square root of its adjusted likelihood-ratio statistic. Colors encode
 component adjusted p-values. Feature superscripts encode the primary omnibus
 adjusted p-value. For BH-adjusted fits, component-specific lane gates mark
-the exact family-wide BH discovery boundaries on the component Z-statistic
+family-wide BH discovery boundaries on the component-statistic
 axis. The side panels show covariate-standardized group summaries prepared
 when \code{\link[=sacat]{sacat()}} was called with \code{store_plot_data = TRUE}.
 }
@@ -105,15 +106,15 @@ scale. The central abundance statistic retains the target-excluded
 reference correction used by SACAT.
 Side-panel segments provide descriptive fitted group summaries, and the
 abundance connector links its two fitted group means. Component inference is
-carried by the central Z-statistics. An omitted central marker or \verb{--}
+carried by the central statistics. An omitted central marker or \verb{--}
 denotes an unavailable component or side summary.
 
 For a component with \code{m} finite family p-values and \code{k} BH discoveries at
 level \code{alpha}, the symmetric gates correspond to the two-sided raw-p boundary
 \code{alpha * k / m}. This boundary is exact because both component p-values are
-two-sided functions of the plotted Z-statistics. Separate structural and
-abundance adjustments produce component-specific gates. The omnibus stars
-use the separately adjusted omnibus family.
+two-sided normal-tail probabilities of the plotted statistics. Separate
+structural and abundance adjustments produce component-specific gates.
+The omnibus stars use the separately adjusted omnibus family.
 }
 \examples{
 \dontrun{

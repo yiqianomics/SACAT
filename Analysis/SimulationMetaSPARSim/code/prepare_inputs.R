@@ -2,7 +2,7 @@
 
 # Export compact analysis inputs from saved simulation results.
 # Usage: Rscript prepare_inputs.R [simulation_output_directory]
-# Requires data.table; no simulation or model fitting is performed.
+# Requires data.table and R.utils.
 
 if (!requireNamespace("data.table", quietly = TRUE)) {
     stop("Install the data.table R package.", call. = FALSE)

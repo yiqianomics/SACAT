@@ -267,7 +267,10 @@ focus_membership$intersection_index <- unname(
     intersection_index[as.character(focus_membership$intersection)]
 )
 
-annotated_intersections <- c("I2", "I4", "I5")
+key_taxa <- c("Enterococcus", "Coprococcus", "Faecalibacterium")
+annotated_intersections <- as.character(focus_membership$intersection[
+    match(key_taxa, focus_membership$taxon)
+])
 annotated_members <- display_membership[
     display_membership$intersection %in% annotated_intersections,
     c("intersection", "taxon")
@@ -277,33 +280,13 @@ annotated_members <- annotated_members[order(
     annotated_members$taxon,
     method = "radix"
 ), ]
-expected_members <- list(
-    I2 = c(
-        "Enterococcus", "Lactobacillus", "Prevotella", "Streptococcus",
-        "Unclassified_Enterobacteriaceae", "Veillonella"
-    ),
-    I4 = c(
-        "Butyricicoccus", "Coprococcus", "Parabacteroides", "Ruminococcus2"
-    ),
-    I5 = c(
-        "Faecalibacterium", "Lachnospiracea_incertae_sedis",
-        "Unclassified_Clostridiales"
-    )
-)
-observed_members <- split(
+intersection_members <- split(
     annotated_members$taxon,
     factor(annotated_members$intersection, levels = annotated_intersections)
 )
-if (!identical(observed_members, expected_members)) {
-    stop("The annotated intersections do not match the completed CDI results.",
-         call. = FALSE)
-}
-
-member_y <- list(
-    I2 = c(5.70, 4.75, 3.80, 2.85, 1.90, 0.95),
-    I4 = c(5.70, 4.55, 3.40, 2.25),
-    I5 = c(5.70, 4.30, 2.65)
-)
+member_y <- lapply(intersection_members, function(members) {
+    seq(5.70, 0.95, length.out = length(members))
+})
 annotated_members$y <- unlist(
     lapply(annotated_intersections, function(intersection) {
         member_y[[intersection]]
@@ -325,7 +308,7 @@ ordinary_italic_labels <-
     !annotated_members$highlighted & annotated_members$italicize_label
 ordinary_plain_labels <-
     !annotated_members$highlighted & !annotated_members$italicize_label
-key_columns <- c(I2 = 0.02, I4 = 0.36, I5 = 0.68)
+key_columns <- stats::setNames(c(0.02, 0.36, 0.68), annotated_intersections)
 annotated_members$text_x <- unname(
     key_columns[annotated_members$intersection]
 ) + 0.035
@@ -337,31 +320,26 @@ annotation_headers <- data.frame(
     label = sprintf(
         "%s (n = %d)",
         annotated_intersections,
-        lengths(expected_members)
+        lengths(intersection_members)
     ),
     x = unname(key_columns),
     y = rep(6.90, length(annotated_intersections)),
-    taxon = c("Enterococcus", "Coprococcus", "Faecalibacterium"),
+    taxon = key_taxa,
     stringsAsFactors = FALSE
 )
-arrow_data <- merge(
-    focus_membership[, c(
-        "taxon", "intersection", "intersection_index", "n"
-    )],
-    data.frame(
-        intersection = annotated_intersections,
-        label_x = c(2.55, 4.55, 5.65),
-        label_y = c(9.2, 7.3, 5.8),
-        stringsAsFactors = FALSE
-    ),
-    by = "intersection",
-    sort = FALSE
-)
+arrow_data <- focus_membership[, c(
+    "taxon", "intersection", "intersection_index", "n"
+)]
 arrow_data <- arrow_data[
     match(annotated_intersections, arrow_data$intersection),
 ]
 arrow_data$arrow_x <- arrow_data$intersection_index + 0.23
 arrow_data$arrow_y <- arrow_data$n + 0.55
+arrow_data$label_x <- arrow_data$intersection_index + c(1.4, 1.1, 0.8)
+arrow_data$label_y <- pmin(
+    max(displayed_intersections$n) * 1.18 - 0.6,
+    arrow_data$n + 3.5
+)
 
 intersection_bar <- ggplot2::ggplot(
     displayed_intersections,
@@ -772,7 +750,7 @@ component_plot <- ggplot2::ggplot(
         expand = ggplot2::expansion(mult = c(0, 0))
     ) +
     ggplot2::labs(
-        x = "Signed component\nZ-statistic", y = NULL,
+        x = "Signed component\nstatistic", y = NULL,
         fill = NULL, tag = "A"
     ) +
     base_theme +

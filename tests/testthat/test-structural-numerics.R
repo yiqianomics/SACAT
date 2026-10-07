@@ -144,7 +144,7 @@ test_that("structural inference uses one orthogonalized contribution for U and V
     expect_equal(summary$score_z_raw, approximate$score_z_raw)
 })
 
-test_that("the exact all-zero structural competitor uses the same detection objective", {
+test_that("the exact zero-absence boundary uses the same detection objective", {
     log_r <- log(c(0.15, 0.35, 0.65, 0.85))
     y <- c(0, 2, 0, 1)
     expected <- -sum(c(

@@ -1,10 +1,7 @@
 #!/usr/bin/env Rscript
 
 # Summarize SACAT raw-p rejection rates with fixed native counts and library sizes.
-run_negative_control_summary <- function(
-    root, make_figure = TRUE,
-    preview_path = file.path(dirname(tempdir()), "negative_control_type1_error.png")
-) {
+run_negative_control_summary <- function(root, make_figure = TRUE) {
     if (!requireNamespace("data.table", quietly = TRUE)) {
         stop("Package data.table is required.", call. = FALSE)
     }
@@ -210,16 +207,12 @@ run_negative_control_summary <- function(
                     margin = ggplot2::margin(t = 10)),
                 plot.margin = ggplot2::margin(12, 14, 10, 10))
         pdf_path <- file.path(output_directory, "negative_control_type1_error.pdf")
-        dir.create(dirname(preview_path), recursive = TRUE, showWarnings = FALSE)
         ggplot2::ggsave(pdf_path, plot, device = grDevices::cairo_pdf,
                        width = 325, height = 210, units = "mm")
-        ggplot2::ggsave(preview_path, plot, device = "png", dpi = 180,
-                       width = 325, height = 210, units = "mm", bg = "white")
-        figure_paths <- c(pdf = pdf_path,
-                          preview = normalizePath(preview_path, mustWork = TRUE))
+        figure_paths <- c(pdf = pdf_path)
     }
     cat("Summarized 20 cohorts, 2,000 replications, and 180,000 raw-p tests.\n")
-    if (length(figure_paths)) cat("PNG preview:", figure_paths[["preview"]], "\n")
+    if (length(figure_paths)) cat("PDF:", figure_paths[["pdf"]], "\n")
     invisible(list(tables = outputs, figures = figure_paths))
 }
 

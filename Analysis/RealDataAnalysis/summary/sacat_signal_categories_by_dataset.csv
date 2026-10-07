@@ -3,10 +3,10 @@
 "crc_baxter","Baxter colorectal cancer",5,5,0,"Present-conditional abundance only",4,80
 "crc_baxter","Baxter colorectal cancer",5,5,0,"Both components",0,0
 "crc_baxter","Baxter colorectal cancer",5,5,0,"Omnibus only",0,0
-"cdi_schubert","Schubert C. difficile infection",41,39,2,"Structural absence only",22,56.41
-"cdi_schubert","Schubert C. difficile infection",41,39,2,"Present-conditional abundance only",10,25.64
-"cdi_schubert","Schubert C. difficile infection",41,39,2,"Both components",6,15.38
-"cdi_schubert","Schubert C. difficile infection",41,39,2,"Omnibus only",1,2.56
+"cdi_schubert","Schubert C. difficile infection",40,39,1,"Structural absence only",22,56.41
+"cdi_schubert","Schubert C. difficile infection",40,39,1,"Present-conditional abundance only",11,28.21
+"cdi_schubert","Schubert C. difficile infection",40,39,1,"Both components",6,15.38
+"cdi_schubert","Schubert C. difficile infection",40,39,1,"Omnibus only",0,0
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",32,30,2,"Structural absence only",9,30
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",32,30,2,"Present-conditional abundance only",16,53.33
 "gems_pediatric_diarrhea","GEMS pediatric diarrhea",32,30,2,"Both components",5,16.67

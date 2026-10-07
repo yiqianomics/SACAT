@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # Reconstruct native joint tests from saved component results.
-# Usage: Rscript reconstruct_joint_tests.R [DIRECTORY]
+# Usage: Rscript reconstruct_joint_tests.R [STUDY_DIRECTORY]
 
 suppressPackageStartupMessages(library(data.table))
 setDTthreads(2L)

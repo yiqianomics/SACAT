@@ -28,10 +28,11 @@ feature table and the accompanying metadata. The published analysis used a
 different 97% OTU table and rarefied samples to 10,000 reads. This analysis
 uses the complete unrarefied count table and models the original library size.
 
-The preparation applies the documented MicrobiomeHD count filters, retains
-the no-lesion and colorectal-cancer groups, aggregates features to genus or
-the deepest resolved higher rank, and retains taxa observed in at least 5% of
-the final cohort and in both groups.
+The preparation applies the documented MicrobiomeHD count filters and retains
+the no-lesion and colorectal-cancer groups. Features observed in at least 5%
+of the final cohort are aggregated to genus or the deepest resolved higher
+rank. The resulting taxon bins must also meet the 5% prevalence threshold and
+have positive counts in both groups.
 
 Run from the repository root:
 

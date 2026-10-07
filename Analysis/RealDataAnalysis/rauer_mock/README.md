@@ -18,11 +18,14 @@ available from the authors’
   kit, lysis condition, and extraction buffer.
 - **Tested panel:** eight D6300 taxa with known structural differences and
   three D6321 taxa with known abundance differences.
+- **Allocation rule:** pair the two source communities within each of the 16
+  experimental cells, placing one library from each pair in each group.
 - **Alternative design:** 52 covariate-balanced allocations. The two groups
   contain 12 D6300 and 4 D6321 libraries, and 4 D6300 and 12 D6321 libraries,
   respectively.
-- **Complete-null design:** all 111 distinct covariate-balanced partitions with
-  eight libraries from each source community in both groups.
+- **Complete-null design:** 111 covariate-balanced partitions under this
+  paired-cell rule, with eight libraries from each source community in both
+  groups; complementary group assignments are counted once.
 - **Sequencing depths:** native depth and controlled downsampling to 1,000,
   750, 500, 250, 100, and 50 reads per library.
 - **Adjustment variables:** extraction kit, lysis condition, extraction buffer,
@@ -59,6 +62,11 @@ The benchmark uses the eight bacterial D6300 references and the three D6321
 references.
 
 ## Reproducing the analysis
+
+The saved results use SACAT 0.7.1 for the sandwich-adjusted profile
+likelihood-ratio abundance test; package versions are listed in
+[`software_versions.csv`](software_versions.csv). The analysis requires SACAT
+0.7.1 or later and reuses checkpoints only from the installed SACAT version.
 
 Run from the repository root:
 

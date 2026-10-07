@@ -63,7 +63,7 @@ with the same index as the evaluation replication. The calibrated p-value is
 ## Files and code
 
 - `code/`: simulation runners, input preparation, summaries, and plotting.
-- `data/`: complete raw p-value families, simulated truth, designs, and software versions. `abundance_reference_truth.csv` supplies the supplementary runner's preflight reference.
+- `data/`: complete raw p-value families, component-specific truth labels, designs, and software versions. `abundance_reference_truth.csv` supplies the supplementary runner's preflight reference.
 - `tables/`: all sample sizes, setting and replication summaries, raw Type I error, availability, and manuscript summaries.
 - `figures/`: the four PDFs above.
 

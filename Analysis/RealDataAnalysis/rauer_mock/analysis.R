@@ -59,6 +59,10 @@ if (length(missing_packages)) {
         call. = FALSE
     )
 }
+sacat_version <- as.character(utils::packageVersion("SACAT"))
+if (utils::compareVersion(sacat_version, "0.7.1") < 0L) {
+    stop("SACAT 0.7.1 or later is required.", call. = FALSE)
+}
 
 dataset_directory <- locate_dataset_directory()
 input_file <- file.path(
@@ -596,6 +600,7 @@ run_allocation <- function(design, allocation_id, allocations) {
         expected_rows <- length(depths) * length(method_order) * length(taxa)
         valid_existing <- is.list(existing) &&
             identical(existing$analysis_id, analysis_id) &&
+            identical(existing$sacat_version, sacat_version) &&
             identical(as.integer(existing$allocation),
                       as.integer(allocation)) &&
             identical(existing$depths, depths) &&
@@ -606,6 +611,7 @@ run_allocation <- function(design, allocation_id, allocations) {
         if (valid_existing) {
             return(existing)
         }
+        message("Recomputing incompatible checkpoint: ", basename(output_file))
     }
 
     model_metadata <- make_group_metadata(design, allocation)
@@ -621,6 +627,7 @@ run_allocation <- function(design, allocation_id, allocations) {
     }))
     output <- list(
         analysis_id = analysis_id,
+        sacat_version = sacat_version,
         allocation_id = allocation_id,
         allocation = allocation,
         depths = depths,
@@ -686,4 +693,19 @@ if (requested_design %in% c("all", "nonnull")) {
 }
 if (requested_design %in% c("all", "null")) {
     invisible(run_design("null", null_allocations))
+}
+if (requested_design == "all") {
+    version_packages <- required_packages
+    utils::write.csv(
+        data.frame(
+            software = c("R", version_packages),
+            version = c(as.character(getRversion()), vapply(
+                version_packages, function(package) {
+                    as.character(utils::packageVersion(package))
+                }, character(1)
+            ))
+        ),
+        file.path(dataset_directory, "software_versions.csv"),
+        row.names = FALSE
+    )
 }

@@ -121,22 +121,19 @@ head(fit$results)
 
 ## Visualization
 
-`plot(fit)` draws a taxon-aligned summary of the two complementary components.
-The structural-absence triangle and present-conditional abundance circle share
-one component Z-statistic axis. Their shared sequential color scale encodes the
-corresponding component adjusted p-values, while superscript stars beside each
-feature encode the primary omnibus adjusted p-value. Group colors remain
-visually distinct from this evidence scale, and the reference and comparison
-labels come directly from the fitted contrast by default.
+`plot(fit)` aligns three summaries for each taxon:
 
-For the default BH adjustment, short gates mark the family-wide discovery
-boundary in each component lane at the selected `alpha`. The upper triangle
-lane represents structural absence, and the lower circle lane represents
-present-conditional abundance. Each boundary uses the complete fitted
-component family and is invariant to the displayed feature subset. A component
-gate appears when that component has at least one BH discovery. A warning
-identifies any component whose boundary cannot be displayed. Set
-`show_component_guides = FALSE` to hide the gates.
+- the fitted structural-absence probabilities in the two groups;
+- the SA score statistic (triangle) and signed square root of the adjusted
+  RA likelihood-ratio statistic (circle); and
+- the fitted geometric mean relative abundance conditional on presence,
+  expressed as a percentage on a log scale.
+
+The fitted group summaries are standardized over the observed covariate
+profiles. Marker colors show component adjusted p-values; stars beside taxon
+names show the primary omnibus adjusted p-value. For BH-adjusted fits, short
+gates mark each component's discovery boundary using the complete testing
+family, regardless of which taxa are displayed.
 
 By default, the plot displays up to 24 omnibus-adjusted discoveries at 0.05,
 ordered by their adjusted and raw omnibus p-values. Use `selection = "top"` for
@@ -154,42 +151,14 @@ plot(
     p_color_limits = c(1e-8, 1)
 )
 
-plot(fit, group_labels = c("Control", "Disease"))
-
-plot(fit, show_component_guides = FALSE)
-```
-
-The default adaptive color range is shared by both components. Its light end
-is fixed at p = 1, and its dark-plum end is the smallest positive component
-adjusted p-value among the displayed markers rounded down to a power of ten.
-Both components therefore use a directly comparable scale that remains
-distinct from the reference/comparison colors.
-Supplying numeric `p_color_limits` fixes the range when feature subsets or
-analyses must be compared directly.
-
-Feature width adapts to the longest displayed name and its significance
-superscript. The side profiles are covariate-standardized model summaries for
-the fitted groups; the central symbols carry the fitted structural score
-statistic and the signed square root of the adjusted abundance likelihood-ratio
-statistic. The abundance side panel shows the fitted present-conditional
-geometric mean relative
-abundance, standardized over the observed covariate distribution, as a
-percentage of total reads. A log scale with paired group points represents
-these positive values. Side-panel segments provide descriptive fitted group
-summaries, and the central Z-statistics carry component inference. An omitted
-central marker or `--` identifies an unavailable component or side summary.
-Optional `group_labels` shortens long fitted group names while preserving the
-analysis and group ordering.
-
-The same call can save a vector or raster figure. Default PDF,
-PNG, and SVG dimensions use a 180-mm manuscript width and an adaptive height:
-
-```r
 plot(fit, file = "sacat-profile.pdf")
-plot(fit, file = "sacat-profile.png", width = 7.2, height = 6.5, dpi = 600)
 ```
 
-SVG output requires an R build with Cairo support.
+Use `group_labels` to change the displayed group names and
+`show_component_guides = FALSE` to hide the gates. Both components share an
+adaptive p-value color scale; numeric `p_color_limits` fixes that scale across
+plots. An omitted marker or `--` denotes an unavailable test or fitted summary.
+See `?plot.sacat` for all display and export options.
 
 ## Results
 
@@ -207,31 +176,15 @@ Use `fit$diagnostics` to review positive-count support in each group and
 component formation. Retained taxa remain in the corresponding testing family.
 An unavailable component receives an operational p-value of one, with its cause
 recorded in the corresponding `reason_*` field. Eligible abundance results are
-reported independently of structural component formation. When the
-present-conditional abundance test forms for fewer than 80% of retained taxa,
-users should assess null calibration before interpreting its discoveries.
+reported independently of structural component formation.
 
-## Interpreting abundance results
-
-1. State the estimand as a present-conditional, reference-centered relative
-   contrast, and identify the comparison and reference groups from
-   `fit$settings$contrast`.
-2. Review group-specific positive-count support and component formation in
-   `fit$diagnostics`.
-3. With `full_output = TRUE`, inspect
-   `fit$fits$relative_abundance$taxon`. This table separates the raw taxon
-   estimate, target-excluded background estimate, and corrected estimate, and
-   records the reference size and model diagnostics.
-
-SACAT reports the reference-centered test as its abundance result. Detailed
-output also records the raw taxon estimate and the target-excluded background.
-The abundance test compares the fitted likelihood with a constrained fit whose
-raw contrast equals that background. Its likelihood-ratio statistic is scaled
-by the raw contrast's inverse-information variance divided by the corrected
-sandwich variance, then compared with a chi-squared distribution with one degree
-of freedom. `z_relative_abundance` reports the signed square root of this
-statistic. With `full_output = TRUE`, the abundance output includes the profile
-statistics and constrained fits.
+With `full_output = TRUE`, `fit$fits$relative_abundance$taxon` separates the raw
+taxon estimate, target-excluded background, and corrected effect. The RA test
+compares the fitted likelihood with a constrained fit whose raw contrast
+equals that background, with a sandwich adjustment accounting for uncertainty
+in both. `z_relative_abundance` is the signed square root of the adjusted
+likelihood-ratio statistic. Detailed output includes the constrained fits and
+reference diagnostics.
 
 ## Manuscript analyses
 

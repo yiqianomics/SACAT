@@ -1,8 +1,7 @@
 #!/usr/bin/env Rscript
 
 # Recompute simulation summaries from complete taxon-level p-value families.
-# Requires data.table. Inputs and tables are in the study directory.
-# Run with Rscript; no simulation or model fitting is performed.
+# Requires data.table and R.utils. Inputs and tables are in the study directory.
 
 if (!requireNamespace("data.table", quietly = TRUE)) {
     stop("Install the data.table R package.", call. = FALSE)
