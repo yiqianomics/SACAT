@@ -11,8 +11,8 @@
 
 # SACAT 0.6.0
 
-- `plot.sacat()` provides a publication-oriented dual-component association
-  profile. Structural-absence and present-conditional abundance evidence share
+- `plot.sacat()` provides a dual-component association profile.
+  Structural-absence and present-conditional abundance evidence share
   an aligned component Z-statistic axis, while covariate-standardized group
   summaries retain the fitted reference and comparison labels.
 - `store_plot_data = TRUE` stores the compact descriptive summaries used by
@@ -22,11 +22,10 @@
   adjusted p-values use a shared adaptive `-log10(p)` color scale from one to a
   rounded lower endpoint, with an explicit numeric range available when plots
   need a fixed cross-study scale.
-- The default plot separates group and evidence color semantics, uses a
-  continuous component-adjusted-p legend with the 0.05 landmark when it lies
-  within the resolved scale, and applies manuscript-scale typography, spacing,
-  and adaptive output dimensions. Optional display-only group labels support
-  publication figures with long fitted group names.
+- The default plot uses separate palettes for groups and component evidence,
+  a continuous component-adjusted-p legend with a 0.05 marker when it lies
+  within the displayed range, and adaptive output dimensions. Optional group
+  labels support shorter display names.
 - The plot follows standard R conventions: `plot(fit)` draws to the active
   device, and the `file` argument writes PDF, PNG, or SVG output directly. SVG
   output is available in R builds with Cairo support.

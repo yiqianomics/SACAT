@@ -95,7 +95,7 @@ draw_comparison <- function(filename, metric, title, y_label) {
         data <- copy(comparison)
         data[, value := get(paste0(adjustment, "_bh_", metric))]
         stopifnot(all(is.finite(data$value)), all(data$value >= 0 & data$value <= 1))
-        # The 0.05 FDR reference is not an axis limit.
+        # Scale the FDR axis to include all estimates.
         ymax <- if (metric == "fdr") min(1, max(.10, max(data$value) * 1.08)) else 1
         plot <- ggplot(data, aes(effect_key, value, color = method, shape = method,
                                  linetype = method, group = method)) +

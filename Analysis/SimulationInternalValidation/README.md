@@ -7,9 +7,10 @@ present-conditional relative abundance (RA), and joint effects.
 
 Each setting has 100 replications and 50 focal taxa, with ten designated
 taxa under nonzero effects. Sample sizes are 60, 80, and 120 per group.
-Settings include either no covariate or an independent standard-normal
-covariate included in the generator and fitted models. Target median
-sequencing depth is 8,000 reads in both groups.
+Settings either omit the covariate or include one in both the generator
+and fitted models. The covariate is drawn independently of group from a
+standard normal distribution and standardized within each replication.
+Target median sequencing depth is 8,000 reads in both groups.
 
 The base experiments vary prevalence with SA fixed, SA with matched expected
 prevalence, SA alone, or RA alone. Joint effects include five reinforcing
@@ -91,8 +92,10 @@ sbatch code/submit.slurm
 sbatch code/submit_joint.slurm
 ```
 
-Each runner's `summarize` mode collects completed replications.
+The base and joint runners' `summarize` mode collects completed replications.
 `code/prepare_results.R base|joint|abundance INPUT_DIRECTORY [DATA_DIRECTORY]`
-prepares inputs for the summary script. The supplementary runner supports
+prepares inputs for the summary script. For `base` and `joint`, use the runner's
+`summary/` directory as `INPUT_DIRECTORY`; for `abundance`, use the supplementary
+runner's output directory. The supplementary runner supports
 `prepare`, `preflight`, `worker <index> <workers>`, and
 `zinq <index> <workers>` modes.

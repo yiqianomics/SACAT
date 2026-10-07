@@ -10,7 +10,7 @@ Before group labels are assigned, genera with prevalence of at least 10% and mea
 
 For each randomization, SACAT 0.7.1 fits `~ group` to groups `A` and `B`, with `A` as the reference. The analysis reports the structural-absence (SA) component, relative-abundance (RA) component, and Bonferroni omnibus test. Group assignments use the seed `202609190 + dataset_index * 100000 + replicate * 1009`; the dataset index is stored in each input.
 
-Global-null Type I error is the number of raw p-values below 0.05 divided by 30 in each randomization, averaged over the 100 randomizations. An unavailable test contributes a p-value of 1, keeping the denominator fixed. BH-adjusted p-values are also stored in the taxon-level tables. The reported Type I error uses raw p-values. Overall means give each dataset equal weight.
+Global-null Type I error is the number of raw p-values below 0.05 divided by 30 in each randomization, averaged over the 100 randomizations. An unavailable test contributes a p-value of 1, keeping the denominator fixed. BH-adjusted p-values are also stored in the taxon-level tables. Overall means give each dataset equal weight.
 
 ## Datasets
 

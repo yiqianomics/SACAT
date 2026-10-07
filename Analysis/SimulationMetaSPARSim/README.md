@@ -11,11 +11,13 @@ background category. Target median depths are 5,855.5 and 3,678 reads.
 Alternatives affect 20 focal taxa. The 38 settings comprise two global nulls
 with 500 replications each and 36 alternatives with 100 each.
 
-SA effects are 0.10, 0.15, 0.20, 0.25, 0.30, and 0.40. RA log effects are
+SA effect magnitudes are absence-probability differences at covariate value
+zero: 0.10, 0.15, 0.20, 0.25, 0.30, and 0.40. RA log effects are
 0.20, 0.40, 0.50, 0.60, 0.80, and 1.20. Joint effects pair these values,
-with ten reinforcing and ten opposing taxa. Settings include either no
-covariate or an independent standard-normal covariate included in the
-generator and fitted models. Exact settings and generator parameters are
+with ten reinforcing and ten opposing taxa. Settings either omit the covariate
+or include one in both the generator and fitted models. The covariate is drawn
+independently of group from a standard normal distribution and standardized
+within each replication. Exact settings and generator parameters are
 in `data/design.csv` and `data/configuration.csv`.
 
 ## Figures
@@ -28,7 +30,7 @@ in `data/design.csv` and `data/configuration.csv`.
 
 Power and FDR each have two pages: raw p-values followed by BH, then
 null-calibrated p-values followed by BH. Columns distinguish the three
-effect directions; rows distinguish settings without and with a covariate.
+effect scenarios; rows distinguish settings without and with a covariate.
 Effect levels are equally spaced and labeled. Joint tick labels give SA
 above RA. The FDR reference line is 0.05; vertical ranges differ between
 pages.

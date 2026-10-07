@@ -127,7 +127,7 @@ negative_control_setting_text <- function(value) {
 }
 
 # 'results' may be saved result objects or paths to the original per-replicate fits.
-# Exporting requires no SACAT installation and never fits a model.
+# Export saved fits to CSV tables.
 export_negative_control_results <- function(input, results, result_directory,
                                             expected_replicates = 100L) {
     if (is.character(results)) results <- lapply(results, readRDS)

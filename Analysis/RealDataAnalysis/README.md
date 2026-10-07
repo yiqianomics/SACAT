@@ -118,17 +118,18 @@ Rscript Analysis/RealDataAnalysis/rauer_mock/make_figures.R
 The [main manuscript figures](../MainFigures/README.md) include a combined
 figure of the CDI component profiles and Rauer spike-in recovery curves.
 
-Preparation and fitting write source inputs and intermediate files to `raw/`,
-`processed/`, and `work/`. Reported tables and figures are in each dataset's
-`table/` and `figs/` directories and in the cross-dataset `summary/` directory.
+Source inputs are read from each dataset's `raw/` directory; prepared inputs
+and intermediate files are written to `processed/` and `work/`.
+Reported tables and figures are in each dataset's `table/` and `figs/`
+directories and in the cross-dataset `summary/` directory.
 Dataset-specific fixed seeds provide reproducible random-number streams
 independent of execution order.
 
 [`software_versions.csv`](software_versions.csv) records the R version and
 direct package versions used to generate the reported outputs, with the SACAT
-version identified by cohort. The CDI and spike-in results use SACAT
-0.7.1. Each `*_method_status.csv` also records the fitted method package version
-for that dataset.
+version identified by cohort. The saved CDI and spike-in results use SACAT
+0.7.1; the other six human cohorts use 0.6.0. Each `*_method_status.csv` also
+records the fitted method package version for that dataset.
 
 ## Human-cohort methods and multiplicity
 

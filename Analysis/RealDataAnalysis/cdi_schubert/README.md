@@ -1,7 +1,7 @@
 # Schubert *Clostridioides difficile* infection stool cohort
 
 This analysis uses the cohort reported by Schubert et al. in “Microbiome data
-distinguish patients with *Clostridioides difficile* infection and
+distinguish patients with *Clostridium difficile* infection and
 non-*C. difficile*-associated diarrhea from healthy controls”
 ([doi:10.1128/mBio.01021-14](https://doi.org/10.1128/mBio.01021-14)). The public
 count table and metadata are distributed in MicrobiomeHD version 3,
@@ -12,8 +12,7 @@ count table and metadata are distributed in MicrobiomeHD version 3,
 
 - **Comparison:** 152 nondiarrheal healthy controls (reference) versus 91
   participants with *C. difficile* infection (comparison), 243 participants
-  in total. The contrast contains the healthy-control and *C. difficile*
-  infection groups.
+  in total.
 - **Tested panel:** 88 genus or deepest-resolved higher-rank taxon bins.
 - **Adjustment model:** `~ age_z + sex + antibiotics_3mo + group`, with age
   standardized within the final cohort.
