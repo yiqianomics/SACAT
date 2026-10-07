@@ -42,37 +42,5 @@ Rscript Analysis/RealDataAnalysis/cdi_schubert/prepare_data.R
 The SACAT input and cohort, count, taxonomy, and preprocessing summaries are
 written to `processed/`.
 
-## CDI and mock-community figure
-
-`figs/schubert_cdi_rauer_mock.pdf` combines recovery curves from the Rauer
-mock-community benchmark with method comparisons and component profiles for
-*Coprococcus*, *Enterococcus*, and *Faecalibacterium* in the CDI cohort.
-
-Regenerate the PDF from the included numerical inputs, without rerunning model
-fits:
-
-```sh
-Rscript Analysis/RealDataAnalysis/cdi_schubert/make_schubert_cdi_rauer_mock_figure.R
-```
-
-The script uses `ggplot2` and `patchwork`, with Arial for figure text, and writes
-only the PDF. Its CDI inputs are in `table/`:
-
-- `schubert_cdi_figure_method_results.csv` contains all 88 taxa in each
-  method-result family, including the p-values, BH-adjusted p-values, and signed
-  statistics.
-- `schubert_cdi_figure_sample_values.csv` contains counts, library sizes, and
-  posterior SA probabilities (`gamma`) for the three displayed taxa. These
-  probabilities come from the SA score-test fit with its SA group coefficient
-  fixed at zero. Panel E averages `gamma` and `I(count = 0) - gamma` over all
-  samples in each group to obtain the estimated SA and ND shares.
-- `schubert_cdi_figure_fitted_abundance.csv` contains the fitted abundance
-  markers in Panel F. Each is 100 times the exponential of the fitted mean log
-  relative abundance conditional on presence, standardized over all 243
-  covariate profiles with group set to Healthy or CDI. The boxplots use positive
-  observed relative abundances; the axis is logarithmic.
-
-The mock-community panels read
-`../rauer_mock/table/rauer_mock_recovery.csv`, which contains discovery totals
-over 52 allocations for eight structural targets or three abundance targets at
-each depth.
+The combined CDI and mock-community figure, its numerical inputs, and its
+generation script are in [`Analysis/MainFigures`](../../MainFigures/README.md).

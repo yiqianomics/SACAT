@@ -115,9 +115,8 @@ Rscript Analysis/RealDataAnalysis/rauer_mock/analysis.R
 Rscript Analysis/RealDataAnalysis/rauer_mock/make_figures.R
 ```
 
-The [Schubert CDI analysis](cdi_schubert/README.md#cdi-and-mock-community-figure)
-also provides a figure combining the CDI component profiles with recovery
-curves from the Rauer mock-community benchmark.
+The [main manuscript figures](../MainFigures/README.md) include a combined
+figure of the CDI component profiles and Rauer mock-community recovery curves.
 
 Preparation and fitting write source inputs and intermediate files to `raw/`,
 `processed/`, and `work/`. Reported tables and figures are in each dataset's

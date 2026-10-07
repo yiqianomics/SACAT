@@ -8,17 +8,22 @@ suppressPackageStartupMessages({
 
 script <- sub("^--file=", "", grep("^--file=", commandArgs(), value = TRUE)[1L])
 directory <- dirname(normalizePath(script))
-data_directory <- file.path(directory, "table")
+data_directory <- file.path(directory, "data", "real_data")
 read_table <- function(name) {
     read.csv(file.path(data_directory, name), stringsAsFactors = FALSE)
 }
-recovery <- read.csv(file.path(dirname(directory), "rauer_mock", "table",
-                               "rauer_mock_recovery.csv"), stringsAsFactors = FALSE)
+recovery <- read_table("rauer_mock_recovery.csv")
 results <- read_table("schubert_cdi_figure_method_results.csv")
 samples <- read_table("schubert_cdi_figure_sample_values.csv")
 fitted <- read_table("schubert_cdi_figure_fitted_abundance.csv")
 taxa <- c("Coprococcus", "Enterococcus", "Faecalibacterium")
 scale <- 183 / 210
+font_families <- if (requireNamespace("systemfonts", quietly = TRUE)) {
+    systemfonts::system_fonts()$family
+} else character()
+figure_font <- if ("Arial" %in% font_families) "Arial" else if (
+    "Liberation Sans" %in% font_families
+) "Liberation Sans" else "sans"
 
 # Discoveries retain the original 88-taxon BH families.
 for (method in unique(results$method)) {
@@ -68,7 +73,7 @@ combined_text_theme <- function(theme, scale = 1) {
     for (name in names(theme)) {
         element <- theme[[name]]
         if (inherits(element, "element_text")) {
-            element$family <- "Arial"
+            element$family <- figure_font
             element$size <- if (name == "plot.tag") {
                 8 / (183 / 210) * scale
             } else {
@@ -83,7 +88,7 @@ combined_text_theme <- function(theme, scale = 1) {
 combined_tag_theme <- function(scale = 1) {
     ggplot2::theme(
         plot.tag = ggplot2::element_text(
-            family = "Arial", size = 8 / (183 / 210) * scale,
+            family = figure_font, size = 8 / (183 / 210) * scale,
             face = "bold", hjust = 0, vjust = 1,
             margin = ggplot2::margin(0, 0, 0, 0)
         ),
@@ -117,7 +122,7 @@ make_mock_panels <- function(mock, scale = 1) {
         legend.box.margin = ggplot2::margin(-2 * scale, 0, 5 * scale, 0)
     ), scale)
     panel_theme <- ggplot2::theme_classic(
-        base_family = "Arial", base_size = 9 * scale
+        base_family = figure_font, base_size = 9 * scale
     ) + ggplot2::theme(
         plot.title.position = "panel",
         plot.title = ggplot2::element_text(face = "bold", hjust = 0.5),
@@ -320,7 +325,7 @@ make_cdi_panels <- function(components, allocations, observations, fitted, scale
         )
     }
     panel_theme <- ggplot2::theme_classic(
-        base_family = "Arial", base_size = 8 * scale
+        base_family = figure_font, base_size = 8 * scale
     ) + ggplot2::theme(
         axis.title = ggplot2::element_text(),
         axis.text = ggplot2::element_text(color = "#262626"),
@@ -477,7 +482,7 @@ matrix_grob <- function() {
     mm <- function(value) unit(value * scale, "mm")
     text <- function(label, x, y, size = 7, face = "plain", just = "center") {
         textGrob(label, x = mm(x), y = mm(y), just = just,
-                 gp = gpar(fontfamily = "Arial", fontsize = size,
+                 gp = gpar(fontfamily = figure_font, fontsize = size,
                            fontface = face, col = "#262626"))
     }
     line <- function(x0, x1, y0, y1 = y0, color = "#D4D8DB", width = .55) {
@@ -523,14 +528,16 @@ draw_block <- function(grob, bottom, height) {
     popViewport()
 }
 
-output <- file.path(directory, "figs", "schubert_cdi_rauer_mock.pdf")
+output_directory <- file.path(directory, "figures")
+dir.create(output_directory, recursive = TRUE, showWarnings = FALSE)
+output <- file.path(output_directory, "main_real_data_combined.pdf")
 if (capabilities("aqua")) {
     grDevices::quartz(type = "pdf", file = output, width = 183 / 25.4,
-                     height = 181 * scale / 25.4, family = "Arial", bg = "white",
+                     height = 181 * scale / 25.4, family = figure_font, bg = "white",
                      title = "Signal recovery and CDI associations")
 } else {
     grDevices::cairo_pdf(output, width = 183 / 25.4, height = 181 * scale / 25.4,
-                        family = "Arial", bg = "white")
+                        family = figure_font, bg = "white")
 }
 grid.newpage()
 draw_block(patchworkGrob(make_mock_panels(recovery, scale)), 128, 53)

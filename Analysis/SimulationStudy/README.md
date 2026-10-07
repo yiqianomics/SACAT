@@ -66,26 +66,21 @@ The figures and tables already in this directory accompany the SACAT 0.6.0 resul
 
 ## Figures
 
-Core figures:
+The 11 simulation figures in `figures/` are listed by topic below. Full-grid outputs retain all design strata. For manuscript figures, see [MainFigures](../MainFigures/README.md).
 
-| File | Content |
-|---|---|
-| [`main_mechanism_separation.pdf`](figures/main_mechanism_separation.pdf) | Structural-absence and observed-prevalence rejection curves in the two estimand-separation experiments |
-| [`main_abundance_power.pdf`](figures/main_abundance_power.pdf) | Present-conditional abundance power across all sample sizes, signal fractions, covariate structures, and nonzero effect sizes |
-
-Additional figures:
-
-| File | Content |
-|---|---|
-| [`estimand_calibration.pdf`](figures/estimand_calibration.pdf) | Target and achieved probability contrasts in the estimand-separation experiments |
-| [`component_specificity.pdf`](figures/component_specificity.pdf) | Marginal Type I error for the non-target SACAT component |
-| [`abundance_fdr_signal20.pdf`](figures/abundance_fdr_signal20.pdf) | Present-conditional abundance false discovery rates with 10 perturbed taxa |
-| [`abundance_fdr_signal40.pdf`](figures/abundance_fdr_signal40.pdf) | Present-conditional abundance false discovery rates with 20 perturbed taxa |
-| [`global_null_family_rejection_structural.pdf`](figures/global_null_family_rejection_structural.pdf) | Structural and observed-prevalence familywise Type I error under three global-null generators |
-| [`global_null_family_rejection_abundance.pdf`](figures/global_null_family_rejection_abundance.pdf) | Abundance familywise Type I error under three global-null generators |
-| [`correlated_community_abundance_power.pdf`](figures/correlated_community_abundance_power.pdf) | Abundance power under correlated-community perturbations |
-| [`correlated_community_abundance_fdr.pdf`](figures/correlated_community_abundance_fdr.pdf) | Abundance false discovery rates under correlated-community perturbations |
-| [`correlated_community_structural_performance.pdf`](figures/correlated_community_structural_performance.pdf) | Structural and observed-prevalence power and false discovery rates under correlated-community structural-absence perturbations |
+| Topic | Figure | Content |
+|---|---|---|
+| Mechanism validation | [Mechanism separation](figures/mechanism_separation.pdf) | Structural-absence and observed-prevalence rejection curves across the full design grid |
+| Mechanism validation | [Estimand calibration](figures/estimand_calibration.pdf) | Target and achieved probability contrasts |
+| Mechanism validation | [Component specificity](figures/component_specificity.pdf) | Marginal Type I error for the non-target SACAT component |
+| Abundance comparison | [Abundance power](figures/abundance_power.pdf) | Present-conditional abundance power across the full design grid |
+| Abundance comparison | [FDR: 20% signal taxa](figures/abundance_fdr_signal20.pdf) | Abundance false discovery rates with 10 perturbed taxa |
+| Abundance comparison | [FDR: 40% signal taxa](figures/abundance_fdr_signal40.pdf) | Abundance false discovery rates with 20 perturbed taxa |
+| Global null | [Structural and prevalence error](figures/global_null_family_rejection_structural.pdf) | Familywise Type I error under three global-null generators |
+| Global null | [Abundance error](figures/global_null_family_rejection_abundance.pdf) | Familywise Type I error under three global-null generators |
+| Correlated community | [Abundance power](figures/correlated_community_abundance_power.pdf) | Power under correlated-community abundance perturbations |
+| Correlated community | [Abundance FDR](figures/correlated_community_abundance_fdr.pdf) | False discovery rates under correlated-community abundance perturbations |
+| Correlated community | [Structural performance](figures/correlated_community_structural_performance.pdf) | Structural and prevalence power and false discovery rates |
 
 Each curve is evaluated within its displayed sample-size, signal-fraction, covariate, and effect stratum. Points and intervals summarize 100 independent replications. The vector PDFs use a consistent publication-scale layout.
 

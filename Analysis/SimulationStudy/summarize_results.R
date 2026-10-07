@@ -38,8 +38,8 @@ dir.create(figure_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(table_dir, recursive = TRUE, showWarnings = FALSE)
 
 figure_files <- c(
-    "main_mechanism_separation.pdf",
-    "main_abundance_power.pdf",
+    "mechanism_separation.pdf",
+    "abundance_power.pdf",
     "estimand_calibration.pdf",
     "component_specificity.pdf",
     "abundance_fdr_signal20.pdf",
@@ -522,7 +522,7 @@ main_mechanism_plot <- make_main_mechanism_panel(
         legend.position = "bottom", legend.box = "vertical",
         legend.box.just = "center"
     )
-save_pdf(main_mechanism_plot, "main_mechanism_separation.pdf", 178, 184)
+save_pdf(main_mechanism_plot, "mechanism_separation.pdf", 178, 184)
 
 specificity_structural <- metric_rows(
         "abundance_comparison", "present_conditional_abundance",
@@ -758,7 +758,7 @@ plot_main_abundance <- function(filename) {
     save_pdf(plot, filename, 178, 172)
 }
 
-plot_main_abundance("main_abundance_power.pdf")
+plot_main_abundance("abundance_power.pdf")
 
 null_scenario_levels <- c(
     "Taxonwise global null", "Depth-imbalanced null",
