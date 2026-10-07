@@ -13,4 +13,4 @@ set -euo pipefail
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 cd "$SACAT_PROJECT_ROOT"
-Rscript Analysis/SimulationStudy/run_joint.R replicate "${SLURM_ARRAY_TASK_ID}"
+Rscript Analysis/SimulationInternalValidation/code/run_joint.R replicate "${SLURM_ARRAY_TASK_ID}"

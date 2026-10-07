@@ -19,5 +19,5 @@ export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 
 cd "$SACAT_PROJECT_ROOT"
-Rscript Analysis/SimulationStudy/run_simulation.R \
+Rscript Analysis/SimulationInternalValidation/code/run_simulation.R \
   replicate "${SLURM_ARRAY_TASK_ID}"

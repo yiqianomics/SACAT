@@ -31,8 +31,8 @@ covariate. Component comparisons use SACAT, ZINQ, and MaAsLin 3; joint-effect
 comparisons also include the six abundance methods.
 
 The figure reads `tables/main_plot_data.csv` from
-[`SimulationStudy`](../SimulationStudy/README.md) and
-[`MetaSPARSimSimulation`](../MetaSPARSimSimulation/README.md). Together, these
+[`SimulationInternalValidation`](../SimulationInternalValidation/README.md) and
+[`SimulationMetaSPARSim`](../SimulationMetaSPARSim/README.md). Together, these
 tables contain the 384 plotted values and their design labels.
 `plotted_value` uses matched-null p-value calibration followed by BH
 adjustment at 0.05 within each replication and method-result family.

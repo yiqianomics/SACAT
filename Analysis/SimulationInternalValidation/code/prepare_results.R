@@ -8,7 +8,7 @@ if (length(args) < 2L || !args[[1L]] %in% c("base", "joint", "abundance")) {
     stop("Usage: Rscript prepare_results.R base|joint|abundance INPUT_DIRECTORY [DATA_DIRECTORY]")
 }
 script <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[[1L]])
-study_dir <- dirname(normalizePath(script))
+study_dir <- dirname(dirname(normalizePath(script)))
 mode <- args[[1L]]
 input <- normalizePath(args[[2L]], mustWork = TRUE)
 output <- if (length(args) >= 3L) args[[3L]] else file.path(study_dir, "data")
@@ -43,7 +43,11 @@ if (mode == "base") {
         write_compact(data[n_per_group == n], sprintf("base_n%03d.csv.gz", n))
     }
     copy_input("simulation_design.csv", "base_design.csv")
-    copy_input("combined_simulation_truth.csv.gz", "base_truth.csv.gz")
+    truth <- fread(file.path(input, "combined_simulation_truth.csv.gz"))[
+        n_per_group == 80L & scenario == "present_conditional_abundance" &
+            effect_parameter == .40 & replication == 1L]
+    stopifnot(nrow(truth) == 100L)
+    fwrite(truth, file.path(output, "abundance_reference_truth.csv"))
     current <- fread(file.path(input, "package_versions.csv"))[, .(
         run = "base", phase = "Original 120-setting run", package, version)]
     repair_file <- file.path(input, "profile_repair_versions.csv")
@@ -63,7 +67,6 @@ if (mode == "base") {
     setnames(data, "truth_any", "scenario_signal")
     write_compact(data, "joint.csv.gz", c(columns, "primary_comparison"))
     copy_input("design.csv", "joint_design.csv")
-    copy_input("simulation_truth.csv.gz", "joint_truth.csv.gz")
     current <- unique(fread(file.path(input, "software_versions.csv.gz"))[, .(
         run = "joint", phase = "42-setting joint run", package, version)])
 } else {

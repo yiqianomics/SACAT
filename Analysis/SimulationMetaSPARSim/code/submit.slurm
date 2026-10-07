@@ -9,9 +9,11 @@
 
 set -euo pipefail
 
-# Submit from this directory, or set METASPAR_SCRIPT_DIR to its absolute path.
-script_dir="${METASPAR_SCRIPT_DIR:-${SLURM_SUBMIT_DIR:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)}}"
-export METASPAR_ROOT="${METASPAR_ROOT:-${script_dir}/output}"
+# Submit from the study directory with sbatch code/submit.slurm.
+study_dir="${SLURM_SUBMIT_DIR:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)}"
+script_dir="${METASPAR_SCRIPT_DIR:-${study_dir}/code}"
+study_dir="$(cd -- "${script_dir}/.." && pwd)"
+export METASPAR_ROOT="${METASPAR_ROOT:-${study_dir}/output}"
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1

@@ -26,7 +26,7 @@ Sys.setenv(OMP_NUM_THREADS = "1", OPENBLAS_NUM_THREADS = "1",
 
 CONFIG <- list(
     root = Sys.getenv("METASPAR_ROOT",
-                      file.path(.metaspar_script_dir, "output")),
+                      file.path(dirname(.metaspar_script_dir), "output")),
     n_taxa = 100L,
     replications = 100L,
     null_replications = 500L,

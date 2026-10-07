@@ -26,7 +26,7 @@ if (length(script_argument) != 1L) {
 }
 script_dir <- dirname(normalizePath(sub("^--file=", "", script_argument), mustWork = TRUE))
 input_files <- file.path(dirname(script_dir),
-    c("SimulationStudy", "MetaSPARSimSimulation"), "tables", "main_plot_data.csv")
+    c("SimulationInternalValidation", "SimulationMetaSPARSim"), "tables", "main_plot_data.csv")
 output_dir <- file.path(script_dir, "figures")
 output_file <- file.path(output_dir, "main_simulation_calibrated_bh_power_combined.pdf")
 if (!all(file.exists(input_files))) {

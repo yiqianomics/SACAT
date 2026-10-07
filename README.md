@@ -235,8 +235,8 @@ statistics and constrained fits.
 
 ## Manuscript analyses
 
-- [Model-based simulations](Analysis/SimulationStudy/README.md)
-- [metaSPARSim simulations](Analysis/MetaSPARSimSimulation/README.md)
+- [Internal model validation](Analysis/SimulationInternalValidation/README.md)
+- [metaSPARSim simulations](Analysis/SimulationMetaSPARSim/README.md)
 - [Real-data analyses](Analysis/RealDataAnalysis/README.md)
 - [Negative controls](Analysis/NegativeControlAnalysis/README.md)
 - [Main figures](Analysis/MainFigures/README.md)

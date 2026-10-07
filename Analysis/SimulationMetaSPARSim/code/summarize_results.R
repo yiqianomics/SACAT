@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # Recompute simulation summaries from complete taxon-level p-value families.
-# Requires data.table. Inputs and tables are relative to this script.
+# Requires data.table. Inputs and tables are in the study directory.
 # Run with Rscript; no simulation or model fitting is performed.
 
 if (!requireNamespace("data.table", quietly = TRUE)) {
@@ -11,7 +11,7 @@ suppressPackageStartupMessages(library(data.table))
 setDTthreads(2L)
 file_arg <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
 if (length(file_arg) != 1L) stop("Run this script with Rscript.", call. = FALSE)
-root <- dirname(normalizePath(sub("^--file=", "", file_arg), mustWork = TRUE))
+root <- dirname(dirname(normalizePath(sub("^--file=", "", file_arg), mustWork = TRUE)))
 input <- file.path(root, "data")
 output <- file.path(root, "tables")
 dir.create(output, recursive = TRUE, showWarnings = FALSE)

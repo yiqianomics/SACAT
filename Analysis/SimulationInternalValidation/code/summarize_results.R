@@ -4,7 +4,7 @@
 suppressPackageStartupMessages(library(data.table))
 setDTthreads(2L)
 argument <- grep("^--file=", commandArgs(FALSE), value = TRUE)
-study_dir <- dirname(normalizePath(sub("^--file=", "", argument[[1L]])))
+study_dir <- dirname(dirname(normalizePath(sub("^--file=", "", argument[[1L]]))))
 data_dir <- Sys.getenv("SACAT_SIMULATION_DATA", file.path(study_dir, "data"))
 table_dir <- Sys.getenv("SACAT_SIMULATION_TABLES", file.path(study_dir, "tables"))
 dir.create(table_dir, recursive = TRUE, showWarnings = FALSE)

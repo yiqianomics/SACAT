@@ -2,7 +2,8 @@
 
 arguments <- commandArgs(trailingOnly = TRUE)
 script <- sub("^--file=", "", grep("^--file=", commandArgs(), value = TRUE)[1L])
-study_dir <- dirname(normalizePath(script))
+code_dir <- dirname(normalizePath(script))
+study_dir <- dirname(code_dir)
 root <- Sys.getenv("SACAT_ABUNDANCE_ROOT", file.path(study_dir, "abundance_output"))
 dir.create(root, recursive = TRUE, showWarnings = FALSE)
 data_dir <- Sys.getenv("SACAT_SIMULATION_DATA", file.path(study_dir, "data"))
@@ -21,7 +22,7 @@ load_original <- function() {
     simulation_variables <- grep("^SACAT_SIMULATION_", names(Sys.getenv()), value = TRUE)
     Sys.unsetenv(simulation_variables)
     env <- new.env(parent = globalenv())
-    source(file.path(study_dir, "run_simulation.R"), local = env)
+    source(file.path(code_dir, "run_simulation.R"), local = env)
     env
 }
 
@@ -113,7 +114,7 @@ prepare <- function() {
             file.path(root, "preflight/null_reference.rds"), compress = "gzip")
     saveRDS(original[replication == 1L & effect_parameter == .40],
             file.path(root, "preflight/original_results.rds"), compress = "gzip")
-    truth <- fread(file.path(data_dir, "base_truth.csv.gz"))[
+    truth <- fread(file.path(data_dir, "abundance_reference_truth.csv"))[
         n_per_group == 80L & scenario == "present_conditional_abundance" &
             effect_parameter == .40 & replication == 1L]
     saveRDS(truth, file.path(root, "preflight/original_truth.rds"), compress = "gzip")

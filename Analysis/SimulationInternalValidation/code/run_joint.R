@@ -3,6 +3,12 @@
 # Joint SA and RA effects under the internal logit-normal model.
 # Rscript run_joint.R replicate <id> | summarize | design | check
 
+script_file <- local({
+    paths <- Filter(Negate(is.null), lapply(sys.frames(), function(frame) frame$ofile))
+    if (length(paths)) tail(paths, 1L)[[1L]] else
+        sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[[1L]])
+})
+study_dir <- dirname(dirname(normalizePath(script_file)))
 options(stringsAsFactors = FALSE, warn = 1)
 Sys.setenv(OMP_NUM_THREADS = "1", OPENBLAS_NUM_THREADS = "1",
            MKL_NUM_THREADS = "1", VECLIB_MAXIMUM_THREADS = "1", NUMEXPR_NUM_THREADS = "1")
@@ -1272,7 +1278,7 @@ run_maaslin3 <- function(simulation, replication_id, temporary_root) {
 }
 
 CONFIG <- list(
-    root = Sys.getenv("SACAT_JOINT_ROOT", "joint_output"),
+    root = Sys.getenv("SACAT_JOINT_ROOT", file.path(study_dir, "joint_output")),
     n_taxa = 50L,
     n_signal = 10L,
     n_replications = 100L,

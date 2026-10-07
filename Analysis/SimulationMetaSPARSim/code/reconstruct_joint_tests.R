@@ -11,7 +11,7 @@ arguments <- commandArgs(trailingOnly = TRUE)
 if (length(arguments) > 1L) stop("Supply at most one working directory.")
 script <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[1L])
 root <- if (length(arguments)) normalizePath(arguments[1L], mustWork = TRUE) else
-    dirname(normalizePath(script, mustWork = TRUE))
+    dirname(dirname(normalizePath(script, mustWork = TRUE)))
 data_dir <- file.path(root, "data")
 table_dir <- file.path(root, "tables")
 taxon_keys <- c("setting_index", "replication", "taxon_index")

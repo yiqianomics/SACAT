@@ -15,6 +15,12 @@
 # Raw taxon-level p-values, adjusted p-values, diagnostics, simulation truth,
 # latent states and count data are saved for reproducibility.
 
+script_file <- local({
+    paths <- Filter(Negate(is.null), lapply(sys.frames(), function(frame) frame$ofile))
+    if (length(paths)) tail(paths, 1L)[[1L]] else
+        sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[[1L]])
+})
+study_dir <- dirname(dirname(normalizePath(script_file)))
 options(stringsAsFactors = FALSE, warn = 1)
 Sys.setenv(
     OMP_NUM_THREADS = "1",
@@ -149,7 +155,7 @@ CONFIG <- list(
     script_version = "sacat-internal-validation-0.7.1",
     root = Sys.getenv(
         "SACAT_SIMULATION_ROOT",
-        "sacat_internal_validation_output"
+        file.path(study_dir, "base_output")
     ),
     n_taxa = env_int("SACAT_SIMULATION_N_TAXA", 50L, 30L),
     sample_sizes_per_group = c(60L, 80L, 120L),
