@@ -73,16 +73,10 @@ display_method_sources <- c(
 )
 display_method_order <- unname(display_method_sources)
 component_taxa <- c("Coprococcus", "Enterococcus", "Faecalibacterium")
-intersection_taxa <- component_taxa
-focus_colors <- c(
-    "Coprococcus" = "#0072B2",
-    "Enterococcus" = "#D55E00",
-    "Faecalibacterium" = "#009E73"
-)
 group_colors <- c("Healthy" = "#4C78A8", "CDI" = "#E45756")
 
 if (!identical(unique(results$method), analysis_method_order) ||
-    !all(intersection_taxa %in% results$taxon) ||
+    !all(component_taxa %in% results$taxon) ||
     !all(component_taxa %in% rownames(input$counts))) {
     stop("The completed CDI results do not match the expected analysis.",
          call. = FALSE)
@@ -232,22 +226,6 @@ row_background <- data.frame(
     fill = rep(c("grey98", "grey94"), length.out = nrow(positions))
 )
 
-focus_membership <- display_membership[
-    display_membership$taxon %in% intersection_taxa,
-]
-focus_membership <- merge(
-    focus_membership,
-    displayed_intersections[, c("intersection", "n")],
-    by = "intersection"
-)
-if (nrow(focus_membership) != length(intersection_taxa)) {
-    stop("One or more highlighted taxa are absent from the displayed intersections.",
-         call. = FALSE)
-}
-focus_membership$intersection <- factor(
-    focus_membership$intersection, levels = intersection_levels
-)
-
 intersection_index <- stats::setNames(
     seq_along(intersection_levels), intersection_levels
 )
@@ -263,84 +241,6 @@ active_points$intersection_index <- unname(
 segment_data$intersection_index <- unname(
     intersection_index[as.character(segment_data$intersection)]
 )
-focus_membership$intersection_index <- unname(
-    intersection_index[as.character(focus_membership$intersection)]
-)
-
-key_taxa <- c("Enterococcus", "Coprococcus", "Faecalibacterium")
-annotated_intersections <- as.character(focus_membership$intersection[
-    match(key_taxa, focus_membership$taxon)
-])
-annotated_members <- display_membership[
-    display_membership$intersection %in% annotated_intersections,
-    c("intersection", "taxon")
-]
-annotated_members <- annotated_members[order(
-    match(annotated_members$intersection, annotated_intersections),
-    annotated_members$taxon,
-    method = "radix"
-), ]
-intersection_members <- split(
-    annotated_members$taxon,
-    factor(annotated_members$intersection, levels = annotated_intersections)
-)
-member_y <- lapply(intersection_members, function(members) {
-    seq(5.70, 0.95, length.out = length(members))
-})
-annotated_members$y <- unlist(
-    lapply(annotated_intersections, function(intersection) {
-        member_y[[intersection]]
-    }),
-    use.names = FALSE
-)
-annotated_members$label <- gsub(
-    "_", " ", annotated_members$taxon, fixed = TRUE
-)
-annotated_members$label[
-    annotated_members$taxon == "Lachnospiracea_incertae_sedis"
-] <- "Lachnospiracea\nincertae sedis"
-annotated_members$highlighted <- annotated_members$taxon %in% intersection_taxa
-annotated_members$italicize_label <- !grepl(
-    "^Unclassified_|incertae_sedis$|^Ruminococcus2$",
-    annotated_members$taxon
-)
-ordinary_italic_labels <-
-    !annotated_members$highlighted & annotated_members$italicize_label
-ordinary_plain_labels <-
-    !annotated_members$highlighted & !annotated_members$italicize_label
-key_columns <- stats::setNames(c(0.02, 0.36, 0.68), annotated_intersections)
-annotated_members$text_x <- unname(
-    key_columns[annotated_members$intersection]
-) + 0.035
-annotated_members$marker_x <- unname(
-    key_columns[annotated_members$intersection]
-)
-annotation_headers <- data.frame(
-    intersection = annotated_intersections,
-    label = sprintf(
-        "%s (n = %d)",
-        annotated_intersections,
-        lengths(intersection_members)
-    ),
-    x = unname(key_columns),
-    y = rep(6.90, length(annotated_intersections)),
-    taxon = key_taxa,
-    stringsAsFactors = FALSE
-)
-arrow_data <- focus_membership[, c(
-    "taxon", "intersection", "intersection_index", "n"
-)]
-arrow_data <- arrow_data[
-    match(annotated_intersections, arrow_data$intersection),
-]
-arrow_data$arrow_x <- arrow_data$intersection_index + 0.23
-arrow_data$arrow_y <- arrow_data$n + 0.55
-arrow_data$label_x <- arrow_data$intersection_index + c(1.4, 1.1, 0.8)
-arrow_data$label_y <- pmin(
-    max(displayed_intersections$n) * 1.18 - 0.6,
-    arrow_data$n + 3.5
-)
-
 intersection_bar <- ggplot2::ggplot(
     displayed_intersections,
     ggplot2::aes(x = intersection_index, y = n)
@@ -348,9 +248,7 @@ intersection_bar <- ggplot2::ggplot(
     ggplot2::geom_col(width = 0.66, fill = "grey25") +
     ggplot2::geom_text(
         data = displayed_intersections[
-            displayed_intersections$n >= 2 &
-                !as.character(displayed_intersections$intersection) %in%
-                    annotated_intersections,
+            displayed_intersections$n >= 2,
         ],
         ggplot2::aes(
             x = intersection_index, y = n, label = n
@@ -358,33 +256,6 @@ intersection_bar <- ggplot2::ggplot(
         vjust = -0.25,
         size = 2.6, color = "grey15"
     ) +
-    ggplot2::geom_col(
-        data = focus_membership,
-        ggplot2::aes(x = intersection_index, y = n, color = taxon),
-        fill = NA, width = 0.66, linewidth = 0.8,
-        inherit.aes = FALSE
-    ) +
-    ggplot2::geom_curve(
-        data = arrow_data,
-        ggplot2::aes(
-            x = label_x, y = label_y - 0.35,
-            xend = arrow_x, yend = arrow_y,
-            color = taxon
-        ),
-        curvature = 0.12, linewidth = 0.55,
-        arrow = grid::arrow(
-            length = grid::unit(1.7, "mm"), type = "closed"
-        ),
-        inherit.aes = FALSE
-    ) +
-    ggplot2::geom_text(
-        data = arrow_data,
-        ggplot2::aes(
-            x = label_x, y = label_y, label = intersection, color = taxon
-        ),
-        size = 2.8, fontface = "bold", inherit.aes = FALSE
-    ) +
-    ggplot2::scale_color_manual(values = focus_colors) +
     ggplot2::scale_x_continuous(
         limits = c(0.5, length(intersection_levels) + 0.5),
         breaks = seq_along(intersection_levels),
@@ -435,17 +306,6 @@ intersection_matrix <- ggplot2::ggplot() +
         ggplot2::aes(x = intersection_index, y = y),
         color = "grey15", size = 2.45
     ) +
-    ggplot2::geom_rect(
-        data = focus_membership,
-        ggplot2::aes(
-            xmin = intersection_index - 0.42,
-            xmax = intersection_index + 0.42,
-            ymin = 0.55, ymax = length(display_method_order) + 0.45,
-            color = taxon
-        ),
-        fill = NA, linewidth = 0.45, inherit.aes = FALSE
-    ) +
-    ggplot2::scale_color_manual(values = focus_colors) +
     ggplot2::scale_x_continuous(
         limits = c(0.5, length(intersection_levels) + 0.5),
         breaks = seq_along(intersection_levels),
@@ -475,56 +335,16 @@ intersection_matrix <- ggplot2::ggplot() +
         plot.margin = ggplot2::margin(4, 5, 8, 5)
     )
 
-intersection_key <- ggplot2::ggplot() +
-    ggplot2::geom_text(
-        data = annotation_headers,
-        ggplot2::aes(
-            x = x, y = y, label = label, color = taxon
-        ),
-        hjust = 0, vjust = 0.5, size = 3.05, fontface = "bold"
-    ) +
-    ggplot2::geom_text(
-        data = annotated_members[ordinary_italic_labels, ],
-        ggplot2::aes(x = text_x, y = y, label = label),
-        hjust = 0, size = 2.55, lineheight = 0.9,
-        fontface = "italic", color = "grey25"
-    ) +
-    ggplot2::geom_text(
-        data = annotated_members[ordinary_plain_labels, ],
-        ggplot2::aes(x = text_x, y = y, label = label),
-        hjust = 0, size = 2.55, lineheight = 0.9, color = "grey25"
-    ) +
-    ggplot2::geom_point(
-        data = annotated_members[annotated_members$highlighted, ],
-        ggplot2::aes(x = marker_x, y = y, color = taxon),
-        shape = 1, size = 3.0, stroke = 0.85
-    ) +
-    ggplot2::geom_text(
-        data = annotated_members[annotated_members$highlighted, ],
-        ggplot2::aes(
-            x = text_x, y = y, label = label, color = taxon
-        ),
-        hjust = 0, size = 2.7, fontface = "bold.italic"
-    ) +
-    ggplot2::scale_color_manual(values = focus_colors) +
-    ggplot2::coord_cartesian(xlim = c(0, 1), ylim = c(0, 7.6)) +
-    ggplot2::theme_void() +
-    ggplot2::theme(
-        legend.position = "none",
-        plot.margin = ggplot2::margin(5, 5, 3, 9)
-    )
-
 intersection_figure <- patchwork::wrap_plots(
-    intersection_key,
-    intersection_bar,
+    patchwork::free(intersection_bar, type = "label", side = "l"),
     intersection_matrix,
     ncol = 1,
-    heights = c(0.72, 0.65, 1.55)
+    heights = c(0.65, 1.55)
 )
 
 grDevices::pdf(
     file.path(figure_directory, "schubert_cdi_method_intersections.pdf"),
-    width = 225 / 25.4, height = 105 / 25.4, onefile = TRUE,
+    width = 225 / 25.4, height = 85 / 25.4, onefile = TRUE,
     family = "Helvetica", useDingbats = FALSE, version = "1.5"
 )
 print(intersection_figure)

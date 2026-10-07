@@ -45,5 +45,5 @@ Rscript Analysis/RealDataAnalysis/cdi_schubert/prepare_data.R
 The SACAT input and cohort, count, taxonomy, and preprocessing summaries are
 written to `processed/`.
 
-The combined CDI and mock-community figure, its numerical inputs, and its
+The combined CDI and spike-in figure, its numerical inputs, and its
 generation script are in [`Analysis/MainFigures`](../../MainFigures/README.md).

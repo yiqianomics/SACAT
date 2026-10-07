@@ -1,4 +1,4 @@
-# Run the Rauer defined mock-community benchmark.
+# Run the Rauer spike-in benchmark.
 
 options(stringsAsFactors = FALSE, warn = 1)
 

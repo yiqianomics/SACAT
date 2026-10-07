@@ -1402,6 +1402,7 @@ validate_analysis_input <- function(input, configuration) {
 
 make_upset_figure <- function(results, tested_taxa, configuration,
                               table_directory, figure_directory) {
+    draw_figure <- configuration$dataset_id != "cdi_schubert"
     required_columns <- c("taxon", "method", "significant")
     expected_rows <- length(method_order) * tested_taxa
     if (nrow(results) != expected_rows ||
@@ -1468,19 +1469,19 @@ make_upset_figure <- function(results, tested_taxa, configuration,
             "_upset_intersection_membership.csv"
         )
     )
-    figure_file <- file.path(
+    figure_file <- if (draw_figure) file.path(
         figure_directory,
         paste0(configuration$output_prefix, "_upset.pdf")
-    )
+    ) else character()
     staged_intersection_file <- tempfile(
         "upset-intersections-", table_directory, ".csv"
     )
     staged_membership_file <- tempfile(
         "upset-membership-", table_directory, ".csv"
     )
-    staged_figure_file <- tempfile(
+    staged_figure_file <- if (draw_figure) tempfile(
         "upset-figure-", figure_directory, ".pdf"
-    )
+    ) else character()
     staged_files <- c(
         staged_intersection_file,
         staged_membership_file,
@@ -1817,20 +1818,22 @@ make_upset_figure <- function(results, tested_taxa, configuration,
         )
     }
 
-    figure <- assemble_upset_figure()
-    figure_height_mm <- if (dense_intersection_layout) 124 else 116
-    figure_height <- figure_height_mm / 25.4
-    grDevices::pdf(
-        file = staged_figure_file,
-        width = figure_width,
-        height = figure_height,
-        onefile = TRUE,
-        family = "Helvetica",
-        useDingbats = FALSE,
-        version = "1.5"
-    )
-    print(figure)
-    grDevices::dev.off()
+    if (draw_figure) {
+        figure <- assemble_upset_figure()
+        figure_height_mm <- if (dense_intersection_layout) 124 else 116
+        figure_height <- figure_height_mm / 25.4
+        grDevices::pdf(
+            file = staged_figure_file,
+            width = figure_width,
+            height = figure_height,
+            onefile = TRUE,
+            family = "Helvetica",
+            useDingbats = FALSE,
+            version = "1.5"
+        )
+        print(figure)
+        grDevices::dev.off()
+    }
     if (any(!file.exists(staged_files)) || any(file.info(staged_files)$size == 0)) {
         stop("The staged UpSet outputs are incomplete.", call. = FALSE)
     }
@@ -1842,9 +1845,9 @@ make_upset_figure <- function(results, tested_taxa, configuration,
     list(
         file = figure_file,
         width = figure_width,
-        pages = 1L,
+        pages = as.integer(draw_figure),
         intersections = full_intersection_count,
-        intersections_shown = full_intersection_count,
+        intersections_shown = if (draw_figure) full_intersection_count else 0L,
         taxa_in_union = nrow(membership)
     )
 }
@@ -1905,7 +1908,11 @@ run_dataset <- function(configuration, plot_only = FALSE) {
             results, tested_taxa, configuration,
             table_directory, figure_directory
         )
-        message("Updated ", figure$file)
+        if (length(figure$file)) {
+            message("Updated ", figure$file)
+        } else {
+            message("Updated intersection tables for ", configuration$dataset_id)
+        }
         return(invisible(figure))
     }
 
@@ -2148,7 +2155,8 @@ run_dataset <- function(configuration, plot_only = FALSE) {
         stop("The staged output set is incomplete.", call. = FALSE)
     }
     destinations <- c(
-        rep(table_directory, 6L), rep(figure_directory, 2L)
+        rep(table_directory, 6L),
+        rep(figure_directory, length(figure$file) + 1L)
     )
     final_files <- file.path(destinations, basename(staged_files))
     copied <- mapply(
@@ -2159,11 +2167,11 @@ run_dataset <- function(configuration, plot_only = FALSE) {
     if (!all(copied)) {
         stop("Could not replace the completed output set.", call. = FALSE)
     }
-    figure$file <- final_files[[7L]]
+    figure$file <- file.path(figure_directory, basename(figure$file))
     message(
         configuration$dataset_id, ": ", figure$taxa_in_union,
-        " taxa in ", figure$intersections, " intersections; ",
-        figure$file
+        " taxa in ", figure$intersections, " intersections",
+        if (length(figure$file)) paste0("; ", figure$file)
     )
     invisible(list(
         results = results,

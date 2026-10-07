@@ -46,7 +46,7 @@ for recomputing their summaries.
 
 ## Real-data figure
 
-Panels A and B show mock-community signal recovery. Panels C–F show method
+Panels A and B show spike-in signal recovery. Panels C–F show method
 comparisons and component profiles for *Coprococcus*, *Enterococcus*, and
 *Faecalibacterium* in the Schubert CDI cohort. Panel C marks BH-adjusted
 p-values at or below 0.05. Panel D shows signed component statistics and their

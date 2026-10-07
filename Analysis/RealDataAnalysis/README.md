@@ -24,9 +24,9 @@ Each linked dataset README records the public source, cohort construction,
 independent sampling unit, filtering, original library-size definition,
 adjustment variables, and preparation command.
 
-## Defined mock-community benchmark
+## Spike-in benchmark
 
-The [Rauer mock-community benchmark](rauer_mock/README.md) uses 32 libraries
+The [Rauer spike-in benchmark](rauer_mock/README.md) uses 32 libraries
 from two defined source communities to evaluate component-specific recovery,
 calibration, and availability across native and controlled sequencing depths.
 The cross-cohort summaries cover the seven human cohorts.
@@ -86,8 +86,8 @@ Rscript Analysis/RealDataAnalysis/analysis.R \
   --dataset=gems_pediatric_diarrhea
 ```
 
-Regenerate the seven standard UpSet figures and their intersection tables from
-the completed taxon-level result tables:
+Regenerate the standard intersection tables for all seven cohorts and the
+UpSet figures for the six cohorts other than CDI from completed result tables:
 
 ```sh
 Rscript Analysis/RealDataAnalysis/analysis.R --plot-only
@@ -107,7 +107,7 @@ detailed component and method-intersection outputs with:
 Rscript Analysis/RealDataAnalysis/cdi_schubert/make_detailed_figures.R
 ```
 
-Prepare, analyze, and summarize the defined mock-community benchmark with:
+Prepare, analyze, and summarize the spike-in benchmark with:
 
 ```sh
 Rscript Analysis/RealDataAnalysis/rauer_mock/prepare_data.R
@@ -116,7 +116,7 @@ Rscript Analysis/RealDataAnalysis/rauer_mock/make_figures.R
 ```
 
 The [main manuscript figures](../MainFigures/README.md) include a combined
-figure of the CDI component profiles and Rauer mock-community recovery curves.
+figure of the CDI component profiles and Rauer spike-in recovery curves.
 
 Preparation and fitting write source inputs and intermediate files to `raw/`,
 `processed/`, and `work/`. Reported tables and figures are in each dataset's
@@ -126,7 +126,7 @@ independent of execution order.
 
 [`software_versions.csv`](software_versions.csv) records the R version and
 direct package versions used to generate the reported outputs, with the SACAT
-version identified by cohort. The CDI and mock-community results use SACAT
+version identified by cohort. The CDI and spike-in results use SACAT
 0.7.1. Each `*_method_status.csv` also records the fitted method package version
 for that dataset.
 
@@ -171,14 +171,12 @@ Each completed human cohort contains six standard CSV files in `table/`:
 5. `*_upset_intersections.csv` — every discovery-set intersection; and
 6. `*_upset_intersection_membership.csv` — the taxa in every intersection.
 
-Each `figs/` directory contains two standard PDF figures:
-
-- `*_upset.pdf` compares discoveries across the 15 result sets. Every
-  nonempty intersection pattern is displayed in one continuous matrix.
-- `*_sacat_profile.pdf` displays the SACAT structural and
-  present-conditional components. It displays up to 24 significant combined
-  results; when no combined discovery exists, it displays the 10 strongest
-  available combined results as a descriptive profile.
+Each `figs/` directory contains `*_sacat_profile.pdf`, displaying the SACAT
+structural and present-conditional components for up to 24 significant combined
+results. When no combined discovery exists, it displays the 10 strongest
+available combined results. The six cohorts other than CDI also contain
+`*_upset.pdf`, comparing discoveries across the 15 result sets with every
+nonempty intersection in one continuous matrix.
 
 The Schubert CDI directory also contains a detailed component figure, a
 10-result-set method-intersection figure, and three corresponding data tables:

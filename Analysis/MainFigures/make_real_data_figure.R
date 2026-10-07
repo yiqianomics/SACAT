@@ -97,7 +97,7 @@ combined_tag_theme <- function(scale = 1) {
     )
 }
 
-# Mock-community recovery
+# Spike-in recovery
 
 make_mock_panels <- function(mock, scale = 1) {
     depth_levels <- c("native", "1000", "750", "500", "250", "100", "50")

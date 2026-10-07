@@ -1,4 +1,4 @@
-# Create the Rauer mock-community figure and summary tables.
+# Create the Rauer spike-in figure and summary tables.
 
 options(stringsAsFactors = FALSE, warn = 1)
 

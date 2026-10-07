@@ -1,6 +1,6 @@
-# Rauer defined mock-community benchmark
+# Rauer spike-in benchmark
 
-This analysis uses the mock-community sequencing experiment reported by Rauer
+This analysis uses the spike-in sequencing experiment reported by Rauer
 et al. in “De-biasing microbiome sequencing data: bacterial morphology-based
 correction of extraction bias and correlates of chimera formation”
 ([doi:10.1186/s40168-024-01998-4](https://doi.org/10.1186/s40168-024-01998-4)).
