@@ -4,6 +4,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=48G
 #SBATCH --time=7-00:00:00
+#SBATCH --output=logs/validation_%A_%a.out
+#SBATCH --error=logs/validation_%A_%a.err
 
 set -euo pipefail
 

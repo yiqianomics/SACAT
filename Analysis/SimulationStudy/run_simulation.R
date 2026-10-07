@@ -256,9 +256,9 @@ check_packages <- function(packages) {
 
     if ("SACAT" %in% packages) {
         installed_sacat <- as.character(utils::packageVersion("SACAT"))
-        if (!identical(installed_sacat, "0.7.1")) {
+        if (utils::packageVersion("SACAT") < "0.7.1") {
             stopf(
-                "This simulation requires SACAT 0.7.1, but SACAT %s was found in %s.",
+                "This simulation requires SACAT 0.7.1 or later, but SACAT %s was found in %s.",
                 installed_sacat,
                 normalizePath(
                     system.file(package = "SACAT"),
@@ -3344,4 +3344,4 @@ main <- function() {
     }
 }
 
-main()
+if (sys.nframe() == 0L) main()

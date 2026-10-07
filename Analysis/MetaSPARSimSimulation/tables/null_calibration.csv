@@ -1,0 +1,121 @@
+test_id,include_covariate,level,null_replications,training_tests,original_raw_type1,calibrated_raw_type1,method,component
+1,FALSE,0.001,500,49900,0.00102,0.00098,SACAT,structural_absence
+2,FALSE,0.001,500,49900,0.00142,0.00098,SACAT,present_conditional_abundance
+13,FALSE,0.001,500,49900,0.00138,0.00098,SACAT,primary_omnibus
+1,TRUE,0.001,500,49900,7e-04,0.001,SACAT,structural_absence
+2,TRUE,0.001,500,49900,0.00132,0.00098,SACAT,present_conditional_abundance
+13,TRUE,0.001,500,49900,0.00108,0.00098,SACAT,primary_omnibus
+1,FALSE,0.005,500,49900,0.0048,0.005,SACAT,structural_absence
+2,FALSE,0.005,500,49900,0.00696,0.00498,SACAT,present_conditional_abundance
+13,FALSE,0.005,500,49900,0.00614,0.005,SACAT,primary_omnibus
+1,TRUE,0.005,500,49900,0.00422,0.005,SACAT,structural_absence
+2,TRUE,0.005,500,49900,0.0064,0.005,SACAT,present_conditional_abundance
+13,TRUE,0.005,500,49900,0.00524,0.005,SACAT,primary_omnibus
+1,FALSE,0.01,500,49900,0.00868,0.01,SACAT,structural_absence
+2,FALSE,0.01,500,49900,0.01284,0.00998,SACAT,present_conditional_abundance
+13,FALSE,0.01,500,49900,0.01142,0.01,SACAT,primary_omnibus
+1,TRUE,0.01,500,49900,0.00828,0.00998,SACAT,structural_absence
+2,TRUE,0.01,500,49900,0.01208,0.01,SACAT,present_conditional_abundance
+13,TRUE,0.01,500,49900,0.01038,0.01,SACAT,primary_omnibus
+1,FALSE,0.05,500,49900,0.04528,0.05,SACAT,structural_absence
+2,FALSE,0.05,500,49900,0.05498,0.05,SACAT,present_conditional_abundance
+13,FALSE,0.05,500,49900,0.04904,0.05,SACAT,primary_omnibus
+1,TRUE,0.05,500,49900,0.04662,0.05004,SACAT,structural_absence
+2,TRUE,0.05,500,49900,0.0559,0.05,SACAT,present_conditional_abundance
+13,TRUE,0.05,500,49900,0.04912,0.04994,SACAT,primary_omnibus
+3,FALSE,0.001,500,49900,9e-04,0.00098,ZINQ,observed_prevalence
+4,FALSE,0.001,500,49900,0.00122,0.001,ZINQ,detected_quantile_abundance
+5,FALSE,0.001,500,49900,7e-04,0.00098,MaAsLin 3,observed_prevalence
+6,FALSE,0.001,500,49900,0.00078,0.00098,MaAsLin 3,detected_log_abundance
+3,TRUE,0.001,500,49900,9e-04,0.00098,ZINQ,observed_prevalence
+4,TRUE,0.001,500,49900,0.00124,0.00098,ZINQ,detected_quantile_abundance
+5,TRUE,0.001,500,49900,0.00066,0.00098,MaAsLin 3,observed_prevalence
+6,TRUE,0.001,500,49900,7e-04,0.00098,MaAsLin 3,detected_log_abundance
+3,FALSE,0.005,500,49900,0.00496,0.00498,ZINQ,observed_prevalence
+4,FALSE,0.005,500,49900,0.00622,0.00498,ZINQ,detected_quantile_abundance
+5,FALSE,0.005,500,49900,0.00432,0.005,MaAsLin 3,observed_prevalence
+6,FALSE,0.005,500,49900,0.00402,0.00498,MaAsLin 3,detected_log_abundance
+3,TRUE,0.005,500,49900,0.00468,0.005,ZINQ,observed_prevalence
+4,TRUE,0.005,500,49900,0.00582,0.005,ZINQ,detected_quantile_abundance
+5,TRUE,0.005,500,49900,0.0041,0.00498,MaAsLin 3,observed_prevalence
+6,TRUE,0.005,500,49900,0.0043,0.00502,MaAsLin 3,detected_log_abundance
+3,FALSE,0.01,500,49900,0.00974,0.01002,ZINQ,observed_prevalence
+4,FALSE,0.01,500,49900,0.01174,0.01,ZINQ,detected_quantile_abundance
+5,FALSE,0.01,500,49900,0.00904,0.01,MaAsLin 3,observed_prevalence
+6,FALSE,0.01,500,49900,0.0082,0.01,MaAsLin 3,detected_log_abundance
+3,TRUE,0.01,500,49900,0.00968,0.01,ZINQ,observed_prevalence
+4,TRUE,0.01,500,49900,0.01226,0.01004,ZINQ,detected_quantile_abundance
+5,TRUE,0.01,500,49900,0.00864,0.01,MaAsLin 3,observed_prevalence
+6,TRUE,0.01,500,49900,0.00902,0.01,MaAsLin 3,detected_log_abundance
+3,FALSE,0.05,500,49900,0.04764,0.05,ZINQ,observed_prevalence
+4,FALSE,0.05,500,49900,0.0573,0.05,ZINQ,detected_quantile_abundance
+5,FALSE,0.05,500,49900,0.04682,0.05,MaAsLin 3,observed_prevalence
+6,FALSE,0.05,500,49900,0.0448,0.05,MaAsLin 3,detected_log_abundance
+3,TRUE,0.05,500,49900,0.04836,0.05002,ZINQ,observed_prevalence
+4,TRUE,0.05,500,49900,0.05698,0.05,ZINQ,detected_quantile_abundance
+5,TRUE,0.05,500,49900,0.04698,0.04996,MaAsLin 3,observed_prevalence
+6,TRUE,0.05,500,49900,0.04442,0.04996,MaAsLin 3,detected_log_abundance
+7,FALSE,0.001,500,49900,0.00022,0.00098,edgeR,general_abundance
+8,FALSE,0.001,500,49900,0.00088,0.00098,DESeq2,general_abundance
+9,FALSE,0.001,500,49900,4e-04,0.001,ANCOM-BC2,general_abundance
+10,FALSE,0.001,500,49900,0.00284,0.00098,LinDA,general_abundance
+11,FALSE,0.001,500,49900,0.00134,0.001,corncob,general_abundance
+12,FALSE,0.001,500,49900,0.0426,0.00098,metagenomeSeq,general_abundance
+7,TRUE,0.001,500,49900,0.00012,0.00098,edgeR,general_abundance
+8,TRUE,0.001,500,49900,0.00112,0.00098,DESeq2,general_abundance
+9,TRUE,0.001,500,49900,0.00044,0.00098,ANCOM-BC2,general_abundance
+10,TRUE,0.001,500,49900,0.003,0.00098,LinDA,general_abundance
+11,TRUE,0.001,500,49900,0.00138,0.00098,corncob,general_abundance
+12,TRUE,0.001,500,49900,0.04262,0.00098,metagenomeSeq,general_abundance
+7,FALSE,0.005,500,49900,0.00082,0.00498,edgeR,general_abundance
+8,FALSE,0.005,500,49900,0.0049,0.00498,DESeq2,general_abundance
+9,FALSE,0.005,500,49900,0.01486,0.00498,ANCOM-BC2,general_abundance
+10,FALSE,0.005,500,49900,0.0102,0.00498,LinDA,general_abundance
+11,FALSE,0.005,500,49900,0.0055,0.00498,corncob,general_abundance
+12,FALSE,0.005,500,49900,0.0821,0.005,metagenomeSeq,general_abundance
+7,TRUE,0.005,500,49900,0.00084,0.00498,edgeR,general_abundance
+8,TRUE,0.005,500,49900,0.00518,0.00498,DESeq2,general_abundance
+9,TRUE,0.005,500,49900,0.01442,0.005,ANCOM-BC2,general_abundance
+10,TRUE,0.005,500,49900,0.01064,0.005,LinDA,general_abundance
+11,TRUE,0.005,500,49900,0.0063,0.005,corncob,general_abundance
+12,TRUE,0.005,500,49900,0.08426,0.00498,metagenomeSeq,general_abundance
+7,FALSE,0.01,500,49900,0.00128,0.01,edgeR,general_abundance
+8,FALSE,0.01,500,49900,0.00978,0.01,DESeq2,general_abundance
+9,FALSE,0.01,500,49900,0.03942,0.01,ANCOM-BC2,general_abundance
+10,FALSE,0.01,500,49900,0.0185,0.01002,LinDA,general_abundance
+11,FALSE,0.01,500,49900,0.01114,0.01002,corncob,general_abundance
+12,FALSE,0.01,500,49900,0.11068,0.01,metagenomeSeq,general_abundance
+7,TRUE,0.01,500,49900,0.00186,0.01,edgeR,general_abundance
+8,TRUE,0.01,500,49900,0.01026,0.01,DESeq2,general_abundance
+9,TRUE,0.01,500,49900,0.03764,0.01004,ANCOM-BC2,general_abundance
+10,TRUE,0.01,500,49900,0.01866,0.01,LinDA,general_abundance
+11,TRUE,0.01,500,49900,0.01206,0.01,corncob,general_abundance
+12,TRUE,0.01,500,49900,0.11436,0.01002,metagenomeSeq,general_abundance
+7,FALSE,0.05,500,49900,0.00532,0.05,edgeR,general_abundance
+8,FALSE,0.05,500,49900,0.0479,0.05,DESeq2,general_abundance
+9,FALSE,0.05,500,49900,0.14692,0.05,ANCOM-BC2,general_abundance
+10,FALSE,0.05,500,49900,0.06994,0.05,LinDA,general_abundance
+11,FALSE,0.05,500,49900,0.05276,0.04998,corncob,general_abundance
+12,FALSE,0.05,500,49900,0.22894,0.05002,metagenomeSeq,general_abundance
+7,TRUE,0.05,500,49900,0.01254,0.05,edgeR,general_abundance
+8,TRUE,0.05,500,49900,0.05024,0.05,DESeq2,general_abundance
+9,TRUE,0.05,500,49900,0.1457,0.05002,ANCOM-BC2,general_abundance
+10,TRUE,0.05,500,49900,0.07178,0.05,LinDA,general_abundance
+11,TRUE,0.05,500,49900,0.05692,0.04998,corncob,general_abundance
+12,TRUE,0.05,500,49900,0.23038,0.05002,metagenomeSeq,general_abundance
+14,FALSE,0.001,500,49900,9e-04,0.00098,MaAsLin 3,native_joint
+15,FALSE,0.001,500,49900,0.00086,0.00098,ZINQ,native_joint
+14,TRUE,0.001,500,49900,8e-04,0.00098,MaAsLin 3,native_joint
+15,TRUE,0.001,500,49900,0.00082,0.00098,ZINQ,native_joint
+14,FALSE,0.005,500,49900,0.00522,0.00498,MaAsLin 3,native_joint
+15,FALSE,0.005,500,49900,0.00564,0.00498,ZINQ,native_joint
+14,TRUE,0.005,500,49900,0.00488,0.00498,MaAsLin 3,native_joint
+15,TRUE,0.005,500,49900,0.00518,0.005,ZINQ,native_joint
+14,FALSE,0.01,500,49900,0.0101,0.01,MaAsLin 3,native_joint
+15,FALSE,0.01,500,49900,0.01064,0.01,ZINQ,native_joint
+14,TRUE,0.01,500,49900,0.00988,0.01,MaAsLin 3,native_joint
+15,TRUE,0.01,500,49900,0.01074,0.01,ZINQ,native_joint
+14,FALSE,0.05,500,49900,0.04454,0.04998,MaAsLin 3,native_joint
+15,FALSE,0.05,500,49900,0.05236,0.05,ZINQ,native_joint
+14,TRUE,0.05,500,49900,0.0452,0.05002,MaAsLin 3,native_joint
+15,TRUE,0.05,500,49900,0.05346,0.04998,ZINQ,native_joint

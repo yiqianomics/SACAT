@@ -1,0 +1,181 @@
+panel,simulation,setting_id,scenario,n_per_group,covariate,effect_parameter,effect_index,structural_difference,abundance_log_effect,method,component,plotted_metric,plotted_value,original_bh_value,include_covariate
+B,metaSPARSim,setting_0003,structural_only,,,,1,0.1,0,SACAT,structural_absence,Power (calibrated p + BH),0.0115,0.012,FALSE
+B,metaSPARSim,setting_0003,structural_only,,,,1,0.1,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.01,0.0095,FALSE
+B,metaSPARSim,setting_0003,structural_only,,,,1,0.1,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.01,0.009,FALSE
+B,metaSPARSim,setting_0004,structural_only,,,,1,0.1,0,SACAT,structural_absence,Power (calibrated p + BH),0.01,0.0075,TRUE
+B,metaSPARSim,setting_0004,structural_only,,,,1,0.1,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.0065,0.0055,TRUE
+B,metaSPARSim,setting_0004,structural_only,,,,1,0.1,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.0065,0.005,TRUE
+B,metaSPARSim,setting_0005,abundance_only,,,,1,0,0.2,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.007,0.0085,FALSE
+B,metaSPARSim,setting_0005,abundance_only,,,,1,0,0.2,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.0025,0.0025,FALSE
+B,metaSPARSim,setting_0005,abundance_only,,,,1,0,0.2,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.0035,0.003,FALSE
+B,metaSPARSim,setting_0006,abundance_only,,,,1,0,0.2,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.0075,0.0085,TRUE
+B,metaSPARSim,setting_0006,abundance_only,,,,1,0,0.2,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.003,0.003,TRUE
+B,metaSPARSim,setting_0006,abundance_only,,,,1,0,0.2,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.0055,0.005,TRUE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,edgeR,general_abundance,Power (calibrated p + BH),0.006,0.001,FALSE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,DESeq2,general_abundance,Power (calibrated p + BH),0.0265,0.025,FALSE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.001,0,FALSE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,LinDA,general_abundance,Power (calibrated p + BH),0.0165,0.04,FALSE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,corncob,general_abundance,Power (calibrated p + BH),0.0215,0.032,FALSE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,metagenomeSeq,general_abundance,Power (calibrated p + BH),0,0.195,FALSE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,SACAT,primary_omnibus,Power (calibrated p + BH),0.013,0.0145,FALSE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,MaAsLin 3,native_joint,Power (calibrated p + BH),0.0085,0.0075,FALSE
+B,metaSPARSim,setting_0007,joint,,,,1,0.1,0.2,ZINQ,native_joint,Power (calibrated p + BH),0.006,0.006,FALSE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,edgeR,general_abundance,Power (calibrated p + BH),0.0245,0.006,TRUE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,DESeq2,general_abundance,Power (calibrated p + BH),0.0215,0.0245,TRUE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0,0,TRUE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,LinDA,general_abundance,Power (calibrated p + BH),0.015,0.0385,TRUE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,corncob,general_abundance,Power (calibrated p + BH),0.027,0.0355,TRUE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,metagenomeSeq,general_abundance,Power (calibrated p + BH),5e-04,0.182,TRUE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,SACAT,primary_omnibus,Power (calibrated p + BH),0.013,0.0155,TRUE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,MaAsLin 3,native_joint,Power (calibrated p + BH),0.0125,0.012,TRUE
+B,metaSPARSim,setting_0008,joint,,,,1,0.1,0.2,ZINQ,native_joint,Power (calibrated p + BH),0.0115,0.011,TRUE
+B,metaSPARSim,setting_0009,structural_only,,,,2,0.15,0,SACAT,structural_absence,Power (calibrated p + BH),0.0765,0.0725,FALSE
+B,metaSPARSim,setting_0009,structural_only,,,,2,0.15,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.0605,0.059,FALSE
+B,metaSPARSim,setting_0009,structural_only,,,,2,0.15,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.061,0.05,FALSE
+B,metaSPARSim,setting_0010,structural_only,,,,2,0.15,0,SACAT,structural_absence,Power (calibrated p + BH),0.0905,0.0695,TRUE
+B,metaSPARSim,setting_0010,structural_only,,,,2,0.15,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.064,0.0605,TRUE
+B,metaSPARSim,setting_0010,structural_only,,,,2,0.15,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.0665,0.0525,TRUE
+B,metaSPARSim,setting_0011,abundance_only,,,,2,0,0.4,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.1205,0.1785,FALSE
+B,metaSPARSim,setting_0011,abundance_only,,,,2,0,0.4,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.024,0.0275,FALSE
+B,metaSPARSim,setting_0011,abundance_only,,,,2,0,0.4,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.059,0.0505,FALSE
+B,metaSPARSim,setting_0012,abundance_only,,,,2,0,0.4,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.135,0.169,TRUE
+B,metaSPARSim,setting_0012,abundance_only,,,,2,0,0.4,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.0285,0.033,TRUE
+B,metaSPARSim,setting_0012,abundance_only,,,,2,0,0.4,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.064,0.0485,TRUE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,edgeR,general_abundance,Power (calibrated p + BH),0.0305,0.0225,FALSE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,DESeq2,general_abundance,Power (calibrated p + BH),0.2035,0.2005,FALSE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.0285,0.024,FALSE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,LinDA,general_abundance,Power (calibrated p + BH),0.1635,0.274,FALSE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,corncob,general_abundance,Power (calibrated p + BH),0.3275,0.3415,FALSE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.004,0.4515,FALSE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,SACAT,primary_omnibus,Power (calibrated p + BH),0.1455,0.1685,FALSE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,MaAsLin 3,native_joint,Power (calibrated p + BH),0.106,0.1025,FALSE
+B,metaSPARSim,setting_0013,joint,,,,2,0.15,0.4,ZINQ,native_joint,Power (calibrated p + BH),0.0875,0.087,FALSE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,edgeR,general_abundance,Power (calibrated p + BH),0.2545,0.129,TRUE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,DESeq2,general_abundance,Power (calibrated p + BH),0.197,0.2055,TRUE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.0345,0.032,TRUE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,LinDA,general_abundance,Power (calibrated p + BH),0.166,0.2675,TRUE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,corncob,general_abundance,Power (calibrated p + BH),0.3265,0.338,TRUE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.003,0.458,TRUE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,SACAT,primary_omnibus,Power (calibrated p + BH),0.1765,0.184,TRUE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,MaAsLin 3,native_joint,Power (calibrated p + BH),0.108,0.095,TRUE
+B,metaSPARSim,setting_0014,joint,,,,2,0.15,0.4,ZINQ,native_joint,Power (calibrated p + BH),0.091,0.09,TRUE
+B,metaSPARSim,setting_0015,structural_only,,,,3,0.2,0,SACAT,structural_absence,Power (calibrated p + BH),0.32,0.3105,FALSE
+B,metaSPARSim,setting_0015,structural_only,,,,3,0.2,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.2495,0.246,FALSE
+B,metaSPARSim,setting_0015,structural_only,,,,3,0.2,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.253,0.2275,FALSE
+B,metaSPARSim,setting_0016,structural_only,,,,3,0.2,0,SACAT,structural_absence,Power (calibrated p + BH),0.3255,0.287,TRUE
+B,metaSPARSim,setting_0016,structural_only,,,,3,0.2,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.2375,0.229,TRUE
+B,metaSPARSim,setting_0016,structural_only,,,,3,0.2,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.2445,0.2135,TRUE
+B,metaSPARSim,setting_0017,abundance_only,,,,3,0,0.5,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.331,0.4065,FALSE
+B,metaSPARSim,setting_0017,abundance_only,,,,3,0,0.5,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.093,0.1075,FALSE
+B,metaSPARSim,setting_0017,abundance_only,,,,3,0,0.5,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.178,0.1475,FALSE
+B,metaSPARSim,setting_0018,abundance_only,,,,3,0,0.5,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.359,0.4035,TRUE
+B,metaSPARSim,setting_0018,abundance_only,,,,3,0,0.5,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.093,0.1075,TRUE
+B,metaSPARSim,setting_0018,abundance_only,,,,3,0,0.5,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.1905,0.167,TRUE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,edgeR,general_abundance,Power (calibrated p + BH),0.046,0.041,FALSE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,DESeq2,general_abundance,Power (calibrated p + BH),0.389,0.3875,FALSE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.158,0.162,FALSE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,LinDA,general_abundance,Power (calibrated p + BH),0.4065,0.4555,FALSE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,corncob,general_abundance,Power (calibrated p + BH),0.4855,0.4865,FALSE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.0305,0.5785,FALSE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,SACAT,primary_omnibus,Power (calibrated p + BH),0.4835,0.52,FALSE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,MaAsLin 3,native_joint,Power (calibrated p + BH),0.377,0.388,FALSE
+B,metaSPARSim,setting_0019,joint,,,,3,0.2,0.5,ZINQ,native_joint,Power (calibrated p + BH),0.3295,0.3475,FALSE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,edgeR,general_abundance,Power (calibrated p + BH),0.354,0.295,TRUE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,DESeq2,general_abundance,Power (calibrated p + BH),0.3815,0.3855,TRUE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.16,0.1575,TRUE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,LinDA,general_abundance,Power (calibrated p + BH),0.4095,0.456,TRUE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,corncob,general_abundance,Power (calibrated p + BH),0.4755,0.4855,TRUE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.039,0.5795,TRUE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,SACAT,primary_omnibus,Power (calibrated p + BH),0.5065,0.518,TRUE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,MaAsLin 3,native_joint,Power (calibrated p + BH),0.381,0.3755,TRUE
+B,metaSPARSim,setting_0020,joint,,,,3,0.2,0.5,ZINQ,native_joint,Power (calibrated p + BH),0.3355,0.341,TRUE
+B,metaSPARSim,setting_0021,structural_only,,,,4,0.25,0,SACAT,structural_absence,Power (calibrated p + BH),0.6335,0.613,FALSE
+B,metaSPARSim,setting_0021,structural_only,,,,4,0.25,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.551,0.546,FALSE
+B,metaSPARSim,setting_0021,structural_only,,,,4,0.25,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.554,0.528,FALSE
+B,metaSPARSim,setting_0022,structural_only,,,,4,0.25,0,SACAT,structural_absence,Power (calibrated p + BH),0.64,0.6075,TRUE
+B,metaSPARSim,setting_0022,structural_only,,,,4,0.25,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.548,0.5395,TRUE
+B,metaSPARSim,setting_0022,structural_only,,,,4,0.25,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.5505,0.517,TRUE
+B,metaSPARSim,setting_0023,abundance_only,,,,4,0,0.6,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.588,0.653,FALSE
+B,metaSPARSim,setting_0023,abundance_only,,,,4,0,0.6,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.2425,0.2685,FALSE
+B,metaSPARSim,setting_0023,abundance_only,,,,4,0,0.6,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.386,0.3635,FALSE
+B,metaSPARSim,setting_0024,abundance_only,,,,4,0,0.6,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.6105,0.65,TRUE
+B,metaSPARSim,setting_0024,abundance_only,,,,4,0,0.6,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.237,0.2575,TRUE
+B,metaSPARSim,setting_0024,abundance_only,,,,4,0,0.6,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.3755,0.3525,TRUE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,edgeR,general_abundance,Power (calibrated p + BH),0.056,0.0545,FALSE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,DESeq2,general_abundance,Power (calibrated p + BH),0.481,0.48,FALSE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.309,0.333,FALSE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,LinDA,general_abundance,Power (calibrated p + BH),0.5,0.5175,FALSE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,corncob,general_abundance,Power (calibrated p + BH),0.519,0.5215,FALSE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.149,0.6525,FALSE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,SACAT,primary_omnibus,Power (calibrated p + BH),0.779,0.8075,FALSE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,MaAsLin 3,native_joint,Power (calibrated p + BH),0.6555,0.66,FALSE
+B,metaSPARSim,setting_0025,joint,,,,4,0.25,0.6,ZINQ,native_joint,Power (calibrated p + BH),0.631,0.648,FALSE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,edgeR,general_abundance,Power (calibrated p + BH),0.387,0.3665,TRUE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,DESeq2,general_abundance,Power (calibrated p + BH),0.477,0.4775,TRUE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.312,0.331,TRUE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,LinDA,general_abundance,Power (calibrated p + BH),0.499,0.517,TRUE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,corncob,general_abundance,Power (calibrated p + BH),0.522,0.526,TRUE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.178,0.6525,TRUE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,SACAT,primary_omnibus,Power (calibrated p + BH),0.8075,0.8125,TRUE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,MaAsLin 3,native_joint,Power (calibrated p + BH),0.6695,0.669,TRUE
+B,metaSPARSim,setting_0026,joint,,,,4,0.25,0.6,ZINQ,native_joint,Power (calibrated p + BH),0.635,0.646,TRUE
+B,metaSPARSim,setting_0027,structural_only,,,,5,0.3,0,SACAT,structural_absence,Power (calibrated p + BH),0.856,0.8395,FALSE
+B,metaSPARSim,setting_0027,structural_only,,,,5,0.3,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.794,0.794,FALSE
+B,metaSPARSim,setting_0027,structural_only,,,,5,0.3,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.797,0.7855,FALSE
+B,metaSPARSim,setting_0028,structural_only,,,,5,0.3,0,SACAT,structural_absence,Power (calibrated p + BH),0.8465,0.827,TRUE
+B,metaSPARSim,setting_0028,structural_only,,,,5,0.3,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.797,0.789,TRUE
+B,metaSPARSim,setting_0028,structural_only,,,,5,0.3,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.8,0.78,TRUE
+B,metaSPARSim,setting_0029,abundance_only,,,,5,0,0.8,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.903,0.9185,FALSE
+B,metaSPARSim,setting_0029,abundance_only,,,,5,0,0.8,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.624,0.6595,FALSE
+B,metaSPARSim,setting_0029,abundance_only,,,,5,0,0.8,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.747,0.7275,FALSE
+B,metaSPARSim,setting_0030,abundance_only,,,,5,0,0.8,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.91,0.918,TRUE
+B,metaSPARSim,setting_0030,abundance_only,,,,5,0,0.8,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.6045,0.64,TRUE
+B,metaSPARSim,setting_0030,abundance_only,,,,5,0,0.8,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.7335,0.715,TRUE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,edgeR,general_abundance,Power (calibrated p + BH),0.0715,0.0715,FALSE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,DESeq2,general_abundance,Power (calibrated p + BH),0.529,0.529,FALSE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.4535,0.4655,FALSE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,LinDA,general_abundance,Power (calibrated p + BH),0.5195,0.5365,FALSE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,corncob,general_abundance,Power (calibrated p + BH),0.5735,0.577,FALSE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.458,0.767,FALSE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,SACAT,primary_omnibus,Power (calibrated p + BH),0.9625,0.966,FALSE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,MaAsLin 3,native_joint,Power (calibrated p + BH),0.879,0.8795,FALSE
+B,metaSPARSim,setting_0031,joint,,,,5,0.3,0.8,ZINQ,native_joint,Power (calibrated p + BH),0.8565,0.8615,FALSE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,edgeR,general_abundance,Power (calibrated p + BH),0.4535,0.4105,TRUE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,DESeq2,general_abundance,Power (calibrated p + BH),0.5265,0.528,TRUE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.4605,0.468,TRUE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,LinDA,general_abundance,Power (calibrated p + BH),0.516,0.5285,TRUE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,corncob,general_abundance,Power (calibrated p + BH),0.572,0.5835,TRUE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.4615,0.7775,TRUE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,SACAT,primary_omnibus,Power (calibrated p + BH),0.9605,0.963,TRUE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,MaAsLin 3,native_joint,Power (calibrated p + BH),0.8745,0.8735,TRUE
+B,metaSPARSim,setting_0032,joint,,,,5,0.3,0.8,ZINQ,native_joint,Power (calibrated p + BH),0.8545,0.8595,TRUE
+B,metaSPARSim,setting_0033,structural_only,,,,6,0.4,0,SACAT,structural_absence,Power (calibrated p + BH),0.97,0.9685,FALSE
+B,metaSPARSim,setting_0033,structural_only,,,,6,0.4,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.9775,0.977,FALSE
+B,metaSPARSim,setting_0033,structural_only,,,,6,0.4,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.9775,0.975,FALSE
+B,metaSPARSim,setting_0034,structural_only,,,,6,0.4,0,SACAT,structural_absence,Power (calibrated p + BH),0.971,0.9685,TRUE
+B,metaSPARSim,setting_0034,structural_only,,,,6,0.4,0,ZINQ,observed_prevalence,Power (calibrated p + BH),0.9765,0.976,TRUE
+B,metaSPARSim,setting_0034,structural_only,,,,6,0.4,0,MaAsLin 3,observed_prevalence,Power (calibrated p + BH),0.9765,0.976,TRUE
+B,metaSPARSim,setting_0035,abundance_only,,,,6,0,1.2,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.9985,0.9985,FALSE
+B,metaSPARSim,setting_0035,abundance_only,,,,6,0,1.2,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.963,0.9705,FALSE
+B,metaSPARSim,setting_0035,abundance_only,,,,6,0,1.2,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.9845,0.982,FALSE
+B,metaSPARSim,setting_0036,abundance_only,,,,6,0,1.2,SACAT,present_conditional_abundance,Power (calibrated p + BH),0.9985,0.9985,TRUE
+B,metaSPARSim,setting_0036,abundance_only,,,,6,0,1.2,ZINQ,detected_quantile_abundance,Power (calibrated p + BH),0.9675,0.972,TRUE
+B,metaSPARSim,setting_0036,abundance_only,,,,6,0,1.2,MaAsLin 3,detected_log_abundance,Power (calibrated p + BH),0.986,0.9845,TRUE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,edgeR,general_abundance,Power (calibrated p + BH),0.103,0.103,FALSE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,DESeq2,general_abundance,Power (calibrated p + BH),0.6715,0.67,FALSE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.5035,0.5035,FALSE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,LinDA,general_abundance,Power (calibrated p + BH),0.524,0.536,FALSE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,corncob,general_abundance,Power (calibrated p + BH),0.7685,0.77,FALSE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.6775,0.922,FALSE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,SACAT,primary_omnibus,Power (calibrated p + BH),0.999,0.9995,FALSE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,MaAsLin 3,native_joint,Power (calibrated p + BH),0.9905,0.991,FALSE
+B,metaSPARSim,setting_0037,joint,,,,6,0.4,1.2,ZINQ,native_joint,Power (calibrated p + BH),0.983,0.9835,FALSE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,edgeR,general_abundance,Power (calibrated p + BH),0.6455,0.5665,TRUE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,DESeq2,general_abundance,Power (calibrated p + BH),0.6525,0.6555,TRUE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,ANCOM-BC2,general_abundance,Power (calibrated p + BH),0.504,0.5045,TRUE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,LinDA,general_abundance,Power (calibrated p + BH),0.524,0.542,TRUE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,corncob,general_abundance,Power (calibrated p + BH),0.771,0.7815,TRUE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,metagenomeSeq,general_abundance,Power (calibrated p + BH),0.6655,0.928,TRUE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,SACAT,primary_omnibus,Power (calibrated p + BH),0.999,0.999,TRUE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,MaAsLin 3,native_joint,Power (calibrated p + BH),0.989,0.9885,TRUE
+B,metaSPARSim,setting_0038,joint,,,,6,0.4,1.2,ZINQ,native_joint,Power (calibrated p + BH),0.982,0.9825,TRUE

@@ -1,0 +1,523 @@
+setting_id,scenario,include_covariate,effect_index,structural_difference,abundance_log_effect,method,component,n_replications,n_taxa,n_signals,original_bh_power,calibrated_bh_power
+setting_0001,global_null,FALSE,0,0,0,SACAT,structural_absence,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,SACAT,present_conditional_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,ZINQ,observed_prevalence,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,ZINQ,detected_quantile_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,MaAsLin 3,observed_prevalence,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,MaAsLin 3,detected_log_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,edgeR,general_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,DESeq2,general_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,ANCOM-BC2,general_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,LinDA,general_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,corncob,general_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,metagenomeSeq,general_abundance,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,SACAT,primary_omnibus,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,MaAsLin 3,native_joint,500,100,0,,
+setting_0001,global_null,FALSE,0,0,0,ZINQ,native_joint,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,SACAT,structural_absence,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,SACAT,present_conditional_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,ZINQ,observed_prevalence,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,ZINQ,detected_quantile_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,MaAsLin 3,observed_prevalence,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,MaAsLin 3,detected_log_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,edgeR,general_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,DESeq2,general_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,ANCOM-BC2,general_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,LinDA,general_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,corncob,general_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,metagenomeSeq,general_abundance,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,SACAT,primary_omnibus,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,MaAsLin 3,native_joint,500,100,0,,
+setting_0002,global_null,TRUE,0,0,0,ZINQ,native_joint,500,100,0,,
+setting_0003,structural_only,FALSE,1,0.1,0,SACAT,structural_absence,100,100,20,0.012,0.0115
+setting_0003,structural_only,FALSE,1,0.1,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0003,structural_only,FALSE,1,0.1,0,ZINQ,observed_prevalence,100,100,20,0.0095,0.01
+setting_0003,structural_only,FALSE,1,0.1,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0003,structural_only,FALSE,1,0.1,0,MaAsLin 3,observed_prevalence,100,100,20,0.009,0.01
+setting_0003,structural_only,FALSE,1,0.1,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0003,structural_only,FALSE,1,0.1,0,edgeR,general_abundance,100,100,20,0,0
+setting_0003,structural_only,FALSE,1,0.1,0,DESeq2,general_abundance,100,100,20,0.0065,0.0065
+setting_0003,structural_only,FALSE,1,0.1,0,ANCOM-BC2,general_abundance,100,100,20,0,0
+setting_0003,structural_only,FALSE,1,0.1,0,LinDA,general_abundance,100,100,20,0.019,0.0045
+setting_0003,structural_only,FALSE,1,0.1,0,corncob,general_abundance,100,100,20,0.005,0.0035
+setting_0003,structural_only,FALSE,1,0.1,0,metagenomeSeq,general_abundance,100,100,20,0.0775,0
+setting_0003,structural_only,FALSE,1,0.1,0,SACAT,primary_omnibus,100,100,20,0.007,0.005
+setting_0004,structural_only,TRUE,1,0.1,0,SACAT,structural_absence,100,100,20,0.0075,0.01
+setting_0004,structural_only,TRUE,1,0.1,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0004,structural_only,TRUE,1,0.1,0,ZINQ,observed_prevalence,100,100,20,0.0055,0.0065
+setting_0004,structural_only,TRUE,1,0.1,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0004,structural_only,TRUE,1,0.1,0,MaAsLin 3,observed_prevalence,100,100,20,0.005,0.0065
+setting_0004,structural_only,TRUE,1,0.1,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0004,structural_only,TRUE,1,0.1,0,edgeR,general_abundance,100,100,20,0,0.0035
+setting_0004,structural_only,TRUE,1,0.1,0,DESeq2,general_abundance,100,100,20,0.0085,0.008
+setting_0004,structural_only,TRUE,1,0.1,0,ANCOM-BC2,general_abundance,100,100,20,0,0
+setting_0004,structural_only,TRUE,1,0.1,0,LinDA,general_abundance,100,100,20,0.0205,0.004
+setting_0004,structural_only,TRUE,1,0.1,0,corncob,general_abundance,100,100,20,0.0055,0.002
+setting_0004,structural_only,TRUE,1,0.1,0,metagenomeSeq,general_abundance,100,100,20,0.086,0
+setting_0004,structural_only,TRUE,1,0.1,0,SACAT,primary_omnibus,100,100,20,0.006,0.006
+setting_0005,abundance_only,FALSE,1,0,0.2,SACAT,structural_absence,100,100,0,,
+setting_0005,abundance_only,FALSE,1,0,0.2,SACAT,present_conditional_abundance,100,100,20,0.0085,0.007
+setting_0005,abundance_only,FALSE,1,0,0.2,ZINQ,observed_prevalence,100,100,20,0.001,0.001
+setting_0005,abundance_only,FALSE,1,0,0.2,ZINQ,detected_quantile_abundance,100,100,20,0.0025,0.0025
+setting_0005,abundance_only,FALSE,1,0,0.2,MaAsLin 3,observed_prevalence,100,100,20,0.001,0.001
+setting_0005,abundance_only,FALSE,1,0,0.2,MaAsLin 3,detected_log_abundance,100,100,20,0.003,0.0035
+setting_0005,abundance_only,FALSE,1,0,0.2,edgeR,general_abundance,100,100,20,0,0.0015
+setting_0005,abundance_only,FALSE,1,0,0.2,DESeq2,general_abundance,100,100,20,0.0045,0.005
+setting_0005,abundance_only,FALSE,1,0,0.2,ANCOM-BC2,general_abundance,100,100,20,0,0
+setting_0005,abundance_only,FALSE,1,0,0.2,LinDA,general_abundance,100,100,20,0.0035,0.001
+setting_0005,abundance_only,FALSE,1,0,0.2,corncob,general_abundance,100,100,20,0.0075,0.0055
+setting_0005,abundance_only,FALSE,1,0,0.2,metagenomeSeq,general_abundance,100,100,20,0.154,0
+setting_0005,abundance_only,FALSE,1,0,0.2,SACAT,primary_omnibus,100,100,20,0.007,0.0045
+setting_0006,abundance_only,TRUE,1,0,0.2,SACAT,structural_absence,100,100,0,,
+setting_0006,abundance_only,TRUE,1,0,0.2,SACAT,present_conditional_abundance,100,100,20,0.0085,0.0075
+setting_0006,abundance_only,TRUE,1,0,0.2,ZINQ,observed_prevalence,100,100,20,0.0015,0.0015
+setting_0006,abundance_only,TRUE,1,0,0.2,ZINQ,detected_quantile_abundance,100,100,20,0.003,0.003
+setting_0006,abundance_only,TRUE,1,0,0.2,MaAsLin 3,observed_prevalence,100,100,20,0.001,0.0015
+setting_0006,abundance_only,TRUE,1,0,0.2,MaAsLin 3,detected_log_abundance,100,100,20,0.005,0.0055
+setting_0006,abundance_only,TRUE,1,0,0.2,edgeR,general_abundance,100,100,20,0.0015,0.005
+setting_0006,abundance_only,TRUE,1,0,0.2,DESeq2,general_abundance,100,100,20,0.0045,0.0045
+setting_0006,abundance_only,TRUE,1,0,0.2,ANCOM-BC2,general_abundance,100,100,20,5e-04,0.0015
+setting_0006,abundance_only,TRUE,1,0,0.2,LinDA,general_abundance,100,100,20,0.0045,0.0015
+setting_0006,abundance_only,TRUE,1,0,0.2,corncob,general_abundance,100,100,20,0.0075,0.0045
+setting_0006,abundance_only,TRUE,1,0,0.2,metagenomeSeq,general_abundance,100,100,20,0.151,0
+setting_0006,abundance_only,TRUE,1,0,0.2,SACAT,primary_omnibus,100,100,20,0.0045,0.0035
+setting_0007,joint,FALSE,1,0.1,0.2,SACAT,structural_absence,100,100,20,0.0085,0.0085
+setting_0007,joint,FALSE,1,0.1,0.2,SACAT,present_conditional_abundance,100,100,20,0.011,0.0085
+setting_0007,joint,FALSE,1,0.1,0.2,ZINQ,observed_prevalence,100,100,20,0.01,0.011
+setting_0007,joint,FALSE,1,0.1,0.2,ZINQ,detected_quantile_abundance,100,100,20,0.002,0.002
+setting_0007,joint,FALSE,1,0.1,0.2,MaAsLin 3,observed_prevalence,100,100,20,0.007,0.011
+setting_0007,joint,FALSE,1,0.1,0.2,MaAsLin 3,detected_log_abundance,100,100,20,0.004,0.006
+setting_0007,joint,FALSE,1,0.1,0.2,edgeR,general_abundance,100,100,20,0.001,0.006
+setting_0007,joint,FALSE,1,0.1,0.2,DESeq2,general_abundance,100,100,20,0.025,0.0265
+setting_0007,joint,FALSE,1,0.1,0.2,ANCOM-BC2,general_abundance,100,100,20,0,0.001
+setting_0007,joint,FALSE,1,0.1,0.2,LinDA,general_abundance,100,100,20,0.04,0.0165
+setting_0007,joint,FALSE,1,0.1,0.2,corncob,general_abundance,100,100,20,0.032,0.0215
+setting_0007,joint,FALSE,1,0.1,0.2,metagenomeSeq,general_abundance,100,100,20,0.195,0
+setting_0007,joint,FALSE,1,0.1,0.2,SACAT,primary_omnibus,100,100,20,0.0145,0.013
+setting_0007,joint,FALSE,1,0.1,0.2,MaAsLin 3,native_joint,100,100,20,0.0075,0.0085
+setting_0007,joint,FALSE,1,0.1,0.2,ZINQ,native_joint,100,100,20,0.006,0.006
+setting_0008,joint,TRUE,1,0.1,0.2,SACAT,structural_absence,100,100,20,0.0115,0.013
+setting_0008,joint,TRUE,1,0.1,0.2,SACAT,present_conditional_abundance,100,100,20,0.0135,0.008
+setting_0008,joint,TRUE,1,0.1,0.2,ZINQ,observed_prevalence,100,100,20,0.013,0.0135
+setting_0008,joint,TRUE,1,0.1,0.2,ZINQ,detected_quantile_abundance,100,100,20,0.002,0.002
+setting_0008,joint,TRUE,1,0.1,0.2,MaAsLin 3,observed_prevalence,100,100,20,0.011,0.013
+setting_0008,joint,TRUE,1,0.1,0.2,MaAsLin 3,detected_log_abundance,100,100,20,0.0035,0.0045
+setting_0008,joint,TRUE,1,0.1,0.2,edgeR,general_abundance,100,100,20,0.006,0.0245
+setting_0008,joint,TRUE,1,0.1,0.2,DESeq2,general_abundance,100,100,20,0.0245,0.0215
+setting_0008,joint,TRUE,1,0.1,0.2,ANCOM-BC2,general_abundance,100,100,20,0,0
+setting_0008,joint,TRUE,1,0.1,0.2,LinDA,general_abundance,100,100,20,0.0385,0.015
+setting_0008,joint,TRUE,1,0.1,0.2,corncob,general_abundance,100,100,20,0.0355,0.027
+setting_0008,joint,TRUE,1,0.1,0.2,metagenomeSeq,general_abundance,100,100,20,0.182,5e-04
+setting_0008,joint,TRUE,1,0.1,0.2,SACAT,primary_omnibus,100,100,20,0.0155,0.013
+setting_0008,joint,TRUE,1,0.1,0.2,MaAsLin 3,native_joint,100,100,20,0.012,0.0125
+setting_0008,joint,TRUE,1,0.1,0.2,ZINQ,native_joint,100,100,20,0.011,0.0115
+setting_0009,structural_only,FALSE,2,0.15,0,SACAT,structural_absence,100,100,20,0.0725,0.0765
+setting_0009,structural_only,FALSE,2,0.15,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0009,structural_only,FALSE,2,0.15,0,ZINQ,observed_prevalence,100,100,20,0.059,0.0605
+setting_0009,structural_only,FALSE,2,0.15,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0009,structural_only,FALSE,2,0.15,0,MaAsLin 3,observed_prevalence,100,100,20,0.05,0.061
+setting_0009,structural_only,FALSE,2,0.15,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0009,structural_only,FALSE,2,0.15,0,edgeR,general_abundance,100,100,20,5e-04,0.0025
+setting_0009,structural_only,FALSE,2,0.15,0,DESeq2,general_abundance,100,100,20,0.0175,0.0185
+setting_0009,structural_only,FALSE,2,0.15,0,ANCOM-BC2,general_abundance,100,100,20,0.001,0.0015
+setting_0009,structural_only,FALSE,2,0.15,0,LinDA,general_abundance,100,100,20,0.1,0.0315
+setting_0009,structural_only,FALSE,2,0.15,0,corncob,general_abundance,100,100,20,0.012,0.0075
+setting_0009,structural_only,FALSE,2,0.15,0,metagenomeSeq,general_abundance,100,100,20,0.12,0
+setting_0009,structural_only,FALSE,2,0.15,0,SACAT,primary_omnibus,100,100,20,0.0475,0.034
+setting_0010,structural_only,TRUE,2,0.15,0,SACAT,structural_absence,100,100,20,0.0695,0.0905
+setting_0010,structural_only,TRUE,2,0.15,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0010,structural_only,TRUE,2,0.15,0,ZINQ,observed_prevalence,100,100,20,0.0605,0.064
+setting_0010,structural_only,TRUE,2,0.15,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0010,structural_only,TRUE,2,0.15,0,MaAsLin 3,observed_prevalence,100,100,20,0.0525,0.0665
+setting_0010,structural_only,TRUE,2,0.15,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0010,structural_only,TRUE,2,0.15,0,edgeR,general_abundance,100,100,20,0.002,0.0175
+setting_0010,structural_only,TRUE,2,0.15,0,DESeq2,general_abundance,100,100,20,0.02,0.0185
+setting_0010,structural_only,TRUE,2,0.15,0,ANCOM-BC2,general_abundance,100,100,20,5e-04,5e-04
+setting_0010,structural_only,TRUE,2,0.15,0,LinDA,general_abundance,100,100,20,0.1005,0.0325
+setting_0010,structural_only,TRUE,2,0.15,0,corncob,general_abundance,100,100,20,0.012,0.0085
+setting_0010,structural_only,TRUE,2,0.15,0,metagenomeSeq,general_abundance,100,100,20,0.115,0
+setting_0010,structural_only,TRUE,2,0.15,0,SACAT,primary_omnibus,100,100,20,0.0445,0.039
+setting_0011,abundance_only,FALSE,2,0,0.4,SACAT,structural_absence,100,100,0,,
+setting_0011,abundance_only,FALSE,2,0,0.4,SACAT,present_conditional_abundance,100,100,20,0.1785,0.1205
+setting_0011,abundance_only,FALSE,2,0,0.4,ZINQ,observed_prevalence,100,100,20,0.0015,0.0015
+setting_0011,abundance_only,FALSE,2,0,0.4,ZINQ,detected_quantile_abundance,100,100,20,0.0275,0.024
+setting_0011,abundance_only,FALSE,2,0,0.4,MaAsLin 3,observed_prevalence,100,100,20,0.001,0.001
+setting_0011,abundance_only,FALSE,2,0,0.4,MaAsLin 3,detected_log_abundance,100,100,20,0.0505,0.059
+setting_0011,abundance_only,FALSE,2,0,0.4,edgeR,general_abundance,100,100,20,0.004,0.0065
+setting_0011,abundance_only,FALSE,2,0,0.4,DESeq2,general_abundance,100,100,20,0.0615,0.063
+setting_0011,abundance_only,FALSE,2,0,0.4,ANCOM-BC2,general_abundance,100,100,20,0,0
+setting_0011,abundance_only,FALSE,2,0,0.4,LinDA,general_abundance,100,100,20,0.025,0.007
+setting_0011,abundance_only,FALSE,2,0,0.4,corncob,general_abundance,100,100,20,0.1505,0.13
+setting_0011,abundance_only,FALSE,2,0,0.4,metagenomeSeq,general_abundance,100,100,20,0.4325,0.0015
+setting_0011,abundance_only,FALSE,2,0,0.4,SACAT,primary_omnibus,100,100,20,0.105,0.0885
+setting_0012,abundance_only,TRUE,2,0,0.4,SACAT,structural_absence,100,100,0,,
+setting_0012,abundance_only,TRUE,2,0,0.4,SACAT,present_conditional_abundance,100,100,20,0.169,0.135
+setting_0012,abundance_only,TRUE,2,0,0.4,ZINQ,observed_prevalence,100,100,20,0.0015,0.002
+setting_0012,abundance_only,TRUE,2,0,0.4,ZINQ,detected_quantile_abundance,100,100,20,0.033,0.0285
+setting_0012,abundance_only,TRUE,2,0,0.4,MaAsLin 3,observed_prevalence,100,100,20,0.0015,0.002
+setting_0012,abundance_only,TRUE,2,0,0.4,MaAsLin 3,detected_log_abundance,100,100,20,0.0485,0.064
+setting_0012,abundance_only,TRUE,2,0,0.4,edgeR,general_abundance,100,100,20,0.0215,0.1195
+setting_0012,abundance_only,TRUE,2,0,0.4,DESeq2,general_abundance,100,100,20,0.0585,0.0525
+setting_0012,abundance_only,TRUE,2,0,0.4,ANCOM-BC2,general_abundance,100,100,20,5e-04,5e-04
+setting_0012,abundance_only,TRUE,2,0,0.4,LinDA,general_abundance,100,100,20,0.025,0.0055
+setting_0012,abundance_only,TRUE,2,0,0.4,corncob,general_abundance,100,100,20,0.1655,0.1475
+setting_0012,abundance_only,TRUE,2,0,0.4,metagenomeSeq,general_abundance,100,100,20,0.452,0
+setting_0012,abundance_only,TRUE,2,0,0.4,SACAT,primary_omnibus,100,100,20,0.1065,0.1005
+setting_0013,joint,FALSE,2,0.15,0.4,SACAT,structural_absence,100,100,20,0.0715,0.072
+setting_0013,joint,FALSE,2,0.15,0.4,SACAT,present_conditional_abundance,100,100,20,0.1675,0.1245
+setting_0013,joint,FALSE,2,0.15,0.4,ZINQ,observed_prevalence,100,100,20,0.0785,0.0805
+setting_0013,joint,FALSE,2,0.15,0.4,ZINQ,detected_quantile_abundance,100,100,20,0.034,0.031
+setting_0013,joint,FALSE,2,0.15,0.4,MaAsLin 3,observed_prevalence,100,100,20,0.072,0.0815
+setting_0013,joint,FALSE,2,0.15,0.4,MaAsLin 3,detected_log_abundance,100,100,20,0.0515,0.0565
+setting_0013,joint,FALSE,2,0.15,0.4,edgeR,general_abundance,100,100,20,0.0225,0.0305
+setting_0013,joint,FALSE,2,0.15,0.4,DESeq2,general_abundance,100,100,20,0.2005,0.2035
+setting_0013,joint,FALSE,2,0.15,0.4,ANCOM-BC2,general_abundance,100,100,20,0.024,0.0285
+setting_0013,joint,FALSE,2,0.15,0.4,LinDA,general_abundance,100,100,20,0.274,0.1635
+setting_0013,joint,FALSE,2,0.15,0.4,corncob,general_abundance,100,100,20,0.3415,0.3275
+setting_0013,joint,FALSE,2,0.15,0.4,metagenomeSeq,general_abundance,100,100,20,0.4515,0.004
+setting_0013,joint,FALSE,2,0.15,0.4,SACAT,primary_omnibus,100,100,20,0.1685,0.1455
+setting_0013,joint,FALSE,2,0.15,0.4,MaAsLin 3,native_joint,100,100,20,0.1025,0.106
+setting_0013,joint,FALSE,2,0.15,0.4,ZINQ,native_joint,100,100,20,0.087,0.0875
+setting_0014,joint,TRUE,2,0.15,0.4,SACAT,structural_absence,100,100,20,0.055,0.0825
+setting_0014,joint,TRUE,2,0.15,0.4,SACAT,present_conditional_abundance,100,100,20,0.1825,0.1465
+setting_0014,joint,TRUE,2,0.15,0.4,ZINQ,observed_prevalence,100,100,20,0.075,0.0815
+setting_0014,joint,TRUE,2,0.15,0.4,ZINQ,detected_quantile_abundance,100,100,20,0.038,0.0365
+setting_0014,joint,TRUE,2,0.15,0.4,MaAsLin 3,observed_prevalence,100,100,20,0.069,0.084
+setting_0014,joint,TRUE,2,0.15,0.4,MaAsLin 3,detected_log_abundance,100,100,20,0.0495,0.0565
+setting_0014,joint,TRUE,2,0.15,0.4,edgeR,general_abundance,100,100,20,0.129,0.2545
+setting_0014,joint,TRUE,2,0.15,0.4,DESeq2,general_abundance,100,100,20,0.2055,0.197
+setting_0014,joint,TRUE,2,0.15,0.4,ANCOM-BC2,general_abundance,100,100,20,0.032,0.0345
+setting_0014,joint,TRUE,2,0.15,0.4,LinDA,general_abundance,100,100,20,0.2675,0.166
+setting_0014,joint,TRUE,2,0.15,0.4,corncob,general_abundance,100,100,20,0.338,0.3265
+setting_0014,joint,TRUE,2,0.15,0.4,metagenomeSeq,general_abundance,100,100,20,0.458,0.003
+setting_0014,joint,TRUE,2,0.15,0.4,SACAT,primary_omnibus,100,100,20,0.184,0.1765
+setting_0014,joint,TRUE,2,0.15,0.4,MaAsLin 3,native_joint,100,100,20,0.095,0.108
+setting_0014,joint,TRUE,2,0.15,0.4,ZINQ,native_joint,100,100,20,0.09,0.091
+setting_0015,structural_only,FALSE,3,0.2,0,SACAT,structural_absence,100,100,20,0.3105,0.32
+setting_0015,structural_only,FALSE,3,0.2,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0015,structural_only,FALSE,3,0.2,0,ZINQ,observed_prevalence,100,100,20,0.246,0.2495
+setting_0015,structural_only,FALSE,3,0.2,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0015,structural_only,FALSE,3,0.2,0,MaAsLin 3,observed_prevalence,100,100,20,0.2275,0.253
+setting_0015,structural_only,FALSE,3,0.2,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0015,structural_only,FALSE,3,0.2,0,edgeR,general_abundance,100,100,20,0.002,0.0035
+setting_0015,structural_only,FALSE,3,0.2,0,DESeq2,general_abundance,100,100,20,0.042,0.0445
+setting_0015,structural_only,FALSE,3,0.2,0,ANCOM-BC2,general_abundance,100,100,20,0.0025,0.0025
+setting_0015,structural_only,FALSE,3,0.2,0,LinDA,general_abundance,100,100,20,0.2745,0.147
+setting_0015,structural_only,FALSE,3,0.2,0,corncob,general_abundance,100,100,20,0.0365,0.0255
+setting_0015,structural_only,FALSE,3,0.2,0,metagenomeSeq,general_abundance,100,100,20,0.17,0
+setting_0015,structural_only,FALSE,3,0.2,0,SACAT,primary_omnibus,100,100,20,0.203,0.1715
+setting_0016,structural_only,TRUE,3,0.2,0,SACAT,structural_absence,100,100,20,0.287,0.3255
+setting_0016,structural_only,TRUE,3,0.2,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0016,structural_only,TRUE,3,0.2,0,ZINQ,observed_prevalence,100,100,20,0.229,0.2375
+setting_0016,structural_only,TRUE,3,0.2,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0016,structural_only,TRUE,3,0.2,0,MaAsLin 3,observed_prevalence,100,100,20,0.2135,0.2445
+setting_0016,structural_only,TRUE,3,0.2,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0016,structural_only,TRUE,3,0.2,0,edgeR,general_abundance,100,100,20,0.0065,0.043
+setting_0016,structural_only,TRUE,3,0.2,0,DESeq2,general_abundance,100,100,20,0.0535,0.0505
+setting_0016,structural_only,TRUE,3,0.2,0,ANCOM-BC2,general_abundance,100,100,20,0.0015,0.002
+setting_0016,structural_only,TRUE,3,0.2,0,LinDA,general_abundance,100,100,20,0.267,0.147
+setting_0016,structural_only,TRUE,3,0.2,0,corncob,general_abundance,100,100,20,0.042,0.0275
+setting_0016,structural_only,TRUE,3,0.2,0,metagenomeSeq,general_abundance,100,100,20,0.171,0
+setting_0016,structural_only,TRUE,3,0.2,0,SACAT,primary_omnibus,100,100,20,0.2025,0.195
+setting_0017,abundance_only,FALSE,3,0,0.5,SACAT,structural_absence,100,100,0,,
+setting_0017,abundance_only,FALSE,3,0,0.5,SACAT,present_conditional_abundance,100,100,20,0.4065,0.331
+setting_0017,abundance_only,FALSE,3,0,0.5,ZINQ,observed_prevalence,100,100,20,0.0025,0.0025
+setting_0017,abundance_only,FALSE,3,0,0.5,ZINQ,detected_quantile_abundance,100,100,20,0.1075,0.093
+setting_0017,abundance_only,FALSE,3,0,0.5,MaAsLin 3,observed_prevalence,100,100,20,0.0015,0.0025
+setting_0017,abundance_only,FALSE,3,0,0.5,MaAsLin 3,detected_log_abundance,100,100,20,0.1475,0.178
+setting_0017,abundance_only,FALSE,3,0,0.5,edgeR,general_abundance,100,100,20,0.01,0.017
+setting_0017,abundance_only,FALSE,3,0,0.5,DESeq2,general_abundance,100,100,20,0.202,0.2035
+setting_0017,abundance_only,FALSE,3,0,0.5,ANCOM-BC2,general_abundance,100,100,20,0.001,0.001
+setting_0017,abundance_only,FALSE,3,0,0.5,LinDA,general_abundance,100,100,20,0.058,0.015
+setting_0017,abundance_only,FALSE,3,0,0.5,corncob,general_abundance,100,100,20,0.417,0.397
+setting_0017,abundance_only,FALSE,3,0,0.5,metagenomeSeq,general_abundance,100,100,20,0.6,0.004
+setting_0017,abundance_only,FALSE,3,0,0.5,SACAT,primary_omnibus,100,100,20,0.3,0.2675
+setting_0018,abundance_only,TRUE,3,0,0.5,SACAT,structural_absence,100,100,0,,
+setting_0018,abundance_only,TRUE,3,0,0.5,SACAT,present_conditional_abundance,100,100,20,0.4035,0.359
+setting_0018,abundance_only,TRUE,3,0,0.5,ZINQ,observed_prevalence,100,100,20,0.0025,0.0035
+setting_0018,abundance_only,TRUE,3,0,0.5,ZINQ,detected_quantile_abundance,100,100,20,0.1075,0.093
+setting_0018,abundance_only,TRUE,3,0,0.5,MaAsLin 3,observed_prevalence,100,100,20,0.002,0.0035
+setting_0018,abundance_only,TRUE,3,0,0.5,MaAsLin 3,detected_log_abundance,100,100,20,0.167,0.1905
+setting_0018,abundance_only,TRUE,3,0,0.5,edgeR,general_abundance,100,100,20,0.1075,0.2935
+setting_0018,abundance_only,TRUE,3,0,0.5,DESeq2,general_abundance,100,100,20,0.1935,0.1785
+setting_0018,abundance_only,TRUE,3,0,0.5,ANCOM-BC2,general_abundance,100,100,20,5e-04,5e-04
+setting_0018,abundance_only,TRUE,3,0,0.5,LinDA,general_abundance,100,100,20,0.0505,0.0145
+setting_0018,abundance_only,TRUE,3,0,0.5,corncob,general_abundance,100,100,20,0.4145,0.379
+setting_0018,abundance_only,TRUE,3,0,0.5,metagenomeSeq,general_abundance,100,100,20,0.6155,0.003
+setting_0018,abundance_only,TRUE,3,0,0.5,SACAT,primary_omnibus,100,100,20,0.3045,0.302
+setting_0019,joint,FALSE,3,0.2,0.5,SACAT,structural_absence,100,100,20,0.2985,0.308
+setting_0019,joint,FALSE,3,0.2,0.5,SACAT,present_conditional_abundance,100,100,20,0.417,0.3305
+setting_0019,joint,FALSE,3,0.2,0.5,ZINQ,observed_prevalence,100,100,20,0.2945,0.298
+setting_0019,joint,FALSE,3,0.2,0.5,ZINQ,detected_quantile_abundance,100,100,20,0.1205,0.1035
+setting_0019,joint,FALSE,3,0.2,0.5,MaAsLin 3,observed_prevalence,100,100,20,0.2755,0.303
+setting_0019,joint,FALSE,3,0.2,0.5,MaAsLin 3,detected_log_abundance,100,100,20,0.177,0.2
+setting_0019,joint,FALSE,3,0.2,0.5,edgeR,general_abundance,100,100,20,0.041,0.046
+setting_0019,joint,FALSE,3,0.2,0.5,DESeq2,general_abundance,100,100,20,0.3875,0.389
+setting_0019,joint,FALSE,3,0.2,0.5,ANCOM-BC2,general_abundance,100,100,20,0.162,0.158
+setting_0019,joint,FALSE,3,0.2,0.5,LinDA,general_abundance,100,100,20,0.4555,0.4065
+setting_0019,joint,FALSE,3,0.2,0.5,corncob,general_abundance,100,100,20,0.4865,0.4855
+setting_0019,joint,FALSE,3,0.2,0.5,metagenomeSeq,general_abundance,100,100,20,0.5785,0.0305
+setting_0019,joint,FALSE,3,0.2,0.5,SACAT,primary_omnibus,100,100,20,0.52,0.4835
+setting_0019,joint,FALSE,3,0.2,0.5,MaAsLin 3,native_joint,100,100,20,0.388,0.377
+setting_0019,joint,FALSE,3,0.2,0.5,ZINQ,native_joint,100,100,20,0.3475,0.3295
+setting_0020,joint,TRUE,3,0.2,0.5,SACAT,structural_absence,100,100,20,0.2945,0.3255
+setting_0020,joint,TRUE,3,0.2,0.5,SACAT,present_conditional_abundance,100,100,20,0.395,0.341
+setting_0020,joint,TRUE,3,0.2,0.5,ZINQ,observed_prevalence,100,100,20,0.296,0.3085
+setting_0020,joint,TRUE,3,0.2,0.5,ZINQ,detected_quantile_abundance,100,100,20,0.1135,0.0885
+setting_0020,joint,TRUE,3,0.2,0.5,MaAsLin 3,observed_prevalence,100,100,20,0.285,0.311
+setting_0020,joint,TRUE,3,0.2,0.5,MaAsLin 3,detected_log_abundance,100,100,20,0.1665,0.188
+setting_0020,joint,TRUE,3,0.2,0.5,edgeR,general_abundance,100,100,20,0.295,0.354
+setting_0020,joint,TRUE,3,0.2,0.5,DESeq2,general_abundance,100,100,20,0.3855,0.3815
+setting_0020,joint,TRUE,3,0.2,0.5,ANCOM-BC2,general_abundance,100,100,20,0.1575,0.16
+setting_0020,joint,TRUE,3,0.2,0.5,LinDA,general_abundance,100,100,20,0.456,0.4095
+setting_0020,joint,TRUE,3,0.2,0.5,corncob,general_abundance,100,100,20,0.4855,0.4755
+setting_0020,joint,TRUE,3,0.2,0.5,metagenomeSeq,general_abundance,100,100,20,0.5795,0.039
+setting_0020,joint,TRUE,3,0.2,0.5,SACAT,primary_omnibus,100,100,20,0.518,0.5065
+setting_0020,joint,TRUE,3,0.2,0.5,MaAsLin 3,native_joint,100,100,20,0.3755,0.381
+setting_0020,joint,TRUE,3,0.2,0.5,ZINQ,native_joint,100,100,20,0.341,0.3355
+setting_0021,structural_only,FALSE,4,0.25,0,SACAT,structural_absence,100,100,20,0.613,0.6335
+setting_0021,structural_only,FALSE,4,0.25,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0021,structural_only,FALSE,4,0.25,0,ZINQ,observed_prevalence,100,100,20,0.546,0.551
+setting_0021,structural_only,FALSE,4,0.25,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0021,structural_only,FALSE,4,0.25,0,MaAsLin 3,observed_prevalence,100,100,20,0.528,0.554
+setting_0021,structural_only,FALSE,4,0.25,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0021,structural_only,FALSE,4,0.25,0,edgeR,general_abundance,100,100,20,0.003,0.0075
+setting_0021,structural_only,FALSE,4,0.25,0,DESeq2,general_abundance,100,100,20,0.1185,0.1215
+setting_0021,structural_only,FALSE,4,0.25,0,ANCOM-BC2,general_abundance,100,100,20,0.0055,0.008
+setting_0021,structural_only,FALSE,4,0.25,0,LinDA,general_abundance,100,100,20,0.5675,0.4285
+setting_0021,structural_only,FALSE,4,0.25,0,corncob,general_abundance,100,100,20,0.113,0.094
+setting_0021,structural_only,FALSE,4,0.25,0,metagenomeSeq,general_abundance,100,100,20,0.2415,0
+setting_0021,structural_only,FALSE,4,0.25,0,SACAT,primary_omnibus,100,100,20,0.495,0.466
+setting_0022,structural_only,TRUE,4,0.25,0,SACAT,structural_absence,100,100,20,0.6075,0.64
+setting_0022,structural_only,TRUE,4,0.25,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0022,structural_only,TRUE,4,0.25,0,ZINQ,observed_prevalence,100,100,20,0.5395,0.548
+setting_0022,structural_only,TRUE,4,0.25,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0022,structural_only,TRUE,4,0.25,0,MaAsLin 3,observed_prevalence,100,100,20,0.517,0.5505
+setting_0022,structural_only,TRUE,4,0.25,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0022,structural_only,TRUE,4,0.25,0,edgeR,general_abundance,100,100,20,0.0265,0.1065
+setting_0022,structural_only,TRUE,4,0.25,0,DESeq2,general_abundance,100,100,20,0.1225,0.112
+setting_0022,structural_only,TRUE,4,0.25,0,ANCOM-BC2,general_abundance,100,100,20,0.006,0.008
+setting_0022,structural_only,TRUE,4,0.25,0,LinDA,general_abundance,100,100,20,0.551,0.3965
+setting_0022,structural_only,TRUE,4,0.25,0,corncob,general_abundance,100,100,20,0.1195,0.094
+setting_0022,structural_only,TRUE,4,0.25,0,metagenomeSeq,general_abundance,100,100,20,0.2375,0
+setting_0022,structural_only,TRUE,4,0.25,0,SACAT,primary_omnibus,100,100,20,0.4945,0.481
+setting_0023,abundance_only,FALSE,4,0,0.6,SACAT,structural_absence,100,100,0,,
+setting_0023,abundance_only,FALSE,4,0,0.6,SACAT,present_conditional_abundance,100,100,20,0.653,0.588
+setting_0023,abundance_only,FALSE,4,0,0.6,ZINQ,observed_prevalence,100,100,20,0.0055,0.006
+setting_0023,abundance_only,FALSE,4,0,0.6,ZINQ,detected_quantile_abundance,100,100,20,0.2685,0.2425
+setting_0023,abundance_only,FALSE,4,0,0.6,MaAsLin 3,observed_prevalence,100,100,20,0.0035,0.006
+setting_0023,abundance_only,FALSE,4,0,0.6,MaAsLin 3,detected_log_abundance,100,100,20,0.3635,0.386
+setting_0023,abundance_only,FALSE,4,0,0.6,edgeR,general_abundance,100,100,20,0.017,0.025
+setting_0023,abundance_only,FALSE,4,0,0.6,DESeq2,general_abundance,100,100,20,0.4185,0.4215
+setting_0023,abundance_only,FALSE,4,0,0.6,ANCOM-BC2,general_abundance,100,100,20,5e-04,0.0015
+setting_0023,abundance_only,FALSE,4,0,0.6,LinDA,general_abundance,100,100,20,0.11,0.046
+setting_0023,abundance_only,FALSE,4,0,0.6,corncob,general_abundance,100,100,20,0.6755,0.665
+setting_0023,abundance_only,FALSE,4,0,0.6,metagenomeSeq,general_abundance,100,100,20,0.769,0.0195
+setting_0023,abundance_only,FALSE,4,0,0.6,SACAT,primary_omnibus,100,100,20,0.5385,0.506
+setting_0024,abundance_only,TRUE,4,0,0.6,SACAT,structural_absence,100,100,0,,
+setting_0024,abundance_only,TRUE,4,0,0.6,SACAT,present_conditional_abundance,100,100,20,0.65,0.6105
+setting_0024,abundance_only,TRUE,4,0,0.6,ZINQ,observed_prevalence,100,100,20,0.0025,0.003
+setting_0024,abundance_only,TRUE,4,0,0.6,ZINQ,detected_quantile_abundance,100,100,20,0.2575,0.237
+setting_0024,abundance_only,TRUE,4,0,0.6,MaAsLin 3,observed_prevalence,100,100,20,0.002,0.003
+setting_0024,abundance_only,TRUE,4,0,0.6,MaAsLin 3,detected_log_abundance,100,100,20,0.3525,0.3755
+setting_0024,abundance_only,TRUE,4,0,0.6,edgeR,general_abundance,100,100,20,0.267,0.4805
+setting_0024,abundance_only,TRUE,4,0,0.6,DESeq2,general_abundance,100,100,20,0.4115,0.403
+setting_0024,abundance_only,TRUE,4,0,0.6,ANCOM-BC2,general_abundance,100,100,20,0.0025,0.0025
+setting_0024,abundance_only,TRUE,4,0,0.6,LinDA,general_abundance,100,100,20,0.117,0.037
+setting_0024,abundance_only,TRUE,4,0,0.6,corncob,general_abundance,100,100,20,0.6785,0.6415
+setting_0024,abundance_only,TRUE,4,0,0.6,metagenomeSeq,general_abundance,100,100,20,0.754,0.025
+setting_0024,abundance_only,TRUE,4,0,0.6,SACAT,primary_omnibus,100,100,20,0.538,0.5315
+setting_0025,joint,FALSE,4,0.25,0.6,SACAT,structural_absence,100,100,20,0.607,0.626
+setting_0025,joint,FALSE,4,0.25,0.6,SACAT,present_conditional_abundance,100,100,20,0.6485,0.593
+setting_0025,joint,FALSE,4,0.25,0.6,ZINQ,observed_prevalence,100,100,20,0.533,0.5325
+setting_0025,joint,FALSE,4,0.25,0.6,ZINQ,detected_quantile_abundance,100,100,20,0.2725,0.24
+setting_0025,joint,FALSE,4,0.25,0.6,MaAsLin 3,observed_prevalence,100,100,20,0.518,0.536
+setting_0025,joint,FALSE,4,0.25,0.6,MaAsLin 3,detected_log_abundance,100,100,20,0.3475,0.38
+setting_0025,joint,FALSE,4,0.25,0.6,edgeR,general_abundance,100,100,20,0.0545,0.056
+setting_0025,joint,FALSE,4,0.25,0.6,DESeq2,general_abundance,100,100,20,0.48,0.481
+setting_0025,joint,FALSE,4,0.25,0.6,ANCOM-BC2,general_abundance,100,100,20,0.333,0.309
+setting_0025,joint,FALSE,4,0.25,0.6,LinDA,general_abundance,100,100,20,0.5175,0.5
+setting_0025,joint,FALSE,4,0.25,0.6,corncob,general_abundance,100,100,20,0.5215,0.519
+setting_0025,joint,FALSE,4,0.25,0.6,metagenomeSeq,general_abundance,100,100,20,0.6525,0.149
+setting_0025,joint,FALSE,4,0.25,0.6,SACAT,primary_omnibus,100,100,20,0.8075,0.779
+setting_0025,joint,FALSE,4,0.25,0.6,MaAsLin 3,native_joint,100,100,20,0.66,0.6555
+setting_0025,joint,FALSE,4,0.25,0.6,ZINQ,native_joint,100,100,20,0.648,0.631
+setting_0026,joint,TRUE,4,0.25,0.6,SACAT,structural_absence,100,100,20,0.606,0.6335
+setting_0026,joint,TRUE,4,0.25,0.6,SACAT,present_conditional_abundance,100,100,20,0.6545,0.6145
+setting_0026,joint,TRUE,4,0.25,0.6,ZINQ,observed_prevalence,100,100,20,0.529,0.5345
+setting_0026,joint,TRUE,4,0.25,0.6,ZINQ,detected_quantile_abundance,100,100,20,0.251,0.226
+setting_0026,joint,TRUE,4,0.25,0.6,MaAsLin 3,observed_prevalence,100,100,20,0.5175,0.5375
+setting_0026,joint,TRUE,4,0.25,0.6,MaAsLin 3,detected_log_abundance,100,100,20,0.353,0.3775
+setting_0026,joint,TRUE,4,0.25,0.6,edgeR,general_abundance,100,100,20,0.3665,0.387
+setting_0026,joint,TRUE,4,0.25,0.6,DESeq2,general_abundance,100,100,20,0.4775,0.477
+setting_0026,joint,TRUE,4,0.25,0.6,ANCOM-BC2,general_abundance,100,100,20,0.331,0.312
+setting_0026,joint,TRUE,4,0.25,0.6,LinDA,general_abundance,100,100,20,0.517,0.499
+setting_0026,joint,TRUE,4,0.25,0.6,corncob,general_abundance,100,100,20,0.526,0.522
+setting_0026,joint,TRUE,4,0.25,0.6,metagenomeSeq,general_abundance,100,100,20,0.6525,0.178
+setting_0026,joint,TRUE,4,0.25,0.6,SACAT,primary_omnibus,100,100,20,0.8125,0.8075
+setting_0026,joint,TRUE,4,0.25,0.6,MaAsLin 3,native_joint,100,100,20,0.669,0.6695
+setting_0026,joint,TRUE,4,0.25,0.6,ZINQ,native_joint,100,100,20,0.646,0.635
+setting_0027,structural_only,FALSE,5,0.3,0,SACAT,structural_absence,100,100,20,0.8395,0.856
+setting_0027,structural_only,FALSE,5,0.3,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0027,structural_only,FALSE,5,0.3,0,ZINQ,observed_prevalence,100,100,20,0.794,0.794
+setting_0027,structural_only,FALSE,5,0.3,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0027,structural_only,FALSE,5,0.3,0,MaAsLin 3,observed_prevalence,100,100,20,0.7855,0.797
+setting_0027,structural_only,FALSE,5,0.3,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0027,structural_only,FALSE,5,0.3,0,edgeR,general_abundance,100,100,20,0.006,0.0145
+setting_0027,structural_only,FALSE,5,0.3,0,DESeq2,general_abundance,100,100,20,0.2365,0.2435
+setting_0027,structural_only,FALSE,5,0.3,0,ANCOM-BC2,general_abundance,100,100,20,0.0065,0.01
+setting_0027,structural_only,FALSE,5,0.3,0,LinDA,general_abundance,100,100,20,0.812,0.7175
+setting_0027,structural_only,FALSE,5,0.3,0,corncob,general_abundance,100,100,20,0.279,0.248
+setting_0027,structural_only,FALSE,5,0.3,0,metagenomeSeq,general_abundance,100,100,20,0.3375,0
+setting_0027,structural_only,FALSE,5,0.3,0,SACAT,primary_omnibus,100,100,20,0.7655,0.7325
+setting_0028,structural_only,TRUE,5,0.3,0,SACAT,structural_absence,100,100,20,0.827,0.8465
+setting_0028,structural_only,TRUE,5,0.3,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0028,structural_only,TRUE,5,0.3,0,ZINQ,observed_prevalence,100,100,20,0.789,0.797
+setting_0028,structural_only,TRUE,5,0.3,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0028,structural_only,TRUE,5,0.3,0,MaAsLin 3,observed_prevalence,100,100,20,0.78,0.8
+setting_0028,structural_only,TRUE,5,0.3,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0028,structural_only,TRUE,5,0.3,0,edgeR,general_abundance,100,100,20,0.0685,0.2215
+setting_0028,structural_only,TRUE,5,0.3,0,DESeq2,general_abundance,100,100,20,0.2335,0.2195
+setting_0028,structural_only,TRUE,5,0.3,0,ANCOM-BC2,general_abundance,100,100,20,0.008,0.0105
+setting_0028,structural_only,TRUE,5,0.3,0,LinDA,general_abundance,100,100,20,0.796,0.6955
+setting_0028,structural_only,TRUE,5,0.3,0,corncob,general_abundance,100,100,20,0.266,0.233
+setting_0028,structural_only,TRUE,5,0.3,0,metagenomeSeq,general_abundance,100,100,20,0.323,0
+setting_0028,structural_only,TRUE,5,0.3,0,SACAT,primary_omnibus,100,100,20,0.76,0.754
+setting_0029,abundance_only,FALSE,5,0,0.8,SACAT,structural_absence,100,100,0,,
+setting_0029,abundance_only,FALSE,5,0,0.8,SACAT,present_conditional_abundance,100,100,20,0.9185,0.903
+setting_0029,abundance_only,FALSE,5,0,0.8,ZINQ,observed_prevalence,100,100,20,0.0125,0.013
+setting_0029,abundance_only,FALSE,5,0,0.8,ZINQ,detected_quantile_abundance,100,100,20,0.6595,0.624
+setting_0029,abundance_only,FALSE,5,0,0.8,MaAsLin 3,observed_prevalence,100,100,20,0.0095,0.013
+setting_0029,abundance_only,FALSE,5,0,0.8,MaAsLin 3,detected_log_abundance,100,100,20,0.7275,0.747
+setting_0029,abundance_only,FALSE,5,0,0.8,edgeR,general_abundance,100,100,20,0.0375,0.039
+setting_0029,abundance_only,FALSE,5,0,0.8,DESeq2,general_abundance,100,100,20,0.8025,0.803
+setting_0029,abundance_only,FALSE,5,0,0.8,ANCOM-BC2,general_abundance,100,100,20,0.024,0.024
+setting_0029,abundance_only,FALSE,5,0,0.8,LinDA,general_abundance,100,100,20,0.382,0.209
+setting_0029,abundance_only,FALSE,5,0,0.8,corncob,general_abundance,100,100,20,0.9415,0.936
+setting_0029,abundance_only,FALSE,5,0,0.8,metagenomeSeq,general_abundance,100,100,20,0.9395,0.3435
+setting_0029,abundance_only,FALSE,5,0,0.8,SACAT,primary_omnibus,100,100,20,0.88,0.869
+setting_0030,abundance_only,TRUE,5,0,0.8,SACAT,structural_absence,100,100,0,,
+setting_0030,abundance_only,TRUE,5,0,0.8,SACAT,present_conditional_abundance,100,100,20,0.918,0.91
+setting_0030,abundance_only,TRUE,5,0,0.8,ZINQ,observed_prevalence,100,100,20,0.0075,0.0085
+setting_0030,abundance_only,TRUE,5,0,0.8,ZINQ,detected_quantile_abundance,100,100,20,0.64,0.6045
+setting_0030,abundance_only,TRUE,5,0,0.8,MaAsLin 3,observed_prevalence,100,100,20,0.0065,0.0085
+setting_0030,abundance_only,TRUE,5,0,0.8,MaAsLin 3,detected_log_abundance,100,100,20,0.715,0.7335
+setting_0030,abundance_only,TRUE,5,0,0.8,edgeR,general_abundance,100,100,20,0.5835,0.6575
+setting_0030,abundance_only,TRUE,5,0,0.8,DESeq2,general_abundance,100,100,20,0.7985,0.792
+setting_0030,abundance_only,TRUE,5,0,0.8,ANCOM-BC2,general_abundance,100,100,20,0.0255,0.0255
+setting_0030,abundance_only,TRUE,5,0,0.8,LinDA,general_abundance,100,100,20,0.368,0.1775
+setting_0030,abundance_only,TRUE,5,0,0.8,corncob,general_abundance,100,100,20,0.9375,0.9265
+setting_0030,abundance_only,TRUE,5,0,0.8,metagenomeSeq,general_abundance,100,100,20,0.942,0.367
+setting_0030,abundance_only,TRUE,5,0,0.8,SACAT,primary_omnibus,100,100,20,0.8795,0.875
+setting_0031,joint,FALSE,5,0.3,0.8,SACAT,structural_absence,100,100,20,0.82,0.8315
+setting_0031,joint,FALSE,5,0.3,0.8,SACAT,present_conditional_abundance,100,100,20,0.923,0.901
+setting_0031,joint,FALSE,5,0.3,0.8,ZINQ,observed_prevalence,100,100,20,0.6805,0.6805
+setting_0031,joint,FALSE,5,0.3,0.8,ZINQ,detected_quantile_abundance,100,100,20,0.633,0.598
+setting_0031,joint,FALSE,5,0.3,0.8,MaAsLin 3,observed_prevalence,100,100,20,0.6755,0.6825
+setting_0031,joint,FALSE,5,0.3,0.8,MaAsLin 3,detected_log_abundance,100,100,20,0.731,0.763
+setting_0031,joint,FALSE,5,0.3,0.8,edgeR,general_abundance,100,100,20,0.0715,0.0715
+setting_0031,joint,FALSE,5,0.3,0.8,DESeq2,general_abundance,100,100,20,0.529,0.529
+setting_0031,joint,FALSE,5,0.3,0.8,ANCOM-BC2,general_abundance,100,100,20,0.4655,0.4535
+setting_0031,joint,FALSE,5,0.3,0.8,LinDA,general_abundance,100,100,20,0.5365,0.5195
+setting_0031,joint,FALSE,5,0.3,0.8,corncob,general_abundance,100,100,20,0.577,0.5735
+setting_0031,joint,FALSE,5,0.3,0.8,metagenomeSeq,general_abundance,100,100,20,0.767,0.458
+setting_0031,joint,FALSE,5,0.3,0.8,SACAT,primary_omnibus,100,100,20,0.966,0.9625
+setting_0031,joint,FALSE,5,0.3,0.8,MaAsLin 3,native_joint,100,100,20,0.8795,0.879
+setting_0031,joint,FALSE,5,0.3,0.8,ZINQ,native_joint,100,100,20,0.8615,0.8565
+setting_0032,joint,TRUE,5,0.3,0.8,SACAT,structural_absence,100,100,20,0.797,0.8185
+setting_0032,joint,TRUE,5,0.3,0.8,SACAT,present_conditional_abundance,100,100,20,0.9195,0.905
+setting_0032,joint,TRUE,5,0.3,0.8,ZINQ,observed_prevalence,100,100,20,0.676,0.678
+setting_0032,joint,TRUE,5,0.3,0.8,ZINQ,detected_quantile_abundance,100,100,20,0.643,0.6165
+setting_0032,joint,TRUE,5,0.3,0.8,MaAsLin 3,observed_prevalence,100,100,20,0.6685,0.6815
+setting_0032,joint,TRUE,5,0.3,0.8,MaAsLin 3,detected_log_abundance,100,100,20,0.73,0.75
+setting_0032,joint,TRUE,5,0.3,0.8,edgeR,general_abundance,100,100,20,0.4105,0.4535
+setting_0032,joint,TRUE,5,0.3,0.8,DESeq2,general_abundance,100,100,20,0.528,0.5265
+setting_0032,joint,TRUE,5,0.3,0.8,ANCOM-BC2,general_abundance,100,100,20,0.468,0.4605
+setting_0032,joint,TRUE,5,0.3,0.8,LinDA,general_abundance,100,100,20,0.5285,0.516
+setting_0032,joint,TRUE,5,0.3,0.8,corncob,general_abundance,100,100,20,0.5835,0.572
+setting_0032,joint,TRUE,5,0.3,0.8,metagenomeSeq,general_abundance,100,100,20,0.7775,0.4615
+setting_0032,joint,TRUE,5,0.3,0.8,SACAT,primary_omnibus,100,100,20,0.963,0.9605
+setting_0032,joint,TRUE,5,0.3,0.8,MaAsLin 3,native_joint,100,100,20,0.8735,0.8745
+setting_0032,joint,TRUE,5,0.3,0.8,ZINQ,native_joint,100,100,20,0.8595,0.8545
+setting_0033,structural_only,FALSE,6,0.4,0,SACAT,structural_absence,100,100,20,0.9685,0.97
+setting_0033,structural_only,FALSE,6,0.4,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0033,structural_only,FALSE,6,0.4,0,ZINQ,observed_prevalence,100,100,20,0.977,0.9775
+setting_0033,structural_only,FALSE,6,0.4,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0033,structural_only,FALSE,6,0.4,0,MaAsLin 3,observed_prevalence,100,100,20,0.975,0.9775
+setting_0033,structural_only,FALSE,6,0.4,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0033,structural_only,FALSE,6,0.4,0,edgeR,general_abundance,100,100,20,0.0265,0.0405
+setting_0033,structural_only,FALSE,6,0.4,0,DESeq2,general_abundance,100,100,20,0.509,0.5095
+setting_0033,structural_only,FALSE,6,0.4,0,ANCOM-BC2,general_abundance,100,100,20,0.018,0.023
+setting_0033,structural_only,FALSE,6,0.4,0,LinDA,general_abundance,100,100,20,0.9815,0.9685
+setting_0033,structural_only,FALSE,6,0.4,0,corncob,general_abundance,100,100,20,0.6825,0.6685
+setting_0033,structural_only,FALSE,6,0.4,0,metagenomeSeq,general_abundance,100,100,20,0.542,0.002
+setting_0033,structural_only,FALSE,6,0.4,0,SACAT,primary_omnibus,100,100,20,0.9545,0.9485
+setting_0034,structural_only,TRUE,6,0.4,0,SACAT,structural_absence,100,100,20,0.9685,0.971
+setting_0034,structural_only,TRUE,6,0.4,0,SACAT,present_conditional_abundance,100,100,0,,
+setting_0034,structural_only,TRUE,6,0.4,0,ZINQ,observed_prevalence,100,100,20,0.976,0.9765
+setting_0034,structural_only,TRUE,6,0.4,0,ZINQ,detected_quantile_abundance,100,100,0,,
+setting_0034,structural_only,TRUE,6,0.4,0,MaAsLin 3,observed_prevalence,100,100,20,0.976,0.9765
+setting_0034,structural_only,TRUE,6,0.4,0,MaAsLin 3,detected_log_abundance,100,100,0,,
+setting_0034,structural_only,TRUE,6,0.4,0,edgeR,general_abundance,100,100,20,0.3135,0.474
+setting_0034,structural_only,TRUE,6,0.4,0,DESeq2,general_abundance,100,100,20,0.521,0.5115
+setting_0034,structural_only,TRUE,6,0.4,0,ANCOM-BC2,general_abundance,100,100,20,0.017,0.023
+setting_0034,structural_only,TRUE,6,0.4,0,LinDA,general_abundance,100,100,20,0.978,0.965
+setting_0034,structural_only,TRUE,6,0.4,0,corncob,general_abundance,100,100,20,0.651,0.6155
+setting_0034,structural_only,TRUE,6,0.4,0,metagenomeSeq,general_abundance,100,100,20,0.54,0.002
+setting_0034,structural_only,TRUE,6,0.4,0,SACAT,primary_omnibus,100,100,20,0.947,0.9445
+setting_0035,abundance_only,FALSE,6,0,1.2,SACAT,structural_absence,100,100,0,,
+setting_0035,abundance_only,FALSE,6,0,1.2,SACAT,present_conditional_abundance,100,100,20,0.9985,0.9985
+setting_0035,abundance_only,FALSE,6,0,1.2,ZINQ,observed_prevalence,100,100,20,0.049,0.0515
+setting_0035,abundance_only,FALSE,6,0,1.2,ZINQ,detected_quantile_abundance,100,100,20,0.9705,0.963
+setting_0035,abundance_only,FALSE,6,0,1.2,MaAsLin 3,observed_prevalence,100,100,20,0.0435,0.0505
+setting_0035,abundance_only,FALSE,6,0,1.2,MaAsLin 3,detected_log_abundance,100,100,20,0.982,0.9845
+setting_0035,abundance_only,FALSE,6,0,1.2,edgeR,general_abundance,100,100,20,0.0595,0.0595
+setting_0035,abundance_only,FALSE,6,0,1.2,DESeq2,general_abundance,100,100,20,0.998,0.998
+setting_0035,abundance_only,FALSE,6,0,1.2,ANCOM-BC2,general_abundance,100,100,20,0.3415,0.3415
+setting_0035,abundance_only,FALSE,6,0,1.2,LinDA,general_abundance,100,100,20,0.877,0.8125
+setting_0035,abundance_only,FALSE,6,0,1.2,corncob,general_abundance,100,100,20,1,1
+setting_0035,abundance_only,FALSE,6,0,1.2,metagenomeSeq,general_abundance,100,100,20,0.999,0.971
+setting_0035,abundance_only,FALSE,6,0,1.2,SACAT,primary_omnibus,100,100,20,0.998,0.997
+setting_0036,abundance_only,TRUE,6,0,1.2,SACAT,structural_absence,100,100,0,,
+setting_0036,abundance_only,TRUE,6,0,1.2,SACAT,present_conditional_abundance,100,100,20,0.9985,0.9985
+setting_0036,abundance_only,TRUE,6,0,1.2,ZINQ,observed_prevalence,100,100,20,0.0495,0.057
+setting_0036,abundance_only,TRUE,6,0,1.2,ZINQ,detected_quantile_abundance,100,100,20,0.972,0.9675
+setting_0036,abundance_only,TRUE,6,0,1.2,MaAsLin 3,observed_prevalence,100,100,20,0.039,0.0575
+setting_0036,abundance_only,TRUE,6,0,1.2,MaAsLin 3,detected_log_abundance,100,100,20,0.9845,0.986
+setting_0036,abundance_only,TRUE,6,0,1.2,edgeR,general_abundance,100,100,20,0.7745,0.7765
+setting_0036,abundance_only,TRUE,6,0,1.2,DESeq2,general_abundance,100,100,20,0.996,0.996
+setting_0036,abundance_only,TRUE,6,0,1.2,ANCOM-BC2,general_abundance,100,100,20,0.3545,0.3545
+setting_0036,abundance_only,TRUE,6,0,1.2,LinDA,general_abundance,100,100,20,0.8815,0.8095
+setting_0036,abundance_only,TRUE,6,0,1.2,corncob,general_abundance,100,100,20,1,1
+setting_0036,abundance_only,TRUE,6,0,1.2,metagenomeSeq,general_abundance,100,100,20,0.999,0.9685
+setting_0036,abundance_only,TRUE,6,0,1.2,SACAT,primary_omnibus,100,100,20,0.9975,0.9975
+setting_0037,joint,FALSE,6,0.4,1.2,SACAT,structural_absence,100,100,20,0.9085,0.9165
+setting_0037,joint,FALSE,6,0.4,1.2,SACAT,present_conditional_abundance,100,100,20,0.999,0.998
+setting_0037,joint,FALSE,6,0.4,1.2,ZINQ,observed_prevalence,100,100,20,0.7975,0.7975
+setting_0037,joint,FALSE,6,0.4,1.2,ZINQ,detected_quantile_abundance,100,100,20,0.9615,0.9555
+setting_0037,joint,FALSE,6,0.4,1.2,MaAsLin 3,observed_prevalence,100,100,20,0.7915,0.798
+setting_0037,joint,FALSE,6,0.4,1.2,MaAsLin 3,detected_log_abundance,100,100,20,0.9755,0.98
+setting_0037,joint,FALSE,6,0.4,1.2,edgeR,general_abundance,100,100,20,0.103,0.103
+setting_0037,joint,FALSE,6,0.4,1.2,DESeq2,general_abundance,100,100,20,0.67,0.6715
+setting_0037,joint,FALSE,6,0.4,1.2,ANCOM-BC2,general_abundance,100,100,20,0.5035,0.5035
+setting_0037,joint,FALSE,6,0.4,1.2,LinDA,general_abundance,100,100,20,0.536,0.524
+setting_0037,joint,FALSE,6,0.4,1.2,corncob,general_abundance,100,100,20,0.77,0.7685
+setting_0037,joint,FALSE,6,0.4,1.2,metagenomeSeq,general_abundance,100,100,20,0.922,0.6775
+setting_0037,joint,FALSE,6,0.4,1.2,SACAT,primary_omnibus,100,100,20,0.9995,0.999
+setting_0037,joint,FALSE,6,0.4,1.2,MaAsLin 3,native_joint,100,100,20,0.991,0.9905
+setting_0037,joint,FALSE,6,0.4,1.2,ZINQ,native_joint,100,100,20,0.9835,0.983
+setting_0038,joint,TRUE,6,0.4,1.2,SACAT,structural_absence,100,100,20,0.898,0.908
+setting_0038,joint,TRUE,6,0.4,1.2,SACAT,present_conditional_abundance,100,100,20,0.997,0.9965
+setting_0038,joint,TRUE,6,0.4,1.2,ZINQ,observed_prevalence,100,100,20,0.7835,0.786
+setting_0038,joint,TRUE,6,0.4,1.2,ZINQ,detected_quantile_abundance,100,100,20,0.9605,0.952
+setting_0038,joint,TRUE,6,0.4,1.2,MaAsLin 3,observed_prevalence,100,100,20,0.7805,0.7895
+setting_0038,joint,TRUE,6,0.4,1.2,MaAsLin 3,detected_log_abundance,100,100,20,0.973,0.976
+setting_0038,joint,TRUE,6,0.4,1.2,edgeR,general_abundance,100,100,20,0.5665,0.6455
+setting_0038,joint,TRUE,6,0.4,1.2,DESeq2,general_abundance,100,100,20,0.6555,0.6525
+setting_0038,joint,TRUE,6,0.4,1.2,ANCOM-BC2,general_abundance,100,100,20,0.5045,0.504
+setting_0038,joint,TRUE,6,0.4,1.2,LinDA,general_abundance,100,100,20,0.542,0.524
+setting_0038,joint,TRUE,6,0.4,1.2,corncob,general_abundance,100,100,20,0.7815,0.771
+setting_0038,joint,TRUE,6,0.4,1.2,metagenomeSeq,general_abundance,100,100,20,0.928,0.6655
+setting_0038,joint,TRUE,6,0.4,1.2,SACAT,primary_omnibus,100,100,20,0.999,0.999
+setting_0038,joint,TRUE,6,0.4,1.2,MaAsLin 3,native_joint,100,100,20,0.9885,0.989
+setting_0038,joint,TRUE,6,0.4,1.2,ZINQ,native_joint,100,100,20,0.9825,0.982

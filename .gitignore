@@ -17,12 +17,5 @@ Analysis/RealDataAnalysis/*/processed/
 Analysis/RealDataAnalysis/*/work/
 Analysis/RealDataAnalysis/R_lib/
 
-# Archived local simulation workspace
-/Analysis/SparseDOSSA2Simulation/
-
-# Local simulation result data and source archive
-/Analysis/SimulationStudy/results_data/
-/Analysis/SimulationStudy/simulation_report/
-
 # Local negative-control fit objects
 /Analysis/NegativeControlAnalysis/*/results/replicates/

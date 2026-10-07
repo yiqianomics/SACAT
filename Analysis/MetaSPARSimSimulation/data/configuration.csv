@@ -1,0 +1,12 @@
+parameter,value
+n_taxa,100
+replications,100
+null_replications,500
+setting_blocks,2
+base_seed,202609160
+simulation_seed,202611460
+alpha,0.05
+zinq_taus,"0.25,0.5,0.75"
+maaslin3_warn_prevalence,TRUE
+corncob_robust,TRUE
+metagenomeseq_maxit,10

@@ -1,6 +1,6 @@
 # Main manuscript figures
 
-Each R script generates one PDF from the numerical inputs in `data/`.
+Each R script generates one PDF from saved numerical inputs.
 The scripts resolve paths relative to their own location and can be run from
 any working directory. Model fitting is not repeated.
 
@@ -30,16 +30,19 @@ shows metaSPARSim simulations. Rows distinguish settings without and with a
 covariate. Component comparisons use SACAT, ZINQ, and MaAsLin 3; joint-effect
 comparisons also include the six abundance methods.
 
-`data/simulation_power.csv` contains the 384 plotted values and their design
-labels. `plotted_value` uses matched-null p-value calibration followed by BH
+The figure reads `tables/main_plot_data.csv` from
+[`SimulationStudy`](../SimulationStudy/README.md) and
+[`MetaSPARSimSimulation`](../MetaSPARSimSimulation/README.md). Together, these
+tables contain the 384 plotted values and their design labels.
+`plotted_value` uses matched-null p-value calibration followed by BH
 adjustment at 0.05 within each replication and method-result family.
 `original_bh_value` records the corresponding result without null calibration
 and is not plotted. Panel A's first two scenarios report rejection among the
 designated taxa; its abundance and joint scenarios, and all of Panel B,
 report power.
 
-The full-grid model-based figures and their summaries are in
-[`SimulationStudy`](../SimulationStudy/README.md).
+Both simulation directories include the complete raw p-value inputs and scripts
+for recomputing their summaries.
 
 ## Real-data figure
 

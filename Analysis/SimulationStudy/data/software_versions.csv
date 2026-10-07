@@ -1,0 +1,43 @@
+run,phase,package,version
+base,Original 120-setting run,R,4.5.3
+base,Original 120-setting run,SACAT,0.7.0
+base,Original 120-setting run,ZINQ,2.0
+base,Original 120-setting run,maaslin3,1.5.3
+base,Original 120-setting run,edgeR,4.8.2
+base,Original 120-setting run,DESeq2,1.50.2
+base,Original 120-setting run,ANCOMBC,2.12.0
+base,Original 120-setting run,TreeSummarizedExperiment,2.18.0
+base,Original 120-setting run,SummarizedExperiment,1.40.0
+base,Original 120-setting run,S4Vectors,0.48.0
+base,Original 120-setting run,MicrobiomeStat,1.4
+base,Original 120-setting run,corncob,0.4.2
+base,Original 120-setting run,metagenomeSeq,1.52.0
+base,Original 120-setting run,Biobase,2.70.0
+base,Original 120-setting run,limma,3.66.0
+base,Original 120-setting run,statmod,1.5.2
+base,Original 120-setting run,data.table,1.17.8
+base,31 datasets reanalyzed,SACAT,0.7.1
+base,31 datasets reanalyzed,R,4.5.0
+joint,42-setting joint run,R,4.5.3
+joint,42-setting joint run,SACAT,0.7.1
+joint,42-setting joint run,ZINQ,2.0
+joint,42-setting joint run,maaslin3,1.5.3
+joint,42-setting joint run,edgeR,4.8.2
+joint,42-setting joint run,DESeq2,1.50.2
+joint,42-setting joint run,ANCOMBC,2.12.0
+joint,42-setting joint run,MicrobiomeStat,1.4
+joint,42-setting joint run,corncob,0.4.2
+joint,42-setting joint run,metagenomeSeq,1.52.0
+joint,42-setting joint run,Biobase,2.70.0
+joint,42-setting joint run,limma,3.66.0
+joint,42-setting joint run,statmod,1.5.2
+joint,42-setting joint run,data.table,1.17.8
+abundance,Six added settings and ZINQ grid rerun,SACAT,0.7.1
+abundance,Six added settings and ZINQ grid rerun,ZINQ,2.0
+abundance,Six added settings and ZINQ grid rerun,maaslin3,1.5.3
+abundance,Six added settings and ZINQ grid rerun,quantreg,6.1
+abundance,Six added settings and ZINQ grid rerun,logistf,1.26.1
+abundance,Six added settings and ZINQ grid rerun,Matrix,1.7.6
+abundance,Six added settings and ZINQ grid rerun,statmod,1.5.2
+abundance,Six added settings and ZINQ grid rerun,data.table,1.18.4
+abundance,Six added settings and ZINQ grid rerun,R,4.5.0

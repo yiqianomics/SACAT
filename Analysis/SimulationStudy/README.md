@@ -1,116 +1,140 @@
-# SACAT Simulation Study
+# Internal simulations
 
-This directory contains the simulation program, cluster submission template, figures, numerical summaries, and tabular results for the SACAT simulation study.
+This directory contains the model-based simulations used in the manuscript,
+including complete saved p-value families, design and truth records, simulation
+programs, and reproducible numerical summaries. The manuscript figure is drawn
+by [MainFigures](../MainFigures/README.md) from `tables/main_plot_data.csv`.
 
-## Study design
+## Design
 
-Each simulation contains 50 focal taxa in two equally sized groups, with 10 taxa designated for perturbation. The design crosses three sample sizes (60, 80, or 120 observations per group) and two covariate settings. Without a covariate, the data-generating model and fitted models contain only the group effect. With a covariate, a standard-normal variable is generated independently of group, standardized across samples, and included in both data generation and analysis. Library sizes have a target median of 8,000 reads in both groups.
+Every dataset has 50 focal taxa. Each setting has 100 independent replications.
+The main experiments use 60, 80, or 120 observations per group and either no
+covariate or an independently generated standard-normal covariate included in
+the data-generating and fitted models. The target median library size is 8,000
+reads in both groups. Nonzero settings designate 10 taxa for perturbation.
 
-The experiments cover:
+| Experiment | Settings | Effect levels |
+|---|---:|---|
+| Observed prevalence, fixed structural absence | 30 | 0, 0.08, 0.16, 0.24, 0.32 |
+| Structural absence, matched observed prevalence | 30 | 0, 0.10, 0.20, 0.35, 0.50 |
+| Present-conditional abundance | 30 | 0, 0.20, 0.40, 0.75, 1.40 |
+| Structural-only component specificity | 30 | 0, 0.10, 0.20, 0.35, 0.50 |
+| Joint structural and abundance effects | 42 | SA/RA: 0/0, .10/.20, .15/.40, .20/.50, .25/.60, .35/.80, .50/1.40 |
+| Additional abundance effects at n = 80 | 6 | 0.30, 0.50, 0.60, with and without a covariate |
 
-- observed-prevalence perturbations with fixed structural-absence probabilities;
-- structural-absence perturbations calibrated to preserve expected observed prevalence;
-- present-conditional abundance perturbations;
-- structural-only perturbations for component specificity.
+The joint experiment includes five reinforcing and five opposing effect taxa.
+SACAT uses its Bonferroni omnibus test; ZINQ and MaAsLin 3 use their native joint
+tests. The other six methods use their abundance tests. The abundance supplement
+also repeats ZINQ on the ten original n = 80 abundance settings, including the
+two null settings, so its original and added effect levels use the same analysis
+environment and null references.
 
-| Experiment | Effect levels |
-|---|---|
-| Observed-prevalence difference with fixed structural absence | 0, 0.08, 0.16, 0.24, 0.32 |
-| Structural-absence difference with matched observed prevalence | 0, 0.10, 0.20, 0.35, 0.50 |
-| Absolute present-conditional mean log-abundance difference | 0, 0.20, 0.40, 0.75, 1.40 |
-| Structural-only difference | 0, 0.10, 0.20, 0.35, 0.50 |
+## Saved inputs
 
-The 20 experiment-effect combinations and six design strata give 120 settings, each evaluated in 100 independent replications. Abundance effects are positive for five target taxa and negative for five. Each experiment includes its zero-effect endpoint. Baseline profiles retain a fixed 20-taxon template pool, of which 10 taxa are perturbed.
+`data/` contains five compressed taxon-result files. Each contains all 50 taxa
+within every included method-result-replication family, including unavailable
+tests. The fields retain raw p values, availability, component-specific truth,
+designated-taxon labels, and status. Joint results also identify the primary
+comparisons. P-value precision is preserved; no model fitting is required to
+recompute the tables.
 
-## Programs
+| File | Taxon results |
+|---|---:|
+| `base_n060.csv.gz`, `base_n080.csv.gz`, `base_n120.csv.gz` | 1,700,000 each |
+| `joint.csv.gz` | 3,150,000 |
+| `abundance.csv.gz` | 160,000 |
 
-- `run_simulation.R` defines the data-generating mechanisms, runs one replication, applies the analysis methods, and aggregates the simulation results.
-- `submit.slurm` is the SLURM array template used for the 100 replications.
-- `summarize_results.R` validates the completed grid and creates the figures and CSV tables.
+The supplement contains 90,000 tests at the added effects, 50,000 locally rerun
+ZINQ tests from the original grid, and 20,000 saved SACAT/MaAsLin 3 null tests.
+The base files retain the complete original grid; the manuscript table uses
+the supplement's ZINQ abundance results at n = 80. Its displayed abundance
+effects are 0.20, 0.30, 0.40, 0.50, 0.60, and 0.75.
 
-The simulation program uses SACAT 0.7.1 and the packages listed in its `replicate_packages` and `summary_packages` objects. The supplied SLURM file provides a portable 100-task array template. Load the required R environment before submission and add any cluster-specific partition or resource options locally. All methods include the covariate only when it is present; MaAsLin 3 and ZINQ also adjust for standardized log sequencing depth.
+The three `*_design.csv` files record the exact settings. `base_truth.csv.gz`
+and `joint_truth.csv.gz` retain the full simulation truth records.
 
-ZINQ 2.0 is available from the [ZINQ-v2 repository](https://github.com/wdl2459/ZINQ-v2), and MaAsLin3 1.5.3 is available from the [MaAsLin3 repository](https://github.com/biobakery/maaslin3).
+Recorded R and package versions are in `data/software_versions.csv`.
+The supplied base and joint runners require SACAT 0.7.1 or later.
 
-The figure and table script requires `data.table`, `ggplot2`, `patchwork`, `scales`, and an R build with Cairo graphics.
+## Recompute the tables
 
-From `Analysis/SimulationStudy`, set the repository and output directories and run:
+With R, `data.table`, and `R.utils` installed, run from any working directory:
 
-```bash
-export SACAT_PROJECT_ROOT=/path/to/SACAT
-export SACAT_SIMULATION_ROOT=/path/to/sacat_internal_validation_output
+```sh
+Rscript Analysis/SimulationStudy/summarize_results.R
+```
+
+Set `SACAT_SIMULATION_DATA` or `SACAT_SIMULATION_TABLES` to use other input or
+output directories. All reported rates are proportions between zero and one.
+
+- `setting_summary.csv` contains raw-p + BH and calibrated-p + BH power, FDR,
+  designated-taxon rejection, availability, and Monte Carlo standard errors.
+- `replication_metrics.csv.gz` retains all 168,200 result families used in
+  those summaries.
+- `type1_error.csv` reports global-null Type I error from raw p < 0.05 before
+  multiplicity adjustment, averaged over taxa and replications.
+- `test_availability.csv` gives complete test counts by result family and status.
+- `main_plot_data.csv` contains the 204 manuscript Panel A points.
+- `manuscript_summary.csv` gives the equally weighted setting means for SACAT
+  structural FDR (48 nonzero structural-only/matched-prevalence settings) and
+  abundance FDR (24 nonzero abundance settings).
+
+For calibration, null p values are matched by scenario, sample size, covariate,
+method, and component. The entire null replication sharing the evaluation
+replication index is excluded. The calibrated p value is
+`(1 + number of reference p values <= p) / 4951`, using 4,950 reference tests.
+Unavailable tests enter with p = 1. BH adjustment is then applied within each
+fixed family of 50 taxa at 0.05. FDR is the mean replication-level false discovery
+proportion, with zero when there are no discoveries. The first two manuscript
+scenarios report designated-taxon rejection; abundance and joint scenarios
+report power. Raw and calibrated results have separate columns throughout.
+
+## Run the simulations
+
+The runners list their required R packages. ZINQ 2.0 is available from
+[ZINQ-v2](https://github.com/wdl2459/ZINQ-v2) and MaAsLin 3 1.5.3 from
+[MaAsLin3](https://github.com/biobakery/maaslin3). Use the recorded package
+versions when comparing numerical fits across environments.
+
+From this directory, set `SACAT_PROJECT_ROOT` to the repository and
+`SACAT_SIMULATION_ROOT` and `SACAT_JOINT_ROOT` to the desired run directories.
+Load the R environment and add cluster-specific options to the SLURM templates.
+
+```sh
+mkdir -p logs
 Rscript run_simulation.R preflight
 Rscript run_simulation.R design
 sbatch submit.slurm
-```
-
-After the array has completed, aggregate its outputs with:
-
-```bash
+# After all 100 array tasks finish:
 Rscript run_simulation.R summarize
+
+Rscript run_joint.R check
+Rscript run_joint.R design
+sbatch submit_joint.slurm
+# After all 100 array tasks finish:
+Rscript run_joint.R summarize
 ```
 
-## Simulation results
+The abundance supplement uses SACAT 0.7.1 and the saved base design and null
+references. Set `SACAT_ABUNDANCE_ROOT` to its output directory, then run:
 
-The full simulation result archive contains taxon-level results, simulation truth, replication-level metrics, setting summaries, completion records, method-status summaries, and software information. Counts and latent states are retained in the dataset files.
-
-With `SACAT_SIMULATION_ROOT` set to the run directory, create figures and tables from its `summary/` directory with:
-
-```bash
-Rscript summarize_results.R
+```sh
+Rscript run_abundance_supplement.R prepare
+Rscript run_abundance_supplement.R preflight
+Rscript run_abundance_supplement.R worker 1 1
+Rscript run_abundance_supplement.R zinq 1 1
 ```
 
-The script checks the setting grid against the saved design and verifies all 100 replications. New figures and tables are written to `report/` within the run directory.
+The two final arguments are worker index and total workers. Different worker
+indices can be run concurrently. To prepare another completed run for the same
+table workflow, collect its inputs into a separate directory:
 
-The figures and tables already in this directory accompany the SACAT 0.6.0 result archive. Their 540-setting design, covariate structures, and software versions are recorded in `tables/`. To reproduce those outputs, extract the archive into `results_data/source/` and run the figure script without `SACAT_SIMULATION_ROOT` set; the reproduced files are written to `simulation_report/`. The figure script reads the design and software information supplied with each set of results. `SACAT_SIMULATION_SOURCE` and `SACAT_SIMULATION_REPORT_ROOT` can specify other input and output directories.
+```sh
+Rscript prepare_results.R base "$SACAT_SIMULATION_ROOT/summary" /path/to/new_inputs
+Rscript prepare_results.R joint "$SACAT_JOINT_ROOT/summary" /path/to/new_inputs
+Rscript prepare_results.R abundance "$SACAT_ABUNDANCE_ROOT" /path/to/new_inputs
+SACAT_SIMULATION_DATA=/path/to/new_inputs Rscript summarize_results.R
+```
 
-## Figures
-
-The 11 simulation figures in `figures/` are listed by topic below. Full-grid outputs retain all design strata. For manuscript figures, see [MainFigures](../MainFigures/README.md).
-
-| Topic | Figure | Content |
-|---|---|---|
-| Mechanism validation | [Mechanism separation](figures/mechanism_separation.pdf) | Structural-absence and observed-prevalence rejection curves across the full design grid |
-| Mechanism validation | [Estimand calibration](figures/estimand_calibration.pdf) | Target and achieved probability contrasts |
-| Mechanism validation | [Component specificity](figures/component_specificity.pdf) | Marginal Type I error for the non-target SACAT component |
-| Abundance comparison | [Abundance power](figures/abundance_power.pdf) | Present-conditional abundance power across the full design grid |
-| Abundance comparison | [FDR: 20% signal taxa](figures/abundance_fdr_signal20.pdf) | Abundance false discovery rates with 10 perturbed taxa |
-| Abundance comparison | [FDR: 40% signal taxa](figures/abundance_fdr_signal40.pdf) | Abundance false discovery rates with 20 perturbed taxa |
-| Global null | [Structural and prevalence error](figures/global_null_family_rejection_structural.pdf) | Familywise Type I error under three global-null generators |
-| Global null | [Abundance error](figures/global_null_family_rejection_abundance.pdf) | Familywise Type I error under three global-null generators |
-| Correlated community | [Abundance power](figures/correlated_community_abundance_power.pdf) | Power under correlated-community abundance perturbations |
-| Correlated community | [Abundance FDR](figures/correlated_community_abundance_fdr.pdf) | False discovery rates under correlated-community abundance perturbations |
-| Correlated community | [Structural performance](figures/correlated_community_structural_performance.pdf) | Structural and prevalence power and false discovery rates |
-
-Each curve is evaluated within its displayed sample-size, signal-fraction, covariate, and effect stratum. Points and intervals summarize 100 independent replications. The vector PDFs use a consistent publication-scale layout.
-
-## Tables
-
-Design and implementation records:
-
-- `simulation_constants.csv` and `simulation_design.csv`;
-- `method_targets.csv` and `software_versions.csv`;
-- `confounding_design.csv` (covariate-generation summaries);
-- `test_availability.csv` and `test_unavailability_reasons.csv`.
-
-Numerical values underlying the figures:
-
-- `estimand_calibration_summary.csv`;
-- `structural_estimand_summary.csv`;
-- `component_specificity_summary.csv`;
-- `abundance_performance_summary.csv`;
-- `global_null_family_rejection_summary.csv`;
-- `correlated_community_summary.csv`.
-
-## Performance measures
-
-Within each replication, setting, method, and component, Benjamini-Hochberg adjustment is applied to the fixed family of 50 focal taxa. Each unavailable taxon test enters the multiplicity family with a p-value of one and contributes a non-rejection.
-
-- Power is the proportion of directly perturbed taxa rejected after adjustment.
-- The false discovery proportion is the number of false discoveries divided by the total number of discoveries, with zero assigned when no discovery occurs. The empirical false discovery rate is its mean over 100 replications.
-- Under a global null, familywise Type I error is the probability of at least one rejection. It equals the empirical false discovery rate because all 50 focal taxa are null.
-- `type1_error` and `type1_error_bh` report the mean rejection proportion among null taxa before and after BH adjustment. `familywise_type1_error_raw` and `familywise_type1_error_bh` record whether any null taxon is rejected. Each is computed within replication before averaging.
-- Marginal Type I error in the component-specificity experiment is the mean rejection probability for the non-target SACAT component among taxa designated for the other component.
-- Monte Carlo intervals equal the replication-level mean plus or minus 1.96 Monte Carlo standard errors, truncated to the parameter range.
-
-The global-null figures use the zero-effect abundance experiment. For result archives containing multiple signal-template strata, those strata are averaged within replication before the Monte Carlo mean and interval are computed.
+Preparation and summarization only read saved results. Counts and fitted
+objects remain in the simulation run directories.

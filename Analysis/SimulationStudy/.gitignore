@@ -1,0 +1,5 @@
+base_output/
+joint_output/
+abundance_output/
+sacat_internal_validation_output/
+logs/

@@ -1,13 +1,58 @@
-method,component,eligible_tests,available_tests,unavailable_tests,availability_percent
-SACAT structural absence,Structural absence,2700000,2678442,21558,99.202
-SACAT present-conditional abundance,Present-conditional abundance,2700000,2678673,21327,99.21
-ZINQ Firth prevalence,Observed prevalence,2700000,2700000,0,100
-ZINQ quantile abundance,Detected-sample quantile abundance,2700000,2700000,0,100
-MaAsLin 3 prevalence,Observed prevalence,2700000,2700000,0,100
-MaAsLin 3 abundance,Detected log abundance,2700000,2700000,0,100
-ANCOM-BC2,General abundance,960000,960000,0,100
-DESeq2,General abundance,960000,960000,0,100
-edgeR,General abundance,960000,698414,261586,72.751
-LinDA,General abundance,960000,960000,0,100
-corncob,General abundance,960000,960000,0,100
-metagenomeSeq,General abundance,960000,960000,0,100
+run,method,component,status,tests,available_tests
+base,SACAT,structural_absence,structural_absence_boundary_at_zero,4444,4444
+base,ZINQ,detected_quantile_abundance,ok,600000,600000
+base,SACAT,present_conditional_abundance,ok,594672,594672
+base,SACAT,omnibus,ok,599941,599941
+base,ZINQ,observed_prevalence,ok,600000,600000
+base,MaAsLin 3,observed_prevalence,ok,600000,600000
+base,MaAsLin 3,detected_log_abundance,ok,600000,600000
+base,SACAT,structural_absence,ok,592375,592375
+base,SACAT,present_conditional_abundance,conditional_present_information_nonpositive,4287,0
+base,SACAT,present_conditional_abundance,conditional_present_root_polish_not_closed,767,0
+base,edgeR,general_abundance,filterByExpr_excluded,63783,0
+base,LinDA,general_abundance,ok,150000,150000
+base,corncob,general_abundance,ok,150000,150000
+base,ANCOM-BC2,general_abundance,ok,138471,138471
+base,DESeq2,general_abundance,ok,150000,150000
+base,metagenomeSeq,general_abundance,ok,150000,150000
+base,edgeR,general_abundance,ok,86217,86217
+base,ANCOM-BC2,general_abundance,ok_after_sensitivity_exclusion,11529,11529
+base,SACAT,present_conditional_abundance,conditional_present_root_polish_no_descent,252,0
+base,SACAT,structural_absence,structural_absence_nonoptimal_nuisance_fit,1611,0
+base,SACAT,structural_absence,structural_absence_persistent_boundary,1556,0
+base,SACAT,omnibus,both_components_unavailable,59,0
+base,SACAT,structural_absence,conditional_present_gradient,7,0
+base,SACAT,present_conditional_abundance,conditional_present_gradient,22,0
+base,SACAT,structural_absence,inference_derivative_unstable,6,0
+base,SACAT,structural_absence,conditional_present_persistent_boundary,1,0
+joint,SACAT,structural_absence,ok,209561,209561
+joint,SACAT,present_conditional_abundance,ok,209767,209767
+joint,SACAT,omnibus,ok,210000,210000
+joint,ZINQ,observed_prevalence,ok,210000,210000
+joint,ZINQ,detected_quantile_abundance,ok,210000,210000
+joint,ZINQ,native_joint,ok,210000,210000
+joint,MaAsLin 3,observed_prevalence,ok,210000,210000
+joint,MaAsLin 3,detected_log_abundance,ok,210000,210000
+joint,MaAsLin 3,native_joint,ok,210000,210000
+joint,edgeR,general_abundance,filterByExpr_excluded,113889,0
+joint,edgeR,general_abundance,ok,96111,96111
+joint,DESeq2,general_abundance,ok,210000,210000
+joint,ANCOM-BC2,general_abundance,ok,185773,185773
+joint,ANCOM-BC2,general_abundance,ok_after_sensitivity_exclusion,24227,24227
+joint,LinDA,general_abundance,ok,210000,210000
+joint,corncob,general_abundance,ok,210000,210000
+joint,metagenomeSeq,general_abundance,ok,210000,210000
+joint,SACAT,present_conditional_abundance,conditional_present_root_polish_not_closed,46,0
+joint,SACAT,present_conditional_abundance,conditional_present_root_polish_no_descent,10,0
+joint,SACAT,structural_absence,structural_absence_boundary_at_zero,246,246
+joint,SACAT,present_conditional_abundance,conditional_present_information_nonpositive,177,0
+joint,SACAT,structural_absence,structural_absence_persistent_boundary,113,0
+joint,SACAT,structural_absence,structural_absence_nonoptimal_nuisance_fit,80,0
+abundance,ZINQ,detected_quantile_abundance,ok,80000,80000
+abundance,SACAT,present_conditional_abundance,ok,29967,29967
+abundance,MaAsLin 3,detected_log_abundance,ok,30000,30000
+abundance,SACAT,present_conditional_abundance,conditional_present_root_polish_not_closed,5,0
+abundance,SACAT,present_conditional_abundance,conditional_present_information_nonpositive,27,0
+abundance,SACAT,present_conditional_abundance,conditional_present_root_polish_no_descent,1,0
+abundance,MaAsLin 3,detected_log_abundance,saved_null_reference,10000,10000
+abundance,SACAT,present_conditional_abundance,saved_null_reference,10000,9991

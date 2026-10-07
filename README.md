@@ -232,3 +232,11 @@ sandwich variance, then compared with a chi-squared distribution with one degree
 of freedom. `z_relative_abundance` reports the signed square root of this
 statistic. With `full_output = TRUE`, the abundance output includes the profile
 statistics and constrained fits.
+
+## Manuscript analyses
+
+- [Model-based simulations](Analysis/SimulationStudy/README.md)
+- [metaSPARSim simulations](Analysis/MetaSPARSimSimulation/README.md)
+- [Real-data analyses](Analysis/RealDataAnalysis/README.md)
+- [Negative controls](Analysis/NegativeControlAnalysis/README.md)
+- [Main figures](Analysis/MainFigures/README.md)

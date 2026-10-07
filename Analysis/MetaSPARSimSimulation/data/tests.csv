@@ -1,0 +1,16 @@
+test_id,method,component
+1,SACAT,structural_absence
+2,SACAT,present_conditional_abundance
+3,ZINQ,observed_prevalence
+4,ZINQ,detected_quantile_abundance
+5,MaAsLin 3,observed_prevalence
+6,MaAsLin 3,detected_log_abundance
+7,edgeR,general_abundance
+8,DESeq2,general_abundance
+9,ANCOM-BC2,general_abundance
+10,LinDA,general_abundance
+11,corncob,general_abundance
+12,metagenomeSeq,general_abundance
+13,SACAT,primary_omnibus
+14,MaAsLin 3,native_joint
+15,ZINQ,native_joint

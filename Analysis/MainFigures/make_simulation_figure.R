@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Render the simulation figure from data/simulation_power.csv.
+# Render the simulation figure from the two simulation summaries.
 # Run with Rscript; input and output paths are relative to this script.
 # Requires R >= 4.1, ggplot2 >= 3.5.0, and systemfonts.
 
@@ -25,12 +25,16 @@ if (length(script_argument) != 1L) {
     stop("Run this generator with Rscript path/to/make_simulation_figure.R.", call. = FALSE)
 }
 script_dir <- dirname(normalizePath(sub("^--file=", "", script_argument), mustWork = TRUE))
-input_file <- file.path(script_dir, "data", "simulation_power.csv")
+input_files <- file.path(dirname(script_dir),
+    c("SimulationStudy", "MetaSPARSimSimulation"), "tables", "main_plot_data.csv")
 output_dir <- file.path(script_dir, "figures")
 output_file <- file.path(output_dir, "main_simulation_calibrated_bh_power_combined.pdf")
-if (!file.exists(input_file)) stop("Missing input: ", input_file, call. = FALSE)
-plot_data <- read.csv(input_file, stringsAsFactors = FALSE, check.names = FALSE,
-                      na.strings = c("", "NA"))
+if (!all(file.exists(input_files))) {
+    stop("Missing simulation summaries: ",
+         paste(input_files[!file.exists(input_files)], collapse = ", "), call. = FALSE)
+}
+plot_data <- do.call(rbind, lapply(input_files, read.csv,
+    stringsAsFactors = FALSE, check.names = FALSE, na.strings = c("", "NA")))
 required_columns <- c("panel", "simulation", "setting_id", "scenario", "n_per_group",
     "covariate", "effect_parameter", "effect_index", "structural_difference",
     "abundance_log_effect", "method", "component", "plotted_metric", "plotted_value",
@@ -70,6 +74,9 @@ internal$scenario_label <- factor(internal$scenario, levels = internal_scenarios
 internal$covariate_label <- factor(internal$covariate,
     levels = c("without_covariate", "with_covariate"), labels = covariate_labels)
 external$method <- factor(external$method, levels = methods)
+internal <- internal[order(match(internal$method,
+    c(core_methods, "edgeR", "DESeq2", "ANCOM-BC2", "LinDA", "corncob", "metagenomeSeq"))), ]
+external <- external[order(external$method), ]
 external$scenario_label <- factor(external$scenario, levels = external_scenarios,
                                   labels = external_titles)
 external$covariate_label <- factor(external$include_covariate,
