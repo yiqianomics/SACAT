@@ -315,7 +315,7 @@ intersection_matrix <- ggplot2::ggplot() +
     ggplot2::scale_y_continuous(
         limits = c(0.5, length(display_method_order) + 0.5),
         breaks = positions$y,
-        labels = positions$method,
+        labels = c("SACAT SA", "SACAT RA", positions$method[-c(1L, 2L)]),
         expand = ggplot2::expansion(mult = c(0, 0))
     ) +
     ggplot2::labs(
