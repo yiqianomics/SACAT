@@ -115,31 +115,9 @@ Rscript Analysis/RealDataAnalysis/rauer_mock/analysis.R
 Rscript Analysis/RealDataAnalysis/rauer_mock/make_figures.R
 ```
 
-Regenerate the combined mock-community and CDI figure:
-
-```sh
-Rscript Analysis/RealDataAnalysis/make_combined_figure.R
-```
-
-This script uses `ggplot2` and `patchwork` and writes only
-`summary/main_real_data_combined.pdf`, using Arial for the figure text.
-The numerical inputs in `summary/combined_figure_data/` reproduce the figure
-without rerunning model fits:
-
-- `rauer_mock_recovery.csv` contains discovery totals over the 52 allocations
-  for eight structural targets or three abundance targets at each depth.
-- `schubert_cdi_method_results.csv` contains all 88 taxa in each method-result
-  family, including the p-values, BH-adjusted p-values, and signed statistics.
-- `schubert_cdi_sample_values.csv` contains the counts, library sizes, and
-  posterior SA probabilities (`gamma`) for the three displayed taxa. These
-  probabilities come from the SA score-test fit with its SA group coefficient
-  fixed at zero. Panel E averages `gamma` and `I(count = 0) - gamma` over all
-  samples in each group to obtain the estimated SA and ND shares.
-- `schubert_cdi_fitted_abundance.csv` contains the fitted abundance markers in
-  Panel F. Each is 100 times the exponential of the fitted mean log relative
-  abundance conditional on presence, standardized over all 243 covariate
-  profiles with group set to Healthy or CDI. The boxplots use positive observed
-  relative abundances; the axis is logarithmic.
+The [Schubert CDI analysis](cdi_schubert/README.md#cdi-and-mock-community-figure)
+also provides a figure combining the CDI component profiles with recovery
+curves from the Rauer mock-community benchmark.
 
 Preparation and fitting write source inputs and intermediate files to `raw/`,
 `processed/`, and `work/`. Reported tables and figures are in each dataset's

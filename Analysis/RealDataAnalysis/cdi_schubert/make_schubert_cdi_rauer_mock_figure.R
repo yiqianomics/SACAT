@@ -8,14 +8,15 @@ suppressPackageStartupMessages({
 
 script <- sub("^--file=", "", grep("^--file=", commandArgs(), value = TRUE)[1L])
 directory <- dirname(normalizePath(script))
-data_directory <- file.path(directory, "summary", "combined_figure_data")
+data_directory <- file.path(directory, "table")
 read_table <- function(name) {
     read.csv(file.path(data_directory, name), stringsAsFactors = FALSE)
 }
-recovery <- read_table("rauer_mock_recovery.csv")
-results <- read_table("schubert_cdi_method_results.csv")
-samples <- read_table("schubert_cdi_sample_values.csv")
-fitted <- read_table("schubert_cdi_fitted_abundance.csv")
+recovery <- read.csv(file.path(dirname(directory), "rauer_mock", "table",
+                               "rauer_mock_recovery.csv"), stringsAsFactors = FALSE)
+results <- read_table("schubert_cdi_figure_method_results.csv")
+samples <- read_table("schubert_cdi_figure_sample_values.csv")
+fitted <- read_table("schubert_cdi_figure_fitted_abundance.csv")
 taxa <- c("Coprococcus", "Enterococcus", "Faecalibacterium")
 scale <- 183 / 210
 
@@ -522,7 +523,7 @@ draw_block <- function(grob, bottom, height) {
     popViewport()
 }
 
-output <- file.path(directory, "summary", "main_real_data_combined.pdf")
+output <- file.path(directory, "figs", "schubert_cdi_rauer_mock.pdf")
 if (capabilities("aqua")) {
     grDevices::quartz(type = "pdf", file = output, width = 183 / 25.4,
                      height = 181 * scale / 25.4, family = "Arial", bg = "white",

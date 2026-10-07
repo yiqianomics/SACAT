@@ -83,3 +83,5 @@ and `work/`.
   `table/rauer_mock_depth_summary.csv` contain the reported numerical
   summaries.
 - `figs/rauer_mock_main.pdf` is the benchmark figure.
+- `table/rauer_mock_recovery.csv` contains recovery totals used in the
+  [CDI and mock-community figure](../cdi_schubert/README.md#cdi-and-mock-community-figure).
