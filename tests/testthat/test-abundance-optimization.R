@@ -69,6 +69,151 @@ test_that("the conditional-mark likelihood cancels structural presence", {
     )
 })
 
+test_that("exact memoization is bounded and does not round coordinates", {
+    evaluations <- 0L
+    cached <- SACAT:::.sacat_exact_memoise(function(point) {
+        evaluations <<- evaluations + 1L
+        sum(point^2)
+    }, capacity = 2L)
+
+    point <- c(0.25, -0.5)
+    nearby <- point
+    nearby[1L] <- nearby[1L] + .Machine$double.eps
+    expect_identical(cached(point), sum(point^2))
+    expect_identical(cached(point), sum(point^2))
+    expect_identical(evaluations, 1L)
+    expect_identical(cached(nearby), sum(nearby^2))
+    expect_identical(evaluations, 2L)
+    expect_identical(cached(point), sum(point^2))
+    expect_identical(evaluations, 2L)
+
+    third <- c(1, 1)
+    expect_identical(cached(third), sum(third^2))
+    expect_identical(cached(point), sum(point^2))
+    expect_identical(evaluations, 4L)
+})
+
+test_that("beta linearization reuses exact shared stencil evaluations", {
+    beta <- c(0.2, -0.3)
+    step <- c(1e-4, 2e-4)
+    scheme <- rep("central", length(beta))
+    loglik <- function(value) {
+        c(
+            -0.5 * (value[1L] + 2 * value[2L])^2,
+            -0.5 * (2 * value[1L] - value[2L])^2,
+            value[1L] - value[2L]^2
+        )
+    }
+    base <- loglik(beta)
+    expected_score <- SACAT:::zt_central_derivative_matrix_fixed(
+        loglik, beta, step, f0 = base, scheme = scheme
+    )
+    expected_hessian <- SACAT:::zt_central_hessian_fixed(
+        function(value) sum(loglik(value)),
+        beta, step, f0 = sum(base), scheme = scheme
+    )
+
+    evaluations <- 0L
+    counted_loglik <- function(value) {
+        evaluations <<- evaluations + 1L
+        loglik(value)
+    }
+    result <- SACAT:::zt_beta_linearization(
+        beta, counted_loglik, step, scheme
+    )
+
+    expect_true(result$ok)
+    expect_identical(result$loglik_by_sample, base)
+    expect_identical(result$score, expected_score)
+    expect_identical(result$jacobian, expected_hessian)
+    expect_identical(result$information, -expected_hessian)
+    expect_identical(evaluations, 9L)
+})
+
+test_that("beta and alpha bound loops defer gradients until final checks", {
+    beta_objective_evaluations <- 0L
+    beta_gradient_evaluations <- 0L
+    beta_point <- c(-4, 0.2, 0)
+    beta_fit <- with_mocked_bindings(
+        SACAT:::zt_fit_beta(
+            y = c(1, 2, 3, 4),
+            N = rep(100, 4L),
+            X_eta = cbind(Intercept = 1, Group = c(0, 0, 1, 1)),
+            gh = list()
+        ),
+        zt_beta_nll = function(beta, ...) {
+            beta_objective_evaluations <<-
+                beta_objective_evaluations + 1L
+            sum(beta^2)
+        },
+        zt_select_optim = function(starts, fn, lower, upper, maxit,
+                                   gr = NULL) {
+            first <- fn(beta_point)
+            fn(beta_point + c(1e-6, 0, 0))
+            second <- fn(as.numeric(beta_point))
+            stopifnot(identical(first, second))
+            list(
+                par = beta_point, value = second, convergence = 0L,
+                message = NULL, n_starts = length(starts),
+                n_finite = length(starts), n_converged = length(starts)
+            )
+        },
+        zt_numeric_gradient = function(...) {
+            beta_gradient_evaluations <<-
+                beta_gradient_evaluations + 1L
+            numeric(length(beta_point))
+        },
+        zt_polish_beta_fit = function(fit, gradient, ...) {
+            list(fit = fit, gradient = gradient, diagnostics = list())
+        },
+        zt_active_bounds = function(par, ...) {
+            list(
+                lower = rep(FALSE, length(par)),
+                upper = rep(FALSE, length(par))
+            )
+        },
+        optimHess = function(...) diag(length(beta_point)),
+        .package = "SACAT"
+    )
+    expect_true(beta_fit$ok)
+    expect_identical(beta_objective_evaluations, 2L)
+    expect_identical(beta_gradient_evaluations, 1L)
+    expect_identical(beta_fit$nll(beta_point), sum(beta_point^2))
+    expect_identical(beta_objective_evaluations, 2L)
+
+    alpha_score_evaluations <- 0L
+    alpha_fit <- with_mocked_bindings(
+        SACAT:::zt_fit_alpha(
+            beta = 0,
+            y = c(0, 1, 0, 1),
+            N = rep(100, 4L),
+            X_rho = matrix(1, nrow = 4L),
+            X_eta = matrix(1, nrow = 4L),
+            gh = list(),
+            conditional_present = list(log_r = rep(log(0.5), 4L))
+        ),
+        zt_select_optim = function(starts, fn, lower, upper, maxit,
+                                   gr = NULL) {
+            list(
+                par = 0, value = 0, convergence = 0L,
+                message = NULL, n_starts = length(starts),
+                n_finite = length(starts), n_converged = length(starts)
+            )
+        },
+        zt_alpha_scores_from_components = function(...) {
+            alpha_score_evaluations <<- alpha_score_evaluations + 1L
+            matrix(0, nrow = 4L, ncol = 1L)
+        },
+        zt_active_bounds = function(par, ...) {
+            list(lower = FALSE, upper = FALSE)
+        },
+        optimHess = function(...) matrix(1),
+        .package = "SACAT"
+    )
+    expect_true(alpha_fit$ok)
+    expect_identical(alpha_score_evaluations, 1L)
+})
+
 test_that("the mark fit closes one likelihood and one influence calculation", {
     result <- .fit_mark_fixture()
     input <- result$input
@@ -208,35 +353,6 @@ test_that("mark formation reports the mathematical support failures", {
     expect_identical(
         rank_deficient$status,
         "rank_deficient_positive_mark_design"
-    )
-})
-
-test_that("structural start modes have explicit public meanings", {
-    expect_identical(
-        SACAT:::.sacat_resolve_structural_conditional_present_starts(
-            "adaptive"
-        ),
-        list(mode = "adaptive", count = 1L)
-    )
-    expect_identical(
-        SACAT:::.sacat_resolve_structural_conditional_present_starts(
-            "full"
-        ),
-        list(mode = "full", count = 5L)
-    )
-    expect_identical(
-        SACAT:::.sacat_resolve_structural_conditional_present_starts(1L),
-        list(mode = "adaptive", count = 1L)
-    )
-    expect_identical(
-        SACAT:::.sacat_resolve_structural_conditional_present_starts(5L),
-        list(mode = "full", count = 5L)
-    )
-    expect_error(
-        SACAT:::.sacat_resolve_structural_conditional_present_starts(
-            "primary"
-        ),
-        "adaptive.*full"
     )
 })
 

@@ -25,44 +25,6 @@ count_clamp <- function(x, lo, hi) {
     pmin(pmax(x, lo), hi)
 }
 
-.sacat_validate_conditional_present_starts <- function(
-        starts, argument = "conditional_present_starts") {
-    valid <- is.numeric(starts) && !is.logical(starts) &&
-        length(starts) == 1L && !is.na(starts) && is.finite(starts) &&
-        abs(starts - round(starts)) <= 1e-8 &&
-        as.integer(round(starts)) %in% c(1L, 5L)
-    if (!valid) {
-        stop(
-            sprintf("`%s` must be either 1L or 5L.", argument),
-            call. = FALSE
-        )
-    }
-    as.integer(round(starts))
-}
-
-.sacat_resolve_structural_conditional_present_starts <- function(starts) {
-    if (is.numeric(starts) && !is.logical(starts)) {
-        count <- .sacat_validate_conditional_present_starts(
-            starts, "structural_conditional_present_starts"
-        )
-        return(list(
-            mode = if (count == 1L) "adaptive" else "full",
-            count = count
-        ))
-    }
-    if (!is.character(starts) || anyNA(starts)) {
-        stop(
-            paste(
-                "`structural_conditional_present_starts` must be",
-                "\"adaptive\" or \"full\"."
-            ),
-            call. = FALSE
-        )
-    }
-    mode <- match.arg(starts, c("adaptive", "full"))
-    list(mode = mode, count = if (mode == "adaptive") 1L else 5L)
-}
-
 .sacat_validate_positive_integer <- function(value, name, minimum = 1L) {
     valid <- is.numeric(value) && !is.logical(value) &&
         length(value) == 1L && !is.na(value) && is.finite(value) &&
@@ -73,11 +35,6 @@ count_clamp <- function(x, lo, hi) {
              call. = FALSE)
     }
     as.integer(round(value))
-}
-
-.sacat_select_conditional_present_starts <- function(bank, starts) {
-    starts <- .sacat_validate_conditional_present_starts(starts)
-    if (starts == 1L) bank[1L] else bank
 }
 
 count_softplus <- function(x) {
@@ -741,7 +698,7 @@ cauchy_combination <- function(ps) {
     result
 }
 
-.sacat_abundance_mark_linearization <- function(
+.sacat_mark_linearization <- function(
         beta, y, N, X_eta, gh, lower, upper, control) {
     step_info <- zt_inference_steps(
         beta, length(y), lower, upper,
@@ -797,7 +754,7 @@ cauchy_combination <- function(ps) {
     )
 }
 
-.sacat_abundance_polish_mark_root <- function(
+.sacat_polish_mark_root <- function(
         beta, linearization, beta_fit, y, N, X_eta, gh, control,
         max_iterations = 4L) {
     positive_count <- sum(y > 0)
@@ -857,7 +814,7 @@ cauchy_combination <- function(ps) {
                 trial_nll > current_nll + objective_tolerance) {
                 next
             }
-            trial_linearization <- .sacat_abundance_mark_linearization(
+            trial_linearization <- .sacat_mark_linearization(
                 trial_beta, y, N, X_eta, gh,
                 beta_fit$lower, beta_fit$upper, control
             )
@@ -923,7 +880,8 @@ cauchy_combination <- function(ps) {
 
 .sacat_abundance_fit_taxon <- function(
         y, N, group, z, gh_fit, gh_effect, control,
-        min_positive_samples = 3L, check_quadrature = FALSE) {
+        min_positive_samples = 3L, check_quadrature = FALSE,
+        conditional_present_fit = NULL) {
     y <- as.numeric(y)
     N <- as.numeric(N)
     group <- as.numeric(group)
@@ -974,13 +932,13 @@ cauchy_combination <- function(ps) {
         ))
     }
 
-    beta_fit <- zt_fit_beta(
-        y = y,
-        N = N,
-        X_eta = X_eta,
-        gh = gh_fit,
-        conditional_present_starts = 5L
-    )
+    beta_fit <- if (is.null(conditional_present_fit)) {
+        zt_fit_beta(y, N, X_eta, gh_fit)
+    } else {
+        .sacat_attach_beta_objectives(
+            conditional_present_fit, y, N, X_eta, gh_fit
+        )
+    }
     if (!isTRUE(beta_fit$ok) || any(!is.finite(beta_fit$par))) {
         return(empty_fit(
             beta_fit$reason,
@@ -989,7 +947,7 @@ cauchy_combination <- function(ps) {
     }
 
     beta <- beta_fit$par
-    linearization <- .sacat_abundance_mark_linearization(
+    linearization <- .sacat_mark_linearization(
         beta, y, N, X_eta, gh_fit,
         beta_fit$lower, beta_fit$upper, control
     )
@@ -1003,7 +961,7 @@ cauchy_combination <- function(ps) {
         ))
     }
 
-    root_polish <- .sacat_abundance_polish_mark_root(
+    root_polish <- .sacat_polish_mark_root(
         beta, linearization, beta_fit, y, N, X_eta, gh_fit, control
     )
     if (!isTRUE(root_polish$ok)) {
@@ -1507,7 +1465,8 @@ cauchy_combination <- function(ps) {
         min_positive_samples = 3L, min_reference_taxa = 4L,
         quadrature_points = 41L,
         cluster = NULL, verbose = FALSE,
-        check_quadrature = keep_diagnostics) {
+        check_quadrature = keep_diagnostics,
+        conditional_present_fits = NULL) {
     taxa <- colnames(Y)
     n_samples <- nrow(Y)
     control <- .sacat_abundance_control(quadrature_points)
@@ -1532,7 +1491,8 @@ cauchy_combination <- function(ps) {
                 gh_effect = gh_effect,
                 control = control,
                 min_positive_samples = min_positive_samples,
-                check_quadrature = check_quadrature
+                check_quadrature = check_quadrature,
+                conditional_present_fit = conditional_present_fits[[j]]
             ),
             error = function(e) {
                 .sacat_abundance_empty_fit(
@@ -1614,6 +1574,33 @@ zt_log1mexp <- function(log_x) {
 }
 
 zt_clamp <- function(x, lower, upper) pmin(pmax(x, lower), upper)
+
+# Reuse evaluations at identical parameter vectors.
+.sacat_exact_memoise <- function(fn, capacity = 1L) {
+    if (!is.function(fn)) stop("`fn` must be a function.")
+    capacity <- .sacat_validate_positive_integer(capacity, "capacity")
+    records <- list()
+    function(point) {
+        point <- as.numeric(point)
+        if (length(records)) {
+            matched <- which(vapply(
+                records,
+                function(record) identical(record$point, point),
+                logical(1)
+            ))
+            if (length(matched)) return(records[[matched[1L]]]$value)
+        }
+        value <- fn(point)
+        if (length(records) >= capacity) {
+            records <<- records[-seq_len(length(records) - capacity + 1L)]
+        }
+        records[[length(records) + 1L]] <<- list(
+            point = point,
+            value = value
+        )
+        value
+    }
+}
 
 zt_difference_scheme <- function(par, step, lower, upper) {
     par <- as.numeric(par)
@@ -1882,7 +1869,11 @@ zt_beta_loglik_by_sample_inference <- function(beta, y, N, X_eta, gh) {
 
 zt_beta_linearization <- function(
         beta, loglik_by_sample, step, scheme) {
-    loglik_base <- as.numeric(loglik_by_sample(beta))
+    cached_loglik <- .sacat_exact_memoise(
+        function(value) as.numeric(loglik_by_sample(value)),
+        capacity = min(2L * length(beta) + 1L, 33L)
+    )
+    loglik_base <- cached_loglik(beta)
     if (any(!is.finite(loglik_base))) {
         return(list(
             ok = FALSE,
@@ -1891,7 +1882,7 @@ zt_beta_linearization <- function(
     }
     score <- tryCatch(
         zt_central_derivative_matrix_fixed(
-            loglik_by_sample, beta, step,
+            cached_loglik, beta, step,
             f0 = loglik_base, scheme = scheme
         ),
         error = function(e) NULL
@@ -1904,7 +1895,7 @@ zt_beta_linearization <- function(
     }
     hessian <- tryCatch(
         zt_central_hessian_fixed(
-            function(value) sum(loglik_by_sample(value)),
+            function(value) sum(cached_loglik(value)),
             beta, step, f0 = sum(loglik_base), scheme = scheme
         ),
         error = function(e) NULL
@@ -2106,11 +2097,9 @@ zt_polish_beta_fit <- function(fit, fn, lower, upper, gradient,
     )
 }
 
-zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L,
-                        conditional_present_starts = 1L) {
+zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L) {
     p_eta <- ncol(X_eta)
     pos <- y > 0
-    n_positive <- sum(pos)
     pseudo_prop <- zt_clamp((y[pos] + 0.5) / (N[pos] + 1), 1e-10,
                             1 - 1e-10)
     regression <- tryCatch(
@@ -2134,11 +2123,9 @@ zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L,
         c(intercept_only, log(0.5)),
         c(intercept_only, log(2))
     )
-    starts <- .sacat_select_conditional_present_starts(
-        starts, conditional_present_starts
-    )
-    fn_unscaled <- function(beta) zt_beta_nll(beta, y, N, X_eta, gh)
-    fn_optimization <- function(beta) fn_unscaled(beta) / n_positive
+    objectives <- .sacat_beta_objectives(y, N, X_eta, gh)
+    fn_unscaled <- objectives$nll
+    fn_optimization <- objectives$optimization_objective
     fit <- NULL
     fit_history <- list()
     expansion_count <- 0L
@@ -2159,9 +2146,6 @@ zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L,
             round_starts, fn_optimization, lower, upper, maxit
         )
         if (is.null(fit)) break
-        gradient <- zt_numeric_gradient(
-            fn_optimization, fit$par, lower, upper
-        )
         active <- zt_active_bounds(fit$par, lower, upper)
         fit_history[[iteration]] <- list(
             par = fit$par,
@@ -2181,7 +2165,8 @@ zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L,
     if (is.null(fit)) {
         return(list(
             ok = FALSE,
-            reason = "conditional_present_no_finite_fit"
+            reason = "conditional_present_no_finite_fit",
+            quadrature_Q = gh$Q
         ))
     }
 
@@ -2246,6 +2231,7 @@ zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L,
     list(
         ok = ok,
         reason = reason,
+        quadrature_Q = gh$Q,
         par = fit$par,
         nll = fn_unscaled,
         optimization_objective = fn_optimization,
@@ -2262,6 +2248,136 @@ zt_fit_beta <- function(y, N, X_eta, gh, maxit = 500L,
         numerical_warnings = unique(numerical_warnings),
         optimization_history = fit_history
     )
+}
+
+.sacat_beta_objectives <- function(y, N, X_eta, gh) {
+    n_positive <- sum(y > 0)
+    nll <- .sacat_exact_memoise(
+        function(beta) zt_beta_nll(beta, y, N, X_eta, gh),
+        capacity = min(2L * (ncol(X_eta) + 1L) + 1L, 33L)
+    )
+    list(nll = nll, optimization_objective = function(beta) {
+        nll(beta) / n_positive
+    })
+}
+
+.sacat_attach_beta_objectives <- function(fit, y, N, X_eta, gh) {
+    objectives <- .sacat_beta_objectives(y, N, X_eta, gh)
+    fit$nll <- objectives$nll
+    fit$optimization_objective <- objectives$optimization_objective
+    fit
+}
+
+.sacat_compact_beta_fit <- function(fit) {
+    fit$nll <- NULL
+    fit$optimization_objective <- NULL
+    fit
+}
+
+.sacat_conditional_present_fits <- function(
+        Y, N, g, z, quadrature_points, fit_all_positive = TRUE,
+        cluster = NULL) {
+    X_eta <- .sacat_abundance_designs(g, z)$X_eta
+    gh <- .sacat_make_abundance_gh_rule(quadrature_points)
+    fit_one <- function(j) {
+        y <- as.numeric(Y[, j])
+        positive <- y > 0
+        if (!fit_all_positive && all(positive)) return(NULL)
+        if (qr(X_eta[positive, , drop = FALSE])$rank < ncol(X_eta)) {
+            return(list(ok = FALSE,
+                        reason = "rank_deficient_positive_mark_design"))
+        }
+        tryCatch(
+            .sacat_compact_beta_fit(zt_fit_beta(y, N, X_eta, gh)),
+            error = function(e) list(
+                ok = FALSE,
+                reason = paste0("conditional_present_fit_error: ",
+                                conditionMessage(e))
+            )
+        )
+    }
+    fits <- .sacat_taxon_lapply(seq_len(ncol(Y)), fit_one, cluster)
+    names(fits) <- colnames(Y)
+    fits
+}
+
+.sacat_refine_structural_beta <- function(
+        fit, y, N, X_eta, gh, control) {
+    refine <- function(candidate) {
+        if (!isTRUE(candidate$ok)) {
+            return(list(ok = FALSE, reason = candidate$reason))
+        }
+        candidate <- .sacat_attach_beta_objectives(
+            candidate, y, N, X_eta, gh
+        )
+        linearization <- .sacat_mark_linearization(
+            candidate$par, y, N, X_eta, gh,
+            candidate$lower, candidate$upper, control
+        )
+        if (!isTRUE(linearization$ok)) {
+            return(list(ok = FALSE, reason = linearization$reason))
+        }
+        root <- .sacat_polish_mark_root(
+            candidate$par, linearization, candidate, y, N, X_eta,
+            gh, control
+        )
+        if (!isTRUE(root$ok)) return(root)
+        active <- zt_active_bounds(root$beta, candidate$lower,
+                                    candidate$upper)
+        if (any(active$lower | active$upper)) {
+            return(list(ok = FALSE,
+                        reason = "conditional_present_persistent_boundary"))
+        }
+        n_positive <- sum(y > 0)
+        gradient <- -colSums(root$linearization$score) / n_positive
+        hessian <- root$linearization$information / n_positive
+        eigenvalues <- root$linearization$information_eigenvalues /
+            n_positive
+        result <- list(
+            ok = TRUE,
+            reason = "ok",
+            par = root$beta,
+            lower = candidate$lower,
+            upper = candidate$upper,
+            gradient = gradient,
+            projected_gradient = zt_projected_gradient(
+                root$beta, gradient, candidate$lower, candidate$upper
+            ),
+            hessian = hessian,
+            eigenvalues = eigenvalues,
+            bound_tracking = FALSE,
+            numerical_warnings = if (
+                max(eigenvalues) / min(eigenvalues) > 1e10
+            ) "conditional_present_information_ill_conditioned" else
+                character(),
+            quadrature_Q = gh$Q,
+            root_polish = root
+        )
+        .sacat_attach_beta_objectives(result, y, N, X_eta, gh)
+    }
+
+    refinement_error <- function(e) {
+        list(ok = FALSE, reason = paste0(
+            "conditional_present_refinement_error: ", conditionMessage(e)
+        ))
+    }
+    refined <- tryCatch(refine(fit), error = refinement_error)
+    if (isTRUE(refined$ok)) {
+        refined$search <- .sacat_compact_beta_fit(fit)
+        return(refined)
+    }
+    search_refinement_reason <- refined$reason
+    direct <- zt_fit_beta(y, N, X_eta, gh)
+    refined <- tryCatch(refine(direct), error = refinement_error)
+    if (!isTRUE(refined$ok)) {
+        direct$refinement_reason <- refined$reason
+        refined <- direct
+    }
+    refined$search <- .sacat_compact_beta_fit(fit)
+    refined$search_refinement_reason <- search_refinement_reason
+    refined$structural_search <- .sacat_compact_beta_fit(direct)
+    refined$quadrature_Q <- gh$Q
+    refined
 }
 
 # Structural-absence nuisance estimation and exact boundary handling.
@@ -2444,7 +2560,6 @@ zt_fit_alpha <- function(beta, y, N, X_rho, X_eta, gh, maxit = 500L,
             gr = gr_optimization
         )
         if (is.null(fit)) break
-        gradient <- gr_optimization(fit$par)
         active <- zt_active_bounds(fit$par, lower, upper)
         fit_history[[iteration]] <- list(
             par = fit$par,
@@ -3211,8 +3326,9 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
                                      derivative_base = 1e-04,
                                      derivative_reference_n = 120L,
                                      keep_fit = FALSE,
-                                     conditional_present_starts = 1L,
-                                     check_quadrature = keep_fit) {
+                                     check_quadrature = keep_fit,
+                                     conditional_present_fit = NULL,
+                                     search_quadrature_points = 41L) {
     y <- as.numeric(y)
     N <- as.numeric(N)
     g <- as.numeric(g)
@@ -3265,22 +3381,18 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
     }
 
     gh <- make_structural_gh_rule(Q)
-    beta_fit <- zt_fit_beta(
-        y, N, X_eta, gh,
-        conditional_present_starts = conditional_present_starts
-    )
-    conditional_present_primary_reason <- beta_fit$reason
-    conditional_present_retry <- FALSE
-    if (!isTRUE(beta_fit$ok) && conditional_present_starts == 1L) {
-        conditional_present_retry <- TRUE
-        beta_fit <- zt_fit_beta(
-            y, N, X_eta, gh,
-            conditional_present_starts = 5L
+    if (is.null(conditional_present_fit)) {
+        conditional_present_fit <- zt_fit_beta(
+            y, N, X_eta,
+            .sacat_make_abundance_gh_rule(search_quadrature_points)
         )
     }
-    base_diag$conditional_present_retry <- conditional_present_retry
-    base_diag$conditional_present_primary_reason <-
-        conditional_present_primary_reason
+    control <- .sacat_abundance_control(Q)
+    control$derivative_base <- derivative_base
+    control$derivative_reference_n <- derivative_reference_n
+    beta_fit <- .sacat_refine_structural_beta(
+        conditional_present_fit, y, N, X_eta, gh, control
+    )
     if (!isTRUE(beta_fit$ok)) {
         details <- if (keep_fit) {
             c(base_diag, list(beta_fit = beta_fit))
@@ -3703,12 +3815,13 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 # still be analyzed.
 .sacat_structural_arm <- function(
         Y, N, g, z, keep_diagnostics,
-        conditional_present_starts = 1L,
         min_positive_samples = 3L,
         quadrature_points = 1001L,
         cluster = NULL,
         verbose = FALSE,
-        check_quadrature = keep_diagnostics) {
+        check_quadrature = keep_diagnostics,
+        conditional_present_fits = NULL,
+        search_quadrature_points = 41L) {
     J <- ncol(Y)
     n_samples <- nrow(Y)
     worker_count <- if (is.null(cluster)) 1L else length(cluster)
@@ -3731,8 +3844,9 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
                 derivative_base = 1e-4,
                 derivative_reference_n = 120L,
                 keep_fit = keep_diagnostics,
-                conditional_present_starts = conditional_present_starts,
-                check_quadrature = check_quadrature
+                check_quadrature = check_quadrature,
+                conditional_present_fit = conditional_present_fits[[j]],
+                search_quadrature_points = search_quadrature_points
             ),
             error = function(e) {
                 zt_unavailable(
@@ -3922,12 +4036,6 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   standard deviations above two trigger fixed-fit higher-order quadrature
 #'   comparisons. The detailed abundance table records the comparison order and
 #'   the conditional-log-likelihood and effect discrepancies.
-#' @param structural_conditional_present_starts Start strategy for the
-#'   structural arm's conditional-present count fit. `"adaptive"` first uses
-#'   the primary start and retries with the full five-start bank if
-#'   formation checks fail. `"full"` uses all five starts immediately. Numeric
-#'   values `1L` and `5L` are accepted with the corresponding meanings. The
-#'   abundance arm always uses its full five-start bank.
 #' @param min_positive_samples Minimum number of samples with a positive count
 #'   required to retain a taxon before fitting. The default is `3L`. This
 #'   preliminary filter does not replace the positive-mark design-rank and
@@ -3938,25 +4046,30 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'   required to form an abundance reference. The default is `4L`; values below
 #'   `3L` are not supported.
 #' @param structural_quadrature_points Number of Gauss-Hermite nodes used by the
-#'   structural arm. The default is `1001L`. Smaller values reduce computation
-#'   at the cost of numerical accuracy; `full_output = TRUE` provides a
-#'   higher-order comparison.
+#'   structural arm to refine the conditional-present fit and evaluate the
+#'   structural-absence model. The default is `1001L`. Smaller values reduce
+#'   computation at the cost of numerical accuracy; `full_output = TRUE`
+#'   provides a higher-order comparison.
 #' @param workers Number of parallel worker processes. The default `1L` runs
 #'   sequentially. Values above one use an ordered, cross-platform PSOCK
 #'   cluster and do not change the taxon order.
 #' @param verbose Logical. If `TRUE`, report arm-level start and completion
 #'   messages.
 #' @param abundance_quadrature_points Number of Gauss-Hermite nodes used by the
-#'   relative-abundance arm. The default is `41L`. Nondefault values use the
-#'   same log-domain rule as the structural arm. With `full_output = TRUE`,
-#'   nondefault rules and fitted latent-scale standard deviations above two
-#'   trigger a fixed-fit higher-order comparison.
-#' @param store_plot_data Logical. If `TRUE`, prepare and retain the small set of
-#'   covariate-standardized summaries used by `plot.sacat()`. This option
+#'   shared five-start conditional-present search and by subsequent
+#'   relative-abundance refinement and inference. When the structural component
+#'   is requested, this search supplies the starting point for refinement at
+#'   `structural_quadrature_points`. The default is `41L`. Nondefault values
+#'   use the same log-domain rule as the structural arm. With
+#'   `full_output = TRUE`, nondefault rules and fitted latent-scale standard
+#'   deviations above two trigger a fixed-fit higher-order comparison.
+#' @param store_plot_data Logical. If `TRUE`, retain observed positive abundances,
+#'   groupwise detection and estimated zero-source shares, and standardized
+#'   fitted abundance summaries used by `plot.sacat()`. This option
 #'   requires `component = "all"`. Structural companion summaries reuse the
 #'   configured worker pool. Higher-order quadrature comparisons remain
 #'   controlled by `full_output`. This setting only controls the stored plotting
-#'   summaries; the default `FALSE` keeps the fitted object compact.
+#'   data; the default `FALSE` keeps the fitted object compact.
 #'
 #' @return An object of class `sacat` with elements:
 #'   \describe{
@@ -3967,64 +4080,30 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #'       status and reason codes, and numerical warnings.}
 #'     \item{settings}{The fitted contrast and analysis settings.}
 #'     \item{call}{The matched function call.}
-#'     \item{plot_data}{Compact covariate-standardized plotting summaries when
+#'     \item{plot_data}{Observed abundances and fitted plotting summaries when
 #'       `store_plot_data = TRUE`.}
 #'     \item{fits}{Detailed component fits when `full_output = TRUE`.}
 #'   }
 #'
 #' @examples
 #' \donttest{
-#' set.seed(2026)
-#' n <- 80
-#' taxa <- paste0("Taxon_", seq_len(8))
-#' samples <- paste0("Sample_", seq_len(n))
-#' group <- rep(c(0, 1), each = n / 2)
-#' library_size <- sample(seq(8000L, 12000L, by = 500L), n, replace = TRUE)
-#'
-#' baseline <- seq(-6.0, -5.2, length.out = length(taxa))
-#' abundance_shift <- c(0.25, -0.20, rep(0, length(taxa) - 2L))
-#' absence_reference <- c(0.15, 0.20, 0.18, 0.22, 0.16, 0.24, 0.19, 0.21)
-#' absence_comparison <- c(0.30, 0.20, 0.10, 0.22, 0.16, 0.24, 0.19, 0.21)
-#'
-#' probability <- matrix(0, nrow = n, ncol = length(taxa))
-#' for (j in seq_along(taxa)) {
-#'   absent_probability <- ifelse(
-#'     group == 0, absence_reference[j], absence_comparison[j]
-#'   )
-#'   present <- runif(n) > absent_probability
-#'   latent_abundance <- baseline[j] + abundance_shift[j] * group +
-#'     rnorm(n, sd = 0.35)
-#'   probability[, j] <- present * plogis(latent_abundance)
-#' }
-#'
-#' count_by_sample <- t(vapply(seq_len(n), function(i) {
-#'   draw <- rmultinom(
-#'     1,
-#'     size = library_size[i],
-#'     prob = c(probability[i, ], 1 - sum(probability[i, ]))
-#'   )
-#'   draw[seq_along(taxa), 1]
-#' }, numeric(length(taxa))))
-#' counts <- t(count_by_sample)
-#' rownames(counts) <- taxa
-#' colnames(counts) <- samples
-#'
-#' metadata <- data.frame(
-#'   group = factor(group, levels = c(0, 1), labels = c("control", "case")),
-#'   reads = library_size,
-#'   row.names = samples
-#' )
+#' data("schubert_cdi")
 #'
 #' fit <- sacat(
-#'   counts = counts,
-#'   metadata = metadata,
-#'   formula = ~ group,
+#'   counts = schubert_cdi$counts,
+#'   metadata = schubert_cdi$metadata,
+#'   formula = ~ age_z + sex + antibiotics_3mo + group,
 #'   group = "group",
-#'   library_size = "reads",
-#'   component = "all"
+#'   reference = "H",
+#'   library_size = "library_size",
+#'   store_plot_data = TRUE
 #' )
 #' fit
 #' head(fit$results)
+#' plot(
+#'   fit, features = c("Coprococcus", "Enterococcus", "Faecalibacterium"),
+#'   group_labels = c("Healthy", "CDI")
+#' )
 #' }
 #'
 #' @export
@@ -4034,8 +4113,6 @@ sacat <- function(counts, metadata, formula, group, library_size,
                   component = c("all", "structural_absence",
                                 "relative_abundance"),
                   full_output = FALSE,
-                  structural_conditional_present_starts =
-                      c("adaptive", "full"),
                   min_positive_samples = 3L,
                   min_reference_taxa = 4L,
                   structural_quadrature_points = 1001L,
@@ -4243,9 +4320,6 @@ sacat <- function(counts, metadata, formula, group, library_size,
         stop("`full_output` must be TRUE or FALSE.", call. = FALSE)
     }
     full_output <- isTRUE(full_output)
-    start_info <- .sacat_resolve_structural_conditional_present_starts(
-        structural_conditional_present_starts
-    )
     min_positive_samples <- .sacat_validate_positive_integer(
         min_positive_samples, "min_positive_samples"
     )
@@ -4397,16 +4471,24 @@ sacat <- function(counts, metadata, formula, group, library_size,
 
     if (any(retained)) {
         Y_retained <- Y[, retained, drop = FALSE]
+        .sacat_progress(verbose, "Conditional-present fit: shared five-start search.")
+        conditional_present_fits <- .sacat_conditional_present_fits(
+            Y_retained, N, g, z,
+            quadrature_points = abundance_quadrature_points,
+            fit_all_positive = run_abundance,
+            cluster = cluster
+        )
 
         if (run_structural) {
             structural_retained <- .sacat_structural_arm(
                 Y_retained, N, g, z, keep_component_details,
-                conditional_present_starts = start_info$count,
                 min_positive_samples = min_positive_samples,
                 quadrature_points = structural_quadrature_points,
                 cluster = cluster,
                 verbose = verbose,
-                check_quadrature = full_output
+                check_quadrature = full_output,
+                conditional_present_fits = conditional_present_fits,
+                search_quadrature_points = abundance_quadrature_points
             )
             structural$p[retained] <- structural_retained$p
             structural$formed[retained] <- structural_retained$formed
@@ -4425,7 +4507,8 @@ sacat <- function(counts, metadata, formula, group, library_size,
                 quadrature_points = abundance_quadrature_points,
                 cluster = cluster,
                 verbose = verbose,
-                check_quadrature = full_output
+                check_quadrature = full_output,
+                conditional_present_fits = conditional_present_fits
             )
             abundance$p[retained] <- abundance_retained$p
             abundance$formed[retained] <- abundance_retained$formed
@@ -4582,7 +4665,8 @@ sacat <- function(counts, metadata, formula, group, library_size,
         library_size_source = library_size_source,
         p_adjust_method = p_adjust_method,
         component = component,
-        structural_conditional_present_starts = start_info$mode,
+        conditional_present_search_starts = 5L,
+        conditional_present_search_quadrature_Q = abundance_quadrature_points,
         min_positive_samples_retained = min_positive_samples,
         min_reference_taxa = min_reference_taxa,
         workers_requested = workers,
@@ -4605,7 +4689,6 @@ sacat <- function(counts, metadata, formula, group, library_size,
             "with target-excluded robust compositional correction"
         )
         settings$abundance_quadrature_Q <- abundance_quadrature_points
-        settings$abundance_conditional_present_starts <- 5L
         settings$abundance_derivative_base <- 1e-4
         settings$abundance_derivative_reference_n <- 120L
         settings$abundance_score_tolerance <- 1e-8
@@ -4634,6 +4717,7 @@ sacat <- function(counts, metadata, formula, group, library_size,
         object$plot_data <- .sacat_prepare_plot_data(
             Y = Y,
             N = N,
+            group = g,
             results = results,
             structural_fits = structural$diagnostics,
             abundance_fits = abundance$diagnostics,

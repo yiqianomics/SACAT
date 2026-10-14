@@ -1,0 +1,48 @@
+#' Schubert CDI stool microbiome data
+#'
+#' Count data and analysis covariates for 152 healthy controls and 91
+#' participants with Clostridioides difficile infection (CDI), prepared from
+#' the Schubert et al. cohort distributed in MicrobiomeHD version 3.
+#'
+#' @format A list with two elements:
+#' \describe{
+#'   \item{counts}{An integer matrix with 88 taxa in rows and 243 samples
+#'     in columns. Taxa are genus-level or deepest-resolved higher-rank bins.}
+#'   \item{metadata}{A data frame aligned with the columns of `counts`:
+#'     `group` (`H`, the healthy reference group, or `CDI`);
+#'     `age_z` (age standardized within the cohort);
+#'     `sex` (`F` or `M`);
+#'     `antibiotics_3mo` (reported antibiotic use, coded `No` or `Yes`);
+#'     and `library_size` (the full source count-table
+#'     total before filtering and taxonomic aggregation).}
+#' }
+#'
+#' @details
+#' The cohort retains samples with at least 1,450 reads and complete analysis
+#' covariates. Following MicrobiomeHD filtering, features present in at least
+#' 5% of the cohort are aggregated by taxonomy. The resulting taxa must occur
+#' in at least 5% of samples and have positive counts in both groups.
+#'
+#' The example data retain the source's Creative Commons Attribution-
+#' NonCommercial 4.0 license. Preparation code is provided in the repository's
+#' `Analysis/RealDataAnalysis/cdi_schubert/` and `data-raw/` directories.
+#'
+#' @source
+#' MicrobiomeHD version 3: \doi{10.5281/zenodo.1146764}.
+#' Data license: \url{https://creativecommons.org/licenses/by-nc/4.0/}.
+#'
+#' @references
+#' Schubert AM et al. (2014). Microbiome data distinguish patients with
+#' Clostridium difficile infection and non-C. difficile-associated diarrhea
+#' from healthy controls. mBio, 5, e01021-14.
+#' \doi{10.1128/mBio.01021-14}.
+#'
+#' Duvallet C et al. (2017). Meta-analysis of gut microbiome studies identifies
+#' disease-specific and shared responses. Nature Communications, 8, 1784.
+#' \doi{10.1038/s41467-017-01973-8}.
+#'
+#' @examples
+#' data("schubert_cdi")
+#' dim(schubert_cdi$counts)
+#' table(schubert_cdi$metadata$group)
+"schubert_cdi"

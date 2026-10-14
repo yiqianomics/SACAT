@@ -44,6 +44,7 @@ test_that("exact C0 structural boundary returns all expected fields", {
                     numerical_warnings = character()
                 )
             },
+            .sacat_refine_structural_beta = function(fit, ...) fit,
             zt_beta_detection_components = function(...) {
                 list(log_r = rep(log(probability), length(y)))
             },
@@ -97,6 +98,7 @@ test_that("positive C0 proceeds to the finite structural fit", {
                 numerical_warnings = character()
             )
         },
+        .sacat_refine_structural_beta = function(fit, ...) fit,
         zt_beta_detection_components = function(...) {
             list(log_r = rep(log(0.5), length(y)))
         },
@@ -129,7 +131,7 @@ test_that("Cauchy omnibus uses only regular components for retained taxa", {
     local_mocked_bindings(
         .sacat_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
-                conditional_present_starts = 1L, ...) {
+                ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
             list(
                 p = selected$structural_p,

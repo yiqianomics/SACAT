@@ -1,0 +1,14 @@
+SACAT source code is licensed under the GNU General Public License,
+version 3 or later.
+
+The schubert_cdi example dataset in data/schubert_cdi.rda is derived from
+MicrobiomeHD version 3 (Duvallet, Gibbons, Gurry, Irizarry and Alm;
+https://doi.org/10.5281/zenodo.1146764), using the Schubert et al. cohort
+(https://doi.org/10.1128/mBio.01021-14). It retains the source dataset's
+Creative Commons Attribution-NonCommercial 4.0 International license:
+https://creativecommons.org/licenses/by-nc/4.0/.
+
+The prepared dataset applies cohort and taxon filtering, taxonomic
+aggregation, covariate coding and age standardization. Preparation scripts
+are available in the SACAT repository under
+Analysis/RealDataAnalysis/cdi_schubert/ and data-raw/.

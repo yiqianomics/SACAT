@@ -430,8 +430,7 @@ run_sacat <- function(counts, metadata, configuration, formulas,
         p_adjust_method = "BH",
         component = "all",
         full_output = FALSE,
-        store_plot_data = TRUE,
-        structural_conditional_present_starts = 1L
+        store_plot_data = TRUE
     )
 
     results <- fit$results[match(taxa, fit$results$taxon), , drop = FALSE]
@@ -550,7 +549,6 @@ run_sacat <- function(counts, metadata, configuration, formulas,
     graphics::plot(
         fit,
         features = plot_rows$taxon,
-        p_color_limits = c(1e-7, 1),
         group_labels = configuration$plot_labels,
         file = sacat_figure_file
     )

@@ -2,3 +2,6 @@
 ^\.github$
 ^\.gitignore$
 ^\.Rhistory$
+^Rplots\.pdf$
+^data-raw$
+^tools$

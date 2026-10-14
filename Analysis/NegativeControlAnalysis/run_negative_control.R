@@ -95,8 +95,7 @@ run_negative_control_replicate <- function(input, replicate, result_directory) {
         counts = input$counts, metadata = metadata,
         formula = ~ group, group = "group", library_size = "library_size",
         taxa_are_rows = TRUE, reference = "A", p_adjust_method = "BH",
-        component = "all", full_output = FALSE,
-        structural_conditional_present_starts = 1L
+        component = "all", full_output = FALSE
     )
     depth_a <- metadata$library_size[metadata$group == "A"]
     depth_b <- metadata$library_size[metadata$group == "B"]

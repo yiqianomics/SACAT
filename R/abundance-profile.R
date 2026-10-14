@@ -1,6 +1,7 @@
 # Derivatives and constrained fitting for the abundance profile test.
 
-.sacat_abundance_effect_derivatives <- function(beta, X_b, gh) {
+.sacat_abundance_effect_derivatives <- function(
+        beta, X_b, gh, need_hessian = TRUE) {
     n <- nrow(X_b)
     p <- ncol(X_b) + 1L
     X0 <- cbind(X_b[, 1L], Group = 0, X_b[, -1L, drop = FALSE])
@@ -12,8 +13,6 @@
     eta1 <- eta0 + beta[2L]
     first0 <- plogis(-eta0)
     first1 <- plogis(-eta1)
-    second0 <- -plogis(eta0) * first0
-    second1 <- -plogis(eta1) * first1
     value <- mean(drop((plogis(eta1, log.p = TRUE) -
         plogis(eta0, log.p = TRUE)) %*% weight))
     location_gradient <- (crossprod(X1, drop(first1 %*% weight)) -
@@ -21,6 +20,10 @@
     scale_gradient <- mean(drop((first1 - first0) %*%
         (weight * displacement)))
     gradient <- c(location_gradient, scale_gradient)
+    if (!need_hessian) return(list(value = value, gradient = gradient))
+
+    second0 <- -plogis(eta0) * first0
+    second1 <- -plogis(eta1) * first1
     hessian <- matrix(0, p + 1L, p + 1L)
     hessian[seq_len(p), seq_len(p)] <-
         (crossprod(X1, X1 * drop(second1 %*% weight)) -
@@ -100,9 +103,16 @@
     beta[nuisance] <- lambda
     beta[2L] <- target
     for (iteration in seq_len(12L)) {
-        effect <- .sacat_abundance_effect_derivatives(beta, X_b, gh)
+        effect <- .sacat_abundance_effect_derivatives(
+            beta, X_b, gh, need_hessian = FALSE
+        )
         error <- effect$value - target
-        if (abs(error) < 1e-11) return(list(beta = beta, effect = effect))
+        if (abs(error) < 1e-11) {
+            return(list(
+                beta = beta,
+                effect = .sacat_abundance_effect_derivatives(beta, X_b, gh)
+            ))
+        }
         slope <- effect$gradient[2L]
         if (!is.finite(slope) || slope < 1e-10) break
         beta[2L] <- beta[2L] - error / slope
@@ -110,7 +120,9 @@
     }
     fn <- function(value) {
         beta[2L] <- value
-        .sacat_abundance_effect_derivatives(beta, X_b, gh)$value - target
+        .sacat_abundance_effect_derivatives(
+            beta, X_b, gh, need_hessian = FALSE
+        )$value - target
     }
     beta[2L] <- uniroot(fn, c(-40, 40), tol = 1e-11)$root
     list(beta = beta,
@@ -124,10 +136,17 @@
     positive_count <- sum(y > 0)
     lower <- c(-80, rep(-40, p - 3L), log(1e-6))
     upper <- c(40, rep(40, p - 3L), log(128))
-    objective <- function(lambda) {
-        decoded <- .sacat_abundance_profile_decode(lambda, target, X_b, gh)
-        -sum(zt_beta_loglik_by_sample_inference(decoded$beta, y, N, X, gh))
-    }
+    objective <- .sacat_exact_memoise(
+        function(lambda) {
+            decoded <- .sacat_abundance_profile_decode(
+                lambda, target, X_b, gh
+            )
+            -sum(zt_beta_loglik_by_sample_inference(
+                decoded$beta, y, N, X, gh
+            ))
+        },
+        capacity = min(2L * length(nuisance) + 1L, 33L)
+    )
     derivative <- function(lambda, hessian = FALSE) {
         steps <- zt_inference_steps(lambda, length(y), lower, upper)
         value <- objective(lambda)
@@ -340,19 +359,44 @@
     )
 }
 
+.sacat_abundance_profile_task <- function(task, N, X_b, gh) {
+    tryCatch(
+        .sacat_abundance_profile_test(
+            task$fit, task$y, N, X_b,
+            task$background, task$variance, gh
+        ),
+        error = function(e) list(error = conditionMessage(e))
+    )
+}
+
 .sacat_abundance_profile_tests <- function(result, fits, Y, N, X_b, gh,
                                            cluster = NULL) {
     index <- which(result$formed)
-    test_one <- function(j) {
-        tryCatch(
-            .sacat_abundance_profile_test(
-                fits[[j]], as.numeric(Y[, j]), N, X_b,
-                result$background[j], result$se[j]^2, gh
+    tasks <- lapply(index, function(j) {
+        fit <- fits[[j]]
+        list(
+            fit = list(
+                theta = fit$theta,
+                raw_delta = fit$raw_delta,
+                solver_diagnostics = fit$solver_diagnostics[c(
+                    "X_eta", "information", "effect_gradient"
+                )]
             ),
-            error = function(e) list(error = conditionMessage(e))
+            y = as.numeric(Y[, j]),
+            background = result$background[j],
+            variance = result$se[j]^2
+        )
+    })
+    if (is.null(cluster)) {
+        tests <- lapply(
+            tasks, .sacat_abundance_profile_task, N = N, X_b = X_b, gh = gh
+        )
+    } else {
+        tests <- parallel::parLapply(
+            cluster, tasks, .sacat_abundance_profile_task,
+            N = N, X_b = X_b, gh = gh
         )
     }
-    tests <- .sacat_taxon_lapply(index, test_one, cluster)
     profile_fits <- vector("list", ncol(Y))
     likelihood_ratio <- curvature_variance <- rep(NA_real_, ncol(Y))
     for (k in seq_along(index)) {

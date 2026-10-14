@@ -16,10 +16,11 @@ Description: Provides depth-aware taxon-level inference for microbiome count
     from differences in mean log relative abundance among samples in which a
     taxon is present. It accounts for finite-depth nondetection, centers
     abundance effects against a target-excluded cross-taxon reference, reports
-    component-specific and omnibus tests, and provides aligned plots of fitted
-    group contrasts and statistical evidence.
-License: GPL (>= 3)
+    component-specific and omnibus tests, and visualizes statistical evidence,
+    observed detection, estimated zero sources, and abundance distributions.
+License: GPL (>= 3) + file LICENSE
 Encoding: UTF-8
+LazyData: true
 Depends: R (>= 4.1.0)
 Imports:
     graphics,

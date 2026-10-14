@@ -475,7 +475,6 @@ run_one_depth <- function(design, allocation_id, allocation,
         reference = "reference",
         component = "all",
         full_output = FALSE,
-        structural_conditional_present_starts = "full",
         workers = 1L,
         verbose = FALSE
     )

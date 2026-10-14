@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot-sacat.R
 \name{plot.sacat}
 \alias{plot.sacat}
-\title{Plot a SACAT dual-component association profile}
+\title{Plot a SACAT association profile}
 \usage{
 \method{plot}{sacat}(
   x,
@@ -10,12 +10,8 @@
   selection = c("significant", "top", "all"),
   max_features = 24L,
   alpha = 0.05,
-  p_color_limits = "adaptive",
-  evidence_palette = c(
-    "#e8ecef", "#d6cdd5", "#c0acba",
-    "#a7879c", "#89617c", "#673b5c"
-  ),
-  group_colors = c("#6090c1", "#f28e4b"),
+  group_colors = c("#4C78A8", "#E45756"),
+  zero_colors = c("#6A9DC0", "#E5A36C", "#E9E9E9"),
   file = NULL,
   width = NULL,
   height = NULL,
@@ -29,102 +25,82 @@
 \item{x}{A \code{sacat} object fitted with \code{component = "all"} and
 \code{store_plot_data = TRUE}.}
 
-\item{features}{Optional character vector of feature names to display. The
-supplied order is preserved and overrides \code{selection} and \code{max_features}.
-The component guides continue to use the complete fitted families.}
+\item{features}{Optional unique taxon names, displayed in the supplied order.}
 
-\item{selection}{Feature-selection rule when \code{features} is \code{NULL}.
-\code{"significant"} displays primary omnibus adjusted p-values no greater than
-\code{alpha}; \code{"top"} displays the smallest available adjusted p-values; and
-\code{"all"} displays every formed omnibus result.}
+\item{selection}{Select omnibus-significant taxa, the top-ranked taxa,
+or all eligible taxa. Ignored when \code{features} is supplied.}
 
-\item{max_features}{Maximum number of rows for \code{"significant"} or \code{"top"}.
-The default is \code{24L}.}
+\item{max_features}{Maximum number of automatically selected taxa.
+Ignored for \code{selection = "all"} or explicit \code{features}.}
 
-\item{alpha}{Adjusted-p threshold used by \code{selection = "significant"} and,
-when enabled, by the component BH discovery gates.}
+\item{alpha}{Adjusted-p threshold for selection and component markers.}
 
-\item{p_color_limits}{Either \code{"adaptive"} or numeric \code{c(lower, upper)} with
-\code{lower > 0}, \code{upper <= 1}, and \code{lower < upper}. The adaptive
-strong-evidence endpoint is derived
-from the smallest positive finite component adjusted p-value among the
-displayed markers and rounded down to a power of ten; the weak-evidence
-endpoint is one. Degenerate all-zero or all-one displays use a finite
-fallback. Colors are interpolated on the \code{-log10(p)} scale and values
-outside the range are clamped.}
+\item{group_colors}{Two colors, in reference/comparison order, for observed
+abundance distributions.}
 
-\item{evidence_palette}{Colors from weak to strong component evidence. The
-default is a sequential gray-plum scale chosen to remain distinct from
-the reference/comparison group colors.}
+\item{zero_colors}{Three colors for detected samples, estimated SA, and
+estimated ND, respectively.}
 
-\item{group_colors}{Two colors for the reference and comparison groups.}
-
-\item{file}{Optional output filename ending in \code{.pdf}, \code{.png}, or \code{.svg}.
-When \code{NULL}, the current graphics device is used. SVG output requires an R
-build with Cairo support.}
+\item{file}{Optional PDF, PNG, or SVG filename. Without it, draw on the
+current graphics device.}
 
 \item{width, height}{Output dimensions in inches when \code{file} is supplied.
-Defaults use a 180-mm manuscript width and a height chosen from the number
-of displayed features.}
+Defaults to 10.5 inches wide and a height based on the number of taxa.}
 
-\item{dpi}{Resolution for PNG output.}
+\item{dpi}{Resolution of PNG output.}
 
-\item{group_labels}{Optional two-element character vector used only as the
-displayed reference and comparison labels. The fitted contrast is used by
-default. This option changes display text only.}
+\item{group_labels}{Optional reference/comparison labels for display.}
 
-\item{show_component_guides}{Logical; for a fit using BH (or its \code{"fdr"}
-alias), draw separate structural and abundance discovery gates at the
-family-wide BH step-up boundaries. Each gate uses the complete family of
-retained taxa and appears when that component has at least one discovery.
-A warning identifies any component whose boundary cannot be displayed.}
+\item{show_component_guides}{Show BH component discovery boundaries when
+\code{p_adjust_method} is \code{"BH"} or \code{"fdr"}. A component with no discoveries
+has no boundary.}
 
-\item{...}{Reserved for future graphical options.}
+\item{...}{Reserved for graphical extensions.}
 }
 \value{
-Invisibly, the data and resolved graphical settings used to draw the
-figure.
+Invisibly, a list containing the displayed data and graphical settings.
 }
 \description{
-Draws a taxon-aligned summary of a SACAT analysis.
-The center displays the structural-absence and relative-abundance component
-statistics on one axis. SA uses its score statistic; RA uses the signed
-square root of its adjusted likelihood-ratio statistic. Colors encode
-component adjusted p-values. Feature superscripts encode the primary omnibus
-adjusted p-value. For BH-adjusted fits, component-specific lane gates mark
-family-wide BH discovery boundaries on the component-statistic
-axis. The side panels show covariate-standardized group summaries prepared
-when \code{\link[=sacat]{sacat()}} was called with \code{store_plot_data = TRUE}.
+Aligns component evidence, observed detection with estimated zero sources,
+and observed and fitted abundance for selected taxa.
 }
 \details{
-The structural side panel provides a descriptive unrestricted companion
-fit, and the central score statistic provides structural inference. The
-abundance side panel displays standardized present-conditional geometric
-mean relative abundance, expressed as a percentage on a log scale, from the
-fitted mark model. Paired points represent these positive values on the log
-scale. The central abundance statistic retains the target-excluded
-reference correction used by SACAT.
-Side-panel segments provide descriptive fitted group summaries, and the
-abundance connector links its two fitted group means. Component inference is
-carried by the central statistics. An omitted central marker or \verb{--}
-denotes an unavailable component or side summary.
+Panel A shows the structural-absence (SA) score statistic and the signed
+square root of the adjusted relative-abundance (RA) likelihood-ratio
+statistic. Positive values indicate higher SA or reference-corrected RA
+in the comparison group. Filled circles mark component adjusted p-values
+at or below \code{alpha}; open circles mark values above it. Dashed lines show
+component-specific BH discovery boundaries computed from the complete
+retained families. Taxon superscripts summarize omnibus adjusted p-values.
 
-For a component with \code{m} finite family p-values and \code{k} BH discoveries at
-level \code{alpha}, the symmetric gates correspond to the two-sided raw-p boundary
-\code{alpha * k / m}. This boundary is exact because both component p-values are
-two-sided normal-tail probabilities of the plotted statistics. Separate
-structural and abundance adjustments produce component-specific gates.
-The omnibus stars use the separately adjusted omnibus family.
+Panel B shows each group's observed detection fraction and estimated
+contributions of structural absence and nondetection (ND) to observed zeros.
+For each zero, the SA contribution is its posterior SA probability from the
+group-inclusive structural plotting fit; the ND contribution is its
+complement. Positive counts contribute to detected samples. These quantities
+are averaged within the observed groups and sum to one. An undivided,
+unfilled zero segment marked \verb{--} denotes an unavailable zero-source fit.
+
+Panel C shows positive observed relative abundances as points and boxplots,
+with library sizes from the fitted analysis. Boxplots summarize log10
+relative abundance: the box spans the quartiles, the line marks the median,
+and whiskers extend to observations within 1.5 interquartile ranges.
+Diamonds show the exponentiated mean fitted log relative abundance
+conditional on presence, standardized over all observed covariate profiles.
+Both are displayed as percentages on a log scale. The diamond contrast
+corresponds to the raw abundance contrast; the RA test in Panel A also
+includes SACAT's cross-taxon reference correction.
+
+Plotting uses data prepared by \code{\link[=sacat]{sacat()}} with \code{store_plot_data = TRUE}.
+It does not refit the model or change statistical results.
 }
 \examples{
 \dontrun{
-fit <- sacat(
-  counts, metadata, ~ group + age, "group", "library_size",
-  component = "all", store_plot_data = TRUE
+example("sacat", run.donttest = TRUE)
+plot(
+    fit, features = c("Coprococcus", "Enterococcus", "Faecalibacterium"),
+    group_labels = c("Healthy", "CDI"), file = "sacat-profile.pdf"
 )
-plot(fit)
-plot(fit, p_color_limits = c(1e-8, 1))
-plot(fit, file = "sacat-profile.pdf", width = 7.2, height = 6.5)
 }
 
 }

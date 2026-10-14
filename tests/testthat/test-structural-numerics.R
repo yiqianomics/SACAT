@@ -203,6 +203,7 @@ test_that("a finite structural fit dominated by the exact zero limit is unavaila
                 numerical_warnings = character()
             )
         },
+        .sacat_refine_structural_beta = function(fit, ...) fit,
         zt_beta_detection_components = function(...) {
             list(log_r = rep(log(0.5), length(y)))
         },

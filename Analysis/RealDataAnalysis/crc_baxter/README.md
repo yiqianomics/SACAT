@@ -1,38 +1,25 @@
 # Baxter colorectal cancer stool cohort
 
-This analysis uses the colorectal-cancer cohort reported by Baxter et al. in
-“Microbiota-based model improves the sensitivity of fecal immunochemical test
-for detecting colonic lesions” ([doi:10.1186/s13073-016-0290-3](https://doi.org/10.1186/s13073-016-0290-3)).
-The public count table and metadata are distributed in MicrobiomeHD version 3,
-[Zenodo record 1146764](https://doi.org/10.5281/zenodo.1146764), as
-`crc_baxter_results.tar.gz`.
+This analysis uses the colorectal-cancer stool cohort reported by
+[Baxter et al. (2016)](https://doi.org/10.1186/s13073-016-0290-3). The count
+table and metadata are available in MicrobiomeHD version 3,
+[Zenodo record 1146764](https://doi.org/10.5281/zenodo.1146764).
 
-## Final prepared analysis
+## Analysis
 
-- **Comparison:** 172 participants without a colorectal lesion (reference)
-  versus 120 participants with colorectal cancer (comparison), 292
-  participants in total. The contrast contains the no-lesion and colorectal
-  cancer groups.
-- **Tested panel:** 126 genus or deepest-resolved higher-rank taxon bins.
-- **Adjustment model:** `~ age_z + sex + group`, with age standardized within
+- Comparison: 172 participants without a colorectal lesion (reference)
+  versus 120 with colorectal cancer; 292 participants in total.
+- Tested taxa: 126 genus or deepest-resolved higher-rank bins.
+- Adjustment: `~ age_z + sex + group`, with age standardized within
   the final cohort.
-- **Independent unit:** one stool profile per retained participant in the
-  public cross-sectional cohort.
-- **Original library size:** the column sum of the complete MicrobiomeHD count
-  table before feature filtering, taxonomic aggregation, prevalence
-  filtering, or the two-group support filter.
+- Sampling: one stool profile per participant in the cross-sectional cohort.
 
-Download `crc_baxter_results.tar.gz` from the Zenodo record and extract it as
-`raw/crc_baxter_results/`. The preparation uses the RDP-assigned 100% de novo
-feature table and the accompanying metadata. The published analysis used a
-different 97% OTU table and rarefied samples to 10,000 reads. This analysis
-uses the complete unrarefied count table and models the original library size.
+## Data and code
 
-The preparation applies the documented MicrobiomeHD count filters and retains
-the no-lesion and colorectal-cancer groups. Features observed in at least 5%
-of the final cohort are aggregated to genus or the deepest resolved higher
-rank. The resulting taxon bins must also meet the 5% prevalence threshold and
-have positive counts in both groups.
+Download `crc_baxter_results.tar.gz` from Zenodo and extract it into this
+directory's `raw/crc_baxter_results/`. Preparation uses the RDP-assigned 100%
+de novo feature table and accompanying metadata. Unlike the publication's
+97% OTU table rarefied to 10,000 reads, this analysis uses unrarefied counts.
 
 Run from the repository root:
 
@@ -41,4 +28,5 @@ Rscript Analysis/RealDataAnalysis/crc_baxter/prepare_data.R
 ```
 
 The SACAT input and cohort, count, taxonomy, and preprocessing summaries are
-written to `processed/`.
+written to `processed/`. Use the [shared analysis](../README.md) to fit the
+methods and produce results in `table/` and `figs/`.

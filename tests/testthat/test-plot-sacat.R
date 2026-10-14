@@ -63,9 +63,32 @@
             ),
             call = quote(sacat()),
             plot_data = list(
-                version = 1L,
+                version = 2L,
                 contrast = c(reference = "healthy", comparison = "disease"),
-                profiles = profiles
+                profiles = profiles,
+                zero_sources = data.frame(
+                    feature = rep(feature, each = 2),
+                    group = rep(0:1, n),
+                    detected = rep(c(0.65, 0.60), n),
+                    estimated_sa = as.vector(t(cbind(
+                        profiles$structural_reference,
+                        profiles$structural_comparison
+                    ))),
+                    estimated_nd = 1 - rep(c(0.65, 0.60), n) -
+                        as.vector(t(cbind(
+                            profiles$structural_reference,
+                            profiles$structural_comparison
+                        ))),
+                    n = 20L, status = "ok"
+                ),
+                positive_abundance = do.call(rbind, lapply(seq_len(n), function(i) {
+                    data.frame(
+                        feature = feature[[i]], group = rep(0:1, each = 10),
+                        abundance = rep(seq(0.3, 2, length.out = 10), 2) *
+                            rep(c(profiles$abundance_reference[[i]],
+                                  profiles$abundance_comparison[[i]]), each = 10)
+                    )
+                }))
             )
         ),
         class = "sacat"
@@ -106,16 +129,13 @@
     list(counts = counts, metadata = metadata)
 }
 
-.plot_test_palette <- c(
-    "#6090c1", "#acd2e5", "#fef9b7",
-    "#fee395", "#f2724d", "#d7312d"
-)
+.plot_group_colors <- c("#4C78A8", "#E45756")
+.plot_zero_colors <- c("#6A9DC0", "#E5A36C", "#E9E9E9")
 
 test_that("plot selection and significance annotations are deterministic", {
     fit <- .make_plot_fixture()
     spec <- SACAT:::.sacat_plot_build_spec(
-        fit, NULL, "significant", 24L, 0.05, "adaptive",
-        .plot_test_palette, c("#6090c1", "#f28e4b")
+        fit, NULL, "significant", 24L, 0.05, .plot_group_colors, .plot_zero_colors
     )
 
     expect_identical(
@@ -139,8 +159,7 @@ test_that("plot selection and significance annotations are deterministic", {
 
     explicit <- SACAT:::.sacat_plot_build_spec(
         fit, rev(fit$results$taxon[c(2L, 5L)]), "significant",
-        1L, 0.001, "adaptive", .plot_test_palette,
-        c("#6090c1", "#f28e4b")
+        1L, 0.001, .plot_group_colors, .plot_zero_colors
     )
     expect_identical(
         explicit$data$feature,
@@ -148,8 +167,7 @@ test_that("plot selection and significance annotations are deterministic", {
     )
 
     top <- SACAT:::.sacat_plot_build_spec(
-        fit, NULL, "top", 2L, 0.05, "adaptive",
-        .plot_test_palette, c("#6090c1", "#f28e4b")
+        fit, NULL, "top", 2L, 0.05, .plot_group_colors, .plot_zero_colors
     )
     expect_identical(top$data$feature, fit$results$taxon[1:2])
 })
@@ -157,13 +175,11 @@ test_that("plot selection and significance annotations are deterministic", {
 test_that("component BH gates use the complete fitted families", {
     fit <- .make_plot_fixture()
     full <- SACAT:::.sacat_plot_build_spec(
-        fit, NULL, "all", 24L, 0.05, "adaptive",
-        .plot_test_palette, c("#6090c1", "#f28e4b")
+        fit, NULL, "all", 24L, 0.05, .plot_group_colors, .plot_zero_colors
     )
     subset <- SACAT:::.sacat_plot_build_spec(
         fit, fit$results$taxon[[1L]], "top", 1L, 0.05,
-        "adaptive", .plot_test_palette,
-        c("#6090c1", "#f28e4b")
+        .plot_group_colors, .plot_zero_colors
     )
 
     expect_identical(
@@ -182,8 +198,7 @@ test_that("component BH gates use the complete fitted families", {
     no_discoveries$results$p_adj_structural_absence[] <- 1
     no_discoveries$results$p_adj_relative_abundance[] <- 1
     no_guide <- SACAT:::.sacat_plot_build_spec(
-        no_discoveries, NULL, "top", 2L, 0.05, "adaptive",
-        .plot_test_palette, c("#6090c1", "#f28e4b")
+        no_discoveries, NULL, "top", 2L, 0.05, .plot_group_colors, .plot_zero_colors
     )
     expect_identical(
         no_guide$component_guides$structural$discoveries, 0L
@@ -195,14 +210,12 @@ test_that("component BH gates use the complete fitted families", {
     expect_true(is.na(no_guide$component_guides$abundance$z))
 
     disabled <- SACAT:::.sacat_plot_build_spec(
-        fit, NULL, "top", 2L, 0.05, "adaptive",
-        .plot_test_palette, c("#6090c1", "#f28e4b"), FALSE
+        fit, NULL, "top", 2L, 0.05, .plot_group_colors, .plot_zero_colors, FALSE
     )
     expect_false(disabled$component_guides$enabled)
     expect_error(
         SACAT:::.sacat_plot_build_spec(
-            fit, NULL, "top", 2L, 0.05, "adaptive",
-            .plot_test_palette, c("#6090c1", "#f28e4b"), NA
+            fit, NULL, "top", 2L, 0.05, .plot_group_colors, .plot_zero_colors, NA
         ),
         "TRUE or FALSE"
     )
@@ -216,8 +229,7 @@ test_that("component BH gates use the complete fitted families", {
         holm$results$p_relative_abundance, method = "holm"
     )
     holm_spec <- SACAT:::.sacat_plot_build_spec(
-        holm, NULL, "top", 2L, 0.05, "adaptive",
-        .plot_test_palette, c("#6090c1", "#f28e4b")
+        holm, NULL, "top", 2L, 0.05, .plot_group_colors, .plot_zero_colors
     )
     expect_false(holm_spec$component_guides$enabled)
 
@@ -225,8 +237,7 @@ test_that("component BH gates use the complete fitted families", {
     malformed$results$p_structural_absence[[1L]] <- 0.2
     expect_warning(
         malformed_spec <- SACAT:::.sacat_plot_build_spec(
-            malformed, NULL, "top", 2L, 0.05, "adaptive",
-            .plot_test_palette, c("#6090c1", "#f28e4b")
+            malformed, NULL, "top", 2L, 0.05, .plot_group_colors, .plot_zero_colors
         ),
         "structural absence"
     )
@@ -240,8 +251,7 @@ test_that("component BH gates use the complete fitted families", {
     malformed_retained$diagnostics$retained[[1L]] <- NA
     expect_error(
         SACAT:::.sacat_plot_build_spec(
-            malformed_retained, NULL, "top", 2L, 0.05, "adaptive",
-            .plot_test_palette, c("#6090c1", "#f28e4b")
+            malformed_retained, NULL, "top", 2L, 0.05, .plot_group_colors, .plot_zero_colors
         ),
         "retained-taxon indicator"
     )
@@ -277,8 +287,7 @@ test_that("unverifiable component gates are omitted with one warning", {
         spec <- SACAT:::.sacat_plot_build_spec(
             fit, NULL, "top", 2L,
             .Machine$double.xmin * .Machine$double.eps,
-            "adaptive", .plot_test_palette,
-            c("#6090c1", "#f28e4b")
+            .plot_group_colors, .plot_zero_colors
         ),
         "structural absence"
     )
@@ -287,85 +296,48 @@ test_that("unverifiable component gates are omitted with one warning", {
 
     expect_no_warning(
         disabled <- SACAT:::.sacat_plot_build_spec(
-            fit, NULL, "top", 2L, 0.05, "adaptive",
-            .plot_test_palette, c("#6090c1", "#f28e4b"), FALSE
+            fit, NULL, "top", 2L, 0.05, .plot_group_colors, .plot_zero_colors, FALSE
         )
     )
     expect_false(disabled$component_guides$enabled)
 })
 
-test_that("adaptive colors use one shared displayed-component scale", {
+test_that("plot colors identify groups and estimated zero sources", {
     fit <- .make_plot_fixture()
-    spec <- SACAT:::.sacat_plot_build_spec(
-        fit, fit$results$taxon[[1L]], "significant", 24L, 0.05,
-        "adaptive", .plot_test_palette,
-        c("#6090c1", "#f28e4b")
-    )
-    expect_identical(
-        unname(spec$color_limits), c(1e-6, 1)
-    )
-
-    manual <- SACAT:::.sacat_plot_build_spec(
-        fit, fit$results$taxon[[1L]], "significant", 24L, 0.05,
-        c(1e-8, 0.5), .plot_test_palette,
-        c("#6090c1", "#f28e4b")
-    )
-    expect_identical(unname(manual$color_limits), c(1e-8, 0.5))
     expect_error(
         SACAT:::.sacat_plot_build_spec(
-            fit, NULL, "top", 2L, 0.05, c(1, 1e-4),
-            .plot_test_palette, c("#6090c1", "#f28e4b")
-        ),
-        "0 < lower < upper <= 1"
+            fit, NULL, "top", 2L, 0.05, "blue", .plot_zero_colors
+        ), "two|2 valid colors"
     )
-
-    all_one <- fit
-    all_one$results$p_adj_structural_absence[] <- 1
-    all_one$results$p_adj_relative_abundance[] <- 1
-    one_data <- data.frame(
-        p_structural = all_one$results$p_adj_structural_absence,
-        z_structural = all_one$results$z_structural_absence,
-        p_abundance = all_one$results$p_adj_relative_abundance,
-        z_abundance = all_one$results$z_relative_abundance
+    expect_error(
+        SACAT:::.sacat_plot_build_spec(
+            fit, NULL, "top", 2L, 0.05, .plot_group_colors, c("blue", "red")
+        ), "3 valid colors"
     )
-    one_limits <- SACAT:::.sacat_plot_color_limits(
-        one_data, "adaptive"
-    )
-    expect_identical(unname(one_limits), c(0.1, 1))
-    one_colors <- SACAT:::.sacat_plot_palette_function(
-        .plot_test_palette, one_limits
-    )(rep(1, nrow(all_one$results)))
-    expect_true(length(unique(one_colors)) == 1L)
-
-    subnormal <- one_data[1L, , drop = FALSE]
-    subnormal$p_structural <- 5e-324
-    subnormal$p_abundance <- 5e-324
-    tiny_limits <- SACAT:::.sacat_plot_color_limits(
-        subnormal, "adaptive"
-    )
-    expect_identical(tiny_limits[["lower"]], .Machine$double.xmin)
-})
-
-test_that("default evidence colors are sequential and distinct from groups", {
     method <- getS3method("plot", "sacat")
-    evidence <- eval(formals(method)$evidence_palette)
-    groups <- eval(formals(method)$group_colors)
-    lightness <- grDevices::convertColor(
-        t(grDevices::col2rgb(evidence)) / 255,
-        from = "sRGB", to = "Lab"
-    )[, "L"]
-
-    expect_true(all(diff(lightness) < 0))
-    expect_length(intersect(tolower(evidence), tolower(groups)), 0L)
+    expect_length(eval(formals(method)$group_colors), 2L)
+    expect_length(eval(formals(method)$zero_colors), 3L)
 })
 
-test_that("abundance log-axis ticks are regular and carry percent units", {
-    scale <- SACAT:::.sacat_plot_abundance_scale(10 ^ c(-3.8, 0.8))
+test_that("observed abundance boxes are summarized on the plotted log scale", {
+    values <- c(0.01, 0.02, 0.03, 0.04, 0.5, 1, 10)
+    z <- log10(values)
+    q <- quantile(z, c(0.25, 0.5, 0.75), names = FALSE)
+    inside <- z[z >= q[1] - 1.5 * diff(q[c(1, 3)]) &
+                z <= q[3] + 1.5 * diff(q[c(1, 3)])]
+    expect_equal(SACAT:::.sacat_plot_box_summary(values),
+                 c(min(inside), q, max(inside)))
+    expect_equal(SACAT:::.sacat_plot_box_summary(0.1), rep(-1, 5))
+    expect_true(all(is.na(SACAT:::.sacat_plot_box_summary(numeric()))))
+})
+
+test_that("abundance log-axis ticks label percentages on a regular log grid", {
+    scale <- SACAT:::.sacat_plot_abundance_scale(10 ^ c(-3.8, 0.8), max_ticks = 4L)
     expect_identical(scale$limits, c(-4, 1))
     expect_identical(scale$ticks, c(-4, -2, 0))
     expect_true(length(unique(diff(scale$ticks))) == 1L)
     expect_lte(length(scale$ticks), 4L)
-    expect_true(all(grepl("%", scale$labels, fixed = TRUE)))
+    expect_equal(as.numeric(scale$labels), 10 ^ scale$ticks)
 
     same_decade <- SACAT:::.sacat_plot_abundance_scale(c(0.12, 0.18))
     expect_identical(same_decade$limits, c(-1, 0))
@@ -413,15 +385,15 @@ test_that("display group labels do not change the fitted contrast", {
         "two non-empty labels"
     )
 
-    legacy_path <- tempfile(fileext = ".pdf")
+    positional_path <- tempfile(fileext = ".pdf")
     method <- getS3method("plot", "sacat")
     method(
-        fit, NULL, "top", 2L, 0.05, "adaptive",
-        eval(formals(method)$evidence_palette),
+        fit, NULL, "top", 2L, 0.05,
         eval(formals(method)$group_colors),
-        legacy_path, 7.2, 3.2, 300
+        eval(formals(method)$zero_colors),
+        positional_path, 7.2, 3.2, 300
     )
-    expect_true(file.exists(legacy_path))
+    expect_true(file.exists(positional_path))
 })
 
 test_that("plot reports incomplete objects and unavailable rows clearly", {
@@ -431,8 +403,8 @@ test_that("plot reports incomplete objects and unavailable rows clearly", {
     expect_error(plot(missing_payload), "store_plot_data = TRUE")
 
     unsupported <- fit
-    unsupported$plot_data$version <- 2L
-    expect_error(plot(unsupported), "version is not supported")
+    unsupported$plot_data$version <- 3L
+    expect_error(plot(unsupported), "required plotting data")
 
     malformed <- fit
     malformed$plot_data$profiles$abundance_status <- NULL
@@ -542,6 +514,114 @@ test_that("plot-summary preparation leaves fitted inference unchanged", {
     compact_settings <- compact_prepared$settings
     compact_settings$plot_data_stored <- NULL
     expect_identical(compact_settings, compact_plain$settings)
+})
+
+test_that("structural plot summaries reuse the conditional-present state", {
+    X_eta <- cbind(
+        `(Intercept)` = 1,
+        Group = c(0, 0, 1, 1)
+    )
+    fit <- list(
+        tested = TRUE,
+        regular = TRUE,
+        diagnostics = list(fit = list(
+            conditional_present = list(par = c(0, 0, 0)),
+            X_eta = X_eta,
+            quadrature = list(nodes = 0, weights = 1)
+        ))
+    )
+    conditional_present <- list(log_r = rep(log(0.8), 4L))
+    component_calls <- 0L
+    received_component <- NULL
+
+    profile <- with_mocked_bindings(
+        SACAT:::.sacat_structural_plot_profile(
+            y = c(0, 1, 0, 1),
+            N = rep(10, 4L),
+            fit = fit
+        ),
+        zt_beta_detection_components = function(...) {
+            component_calls <<- component_calls + 1L
+            conditional_present
+        },
+        zt_fit_alpha = function(..., conditional_present = NULL) {
+            received_component <<- conditional_present
+            list(
+                ok = TRUE,
+                par = c(stats::qlogis(0.2), log(2)),
+                nll = function(alpha) 1
+            )
+        },
+        zt_structural_zero_limit_comparison = function(...) {
+            list(dominated = FALSE)
+        },
+        .package = "SACAT"
+    )
+
+    expect_identical(component_calls, 1L)
+    expect_identical(received_component, conditional_present)
+    expect_equal(profile$reference, 0.2)
+    expect_equal(profile$comparison, 1 / 3)
+    expect_identical(profile$status, "ok")
+})
+
+test_that("structural plot summaries preserve companion failure reasons", {
+    X_eta <- cbind(`(Intercept)` = 1, Group = c(0, 1))
+    fit <- list(
+        tested = TRUE,
+        regular = TRUE,
+        diagnostics = list(fit = list(
+            conditional_present = list(par = c(0, 0, 0)),
+            X_eta = X_eta,
+            quadrature = list(nodes = 0, weights = 1)
+        ))
+    )
+    alpha_calls <- 0L
+    unavailable <- with_mocked_bindings(
+        SACAT:::.sacat_structural_plot_profile(
+            y = c(0, 1), N = c(10, 10), fit = fit
+        ),
+        zt_beta_detection_components = function(...) NULL,
+        zt_fit_alpha = function(...) {
+            alpha_calls <<- alpha_calls + 1L
+            stop("should not be called")
+        },
+        .package = "SACAT"
+    )
+    expect_identical(alpha_calls, 0L)
+    expect_identical(
+        unavailable$status,
+        "structural_absence_no_finite_fit"
+    )
+
+    optimization_failure <- expect_no_warning(with_mocked_bindings(
+        SACAT:::.sacat_structural_plot_profile(
+            y = c(0, 1), N = c(10, 10), fit = fit
+        ),
+        zt_beta_detection_components = function(...) {
+            list(log_r = rep(log(0.8), 2L))
+        },
+        zt_fit_alpha = function(...) {
+            warning("deliberate optimizer warning")
+            list(ok = FALSE, reason = "deliberate_fit_failure")
+        },
+        .package = "SACAT"
+    ))
+    expect_identical(
+        optimization_failure$status,
+        "deliberate_fit_failure"
+    )
+
+    failed <- with_mocked_bindings(
+        SACAT:::.sacat_structural_plot_profile(
+            y = c(0, 1), N = c(10, 10), fit = fit
+        ),
+        zt_beta_detection_components = function(...) {
+            stop("deliberate detection failure")
+        },
+        .package = "SACAT"
+    )
+    expect_identical(failed$status, "companion_fit_unavailable")
 })
 
 test_that("profile output works across supported graphics devices", {

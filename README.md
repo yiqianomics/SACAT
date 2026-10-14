@@ -2,116 +2,64 @@
 
 [![R-CMD-check](https://github.com/yiqianomics/SACAT/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yiqianomics/SACAT/actions/workflows/R-CMD-check.yaml)
 
-**Structural-Absence and Conditional-Abundance Testing** provides depth-aware taxon-level inference for microbiome count data. It separates a group association into two complementary components:
+**Structural-Absence and Conditional-Abundance Testing** distinguishes two
+sources of microbiome associations: changes in whether a taxon is present and
+changes in its relative abundance when present.
 
-- a **structural-absence component**, which tests whether the probability that a taxon is absent differs between groups; and
-- a **relative-abundance component**, which tests the covariate-adjusted group difference in mean log relative abundance conditional on taxon presence.
+An observed zero can arise because a taxon is absent or because sequencing
+did not detect it. SACAT models counts together with each sample's sequencing
+depth to distinguish evidence about these processes.
 
-SACAT models microbial counts together with their original sequencing depths,
-allowing zeros observed at different depths to provide different evidence about
-structural absence. For samples in which a taxon is present, the abundance
-component estimates the adjusted group difference in mean log relative
-abundance and centers that difference against a target-excluded background of
-taxa. The reported abundance effect is therefore a present-conditional relative
-contrast.
+## What SACAT reveals
+
+SACAT reports two complementary components:
+
+- **Structural absence (SA):** differences between groups in the probability
+  that a taxon is absent.
+- **Relative abundance (RA):** differences in mean log relative abundance
+  conditional on presence, standardized over sample covariates and centered
+  against a reference estimated from other eligible taxa.
+
+An omnibus test combines SA and RA evidence to identify associated taxa.
+The component results then show whether an association is supported by
+absence, abundance, or both. This connects discovery with an interpretation
+of the underlying community differences.
+
+SACAT accepts raw counts, sequencing depths, and sample metadata, with
+covariate adjustment through an R formula. It returns component and omnibus
+p-values, Benjamini–Hochberg (BH)-adjusted results, and an aligned visualization
+of statistical evidence, observed detection, estimated zero sources, and
+abundance distributions.
 
 ## Installation
-
-Install the runtime dependencies, then install SACAT from GitHub:
 
 ```r
 install.packages(c("Rcpp", "statmod", "remotes"))
 remotes::install_github("yiqianomics/SACAT")
 ```
 
-From a local source checkout, run `R CMD INSTALL .` at the package root.
+## Quick start
 
-## Input
+The package includes the Schubert stool microbiome dataset:
+152 healthy controls and 91 participants with *Clostridioides difficile*
+infection (CDI), with 88 taxa. The example compares CDI with healthy controls,
+adjusting for age, sex, and reported antibiotic use.
 
-`counts` is a raw integer count matrix. By default, taxa are rows and samples
-are columns. `metadata` must have sample identifiers as row names.
-`library_size` must contain the original total number of sequencing reads for
-each sample.
-
-The formula is one-sided, contains the tested binary `group` variable as an
-additive main effect, and may include additive fixed-effect adjustment terms.
-Variables used by the formula, the tested group, and a metadata-based library
-size must be complete. Prepare a complete analysis set while keeping counts,
-metadata, and any named depth vector aligned. Missing values in unused metadata
-columns are allowed.
-
-The main analysis controls are:
-
-- `min_positive_samples = 3L`, the minimum number of samples with a positive
-  count required by the preliminary retention rule;
-- `min_reference_taxa = 4L`, the number of target-excluded taxa required to
-  form an abundance reference;
-- `structural_conditional_present_starts = "adaptive"`, with `"full"`
-  available for an immediate five-start structural fit; the abundance arm
-  always uses its full five-start bank;
-- `structural_quadrature_points = 1001L`, the structural quadrature order;
-- `abundance_quadrature_points = 41L`, the abundance quadrature order;
-- `store_plot_data = FALSE`; set this to `TRUE` when the fitted object will be
-  used to draw the dual-component association profile; and
-- `workers = 1L` and `verbose = FALSE`. Increasing `workers` uses an ordered,
-  cross-platform process cluster, while `verbose = TRUE` reports arm-level
-  progress.
-
-The retention and reference thresholds define the tested families and should
-be selected before inspecting results. Set `full_output = TRUE` to retain fitted
-objects and detailed numerical diagnostics.
-
-## Example
+The data come from [Schubert et al. (2014)](https://doi.org/10.1128/mBio.01021-14),
+distributed through [MicrobiomeHD](https://doi.org/10.5281/zenodo.1146764).
+Original library sizes are retained before taxon filtering.
 
 ```r
-set.seed(2026)
-n <- 80
-taxa <- paste0("Taxon_", seq_len(8))
-samples <- paste0("Sample_", seq_len(n))
-group <- rep(c(0, 1), each = n / 2)
-library_size <- sample(seq(8000L, 12000L, by = 500L), n, replace = TRUE)
-
-baseline <- seq(-6.0, -5.2, length.out = length(taxa))
-abundance_shift <- c(0.25, -0.20, rep(0, length(taxa) - 2L))
-absence_reference <- c(0.15, 0.20, 0.18, 0.22, 0.16, 0.24, 0.19, 0.21)
-absence_comparison <- c(0.30, 0.20, 0.10, 0.22, 0.16, 0.24, 0.19, 0.21)
-
-probability <- matrix(0, nrow = n, ncol = length(taxa))
-for (j in seq_along(taxa)) {
-    absent_probability <- ifelse(
-        group == 0, absence_reference[j], absence_comparison[j]
-    )
-    present <- runif(n) > absent_probability
-    latent_abundance <- baseline[j] + abundance_shift[j] * group +
-        rnorm(n, sd = 0.35)
-    probability[, j] <- present * plogis(latent_abundance)
-}
-
-count_by_sample <- t(vapply(seq_len(n), function(i) {
-    draw <- rmultinom(
-        1,
-        size = library_size[i],
-        prob = c(probability[i, ], 1 - sum(probability[i, ]))
-    )
-    draw[seq_along(taxa), 1]
-}, numeric(length(taxa))))
-counts <- t(count_by_sample)
-rownames(counts) <- taxa
-colnames(counts) <- samples
-
-metadata <- data.frame(
-    group = factor(group, levels = c(0, 1), labels = c("control", "case")),
-    reads = library_size,
-    row.names = samples
-)
+library(SACAT)
+data("schubert_cdi")
 
 fit <- sacat(
-    counts = counts,
-    metadata = metadata,
-    formula = ~ group,
+    counts = schubert_cdi$counts,
+    metadata = schubert_cdi$metadata,
+    formula = ~ age_z + sex + antibiotics_3mo + group,
     group = "group",
-    library_size = "reads",
-    component = "all",
+    reference = "H",
+    library_size = "library_size",
     store_plot_data = TRUE
 )
 
@@ -119,77 +67,44 @@ fit
 head(fit$results)
 ```
 
-## Visualization
+For your own data, supply a count matrix with taxa in rows and samples in
+columns, matching sample names to the row names of `metadata`. The first
+factor level is the default reference group; `reference` sets it explicitly.
+Include adjustment variables alongside the group in `formula`.
 
-`plot(fit)` aligns three summaries for each taxon:
+The results table contains separate SA, RA, and omnibus results; adjusted
+p-value columns begin with `p_adj_`. See `?sacat` for function options and
+`?schubert_cdi` for the example data.
 
-- the fitted structural-absence probabilities in the two groups;
-- the SA score statistic (triangle) and signed square root of the adjusted
-  RA likelihood-ratio statistic (circle); and
-- the fitted geometric mean relative abundance conditional on presence,
-  expressed as a percentage on a log scale.
-
-The fitted group summaries are standardized over the observed covariate
-profiles. Marker colors show component adjusted p-values; stars beside taxon
-names show the primary omnibus adjusted p-value. For BH-adjusted fits, short
-gates mark each component's discovery boundary using the complete testing
-family, regardless of which taxa are displayed.
-
-By default, the plot displays up to 24 omnibus-adjusted discoveries at 0.05,
-ordered by their adjusted and raw omnibus p-values. Use `selection = "top"` for
-a fixed top-results view, `selection = "all"` for every formed result, or
-`features` to supply an explicit order.
+## Visualize the results
 
 ```r
-plot(fit)
-
-plot(fit, selection = "top", max_features = 20L)
-
 plot(
-    fit,
-    features = c("Taxon_2", "Taxon_1"),
-    p_color_limits = c(1e-8, 1)
+    fit, features = c("Coprococcus", "Enterococcus", "Faecalibacterium"),
+    group_labels = c("Healthy", "CDI")
 )
-
-plot(fit, file = "sacat-profile.pdf")
 ```
 
-Use `group_labels` to change the displayed group names and
-`show_component_guides = FALSE` to hide the gates. Both components share an
-adaptive p-value color scale; numeric `p_color_limits` fixes that scale across
-plots. An omitted marker or `--` denotes an unavailable test or fitted summary.
-See `?plot.sacat` for all display and export options.
+![SACAT profiles of Coprococcus, Enterococcus, and Faecalibacterium in healthy controls and participants with CDI.](man/figures/schubert-cdi-example.svg)
 
-## Results
+Three taxa illustrate support from SA, RA, or both components. **A** shows
+SA/RA test evidence; **B** shows observed detection and estimated sources of
+zeros; **C** shows positive observed abundances and fitted abundance conditional
+on presence. All tests and BH adjustments use the full 88-taxon analysis.
 
-For the comparison-minus-reference contrast:
+[View the PDF](man/figures/schubert-cdi-example.pdf) or
+[generate the figure](tools/make_readme_figure.R) from the repository root.
+Add `file = "sacat-profile.pdf"` to save a plot.
+See `?plot.sacat` for display options.
 
-- positive `z_structural_absence` indicates greater structural absence in the comparison group;
-- positive `estimate_relative_abundance` indicates that the taxon's present-conditional mean log-relative-abundance contrast exceeds the target-excluded compositional background;
-- `p_omnibus` is the Bonferroni minimum-p combination of the two component tests; and
-- `p_omnibus_cauchy` is an equal-weight Cauchy sensitivity combination.
+## Studies and figures
 
-Adjusted p-value columns use the `p_adj_` prefix. The adjustment method is
-recorded in `fit$settings$p_adjust_method`.
-
-Use `fit$diagnostics` to review positive-count support in each group and
-component formation. Retained taxa remain in the corresponding testing family.
-An unavailable component receives an operational p-value of one, with its cause
-recorded in the corresponding `reason_*` field. Eligible abundance results are
-reported independently of structural component formation.
-
-With `full_output = TRUE`, `fit$fits$relative_abundance$taxon` separates the raw
-taxon estimate, target-excluded background, and corrected effect. The RA test
-compares the fitted likelihood with a constrained fit whose raw contrast
-equals that background, with a sandwich adjustment accounting for uncertainty
-in both. `z_relative_abundance` is the signed square root of the adjusted
-likelihood-ratio statistic. Detailed output includes the constrained fits and
-reference diagnostics.
-
-## Manuscript analyses
+The repository includes model-based validation, simulations generated with
+metaSPARSim, and applications to public microbiome data and a defined
+spike-in experiment.
 
 - [Internal model validation](Analysis/SimulationInternalValidation/README.md)
 - [metaSPARSim simulations](Analysis/SimulationMetaSPARSim/README.md)
-- [Real-data analyses](Analysis/RealDataAnalysis/README.md)
-- [Negative controls](Analysis/NegativeControlAnalysis/README.md)
-- [Main figures](Analysis/MainFigures/README.md)
+- [Real-data analyses and spike-in benchmark](Analysis/RealDataAnalysis/README.md)
+- [Native-count negative controls](Analysis/NegativeControlAnalysis/README.md)
+- [Main manuscript figures](Analysis/MainFigures/README.md)

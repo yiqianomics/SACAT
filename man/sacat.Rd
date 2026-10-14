@@ -15,7 +15,6 @@ sacat(
   p_adjust_method = "BH",
   component = c("all", "structural_absence", "relative_abundance"),
   full_output = FALSE,
-  structural_conditional_present_starts = c("adaptive", "full"),
   min_positive_samples = 3L,
   min_reference_taxa = 4L,
   structural_quadrature_points = 1001L,
@@ -68,13 +67,6 @@ standard deviations above two trigger fixed-fit higher-order quadrature
 comparisons. The detailed abundance table records the comparison order and
 the conditional-log-likelihood and effect discrepancies.}
 
-\item{structural_conditional_present_starts}{Start strategy for the
-structural arm's conditional-present count fit. \code{"adaptive"} first uses
-the primary start and retries with the full five-start bank if
-formation checks fail. \code{"full"} uses all five starts immediately. Numeric
-values \code{1L} and \code{5L} are accepted with the corresponding meanings. The
-abundance arm always uses its full five-start bank.}
-
 \item{min_positive_samples}{Minimum number of samples with a positive count
 required to retain a taxon before fitting. The default is \code{3L}. This
 preliminary filter does not replace the positive-mark design-rank and
@@ -87,9 +79,10 @@ required to form an abundance reference. The default is \code{4L}; values below
 \code{3L} are not supported.}
 
 \item{structural_quadrature_points}{Number of Gauss-Hermite nodes used by the
-structural arm. The default is \code{1001L}. Smaller values reduce computation
-at the cost of numerical accuracy; \code{full_output = TRUE} provides a
-higher-order comparison.}
+structural arm to refine the conditional-present fit and evaluate the
+structural-absence model. The default is \code{1001L}. Smaller values reduce
+computation at the cost of numerical accuracy; \code{full_output = TRUE}
+provides a higher-order comparison.}
 
 \item{workers}{Number of parallel worker processes. The default \code{1L} runs
 sequentially. Values above one use an ordered, cross-platform PSOCK
@@ -99,17 +92,21 @@ cluster and do not change the taxon order.}
 messages.}
 
 \item{abundance_quadrature_points}{Number of Gauss-Hermite nodes used by the
-relative-abundance arm. The default is \code{41L}. Nondefault values use the
-same log-domain rule as the structural arm. With \code{full_output = TRUE},
-nondefault rules and fitted latent-scale standard deviations above two
-trigger a fixed-fit higher-order comparison.}
+shared five-start conditional-present search and by subsequent
+relative-abundance refinement and inference. When the structural component
+is requested, this search supplies the starting point for refinement at
+\code{structural_quadrature_points}. The default is \code{41L}. Nondefault values
+use the same log-domain rule as the structural arm. With
+\code{full_output = TRUE}, nondefault rules and fitted latent-scale standard
+deviations above two trigger a fixed-fit higher-order comparison.}
 
-\item{store_plot_data}{Logical. If \code{TRUE}, prepare and retain the small set of
-covariate-standardized summaries used by \code{plot.sacat()}. This option
+\item{store_plot_data}{Logical. If \code{TRUE}, retain observed positive abundances,
+groupwise detection and estimated zero-source shares, and standardized
+fitted abundance summaries used by \code{plot.sacat()}. This option
 requires \code{component = "all"}. Structural companion summaries reuse the
 configured worker pool. Higher-order quadrature comparisons remain
 controlled by \code{full_output}. This setting only controls the stored plotting
-summaries; the default \code{FALSE} keeps the fitted object compact.}
+data; the default \code{FALSE} keeps the fitted object compact.}
 }
 \value{
 An object of class \code{sacat} with elements:
@@ -121,7 +118,7 @@ p-values use the \code{p_adj_} prefix and the method recorded in
 status and reason codes, and numerical warnings.}
 \item{settings}{The fitted contrast and analysis settings.}
 \item{call}{The matched function call.}
-\item{plot_data}{Compact covariate-standardized plotting summaries when
+\item{plot_data}{Observed abundances and fitted plotting summaries when
 \code{store_plot_data = TRUE}.}
 \item{fits}{Detailed component fits when \code{full_output = TRUE}.}
 }
@@ -198,57 +195,23 @@ additionally retains detailed fitted objects and reference diagnostics.
 }
 \examples{
 \donttest{
-set.seed(2026)
-n <- 80
-taxa <- paste0("Taxon_", seq_len(8))
-samples <- paste0("Sample_", seq_len(n))
-group <- rep(c(0, 1), each = n / 2)
-library_size <- sample(seq(8000L, 12000L, by = 500L), n, replace = TRUE)
-
-baseline <- seq(-6.0, -5.2, length.out = length(taxa))
-abundance_shift <- c(0.25, -0.20, rep(0, length(taxa) - 2L))
-absence_reference <- c(0.15, 0.20, 0.18, 0.22, 0.16, 0.24, 0.19, 0.21)
-absence_comparison <- c(0.30, 0.20, 0.10, 0.22, 0.16, 0.24, 0.19, 0.21)
-
-probability <- matrix(0, nrow = n, ncol = length(taxa))
-for (j in seq_along(taxa)) {
-  absent_probability <- ifelse(
-    group == 0, absence_reference[j], absence_comparison[j]
-  )
-  present <- runif(n) > absent_probability
-  latent_abundance <- baseline[j] + abundance_shift[j] * group +
-    rnorm(n, sd = 0.35)
-  probability[, j] <- present * plogis(latent_abundance)
-}
-
-count_by_sample <- t(vapply(seq_len(n), function(i) {
-  draw <- rmultinom(
-    1,
-    size = library_size[i],
-    prob = c(probability[i, ], 1 - sum(probability[i, ]))
-  )
-  draw[seq_along(taxa), 1]
-}, numeric(length(taxa))))
-counts <- t(count_by_sample)
-rownames(counts) <- taxa
-colnames(counts) <- samples
-
-metadata <- data.frame(
-  group = factor(group, levels = c(0, 1), labels = c("control", "case")),
-  reads = library_size,
-  row.names = samples
-)
+data("schubert_cdi")
 
 fit <- sacat(
-  counts = counts,
-  metadata = metadata,
-  formula = ~ group,
+  counts = schubert_cdi$counts,
+  metadata = schubert_cdi$metadata,
+  formula = ~ age_z + sex + antibiotics_3mo + group,
   group = "group",
-  library_size = "reads",
-  component = "all"
+  reference = "H",
+  library_size = "library_size",
+  store_plot_data = TRUE
 )
 fit
 head(fit$results)
+plot(
+  fit, features = c("Coprococcus", "Enterococcus", "Faecalibacterium"),
+  group_labels = c("Healthy", "CDI")
+)
 }
 
 }

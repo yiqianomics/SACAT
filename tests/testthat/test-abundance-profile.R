@@ -118,6 +118,58 @@ test_that("profile derivatives agree with the fitted conditional likelihood", {
     }
 })
 
+test_that("profile decoding delays the full effect Hessian until the solution", {
+    input <- .abundance_profile_fixture(TRUE)
+    beta <- input$fit$theta + 0.015 * seq_along(input$fit$theta)
+    full <- SACAT:::.sacat_abundance_effect_derivatives(
+        beta, input$X_b, input$gh
+    )
+    first_order <- SACAT:::.sacat_abundance_effect_derivatives(
+        beta, input$X_b, input$gh, need_hessian = FALSE
+    )
+    expect_identical(first_order, full[c("value", "gradient")])
+
+    derivative_function <- SACAT:::.sacat_abundance_effect_derivatives
+    full_calls <- first_order_calls <- 0L
+    root_calls <- 0L
+    X_b <- cbind(Intercept = 1, z = seq(-1, 1, length.out = 20L))
+    decode <- function(lambda, target) {
+        with_mocked_bindings(
+            SACAT:::.sacat_abundance_profile_decode(
+                lambda, target, X_b, input$gh
+            ),
+            .sacat_abundance_effect_derivatives = function(
+                    beta, X_b, gh, need_hessian = TRUE) {
+                if (need_hessian) {
+                    full_calls <<- full_calls + 1L
+                } else {
+                    first_order_calls <<- first_order_calls + 1L
+                }
+                derivative_function(beta, X_b, gh, need_hessian)
+            },
+            uniroot = function(...) {
+                root_calls <<- root_calls + 1L
+                stats::uniroot(...)
+            },
+            .package = "SACAT"
+        )
+    }
+
+    newton <- decode(c(-3, 0.2, log(0.8)), 0.3)
+    root_fallback <- decode(c(5, 0, log(0.01)), -1)
+    expect_identical(
+        newton$effect,
+        derivative_function(newton$beta, X_b, input$gh)
+    )
+    expect_identical(
+        root_fallback$effect,
+        derivative_function(root_fallback$beta, X_b, input$gh)
+    )
+    expect_identical(full_calls, 2L)
+    expect_identical(root_calls, 1L)
+    expect_gt(first_order_calls, 2L)
+})
+
 test_that("the fitted contrast is a zero-loss profile constraint", {
     for (with_covariate in c(FALSE, TRUE)) {
         input <- .abundance_profile_fixture(with_covariate)
@@ -200,6 +252,16 @@ test_that("profile fitting converges for dispersed positive counts", {
     )
     expect_true(fit$available)
     numeric_fit <- SACAT:::.sacat_abundance_profile_numeric_fit
+    cached_numeric <- numeric_fit(
+        fit, y, depth, design$X_b, -0.45, gh
+    )
+    uncached_numeric <- with_mocked_bindings(
+        numeric_fit(fit, y, depth, design$X_b, -0.45, gh),
+        .sacat_exact_memoise = function(fn, capacity = 1L) fn,
+        .package = "SACAT"
+    )
+    expect_identical(cached_numeric, uncached_numeric)
+
     fallback_calls <- 0L
     local_mocked_bindings(
         .sacat_abundance_profile_numeric_fit = function(...) {
@@ -267,6 +329,60 @@ test_that("profile inference preserves corrected effects and standard errors", {
     expect_identical(compact$z, tested$z)
     expect_identical(compact$estimate, tested$estimate)
     expect_identical(compact$se, tested$se)
+})
+
+test_that("compact profile tasks preserve serial and parallel results", {
+    input <- .abundance_profile_family()
+    index <- which(input$corrected$formed)
+    full_tests <- lapply(index, function(j) {
+        SACAT:::.sacat_abundance_profile_test(
+            input$fits[[j]], as.numeric(input$Y[, j]), input$N, input$X_b,
+            input$corrected$background[j], input$corrected$se[j]^2, input$gh
+        )
+    })
+    tasks <- lapply(index, function(j) {
+        fit <- input$fits[[j]]
+        list(
+            fit = list(
+                theta = fit$theta,
+                raw_delta = fit$raw_delta,
+                solver_diagnostics = fit$solver_diagnostics[c(
+                    "X_eta", "information", "effect_gradient"
+                )]
+            ),
+            y = as.numeric(input$Y[, j]),
+            background = input$corrected$background[j],
+            variance = input$corrected$se[j]^2
+        )
+    })
+    compact_tests <- lapply(
+        tasks, SACAT:::.sacat_abundance_profile_task,
+        N = input$N, X_b = input$X_b, gh = input$gh
+    )
+    expect_identical(compact_tests, full_tests)
+
+    serial <- SACAT:::.sacat_abundance_profile_tests(
+        input$corrected, input$fits, input$Y, input$N, input$X_b, input$gh
+    )
+    expect_identical(serial, input$tested)
+
+    cluster <- tryCatch(
+        parallel::makePSOCKcluster(2L),
+        error = function(e) NULL
+    )
+    if (is.null(cluster)) skip("PSOCK workers are unavailable")
+    on.exit(parallel::stopCluster(cluster), add = TRUE)
+    paths <- .libPaths()
+    parallel::clusterCall(cluster, function(paths) {
+        .libPaths(paths)
+        loadNamespace("SACAT")
+        TRUE
+    }, paths = paths)
+    parallel_result <- SACAT:::.sacat_abundance_profile_tests(
+        input$corrected, input$fits, input$Y, input$N, input$X_b, input$gh,
+        cluster = cluster
+    )
+    expect_identical(parallel_result, serial)
 })
 
 test_that("a failed profile preserves effects and other targets' references", {

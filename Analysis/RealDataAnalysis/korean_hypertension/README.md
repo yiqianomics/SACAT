@@ -1,42 +1,33 @@
 # Korean hypertension gut microbiome cohort
 
-This analysis uses the 120 adults with hypertension and 503 adults with
-normotension reported in “The association between gut microbiome and
-hypertension varies according to enterotypes: a Korean study”
-([doi:10.3389/frmbi.2023.1072059](https://doi.org/10.3389/frmbi.2023.1072059)).
-The public supplementary workbook contains the ASV count table, taxonomy, and
-clinical metadata used here.
+This analysis uses the Korean adult cohort reported by
+[Song et al. (2023)](https://doi.org/10.3389/frmbi.2023.1072059). The article's
+public supplementary workbook contains the ASV counts, taxonomy, and clinical
+metadata used here.
 
-## Final prepared analysis
+## Analysis
 
-- **Comparison:** 503 adults with normotension (reference) versus 120 adults
-  with hypertension (comparison), 623 participants in total.
-- **Tested panel:** 73 genus or deepest-resolved higher-rank taxon bins.
-- **Adjustment model:** `~ age_z + sex + bmi_z + group`; age and BMI are
+- Comparison: 503 adults with normotension (reference) versus 120 with
+  hypertension; 623 participants in total.
+- Tested taxa: 73 genus or deepest-resolved higher-rank bins.
+- Adjustment: `~ age_z + sex + bmi_z + group`; age and BMI are
   standardized within the final cohort.
-- **Independent unit:** the public cross-sectional workbook contributes one
-  microbiome sample per participant; no repeated observations are retained.
-- **Original library size:** the sum of all ASV counts for the sample in the
-  published unrarefied table, before taxonomic aggregation, prevalence
-  filtering, or the two-group support filter.
+- Sampling: one microbiome profile per participant in the cross-sectional
+  workbook.
+- Systolic and diastolic blood pressure define the study groups and are not
+  adjustment variables.
 
-Download the article's supplementary `Table_1.xlsx` workbook and place it at
-`raw/Table_1.xlsx`, then run
-from the repository root:
+## Data and code
+
+Download the supplementary `Table_1.xlsx` workbook and place it in this
+directory's `raw/`. Run from the repository root:
 
 ```sh
 Rscript Analysis/RealDataAnalysis/korean_hypertension/prepare_data.R
 ```
 
-Normotension is the reference group and hypertension is the comparison group.
-The adjustment variables are age, sex, and BMI. Systolic and diastolic blood
-pressure define the study group. The script keeps the original, unrarefied ASV
-library totals, aggregates ASVs to genus or the deepest resolved higher rank,
-and retains taxa present in at least 5% of the cohort and with positive counts
-in both groups.
+The SACAT input and summary tables are written to `processed/`. Use the
+[shared analysis](../README.md) to produce results in `table/` and `figs/`.
 
-The analysis RDS and accompanying summary tables are written to `processed/`.
-
-For readability, the SACAT profile figure uses the display labels “Normal BP”
-and “High BP”; the model and exported tables retain the full group labels
+The SACAT profile labels are “Normal BP” and “High BP”; exported tables retain
 `Normotension` and `Hypertension`.

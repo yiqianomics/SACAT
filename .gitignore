@@ -1,5 +1,6 @@
 .DS_Store
 .Rhistory
+Rplots.pdf
 .Rd2pdf*/
 *.Rcheck/
 SACAT_*.tar.gz

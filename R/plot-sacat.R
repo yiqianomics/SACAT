@@ -24,19 +24,38 @@
         return(.sacat_plot_profile_failure("group_design_unavailable"))
     }
 
-    companion <- tryCatch(
-        suppressWarnings(
-            zt_fit_alpha(
-                beta = stored$conditional_present$par,
-                y = y,
-                N = N,
-                X_rho = X_eta,
-                X_eta = X_eta,
-                gh = stored$quadrature
+    companion_state <- tryCatch(
+        suppressWarnings({
+            conditional_present <- zt_beta_detection_components(
+                stored$conditional_present$par,
+                N,
+                X_eta,
+                stored$quadrature
             )
-        ),
+            companion <- if (is.null(conditional_present)) {
+                list(
+                    ok = FALSE,
+                    reason = "structural_absence_no_finite_fit"
+                )
+            } else {
+                zt_fit_alpha(
+                    beta = stored$conditional_present$par,
+                    y = y,
+                    N = N,
+                    X_rho = X_eta,
+                    X_eta = X_eta,
+                    gh = stored$quadrature,
+                    conditional_present = conditional_present
+                )
+            }
+            list(
+                companion = companion,
+                conditional_present = conditional_present
+            )
+        }),
         error = function(e) NULL
     )
+    companion <- companion_state$companion
     if (is.null(companion) || !isTRUE(companion$ok)) {
         reason <- if (is.null(companion$reason)) {
             "companion_fit_unavailable"
@@ -46,12 +65,7 @@
         return(.sacat_plot_profile_failure(reason))
     }
 
-    components <- zt_beta_detection_components(
-        stored$conditional_present$par,
-        N,
-        X_eta,
-        stored$quadrature
-    )
+    components <- companion_state$conditional_present
     if (is.null(components)) {
         return(.sacat_plot_profile_failure(
             "companion_detection_components_unavailable"
@@ -92,7 +106,19 @@
         ))
     }
 
-    list(reference = reference, comparison = comparison, status = "ok")
+    state <- zt_detection_state_from_components(
+        companion$par, y, X_eta, components
+    )
+    if (is.null(state) || any(!is.finite(state$gamma))) {
+        return(.sacat_plot_profile_failure(
+            "companion_posterior_unavailable"
+        ))
+    }
+
+    list(
+        reference = reference, comparison = comparison,
+        posterior_sa = state$gamma, status = "ok"
+    )
 }
 
 .sacat_abundance_plot_profile <- function(taxon, abundance_fits) {
@@ -151,7 +177,7 @@
     list(reference = reference, comparison = comparison, status = "ok")
 }
 
-.sacat_prepare_plot_data <- function(Y, N, results, structural_fits,
+.sacat_prepare_plot_data <- function(Y, N, group, results, structural_fits,
                                      abundance_fits, contrast,
                                      cluster = NULL) {
     taxa <- results$taxon
@@ -203,10 +229,42 @@
         check.names = FALSE
     )
 
+    zero_sources <- do.call(rbind, lapply(seq_along(taxa), function(j) {
+        posterior <- structural[[j]]$posterior_sa
+        if (is.null(posterior)) posterior <- rep(NA_real_, nrow(Y))
+        posterior[Y[, j] > 0] <- 0
+        do.call(rbind, lapply(0:1, function(g) {
+            selected <- group == g
+            available <- all(is.finite(posterior[selected]))
+            data.frame(
+                feature = taxa[[j]], group = g,
+                detected = mean(Y[selected, j] > 0),
+                estimated_sa = if (available) mean(posterior[selected]) else NA_real_,
+                estimated_nd = if (available) {
+                    mean((Y[selected, j] == 0) - posterior[selected])
+                } else NA_real_,
+                n = sum(selected),
+                status = if (available) "ok" else structural[[j]]$status,
+                stringsAsFactors = FALSE
+            )
+        }))
+    }))
+    positive_abundance <- do.call(rbind, lapply(seq_along(taxa), function(j) {
+        selected <- Y[, j] > 0
+        data.frame(
+            feature = rep(taxa[[j]], sum(selected)),
+            group = group[selected],
+            abundance = 100 * Y[selected, j] / N[selected],
+            stringsAsFactors = FALSE
+        )
+    }))
+
     list(
-        version = 1L,
+        version = 2L,
         contrast = contrast,
-        profiles = profiles
+        profiles = profiles,
+        zero_sources = zero_sources,
+        positive_abundance = positive_abundance
     )
 }
 
@@ -445,86 +503,8 @@
     indices
 }
 
-.sacat_plot_color_limits <- function(data, p_color_limits) {
-    if (is.character(p_color_limits)) {
-        if (length(p_color_limits) != 1L ||
-            !identical(p_color_limits, "adaptive")) {
-            stop(
-                "`p_color_limits` must be \"adaptive\" or numeric c(lower, upper).",
-                call. = FALSE
-            )
-        }
-        component_p <- c(
-            data$p_structural[
-                is.finite(data$z_structural)
-            ],
-            data$p_abundance[
-                is.finite(data$z_abundance)
-            ]
-        )
-        component_p <- component_p[
-            is.finite(component_p) & component_p >= 0 & component_p <= 1
-        ]
-        positive <- component_p[component_p > 0]
-        if (length(positive)) {
-            lower <- max(
-                .Machine$double.xmin,
-                10 ^ floor(log10(min(positive)))
-            )
-            if (lower >= 1) lower <- 0.1
-        } else if (length(component_p)) {
-            lower <- 1e-16
-        } else {
-            stop("No finite component adjusted p-values are available.",
-                 call. = FALSE)
-        }
-        return(c(lower = lower, upper = 1))
-    }
-
-    if (!is.numeric(p_color_limits) || length(p_color_limits) != 2L ||
-        anyNA(p_color_limits) || any(!is.finite(p_color_limits)) ||
-        p_color_limits[[1L]] <= 0 || p_color_limits[[1L]] >=
-            p_color_limits[[2L]] || p_color_limits[[2L]] > 1) {
-        stop(
-            paste(
-                "Numeric `p_color_limits` must satisfy",
-                "0 < lower < upper <= 1."
-            ),
-            call. = FALSE
-        )
-    }
-    setNames(as.numeric(p_color_limits), c("lower", "upper"))
-}
-
-.sacat_plot_palette_function <- function(palette, limits) {
-    if (!is.character(palette) || length(palette) < 2L || anyNA(palette)) {
-        stop("`evidence_palette` must contain at least two colors.",
-             call. = FALSE)
-    }
-    valid <- tryCatch(
-        grDevices::col2rgb(palette),
-        error = function(e) NULL
-    )
-    if (is.null(valid)) {
-        stop("`evidence_palette` contains an invalid color.",
-             call. = FALSE)
-    }
-    ramp <- grDevices::colorRamp(palette, space = "Lab")
-    lower_evidence <- -log10(limits[["upper"]])
-    upper_evidence <- -log10(limits[["lower"]])
-
-    function(p) {
-        p <- pmin(limits[["upper"]], pmax(limits[["lower"]], p))
-        fraction <- (-log10(p) - lower_evidence) /
-            (upper_evidence - lower_evidence)
-        rgb <- round(ramp(pmin(1, pmax(0, fraction))))
-        grDevices::rgb(rgb[, 1L], rgb[, 2L], rgb[, 3L], maxColorValue = 255)
-    }
-}
-
 .sacat_plot_build_spec <- function(x, features, selection, max_features,
-                                   alpha, p_color_limits,
-                                   evidence_palette, group_colors,
+                                   alpha, group_colors, zero_colors,
                                    show_component_guides = TRUE) {
     if (!inherits(x, "sacat")) {
         stop("`x` must be a `sacat` result.", call. = FALSE)
@@ -537,756 +517,489 @@
     )
     if (!all(required_results %in% names(x$results)) ||
         !identical(x$settings$component, "all")) {
-        stop(
-            "The dual-component profile requires `component = \"all\"`.",
-            call. = FALSE
-        )
+        stop('The profile requires `component = "all"`.', call. = FALSE)
     }
-    if (is.null(x$plot_data) || is.null(x$plot_data$profiles)) {
-        stop(
-            paste(
-                "This fit does not contain plotting summaries; rerun",
-                "`sacat(..., component = \"all\", store_plot_data = TRUE)`."
-            ),
-            call. = FALSE
-        )
-    }
-    if (!identical(x$plot_data$version, 1L)) {
-        stop("The stored plotting-summary version is not supported.",
-             call. = FALSE)
+    payload <- x$plot_data
+    if (is.null(payload) || !identical(payload$version, 2L)) {
+        stop(paste(
+            "This fit does not contain the required plotting data; refit with",
+            "`store_plot_data = TRUE`."
+        ), call. = FALSE)
     }
     fitted_contrast <- unname(
         x$settings$contrast[c("reference", "comparison")]
     )
-    if (!identical(unname(x$plot_data$contrast), fitted_contrast)) {
+    if (!identical(unname(payload$contrast), fitted_contrast)) {
         stop("Stored plotting summaries do not match the fitted contrast.",
              call. = FALSE)
     }
     required_profiles <- c(
-        "feature", "structural_reference", "structural_comparison",
-        "structural_status", "abundance_reference",
-        "abundance_comparison", "abundance_status"
+        "feature", "abundance_reference", "abundance_comparison",
+        "abundance_status"
     )
-    profiles <- x$plot_data$profiles
+    profiles <- payload$profiles
+    zeros <- payload$zero_sources
+    positive <- payload$positive_abundance
     if (!is.data.frame(profiles) ||
         !all(required_profiles %in% names(profiles)) ||
-        anyNA(profiles$feature) || anyDuplicated(profiles$feature)) {
-        stop("The stored plotting summaries are malformed.",
-             call. = FALSE)
+        anyNA(profiles$feature) || anyDuplicated(profiles$feature) ||
+        !is.data.frame(zeros) ||
+        !all(c("feature", "group", "detected", "estimated_sa",
+               "estimated_nd", "status") %in% names(zeros)) ||
+        !is.data.frame(positive) ||
+        !all(c("feature", "group", "abundance") %in% names(positive))) {
+        stop("The stored plotting summaries are malformed.", call. = FALSE)
     }
     selection <- match.arg(selection, c("significant", "top", "all"))
-    max_features <- .sacat_plot_validate_integer(
-        max_features, "max_features"
-    )
+    max_features <- .sacat_plot_validate_integer(max_features, "max_features")
     if (length(alpha) != 1L || is.na(alpha) || !is.numeric(alpha) ||
         !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
         stop("`alpha` must be one number strictly between zero and one.",
              call. = FALSE)
     }
-    if (!is.character(group_colors) || length(group_colors) != 2L ||
-        anyNA(group_colors) ||
-        is.null(tryCatch(grDevices::col2rgb(group_colors),
-                         error = function(e) NULL))) {
-        stop("`group_colors` must contain two valid colors.",
-             call. = FALSE)
+    check_colors <- function(value, size, name) {
+        if (!is.character(value) || length(value) != size || anyNA(value) ||
+            is.null(tryCatch(grDevices::col2rgb(value),
+                            error = function(e) NULL))) {
+            stop(sprintf("`%s` must contain %d valid colors.", name, size),
+                 call. = FALSE)
+        }
+        unname(value)
     }
+    group_colors <- check_colors(group_colors, 2L, "group_colors")
+    zero_colors <- check_colors(zero_colors, 3L, "zero_colors")
 
-    indices <- .sacat_plot_select(
-        x, features, selection, max_features, alpha
-    )
-    component_guides <- .sacat_plot_component_guides(
-        x, alpha, show_component_guides
-    )
-    profile_index <- match(x$results$taxon[indices], profiles$feature)
+    indices <- .sacat_plot_select(x, features, selection, max_features, alpha)
+    results <- x$results[indices, , drop = FALSE]
+    profile_index <- match(results$taxon, profiles$feature)
     if (anyNA(profile_index)) {
         stop("Stored plotting summaries do not match `x$results`.",
              call. = FALSE)
     }
-
-    results <- x$results[indices, , drop = FALSE]
+    zero_index <- match(
+        paste(rep(results$taxon, each = 2L), rep(0:1, nrow(results))),
+        paste(zeros$feature, zeros$group)
+    )
+    if (anyNA(zero_index)) {
+        stop("Stored zero-source summaries do not match `x$results`.",
+             call. = FALSE)
+    }
     data <- cbind(
         data.frame(
             feature = results$taxon,
             feature_label = gsub("_", " ", results$taxon, fixed = TRUE),
-            stars = vapply(
-                results$p_adj_omnibus,
-                .sacat_plot_stars,
-                character(1)
-            ),
+            stars = vapply(results$p_adj_omnibus, .sacat_plot_stars,
+                           character(1)),
             z_structural = results$z_structural_absence,
             p_structural = results$p_adj_structural_absence,
             z_abundance = results$z_relative_abundance,
             p_abundance = results$p_adj_relative_abundance,
             p_omnibus = results$p_omnibus,
             p_adjusted_omnibus = results$p_adj_omnibus,
-            stringsAsFactors = FALSE,
-            check.names = FALSE
+            stringsAsFactors = FALSE
         ),
-        profiles[profile_index, setdiff(
-            names(profiles), "feature"
-        ), drop = FALSE]
+        profiles[profile_index, setdiff(names(profiles), "feature"),
+                 drop = FALSE]
     )
-    limits <- .sacat_plot_color_limits(data, p_color_limits)
-    color_function <- .sacat_plot_palette_function(
-        evidence_palette, limits
-    )
-    data$color_structural <- rep(NA_character_, nrow(data))
-    structural_color <- is.finite(data$z_structural) &
-        is.finite(data$p_structural)
-    data$color_structural[structural_color] <- color_function(
-        data$p_structural[structural_color]
-    )
-    data$color_abundance <- rep(NA_character_, nrow(data))
-    abundance_color <- is.finite(data$z_abundance) &
-        is.finite(data$p_abundance)
-    data$color_abundance[abundance_color] <- color_function(
-        data$p_abundance[abundance_color]
-    )
-
     list(
         data = data,
+        zero_sources = zeros[zero_index, , drop = FALSE],
+        positive_abundance = positive[
+            positive$feature %in% results$taxon, , drop = FALSE
+        ],
         contrast = fitted_contrast,
         adjustment_label = .sacat_plot_adjustment_label(
             x$settings$p_adjust_method
         ),
-        color_limits = limits,
-        evidence_palette = evidence_palette,
-        group_colors = unname(group_colors),
+        group_colors = group_colors,
+        zero_colors = zero_colors,
         selection = selection,
         alpha = alpha,
-        component_guides = component_guides
+        component_guides = .sacat_plot_component_guides(
+            x, alpha, show_component_guides
+        )
     )
 }
 
 # Grid drawing -------------------------------------------------------------
 
-.sacat_plot_format_abundance_tick <- function(exponent) {
-    if (exponent >= -2L && exponent <= 2L) {
-        return(paste0(
-            format(10 ^ exponent, scientific = FALSE, trim = TRUE),
-            "%"
-        ))
-    }
-    paste0("10^", exponent, "*'%'")
-}
-
-.sacat_plot_abundance_scale <- function(values, max_ticks = 4L) {
+.sacat_plot_abundance_scale <- function(values, max_ticks = 5L) {
     values <- values[is.finite(values) & values > 0]
     limits <- if (length(values)) {
         c(floor(log10(min(values))), ceiling(log10(max(values))))
     } else {
-        c(-6, 0)
+        c(-3, 2)
     }
-    if (limits[[1L]] == limits[[2L]]) {
-        limits[[1L]] <- limits[[1L]] - 1
-    }
-    tick_step <- max(
-        1L,
-        ceiling(diff(limits) / (max_ticks - 1L))
-    )
+    if (limits[[1L]] == limits[[2L]]) limits[[1L]] <- limits[[1L]] - 1
+    tick_step <- max(1L, ceiling(diff(limits) / (max_ticks - 1L)))
     ticks <- seq(limits[[1L]], limits[[2L]], by = tick_step)
-    domain <- limits + c(-1, 1) * 0.035 * diff(limits)
-
     list(
         limits = limits,
-        domain = domain,
+        domain = limits + c(-1, 1) * 0.04 * diff(limits),
         ticks = ticks,
-        labels = vapply(
-            ticks, .sacat_plot_format_abundance_tick, character(1)
-        )
+        labels = vapply(ticks, function(z) {
+            format(10 ^ z, scientific = z < -3, trim = TRUE)
+        }, character(1))
     )
 }
 
-.sacat_plot_axis <- function(at, labels, reversed = FALSE,
-                             domain = range(at), gp_text, gp_line) {
-    if (length(domain) != 2L || any(!is.finite(domain)) ||
-        domain[[1L]] >= domain[[2L]]) {
-        stop("Internal plotting axis has an invalid domain.", call. = FALSE)
-    }
-    plotted_at <- if (reversed) sum(domain) - at else at
+.sacat_plot_box_summary <- function(values) {
+    values <- log10(values[is.finite(values) & values > 0])
+    if (!length(values)) return(rep(NA_real_, 5L))
+    quartiles <- stats::quantile(values, c(0.25, 0.5, 0.75), names = FALSE)
+    iqr <- quartiles[[3L]] - quartiles[[1L]]
+    inside <- values[values >= quartiles[[1L]] - 1.5 * iqr &
+                         values <= quartiles[[3L]] + 1.5 * iqr]
+    c(min(inside), quartiles, max(inside))
+}
+
+.sacat_plot_axis <- function(at, labels, domain, title) {
     grid::pushViewport(grid::viewport(xscale = domain))
     grid::grid.segments(
-        x0 = grid::unit(domain[[1L]], "native"),
-        x1 = grid::unit(domain[[2L]], "native"),
-        y0 = grid::unit(0.08, "npc"),
-        y1 = grid::unit(0.08, "npc"),
-        gp = gp_line
+        x0 = grid::unit(min(at), "native"),
+        x1 = grid::unit(max(at), "native"), y0 = 0.91, y1 = 0.91,
+        gp = grid::gpar(col = "#777777", lwd = 0.6)
     )
-    for (i in seq_along(at)) {
-        grid::grid.segments(
-            x0 = grid::unit(plotted_at[[i]], "native"),
-            x1 = grid::unit(plotted_at[[i]], "native"),
-            y0 = grid::unit(0.08, "npc"),
-            y1 = grid::unit(0.23, "npc"),
-            gp = gp_line
-        )
-        label <- labels[[i]]
-        if (is.character(label) && grepl("^10\\^", label)) {
-            label <- parse(text = label)
-        }
-        grid::grid.text(
-            label,
-            x = grid::unit(plotted_at[[i]], "native"),
-            y = grid::unit(0.48, "npc"),
-            just = if (abs(plotted_at[[i]] - domain[[1L]]) < 1e-12) {
-                "left"
-            } else if (abs(plotted_at[[i]] - domain[[2L]]) < 1e-12) {
-                "right"
-            } else {
-                "centre"
-            },
-            gp = gp_text
-        )
-    }
-    grid::popViewport()
-}
-
-.sacat_plot_header_groups <- function(title, contrast, colors, gp_title,
-                                      gp_small) {
-    label_widths <- vapply(contrast, function(label) {
-        grid::convertWidth(
-            grid::grobWidth(grid::textGrob(label, gp = gp_small)),
-            "npc",
-            valueOnly = TRUE
-        )
-    }, numeric(1))
-    key_width <- 0.07
-    key_gap <- 0.025
-    entry_gap <- 0.06
-    fixed_width <- length(contrast) * (key_width + key_gap) +
-        (length(contrast) - 1L) * entry_gap
-    group_gp <- gp_small
-    available_label_width <- 0.94 - fixed_width
-    if (is.finite(sum(label_widths)) &&
-        sum(label_widths) > available_label_width) {
-        scale <- available_label_width / sum(label_widths)
-        group_gp <- grid::gpar(
-            col = gp_small$col,
-            fontsize = gp_small$fontsize * scale
-        )
-        label_widths <- label_widths * scale
-    }
-    grid::grid.text(
-        title, x = grid::unit(0, "npc"), y = grid::unit(0.78, "npc"),
-        just = "left", gp = gp_title
-    )
-    cursor <- 0
-    for (i in seq_along(contrast)) {
-        grid::grid.segments(
-            x0 = grid::unit(cursor, "npc"),
-            x1 = grid::unit(cursor + key_width, "npc"),
-            y0 = grid::unit(0.20, "npc"),
-            y1 = grid::unit(0.20, "npc"),
-            gp = grid::gpar(
-                col = colors[[i]], lwd = 2.6, lineend = "butt"
-            )
-        )
-        label_x <- cursor + key_width + key_gap
-        grid::grid.text(
-            contrast[[i]],
-            x = grid::unit(label_x, "npc"),
-            y = grid::unit(0.20, "npc"),
-            just = "left",
-            gp = group_gp
-        )
-        cursor <- label_x + label_widths[[i]] + entry_gap
-    }
-}
-
-.sacat_plot_draw_header <- function(spec, columns, gp_title, gp_small,
-                                    gp_tiny) {
-    data <- spec$data
-    grid::pushViewport(grid::viewport(
-        layout.pos.row = 1L, layout.pos.col = columns[[1L]]
-    ))
-    grid::grid.text(
-        "Feature", x = 0, y = 0.78, just = "left", gp = gp_title
-    )
-    grid::popViewport()
-
-    grid::pushViewport(grid::viewport(
-        layout.pos.row = 1L, layout.pos.col = columns[[2L]]
-    ))
-    .sacat_plot_header_groups(
-        "Structural-absence\nprobability", spec$contrast, spec$group_colors,
-        gp_title, gp_small
-    )
-    grid::popViewport()
-
-    grid::pushViewport(grid::viewport(
-        layout.pos.row = 1L, layout.pos.col = columns[[3L]]
-    ))
-    grid::grid.text("Component statistics", x = 0.5, y = 0.78,
-                    gp = gp_title)
-    component_labels <- c("SA", "RA")
-    component_label_grobs <- lapply(component_labels, function(label) {
-        grid::textGrob(label, gp = gp_small)
-    })
-    component_label_widths <- vapply(component_label_grobs, function(label) {
-        grid::convertWidth(
-            grid::grobWidth(label), "npc", valueOnly = TRUE
-        )
-    }, numeric(1))
-    component_key_width <- grid::convertWidth(
-        grid::unit(1.55, "mm"), "npc", valueOnly = TRUE
-    )
-    component_key_gap <- grid::convertWidth(
-        grid::unit(1.0, "mm"), "npc", valueOnly = TRUE
-    )
-    component_entry_gap <- grid::convertWidth(
-        grid::unit(7.0, "mm"), "npc", valueOnly = TRUE
-    )
-    component_legend_width <- 2 * component_key_width +
-        2 * component_key_gap + sum(component_label_widths) +
-        component_entry_gap
-    component_cursor <- 0.5 - component_legend_width / 2
-    component_key_x <- numeric(2L)
-    component_label_x <- numeric(2L)
-    for (i in seq_len(2L)) {
-        component_key_x[[i]] <- component_cursor + component_key_width / 2
-        component_label_x[[i]] <- component_cursor + component_key_width +
-            component_key_gap
-        component_cursor <- component_label_x[[i]] +
-            component_label_widths[[i]]
-        if (i == 1L) {
-            component_cursor <- component_cursor + component_entry_gap
-        }
-    }
-    grid::grid.points(
-        x = grid::unit(component_key_x, "npc"),
-        y = grid::unit(rep(0.52, 2L), "npc"),
-        pch = c(24, 21),
-        size = grid::unit(c(1.55, 1.45), "mm"),
-        gp = grid::gpar(col = "#1A1C1F", fill = "white", lwd = 0.7)
-    )
-    for (i in seq_len(2L)) {
-        grid::grid.text(
-            component_labels[[i]],
-            x = grid::unit(component_label_x[[i]], "npc"),
-            y = grid::unit(0.52, "npc"),
-            just = "left",
-            gp = gp_small
-        )
-    }
-    grid::grid.text(
-        paste("Component", spec$adjustment_label),
-        x = 0.5, y = 0.30, gp = gp_tiny
-    )
-    ramp_left <- 0.27
-    ramp_right <- 0.73
-    ramp_colors <- grDevices::colorRampPalette(
-        spec$evidence_palette, space = "Lab"
-    )(48L)
-    ramp_x <- seq(
-        ramp_left, ramp_right, length.out = length(ramp_colors) + 1L
-    )
-    for (i in seq_along(ramp_colors)) {
-        grid::grid.rect(
-            x = mean(ramp_x[c(i, i + 1L)]),
-            y = 0.15,
-            width = diff(ramp_x[c(i, i + 1L)]),
-            height = 0.075,
-            gp = grid::gpar(
-                col = NA, fill = ramp_colors[[i]]
-            )
-        )
-    }
-    legend_p <- c(
-        spec$color_limits[["upper"]],
-        if (spec$color_limits[["lower"]] < 0.05 &&
-            spec$color_limits[["upper"]] > 0.05) 0.05 else numeric(),
-        spec$color_limits[["lower"]]
-    )
-    legend_fraction <- (
-        -log10(legend_p) + log10(spec$color_limits[["upper"]])
-    ) / (
-        -log10(spec$color_limits[["lower"]]) +
-            log10(spec$color_limits[["upper"]])
-    )
-    legend_x <- ramp_left + legend_fraction * (ramp_right - ramp_left)
-    legend_labels <- vapply(legend_p, function(p) {
-        if (abs(p - 0.05) < .Machine$double.eps ^ 0.5) {
-            ".05"
-        } else {
-            format.pval(p, digits = 1, eps = 0)
-        }
-    }, character(1))
     grid::grid.segments(
-        x0 = grid::unit(legend_x, "npc"),
-        x1 = grid::unit(legend_x, "npc"),
-        y0 = grid::unit(0.095, "npc"),
-        y1 = grid::unit(0.205, "npc"),
-        gp = grid::gpar(col = "#6F7479", lwd = 0.35)
+        x0 = grid::unit(at, "native"), x1 = grid::unit(at, "native"),
+        y0 = 0.91, y1 = 0.82, gp = grid::gpar(col = "#777777", lwd = 0.6)
     )
-    for (i in seq_along(legend_x)) {
-        horizontal_justification <- if (i == 1L) {
-            "left"
-        } else if (i == length(legend_x)) {
-            "right"
-        } else {
-            "centre"
-        }
-        grid::grid.text(
-            legend_labels[[i]],
-            x = grid::unit(legend_x[[i]], "npc"),
-            y = grid::unit(0.025, "npc"),
-            just = horizontal_justification,
-            gp = gp_tiny
-        )
+    grid::grid.text(
+        labels, x = grid::unit(at, "native"), y = 0.64,
+        gp = grid::gpar(col = "#333333", fontsize = 8)
+    )
+    if (nzchar(title)) {
+        grid::grid.text(title, y = 0.17,
+                        gp = grid::gpar(fontsize = 8.5, lineheight = 1))
     }
     grid::popViewport()
+}
 
-    grid::pushViewport(grid::viewport(
-        layout.pos.row = 1L, layout.pos.col = columns[[4L]]
-    ))
-    .sacat_plot_header_groups(
-        "Present-conditional\nrelative abundance", spec$contrast,
-        spec$group_colors, gp_title, gp_small
+.sacat_plot_draw_box <- function(values, center, color, shape) {
+    if (!length(values)) return(invisible(NULL))
+    x <- log10(values)
+    jitter <- 0.045 * sin(seq_along(x) * pi * (3 - sqrt(5)))
+    grid::grid.points(
+        x = grid::unit(x, "native"), y = center + jitter, pch = shape,
+        size = grid::unit(0.7, "mm"),
+        gp = grid::gpar(col = grDevices::adjustcolor(color, alpha.f = 0.28))
     )
-    grid::popViewport()
-    invisible(data)
+    box <- .sacat_plot_box_summary(values)
+    grid::grid.segments(
+        x0 = grid::unit(box[[1L]], "native"),
+        x1 = grid::unit(box[[5L]], "native"),
+        y0 = center, y1 = center, gp = grid::gpar(col = color, lwd = 0.8)
+    )
+    grid::grid.segments(
+        x0 = grid::unit(box[c(1L, 5L)], "native"),
+        x1 = grid::unit(box[c(1L, 5L)], "native"),
+        y0 = center - 0.05, y1 = center + 0.05,
+        gp = grid::gpar(col = color, lwd = 0.8)
+    )
+    grid::grid.rect(
+        x = grid::unit(mean(box[c(2L, 4L)]), "native"), y = center,
+        width = grid::unit(box[[4L]] - box[[2L]], "native"), height = 0.19,
+        gp = grid::gpar(col = color, lwd = 1,
+                       fill = grDevices::adjustcolor(color, alpha.f = 0.18))
+    )
+    grid::grid.segments(
+        x0 = grid::unit(box[[3L]], "native"),
+        x1 = grid::unit(box[[3L]], "native"),
+        y0 = center - 0.095, y1 = center + 0.095,
+        gp = grid::gpar(col = color, lwd = 1.3)
+    )
+    invisible(box)
 }
 
 .sacat_plot_draw <- function(spec) {
     data <- spec$data
     n <- nrow(data)
-    ink <- "#1A1C1F"
-    muted <- "#73777C"
-    rule <- "#D9DDE0"
-    faint <- "#ECEFF1"
-    gp_title <- grid::gpar(col = ink, fontsize = 8.3, fontface = "bold")
-    gp_label <- grid::gpar(col = ink, fontsize = 7.2)
-    gp_small <- grid::gpar(col = ink, fontsize = 6.6)
-    gp_tiny <- grid::gpar(col = muted, fontsize = 6.6)
-    gp_axis <- grid::gpar(col = muted, fontsize = 6.6)
-    gp_rule <- grid::gpar(col = rule, lwd = 0.45)
-
-    star_gp <- grid::gpar(col = ink, fontsize = 6.4, fontface = "bold")
-    label_widths <- lapply(seq_len(n), function(i) {
-        width <- grid::grobWidth(grid::textGrob(
-            data$feature_label[[i]], gp = gp_label
-        ))
-        if (nzchar(data$stars[[i]])) {
-            width <- width + grid::unit(1, "pt") +
-                grid::grobWidth(grid::textGrob(
-                    data$stars[[i]], gp = star_gp
-                ))
-        }
-        width
-    })
-    feature_width <- grid::unit.pmax(
-        do.call(grid::unit.pmax, label_widths),
-        grid::grobWidth(grid::textGrob("Feature", gp = gp_title))
-    ) + grid::unit(7, "pt")
+    ink <- "#252525"
+    muted <- "#6F6F6F"
+    gp_title <- grid::gpar(col = ink, fontsize = 9, fontface = "bold",
+                          lineheight = 1.05)
+    gp_label <- grid::gpar(col = ink, fontsize = 8.5, fontface = "italic",
+                          lineheight = 1)
+    gp_small <- grid::gpar(col = ink, fontsize = 8, lineheight = 1)
+    labels <- vapply(data$feature_label, function(label) {
+        paste(strwrap(label, width = 28), collapse = "\n")
+    }, character(1))
+    group_labels <- vapply(spec$contrast, function(label) {
+        paste(strwrap(label, width = 15), collapse = "\n")
+    }, character(1))
+    feature_width <- do.call(grid::unit.pmax, lapply(labels, function(label) {
+        grid::grobWidth(grid::textGrob(label, gp = gp_label))
+    })) + grid::unit(10, "pt")
+    group_width <- do.call(grid::unit.pmax, lapply(group_labels, function(label) {
+        grid::grobWidth(grid::textGrob(label, gp = gp_small))
+    })) + grid::unit(4, "pt")
     layout <- grid::grid.layout(
-        nrow = n + 3L,
-        ncol = 7L,
+        nrow = n + 5L, ncol = 10L,
         widths = grid::unit.c(
-            feature_width,
-            grid::unit(2.7, "mm"),
-            grid::unit(1.05, "null"),
-            grid::unit(2.7, "mm"),
-            grid::unit(1.72, "null"),
-            grid::unit(2.7, "mm"),
-            grid::unit(1.18, "null")
+            feature_width, grid::unit(2, "mm"),
+            grid::unit(0.74, "null"), grid::unit(2.5, "mm"),
+            grid::unit(0.74, "null"), grid::unit(5, "mm"),
+            group_width, grid::unit(1.3, "null"), grid::unit(5, "mm"),
+            grid::unit(1.8, "null")
         ),
         heights = grid::unit.c(
-            grid::unit(14, "mm"),
-            grid::unit(7.5, "mm"),
+            grid::unit(11, "mm"), grid::unit(5, "mm"),
             rep(grid::unit(1, "null"), n),
-            grid::unit(3.8, "mm")
+            grid::unit(16, "mm"), grid::unit(19, "mm"),
+            grid::unit(5, "mm")
         )
     )
-    columns <- c(1L, 3L, 5L, 7L)
     grid::grid.newpage()
     grid::pushViewport(grid::viewport(
-        width = grid::unit(1, "npc") - grid::unit(4, "mm"),
-        height = grid::unit(1, "npc") - grid::unit(4, "mm"),
-        layout = layout,
+        width = grid::unit(1, "npc") - grid::unit(6, "mm"),
+        height = grid::unit(1, "npc") - grid::unit(5, "mm"),
+        layout = layout, gp = grid::gpar(fontfamily = "sans"),
         name = "sacat-association-profile"
     ))
-    .sacat_plot_draw_header(
-        spec, columns, gp_title, gp_small, gp_tiny
-    )
-
-    structural_ticks <- seq(0, 1, by = 0.25)
-    structural_domain <- c(-0.035, 1.035)
-    z_values <- c(data$z_structural, data$z_abundance)
-    if (isTRUE(spec$component_guides$enabled)) {
-        z_values <- c(
-            z_values,
-            spec$component_guides$structural$z,
-            spec$component_guides$abundance$z
-        )
+    in_cell <- function(row, column, draw, ...) {
+        grid::pushViewport(grid::viewport(
+            layout.pos.row = row, layout.pos.col = column, ...
+        ))
+        draw()
+        grid::popViewport()
     }
-    z_values <- z_values[is.finite(z_values)]
-    z_step <- max(1, ceiling(max(abs(z_values)) / 2))
-    z_limit <- 2 * z_step
-    z_ticks <- seq(-z_limit, z_limit, by = z_step)
-    z_domain <- c(-1.035, 1.035) * z_limit
-    abundance_scale <- .sacat_plot_abundance_scale(c(
-        data$abundance_reference,
-        data$abundance_comparison
-    ))
-    abundance_domain <- abundance_scale$domain
+    headings <- list(
+        list(cols = 3:5, tag = "A", text = "Component evidence"),
+        list(cols = 7:8, tag = "B",
+             text = "Observed detection and\nestimated zero sources"),
+        list(cols = 10L, tag = "C", text = "Observed and fitted\nabundance")
+    )
+    for (heading in headings) {
+        in_cell(1L, heading$cols, function() {
+            grid::grid.text(heading$tag, x = 0, y = 0.9, just = c("left", "top"),
+                            gp = grid::gpar(fontsize = 10, fontface = "bold"))
+            grid::grid.text(heading$text, y = 0.45, gp = gp_title)
+        })
+    }
+    in_cell(2L, 3L, function() grid::grid.text("SA", gp = gp_title))
+    in_cell(2L, 5L, function() grid::grid.text("RA", gp = gp_title))
 
-    grid::pushViewport(grid::viewport(
-        layout.pos.row = 2L, layout.pos.col = columns[[2L]]
+    z <- c(data$z_structural, data$z_abundance)
+    if (isTRUE(spec$component_guides$enabled)) {
+        z <- c(z, spec$component_guides$structural$z,
+               spec$component_guides$abundance$z)
+    }
+    z <- z[is.finite(z)]
+    step <- max(1, ceiling(max(abs(z), 1) / 2))
+    z_ticks <- seq(-2 * step, 2 * step, by = step)
+    z_domain <- range(z_ticks) * 1.07
+    abundance <- .sacat_plot_abundance_scale(c(
+        spec$positive_abundance$abundance,
+        data$abundance_reference, data$abundance_comparison
     ))
-    .sacat_plot_axis(
-        structural_ticks,
-        paste0(round(100 * structural_ticks), "%"),
-        reversed = TRUE,
-        domain = structural_domain,
-        gp_text = gp_axis,
-        gp_line = gp_rule
-    )
-    grid::popViewport()
-
-    grid::pushViewport(grid::viewport(
-        layout.pos.row = 2L, layout.pos.col = columns[[3L]]
-    ))
-    .sacat_plot_axis(
-        z_ticks,
-        format(z_ticks, trim = TRUE, scientific = FALSE),
-        domain = z_domain,
-        gp_text = gp_axis,
-        gp_line = gp_rule
-    )
-    grid::grid.text(
-        paste(spec$contrast[[2L]], "lower"),
-        x = 0, y = 0.88, just = "left", gp = gp_tiny
-    )
-    grid::grid.text(
-        paste(spec$contrast[[2L]], "higher"),
-        x = 1, y = 0.88, just = "right", gp = gp_tiny
-    )
-    grid::popViewport()
-
-    grid::pushViewport(grid::viewport(
-        layout.pos.row = 2L, layout.pos.col = columns[[4L]]
-    ))
-    .sacat_plot_axis(
-        abundance_scale$ticks,
-        abundance_scale$labels,
-        domain = abundance_domain,
-        gp_text = gp_axis,
-        gp_line = gp_rule
-    )
-    grid::grid.text(
-        "log scale", x = 1, y = 0.88, just = "right", gp = gp_tiny
-    )
-    grid::popViewport()
+    group_y <- c(0.68, 0.32)
 
     for (i in seq_len(n)) {
         row <- i + 2L
-        for (column in columns) {
-            grid::pushViewport(grid::viewport(
-                layout.pos.row = row, layout.pos.col = column
-            ))
-            grid::grid.segments(
-                x0 = 0, x1 = 1, y0 = 0, y1 = 0,
-                gp = grid::gpar(col = faint, lwd = 0.35)
-            )
-            grid::popViewport()
-        }
-
-        grid::pushViewport(grid::viewport(
-            layout.pos.row = row, layout.pos.col = columns[[1L]]
-        ))
-        label <- grid::textGrob(
-            data$feature_label[[i]],
-            x = 0, y = 0.50, just = "left", gp = gp_label
-        )
-        grid::grid.draw(label)
-        if (nzchar(data$stars[[i]])) {
-            grid::grid.text(
-                data$stars[[i]],
-                x = grid::grobWidth(label) + grid::unit(1, "pt"),
-                y = 0.68,
-                just = "left",
-                gp = star_gp
-            )
-        }
-        grid::popViewport()
-
-        grid::pushViewport(grid::viewport(
-            layout.pos.row = row,
-            layout.pos.col = columns[[2L]],
-            xscale = structural_domain
-        ))
-        structural_profile <- c(
-            data$structural_reference[[i]],
-            data$structural_comparison[[i]]
-        )
-        if (all(is.finite(structural_profile))) {
-            y <- c(0.64, 0.36)
-            plotted_profile <- 1 - structural_profile
-            grid::grid.segments(
-                x0 = grid::unit(1, "native"),
-                x1 = grid::unit(plotted_profile, "native"),
-                y0 = y, y1 = y,
-                gp = grid::gpar(
-                    col = spec$group_colors,
-                    lwd = 2.8,
-                    lineend = "round"
+        for (column in list(1L, 3:5, 7:8, 10L)) {
+            in_cell(row, column, function() {
+                grid::grid.segments(
+                    x0 = 0, x1 = 1, y0 = 0, y1 = 0,
+                    gp = grid::gpar(col = "#EAEAEA", lwd = 0.4)
                 )
-            )
-            grid::grid.points(
-                x = grid::unit(plotted_profile, "native"),
-                y = y,
-                pch = 21,
-                size = grid::unit(1.0, "mm"),
-                gp = grid::gpar(
-                    col = spec$group_colors,
-                    fill = spec$group_colors,
-                    lwd = 0.5
-                )
-            )
-        } else {
-            grid::grid.text("--", x = 0.98, just = "right", gp = gp_axis)
+            })
         }
-        grid::popViewport()
-
-        grid::pushViewport(grid::viewport(
-            layout.pos.row = row,
-            layout.pos.col = columns[[3L]],
-            xscale = z_domain
-        ))
-        for (tick in z_ticks) {
-            grid::grid.segments(
-                x0 = grid::unit(tick, "native"),
-                x1 = grid::unit(tick, "native"),
-                y0 = 0, y1 = 1,
-                gp = grid::gpar(
-                    col = if (tick == 0) "#8A8D91" else faint,
-                    lwd = if (tick == 0) 0.65 else 0.30,
-                    lty = if (tick == 0) 2 else 1
+        in_cell(row, 1L, function() {
+            grid::grid.text(labels[[i]], x = 0.98, y = 0.5,
+                            just = "right", gp = gp_label)
+            if (nzchar(data$stars[[i]])) {
+                grid::grid.text(
+                    data$stars[[i]], x = 1, y = 0.78, just = "left",
+                    gp = grid::gpar(fontsize = 7, fontface = "bold")
                 )
-            )
-        }
-        if (isTRUE(spec$component_guides$enabled)) {
-            guide_color <- "#7F858A"
-            structural_guide <- spec$component_guides$structural$z
-            if (is.finite(structural_guide)) {
-                for (boundary in c(-structural_guide, structural_guide)) {
+            }
+        })
+        for (k in 1:2) {
+            statistic <- if (k == 1L) data$z_structural[[i]] else
+                data$z_abundance[[i]]
+            adjusted_p <- if (k == 1L) data$p_structural[[i]] else
+                data$p_abundance[[i]]
+            guide <- if (k == 1L) spec$component_guides$structural$z else
+                spec$component_guides$abundance$z
+            in_cell(row, c(3L, 5L)[[k]], function() {
+                grid::grid.segments(
+                    x0 = grid::unit(0, "native"), x1 = grid::unit(0, "native"),
+                    y0 = 0, y1 = 1, gp = grid::gpar(col = "#B6B6B6", lwd = 0.6)
+                )
+                if (isTRUE(spec$component_guides$enabled) && is.finite(guide)) {
                     grid::grid.segments(
-                        x0 = grid::unit(boundary, "native"),
-                        x1 = grid::unit(boundary, "native"),
-                        y0 = 0.54, y1 = 0.82,
+                        x0 = grid::unit(c(-guide, guide), "native"),
+                        x1 = grid::unit(c(-guide, guide), "native"),
+                        y0 = 0, y1 = 1,
+                        gp = grid::gpar(col = "#888888", lty = 2, lwd = 0.7)
+                    )
+                }
+                if (is.finite(statistic)) {
+                    grid::grid.segments(
+                        x0 = grid::unit(0, "native"),
+                        x1 = grid::unit(statistic, "native"),
+                        y0 = 0.5, y1 = 0.5,
+                        gp = grid::gpar(col = "#B5B5B5", lwd = 0.7)
+                    )
+                    grid::grid.points(
+                        x = grid::unit(statistic, "native"), y = 0.5,
+                        pch = 21, size = grid::unit(2.2, "mm"),
                         gp = grid::gpar(
-                            col = guide_color, lwd = 0.60, lty = 1
+                            col = ink, lwd = 0.9,
+                            fill = if (is.finite(adjusted_p) &&
+                                       adjusted_p <= spec$alpha) ink else "white"
                         )
+                    )
+                } else {
+                    grid::grid.text("--", gp = gp_small)
+                }
+            }, xscale = z_domain)
+        }
+
+        in_cell(row, 7L, function() {
+            grid::grid.text(group_labels, x = 0.95, y = group_y,
+                            just = "right", gp = gp_small)
+        })
+        zero_rows <- spec$zero_sources[(2L * i - 1L):(2L * i), , drop = FALSE]
+        in_cell(row, 8L, function() {
+            for (g in 1:2) {
+                fractions <- unlist(zero_rows[g, c(
+                    "detected", "estimated_sa", "estimated_nd"
+                )], use.names = FALSE)
+                if (all(is.finite(fractions))) {
+                    ends <- c(0, cumsum(fractions))
+                    for (j in 1:3) {
+                        grid::grid.rect(
+                            x = mean(ends[j:(j + 1L)]), y = group_y[[g]],
+                            width = fractions[[j]], height = 0.22,
+                            gp = grid::gpar(fill = spec$zero_colors[[j]],
+                                           col = "white", lwd = 0.3)
+                        )
+                    }
+                } else {
+                    detected <- fractions[[1L]]
+                    grid::grid.rect(
+                        x = detected / 2, y = group_y[[g]],
+                        width = detected, height = 0.22,
+                        gp = grid::gpar(fill = spec$zero_colors[[1L]],
+                                       col = NA)
+                    )
+                    if (detected < 1) {
+                        grid::grid.rect(
+                            x = (1 + detected) / 2, y = group_y[[g]],
+                            width = 1 - detected, height = 0.22,
+                            gp = grid::gpar(fill = "white", col = muted, lty = 2)
+                        )
+                        grid::grid.text("--", x = (1 + detected) / 2,
+                                        y = group_y[[g]], gp = gp_small)
+                    }
+                }
+                grid::grid.rect(
+                    x = 0.5, y = group_y[[g]], width = 1, height = 0.22,
+                    gp = grid::gpar(fill = NA, col = "#A5A5A5", lwd = 0.4)
+                )
+            }
+        })
+        in_cell(row, 10L, function() {
+            for (g in 0:1) {
+                values <- spec$positive_abundance$abundance[
+                    spec$positive_abundance$feature == data$feature[[i]] &
+                    spec$positive_abundance$group == g
+                ]
+                .sacat_plot_draw_box(
+                    values, group_y[[g + 1L]], spec$group_colors[[g + 1L]],
+                    c(16, 17)[[g + 1L]]
+                )
+                fitted <- c(data$abundance_reference[[i]],
+                            data$abundance_comparison[[i]])[[g + 1L]]
+                if (is.finite(fitted) && fitted > 0) {
+                    grid::grid.points(
+                        x = grid::unit(log10(fitted), "native"),
+                        y = group_y[[g + 1L]], pch = 23,
+                        size = grid::unit(2, "mm"),
+                        gp = grid::gpar(fill = "white", col = ink, lwd = 0.8)
                     )
                 }
             }
-            abundance_guide <- spec$component_guides$abundance$z
-            if (is.finite(abundance_guide)) {
-                for (boundary in c(-abundance_guide, abundance_guide)) {
-                    grid::grid.segments(
-                        x0 = grid::unit(boundary, "native"),
-                        x1 = grid::unit(boundary, "native"),
-                        y0 = 0.18, y1 = 0.46,
-                        gp = grid::gpar(
-                            col = guide_color, lwd = 0.60, lty = 1
-                        )
-                    )
-                }
-            }
-        }
-        if (is.finite(data$z_structural[[i]])) {
-            grid::grid.segments(
-                x0 = grid::unit(0, "native"),
-                x1 = grid::unit(data$z_structural[[i]], "native"),
-                y0 = 0.64, y1 = 0.64,
-                gp = grid::gpar(col = "#B8BDC1", lwd = 0.48)
-            )
-            grid::grid.points(
-                x = grid::unit(data$z_structural[[i]], "native"),
-                y = 0.64,
-                pch = 24,
-                size = grid::unit(1.65, "mm"),
-                gp = grid::gpar(
-                    col = ink,
-                    fill = data$color_structural[[i]],
-                    lwd = 0.65
-                )
-            )
-        }
-        if (is.finite(data$z_abundance[[i]])) {
-            grid::grid.segments(
-                x0 = grid::unit(0, "native"),
-                x1 = grid::unit(data$z_abundance[[i]], "native"),
-                y0 = 0.36, y1 = 0.36,
-                gp = grid::gpar(col = "#B8BDC1", lwd = 0.48)
-            )
-            grid::grid.points(
-                x = grid::unit(data$z_abundance[[i]], "native"),
-                y = 0.36,
-                pch = 21,
-                size = grid::unit(1.52, "mm"),
-                gp = grid::gpar(
-                    col = ink,
-                    fill = data$color_abundance[[i]],
-                    lwd = 0.65
-                )
-            )
-        }
-        grid::popViewport()
-
-        grid::pushViewport(grid::viewport(
-            layout.pos.row = row,
-            layout.pos.col = columns[[4L]],
-            xscale = abundance_domain
-        ))
-        abundance_profile <- c(
-            data$abundance_reference[[i]],
-            data$abundance_comparison[[i]]
-        )
-        if (all(is.finite(abundance_profile)) &&
-            all(abundance_profile > 0)) {
-            transformed <- log10(abundance_profile)
-            y <- c(0.56, 0.44)
-            grid::grid.segments(
-                x0 = grid::unit(transformed[[1L]], "native"),
-                x1 = grid::unit(transformed[[2L]], "native"),
-                y0 = y[[1L]], y1 = y[[2L]],
-                gp = grid::gpar(
-                    col = "#B8BDC1",
-                    lwd = 0.62,
-                    lineend = "round"
-                )
-            )
-            grid::grid.points(
-                x = grid::unit(transformed, "native"),
-                y = y,
-                pch = 21,
-                size = grid::unit(if (n > 12L) 1.08 else 1.25, "mm"),
-                gp = grid::gpar(
-                    col = "#50555A",
-                    fill = spec$group_colors,
-                    lwd = 0.45
-                )
-            )
-        } else {
-            grid::grid.text("--", x = 0.02, just = "left", gp = gp_axis)
-        }
-        grid::popViewport()
+        }, xscale = abundance$domain)
     }
+    axis_row <- n + 3L
+    for (column in c(3L, 5L)) {
+        in_cell(axis_row, column, function() {
+            .sacat_plot_axis(z_ticks, format(z_ticks, trim = TRUE), z_domain, "")
+        })
+    }
+    in_cell(axis_row, 3:5, function() {
+        grid::grid.text("Signed component statistic", y = 0.17,
+                        gp = grid::gpar(fontsize = 8.5))
+    })
+    in_cell(axis_row, 8L, function() {
+        .sacat_plot_axis(seq(0, 1, by = 0.25), c("0", "25", "50", "75", "100"),
+                         c(0, 1), "Share of samples (%)")
+    })
+    in_cell(axis_row, 10L, function() {
+        .sacat_plot_axis(abundance$ticks, abundance$labels, abundance$domain,
+                         "Relative abundance (%)\n(log scale)")
+    })
 
-    grid::pushViewport(grid::viewport(
-        layout.pos.row = n + 3L,
-        layout.pos.col = 1L:7L
-    ))
-    footer <- paste0(
-        "Omnibus ", spec$adjustment_label,
-        ":  * <= .05    ** <= .01    *** <= .001"
-    )
-    grid::grid.text(
-        footer,
-        x = 0, y = 0.55, just = "left", gp = gp_tiny
-    )
-    grid::popViewport()
+    legend_row <- n + 4L
+    in_cell(legend_row, 3:5, function() {
+        for (j in 1:2) {
+            y <- c(0.72, 0.37)[[j]]
+            grid::grid.points(
+                x = 0.05, y = y, pch = 21, size = grid::unit(1.9, "mm"),
+                gp = grid::gpar(fill = c(ink, "white")[[j]], col = ink)
+            )
+            grid::grid.text(
+                paste(spec$adjustment_label, c("<=", ">")[[j]],
+                      format(spec$alpha, trim = TRUE)),
+                x = 0.14, y = y, just = "left", gp = gp_small
+            )
+        }
+    })
+    in_cell(legend_row, 7:8, function() {
+        x <- c(0.16, 0.5, 0.84)
+        grid::grid.rect(x = x, y = 0.73, width = grid::unit(2.1, "mm"),
+                         height = grid::unit(2.1, "mm"),
+                         gp = grid::gpar(fill = spec$zero_colors, col = NA))
+        grid::grid.text(c("Detected", "Estimated\nSA", "Estimated\nND"),
+                        x = x, y = 0.35, gp = gp_small)
+    })
+    in_cell(legend_row, 10L, function() {
+        for (g in 1:2) {
+            x <- c(0.02, 0.52)[[g]]
+            grid::grid.points(
+                x = x, y = 0.82, pch = c(16, 17)[[g]],
+                size = grid::unit(1.4, "mm"),
+                gp = grid::gpar(col = spec$group_colors[[g]])
+            )
+            grid::grid.text(group_labels[[g]], x = x + 0.05, y = 0.82,
+                            just = "left", gp = gp_small)
+        }
+        fitted_label <- grid::textGrob(
+            "Fitted abundance\nConditional on presence", gp = gp_small
+        )
+        label_width <- grid::grobWidth(fitted_label)
+        left <- grid::unit(0.5, "npc") -
+            (label_width + grid::unit(4, "mm")) / 2
+        grid::grid.points(
+            x = left + grid::unit(1, "mm"), y = 0.30, pch = 23,
+            size = grid::unit(2, "mm"),
+            gp = grid::gpar(fill = "white", col = ink)
+        )
+        grid::grid.text(
+            fitted_label$label,
+            x = left + grid::unit(4, "mm") + label_width / 2,
+            y = 0.30, gp = gp_small
+        )
+    })
+    in_cell(n + 5L, 1:10, function() {
+        grid::grid.text(
+            paste0("Omnibus ", spec$adjustment_label,
+                   ":  * <= 0.05   ** <= 0.01   *** <= 0.001"),
+            x = 0, just = "left", gp = grid::gpar(col = muted, fontsize = 7)
+        )
+    })
     grid::popViewport()
     invisible(spec)
 }
@@ -1294,15 +1007,11 @@
 .sacat_plot_open_device <- function(file, width, height, dpi) {
     extension <- tolower(sub("^.*\\.", "", file))
     if (identical(extension, "pdf")) {
-        grDevices::pdf(
-            file, width = width, height = height,
-            onefile = FALSE, useDingbats = FALSE, bg = "white"
-        )
+        grDevices::pdf(file, width = width, height = height,
+                       onefile = FALSE, useDingbats = FALSE, bg = "white")
     } else if (identical(extension, "png")) {
-        grDevices::png(
-            file, width = width, height = height,
-            units = "in", res = dpi, bg = "white"
-        )
+        grDevices::png(file, width = width, height = height,
+                       units = "in", res = dpi, bg = "white")
     } else if (identical(extension, "svg")) {
         if (!isTRUE(capabilities("cairo"))) {
             stop("SVG output requires an R build with Cairo support.",
@@ -1315,113 +1024,72 @@
     invisible(NULL)
 }
 
-#' Plot a SACAT dual-component association profile
+#' Plot a SACAT association profile
 #'
-#' Draws a taxon-aligned summary of a SACAT analysis.
-#' The center displays the structural-absence and relative-abundance component
-#' statistics on one axis. SA uses its score statistic; RA uses the signed
-#' square root of its adjusted likelihood-ratio statistic. Colors encode
-#' component adjusted p-values. Feature superscripts encode the primary omnibus
-#' adjusted p-value. For BH-adjusted fits, component-specific lane gates mark
-#' family-wide BH discovery boundaries on the component-statistic
-#' axis. The side panels show covariate-standardized group summaries prepared
-#' when [sacat()] was called with `store_plot_data = TRUE`.
+#' Aligns component evidence, observed detection with estimated zero sources,
+#' and observed and fitted abundance for selected taxa.
 #'
-#' The structural side panel provides a descriptive unrestricted companion
-#' fit, and the central score statistic provides structural inference. The
-#' abundance side panel displays standardized present-conditional geometric
-#' mean relative abundance, expressed as a percentage on a log scale, from the
-#' fitted mark model. Paired points represent these positive values on the log
-#' scale. The central abundance statistic retains the target-excluded
-#' reference correction used by SACAT.
-#' Side-panel segments provide descriptive fitted group summaries, and the
-#' abundance connector links its two fitted group means. Component inference is
-#' carried by the central statistics. An omitted central marker or `--`
-#' denotes an unavailable component or side summary.
+#' Panel A shows the structural-absence (SA) score statistic and the signed
+#' square root of the adjusted relative-abundance (RA) likelihood-ratio
+#' statistic. Positive values indicate higher SA or reference-corrected RA
+#' in the comparison group. Filled circles mark component adjusted p-values
+#' at or below `alpha`; open circles mark values above it. Dashed lines show
+#' component-specific BH discovery boundaries computed from the complete
+#' retained families. Taxon superscripts summarize omnibus adjusted p-values.
 #'
-#' For a component with `m` finite family p-values and `k` BH discoveries at
-#' level `alpha`, the symmetric gates correspond to the two-sided raw-p boundary
-#' `alpha * k / m`. This boundary is exact because both component p-values are
-#' two-sided normal-tail probabilities of the plotted statistics. Separate
-#' structural and abundance adjustments produce component-specific gates.
-#' The omnibus stars use the separately adjusted omnibus family.
+#' Panel B shows each group's observed detection fraction and estimated
+#' contributions of structural absence and nondetection (ND) to observed zeros.
+#' For each zero, the SA contribution is its posterior SA probability from the
+#' group-inclusive structural plotting fit; the ND contribution is its
+#' complement. Positive counts contribute to detected samples. These quantities
+#' are averaged within the observed groups and sum to one. An undivided,
+#' unfilled zero segment marked `--` denotes an unavailable zero-source fit.
+#'
+#' Panel C shows positive observed relative abundances as points and boxplots,
+#' with library sizes from the fitted analysis. Boxplots summarize log10
+#' relative abundance: the box spans the quartiles, the line marks the median,
+#' and whiskers extend to observations within 1.5 interquartile ranges.
+#' Diamonds show the exponentiated mean fitted log relative abundance
+#' conditional on presence, standardized over all observed covariate profiles.
+#' Both are displayed as percentages on a log scale. The diamond contrast
+#' corresponds to the raw abundance contrast; the RA test in Panel A also
+#' includes SACAT's cross-taxon reference correction.
+#'
+#' Plotting uses data prepared by [sacat()] with `store_plot_data = TRUE`.
+#' It does not refit the model or change statistical results.
 #'
 #' @param x A `sacat` object fitted with `component = "all"` and
 #'   `store_plot_data = TRUE`.
-#' @param features Optional character vector of feature names to display. The
-#'   supplied order is preserved and overrides `selection` and `max_features`.
-#'   The component guides continue to use the complete fitted families.
-#' @param selection Feature-selection rule when `features` is `NULL`.
-#'   `"significant"` displays primary omnibus adjusted p-values no greater than
-#'   `alpha`; `"top"` displays the smallest available adjusted p-values; and
-#'   `"all"` displays every formed omnibus result.
-#' @param max_features Maximum number of rows for `"significant"` or `"top"`.
-#'   The default is `24L`.
-#' @param alpha Adjusted-p threshold used by `selection = "significant"` and,
-#'   when enabled, by the component BH discovery gates.
-#' @param p_color_limits Either `"adaptive"` or numeric `c(lower, upper)` with
-#'   `lower > 0`, `upper <= 1`, and `lower < upper`. The adaptive
-#'   strong-evidence endpoint is derived
-#'   from the smallest positive finite component adjusted p-value among the
-#'   displayed markers and rounded down to a power of ten; the weak-evidence
-#'   endpoint is one. Degenerate all-zero or all-one displays use a finite
-#'   fallback. Colors are interpolated on the `-log10(p)` scale and values
-#'   outside the range are clamped.
-#' @param evidence_palette Colors from weak to strong component evidence. The
-#'   default is a sequential gray-plum scale chosen to remain distinct from
-#'   the reference/comparison group colors.
-#' @param group_colors Two colors for the reference and comparison groups.
-#' @param group_labels Optional two-element character vector used only as the
-#'   displayed reference and comparison labels. The fitted contrast is used by
-#'   default. This option changes display text only.
-#' @param show_component_guides Logical; for a fit using BH (or its `"fdr"`
-#'   alias), draw separate structural and abundance discovery gates at the
-#'   family-wide BH step-up boundaries. Each gate uses the complete family of
-#'   retained taxa and appears when that component has at least one discovery.
-#'   A warning identifies any component whose boundary cannot be displayed.
-#' @param file Optional output filename ending in `.pdf`, `.png`, or `.svg`.
-#'   When `NULL`, the current graphics device is used. SVG output requires an R
-#'   build with Cairo support.
+#' @param features Optional unique taxon names, displayed in the supplied order.
+#' @param selection Select omnibus-significant taxa, the top-ranked taxa,
+#'   or all eligible taxa. Ignored when `features` is supplied.
+#' @param max_features Maximum number of automatically selected taxa.
+#'   Ignored for `selection = "all"` or explicit `features`.
+#' @param alpha Adjusted-p threshold for selection and component markers.
+#' @param group_colors Two colors, in reference/comparison order, for observed
+#'   abundance distributions.
+#' @param zero_colors Three colors for detected samples, estimated SA, and
+#'   estimated ND, respectively.
+#' @param file Optional PDF, PNG, or SVG filename. Without it, draw on the
+#'   current graphics device.
 #' @param width,height Output dimensions in inches when `file` is supplied.
-#'   Defaults use a 180-mm manuscript width and a height chosen from the number
-#'   of displayed features.
-#' @param dpi Resolution for PNG output.
-#' @param ... Reserved for future graphical options.
+#'   Defaults to 10.5 inches wide and a height based on the number of taxa.
+#' @param dpi Resolution of PNG output.
+#' @param group_labels Optional reference/comparison labels for display.
+#' @param show_component_guides Show BH component discovery boundaries when
+#'   `p_adjust_method` is `"BH"` or `"fdr"`. A component with no discoveries
+#'   has no boundary.
+#' @param ... Reserved for graphical extensions.
 #'
-#' @usage
-#' \method{plot}{sacat}(
-#'   x,
-#'   features = NULL,
-#'   selection = c("significant", "top", "all"),
-#'   max_features = 24L,
-#'   alpha = 0.05,
-#'   p_color_limits = "adaptive",
-#'   evidence_palette = c(
-#'     "#e8ecef", "#d6cdd5", "#c0acba",
-#'     "#a7879c", "#89617c", "#673b5c"
-#'   ),
-#'   group_colors = c("#6090c1", "#f28e4b"),
-#'   file = NULL,
-#'   width = NULL,
-#'   height = NULL,
-#'   dpi = 300,
-#'   group_labels = NULL,
-#'   show_component_guides = TRUE,
-#'   ...
-#' )
-#'
-#' @return Invisibly, the data and resolved graphical settings used to draw the
-#'   figure.
+#' @return Invisibly, a list containing the displayed data and graphical settings.
 #'
 #' @examples
 #' \dontrun{
-#' fit <- sacat(
-#'   counts, metadata, ~ group + age, "group", "library_size",
-#'   component = "all", store_plot_data = TRUE
+#' example("sacat", run.donttest = TRUE)
+#' plot(
+#'     fit, features = c("Coprococcus", "Enterococcus", "Faecalibacterium"),
+#'     group_labels = c("Healthy", "CDI"), file = "sacat-profile.pdf"
 #' )
-#' plot(fit)
-#' plot(fit, p_color_limits = c(1e-8, 1))
-#' plot(fit, file = "sacat-profile.pdf", width = 7.2, height = 6.5)
 #' }
 #'
 #' @method plot sacat
@@ -1433,12 +1101,8 @@ plot.sacat <- function(
         selection = c("significant", "top", "all"),
         max_features = 24L,
         alpha = 0.05,
-        p_color_limits = "adaptive",
-        evidence_palette = c(
-            "#e8ecef", "#d6cdd5", "#c0acba",
-            "#a7879c", "#89617c", "#673b5c"
-        ),
-        group_colors = c("#6090c1", "#f28e4b"),
+        group_colors = c("#4C78A8", "#E45756"),
+        zero_colors = c("#6A9DC0", "#E5A36C", "#E9E9E9"),
         file = NULL,
         width = NULL,
         height = NULL,
@@ -1448,17 +1112,9 @@ plot.sacat <- function(
         ...) {
     selection <- match.arg(selection)
     spec <- .sacat_plot_build_spec(
-        x = x,
-        features = features,
-        selection = selection,
-        max_features = max_features,
-        alpha = alpha,
-        p_color_limits = p_color_limits,
-        evidence_palette = evidence_palette,
-        group_colors = group_colors,
-        show_component_guides = show_component_guides
+        x, features, selection, max_features, alpha, group_colors,
+        zero_colors, show_component_guides
     )
-
     if (!is.null(group_labels)) {
         if (!is.character(group_labels) || length(group_labels) != 2L ||
             anyNA(group_labels) || any(!nzchar(group_labels))) {
@@ -1467,16 +1123,13 @@ plot.sacat <- function(
         }
         spec$contrast <- unname(group_labels)
     }
-
     if (!is.null(file)) {
         if (!is.character(file) || length(file) != 1L || is.na(file) ||
             !nzchar(file)) {
             stop("`file` must be one non-empty filename.", call. = FALSE)
         }
-        if (is.null(width)) width <- 180 / 25.4
-        if (is.null(height)) {
-            height <- max(2.8, 1.15 + 0.215 * nrow(spec$data))
-        }
+        if (is.null(width)) width <- 10.5
+        if (is.null(height)) height <- max(3.5, 2.35 + 0.40 * nrow(spec$data))
         if (!is.numeric(width) || length(width) != 1L ||
             !is.finite(width) || width <= 0 ||
             !is.numeric(height) || length(height) != 1L ||
@@ -1484,8 +1137,7 @@ plot.sacat <- function(
             stop("`width` and `height` must be positive numbers.",
                  call. = FALSE)
         }
-        if (!is.numeric(dpi) || length(dpi) != 1L || !is.finite(dpi) ||
-            dpi <= 0) {
+        if (!is.numeric(dpi) || length(dpi) != 1L || !is.finite(dpi) || dpi <= 0) {
             stop("`dpi` must be one positive number.", call. = FALSE)
         }
         .sacat_plot_open_device(file, width, height, dpi)

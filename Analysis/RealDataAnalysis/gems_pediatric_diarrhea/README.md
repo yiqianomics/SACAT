@@ -1,38 +1,31 @@
 # GEMS pediatric diarrhea
 
-This analysis uses the public genus-count data from the Global Enteric
-Multicenter Study analysis by Pop et al., *Genome Biology* 2014
-([doi:10.1186/gb-2014-15-6-r76](https://doi.org/10.1186/gb-2014-15-6-r76)).
-The data file is publicly available from the authors'
-[MSD1000 repository](https://github.com/jnpaulson/MSD1000) as
-`forserveroptim.rdata`.
+This analysis uses genus-count data from the Global Enteric Multicenter Study
+reported by [Pop et al. (2014)](https://doi.org/10.1186/gb-2014-15-6-r76).
+The cohort includes children from Bangladesh, Kenya, Mali, and The Gambia.
+Data are available in the authors'
+[MSD1000 repository](https://github.com/jnpaulson/MSD1000).
 
-## Final prepared analysis
+## Analysis
 
-- **Comparison:** 484 matched controls (reference) versus 508 children with
-  moderate-to-severe diarrhea (MSD; comparison), 992 children in total.
-- **Tested panel:** 78 published genera.
-- **Adjustment model:** `~ age_z + country + group`, where age in months is
+- Comparison: 484 matched controls (reference) versus 508 children with
+  moderate-to-severe diarrhea (MSD); 992 children in total.
+- Tested taxa: 78 published genera.
+- Adjustment: `~ age_z + country + group`, where age in months is
   standardized within the final cohort and country is categorical.
-- **Independent unit:** one published study observation per enrolled child.
-- **Original library size:** the published `totalCounts` value, defined before
-  the 5% genus-prevalence and two-group support filters.
+- Sampling: one published observation per enrolled child.
+- Library size: the published `totalCounts` value, before genus filtering.
 
-Download `forserveroptim.rdata` from the MSD1000 repository and place it at
-`raw/forserveroptim.rdata`. The cohort contains children with
-moderate-to-severe diarrhea and matched controls
-from Bangladesh, Kenya, Mali, and The Gambia. Controls are the reference group.
-The model adjusts for age in months and country.
+## Data and code
 
-The script uses the published unrarefied genus counts and the published
-`totalCounts` value as the original library size. It retains genera present in
-at least 5% of the final cohort and observed in both comparison groups.
-
+Download `forserveroptim.rdata` from MSD1000 and place it in this directory's
+`raw/`. It contains the published genus counts, metadata, and library sizes.
 Run from the repository root:
 
 ```sh
 Rscript Analysis/RealDataAnalysis/gems_pediatric_diarrhea/prepare_data.R
 ```
 
-The SACAT input and readable count, metadata, taxonomy, and preprocessing
-tables are written to `processed/`.
+The SACAT input and count, metadata, taxonomy, and preprocessing tables are
+written to `processed/`. Use the [shared analysis](../README.md) to fit the
+methods and produce results in `table/` and `figs/`.

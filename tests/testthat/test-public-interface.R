@@ -24,7 +24,7 @@
         ),
         .sacat_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
-                conditional_present_starts = 1L, ...) {
+                ...) {
             encoded <<- g
             list(
                 p = rep(0.5, ncol(Y)),
@@ -63,7 +63,7 @@
     local_mocked_bindings(
         .sacat_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
-                conditional_present_starts = 1L, ...) {
+                ...) {
             selected <- scenario[colnames(Y), , drop = FALSE]
             list(
                 p = selected$structural_p,
@@ -305,15 +305,6 @@ test_that("print separates regular and nonregular structural results", {
 test_that("public numerical and formation controls have stable defaults", {
     defaults <- formals(SACAT::sacat)
 
-    expect_false("conditional_present_starts" %in% names(defaults))
-    expect_identical(
-        names(defaults)[11L],
-        "structural_conditional_present_starts"
-    )
-    expect_identical(
-        eval(defaults$structural_conditional_present_starts),
-        c("adaptive", "full")
-    )
     expect_identical(eval(defaults$min_positive_samples), 3L)
     expect_identical(eval(defaults$min_reference_taxa), 4L)
     expect_identical(eval(defaults$structural_quadrature_points), 1001L)
@@ -373,18 +364,19 @@ test_that("public controls are checked and recorded", {
         sacat(
             counts, metadata, ~ group, "group", "reads",
             component = "structural_absence",
-            structural_conditional_present_starts = "full",
             min_positive_samples = 2L,
             min_reference_taxa = 3L,
             structural_quadrature_points = 31L
         ),
         .sacat_structural_arm = function(
                 Y, N, g, z, keep_diagnostics,
-                conditional_present_starts, min_positive_samples,
+                min_positive_samples,
                 quadrature_points, cluster, verbose,
-                check_quadrature) {
+                check_quadrature, conditional_present_fits,
+                search_quadrature_points) {
             captured <<- list(
-                starts = conditional_present_starts,
+                search_Q = search_quadrature_points,
+                fits = conditional_present_fits,
                 minimum = min_positive_samples,
                 Q = quadrature_points,
                 cluster = cluster,
@@ -404,16 +396,17 @@ test_that("public controls are checked and recorded", {
         .package = "SACAT"
     )
 
-    expect_identical(captured$starts, 5L)
+    expect_identical(captured$search_Q, 41L)
+    expect_length(captured$fits, nrow(counts))
     expect_identical(captured$minimum, 2L)
     expect_identical(captured$Q, 31L)
     expect_null(captured$cluster)
     expect_false(captured$verbose)
     expect_false(captured$check_quadrature)
     expect_identical(
-        fit$settings$structural_conditional_present_starts, "full"
+        fit$settings$conditional_present_search_starts, 5L
     )
-    expect_false("conditional_present_starts" %in% names(fit$settings))
+    expect_identical(fit$settings$conditional_present_search_quadrature_Q, 41L)
     expect_identical(fit$settings$min_positive_samples_retained, 2L)
     expect_identical(fit$settings$min_reference_taxa, 3L)
     expect_identical(fit$settings$structural_quadrature_Q, 31L)
@@ -447,13 +440,6 @@ test_that("public controls are checked and recorded", {
         ),
         "abundance_quadrature_points"
     )
-    expect_error(
-        sacat(
-            counts, metadata, ~ group, "group", "reads",
-            conditional_present_starts = "full"
-        ),
-        "unused argument.*conditional_present_starts"
-    )
 })
 
 test_that("the abundance quadrature control is passed and recorded", {
@@ -481,7 +467,7 @@ test_that("the abundance quadrature control is passed and recorded", {
                 Y, N, g, z, keep_diagnostics,
                 min_positive_samples, min_reference_taxa,
                 quadrature_points, cluster, verbose,
-                check_quadrature) {
+                check_quadrature, conditional_present_fits) {
             captured_Q <<- quadrature_points
             expect_false(check_quadrature)
             list(
@@ -545,4 +531,67 @@ test_that("only metadata used by the analysis must be complete", {
         ),
         "Could not construct the model"
     )
+})
+test_that("serial and parallel component fits preserve full and compact output", {
+    package_path <- find.package("SACAT")
+    skip_if_not(
+        file.exists(file.path(package_path, "Meta", "package.rds")),
+        "PSOCK test requires an installed package"
+    )
+    probe <- tryCatch(parallel::makePSOCKcluster(2L), error = function(e) NULL)
+    skip_if(is.null(probe), "Two local PSOCK workers are unavailable")
+    parallel::stopCluster(probe)
+
+    set.seed(9821L)
+    n <- 48L
+    group <- rep(0:1, each = n / 2L)
+    z <- rep(seq(-1, 1, length.out = n / 2L), 2L)
+    reads <- rep(c(3000L, 7000L), length.out = n)
+    counts <- vapply(seq_len(6L), function(j) {
+        y <- rbinom(n, reads, plogis(-5 + .1 * j + .2 * z +
+            .3 * group * (j == 1L) + rnorm(n, sd = .4)))
+        as.integer(y * (runif(n) > .2))
+    }, integer(n))
+    rownames(counts) <- paste0("Sample_", seq_len(n))
+    colnames(counts) <- paste0("Taxon_", seq_len(ncol(counts)))
+    metadata <- data.frame(group = factor(group), z = z, reads = reads,
+                           row.names = rownames(counts))
+    arguments <- list(
+        counts = t(counts), metadata = metadata, formula = ~ group + z,
+        group = "group", library_size = "reads",
+        structural_quadrature_points = 31L, abundance_quadrature_points = 31L
+    )
+    joint_fits <- list()
+    for (component in c("all", "structural_absence", "relative_abundance")) {
+        for (full_output in c(FALSE, TRUE)) {
+            fit_arguments <- c(arguments, list(
+                component = component, full_output = full_output
+            ))
+            serial <- suppressWarnings(do.call(
+                sacat, c(fit_arguments, list(workers = 1L))
+            ))
+            parallel_fit <- suppressWarnings(do.call(
+                sacat, c(fit_arguments, list(workers = 2L))
+            ))
+            expect_identical(parallel_fit$results, serial$results)
+            expect_identical(parallel_fit$diagnostics, serial$diagnostics)
+            key <- as.character(full_output)
+            if (component == "all") {
+                joint_fits[[key]] <- serial
+            } else {
+                joint <- joint_fits[[key]]
+                expect_identical(serial$results,
+                                 joint$results[names(serial$results)])
+                expect_identical(serial$diagnostics,
+                                 joint$diagnostics[names(serial$diagnostics)])
+            }
+            if (full_output) {
+                expect_equal(parallel_fit$fits, serial$fits, tolerance = 0,
+                             ignore_function_env = TRUE)
+            } else {
+                expect_null(parallel_fit$fits)
+                expect_null(serial$fits)
+            }
+        }
+    }
 })
