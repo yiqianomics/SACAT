@@ -721,15 +721,18 @@
     gp_label <- grid::gpar(col = ink, fontsize = 8.5, fontface = "italic",
                           lineheight = 1)
     gp_small <- grid::gpar(col = ink, fontsize = 8, lineheight = 1)
-    labels <- vapply(data$feature_label, function(label) {
-        paste(strwrap(label, width = 28), collapse = "\n")
-    }, character(1))
+    labels <- lapply(seq_len(n), function(i) {
+        grid::textGrob(
+            paste(strwrap(data$feature_label[[i]], width = 20), collapse = "\n"),
+            rot = 45, gp = gp_label,
+            name = paste0("sacat-feature-label-", i)
+        )
+    })
     group_labels <- vapply(spec$contrast, function(label) {
         paste(strwrap(label, width = 15), collapse = "\n")
     }, character(1))
-    feature_width <- do.call(grid::unit.pmax, lapply(labels, function(label) {
-        grid::grobWidth(grid::textGrob(label, gp = gp_label))
-    })) + grid::unit(10, "pt")
+    feature_width <- do.call(grid::unit.pmax, lapply(labels, grid::grobWidth)) +
+        grid::unit(10, "pt")
     group_width <- do.call(grid::unit.pmax, lapply(group_labels, function(label) {
         grid::grobWidth(grid::textGrob(label, gp = gp_small))
     })) + grid::unit(4, "pt")
@@ -805,8 +808,12 @@
             })
         }
         in_cell(row, 1L, function() {
-            grid::grid.text(labels[[i]], x = 0.98, y = 0.5,
-                            just = "right", gp = gp_label)
+            grid::grid.draw(grid::editGrob(
+                labels[[i]],
+                x = grid::unit(1, "npc") - grid::unit(5, "pt") -
+                    grid::grobWidth(labels[[i]]) / 2,
+                y = grid::unit(0.5, "npc")
+            ))
             if (nzchar(data$stars[[i]])) {
                 grid::grid.text(
                     data$stars[[i]], x = 1, y = 0.78, just = "left",
@@ -966,15 +973,29 @@
                         x = x, y = 0.35, gp = gp_small)
     })
     in_cell(legend_row, 10L, function() {
+        group_text <- lapply(group_labels, function(label) {
+            grid::textGrob(label, gp = gp_small)
+        })
+        item_widths <- lapply(group_text, function(label) {
+            grid::grobWidth(label) + grid::unit(4, "mm")
+        })
+        gap <- grid::unit(6, "mm")
+        left <- grid::unit(0.5, "npc") -
+            (item_widths[[1L]] + item_widths[[2L]] + gap) / 2
         for (g in 1:2) {
-            x <- c(0.02, 0.52)[[g]]
             grid::grid.points(
-                x = x, y = 0.82, pch = c(16, 17)[[g]],
+                x = left + grid::unit(1, "mm"), y = 0.82,
+                pch = c(16, 17)[[g]],
                 size = grid::unit(1.4, "mm"),
-                gp = grid::gpar(col = spec$group_colors[[g]])
+                gp = grid::gpar(col = spec$group_colors[[g]]),
+                name = paste0("sacat-abundance-group-key-", g)
             )
-            grid::grid.text(group_labels[[g]], x = x + 0.05, y = 0.82,
-                            just = "left", gp = gp_small)
+            grid::grid.text(
+                group_labels[[g]], x = left + grid::unit(4, "mm"), y = 0.82,
+                just = "left", gp = gp_small,
+                name = paste0("sacat-abundance-group-label-", g)
+            )
+            left <- left + item_widths[[g]] + gap
         }
         fitted_label <- grid::textGrob(
             "Fitted abundance\nConditional on presence", gp = gp_small
@@ -1129,7 +1150,7 @@ plot.sacat <- function(
             stop("`file` must be one non-empty filename.", call. = FALSE)
         }
         if (is.null(width)) width <- 10.5
-        if (is.null(height)) height <- max(3.5, 2.35 + 0.40 * nrow(spec$data))
+        if (is.null(height)) height <- max(3.5, 2.35 + 0.75 * nrow(spec$data))
         if (!is.numeric(width) || length(width) != 1L ||
             !is.finite(width) || width <= 0 ||
             !is.numeric(height) || length(height) != 1L ||

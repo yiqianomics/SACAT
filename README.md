@@ -85,17 +85,12 @@ plot(
 )
 ```
 
-![SACAT profiles of Coprococcus, Enterococcus, and Faecalibacterium in healthy controls and participants with CDI.](man/figures/schubert-cdi-example.svg)
+![SACAT profiles of Coprococcus, Enterococcus, and Faecalibacterium in healthy controls and participants with CDI.](Analysis/RealDataAnalysis/cdi_schubert/figs/schubert_cdi_sacat_example.svg)
 
 Three taxa illustrate support from SA, RA, or both components. **A** shows
 SA/RA test evidence; **B** shows observed detection and estimated sources of
 zeros; **C** shows positive observed abundances and fitted abundance conditional
 on presence. All tests and BH adjustments use the full 88-taxon analysis.
-
-[View the PDF](man/figures/schubert-cdi-example.pdf) or
-[generate the figure](tools/make_readme_figure.R) from the repository root.
-Add `file = "sacat-profile.pdf"` to save a plot.
-See `?plot.sacat` for display options.
 
 ## Studies and figures
 

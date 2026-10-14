@@ -319,6 +319,46 @@ test_that("plot colors identify groups and estimated zero sources", {
     expect_length(eval(formals(method)$zero_colors), 3L)
 })
 
+test_that("feature labels and abundance legend retain the compact layout", {
+    fit <- .make_plot_fixture()
+    spec <- SACAT:::.sacat_plot_build_spec(
+        fit, NULL, "top", 3L, 0.05, .plot_group_colors, .plot_zero_colors
+    )
+    path <- tempfile(fileext = ".pdf")
+    grDevices::pdf(path, width = 7.2, height = 4)
+    layout <- tryCatch({
+        SACAT:::.sacat_plot_draw(spec)
+        grid::grid.force()
+        feature_labels <- lapply(seq_len(nrow(spec$data)), function(i) {
+            grid::grid.get(paste0("sacat-feature-label-", i))
+        })
+        keys <- lapply(1:2, function(i) {
+            grid::grid.get(paste0("sacat-abundance-group-key-", i))
+        })
+        first_label <- grid::grid.get("sacat-abundance-group-label-1")
+        list(
+            feature_rotation = vapply(
+                feature_labels, function(label) label$rot, numeric(1)
+            ),
+            key_pch = vapply(keys, function(key) key$pch, numeric(1)),
+            key_colors = vapply(keys, function(key) key$gp$col, character(1)),
+            group_gap_mm = grid::convertWidth(
+                keys[[2L]]$x -
+                    (first_label$x + grid::grobWidth(first_label)),
+                "mm", valueOnly = TRUE
+            )
+        )
+    }, finally = {
+        grDevices::dev.off()
+        unlink(path)
+    })
+
+    expect_equal(layout$feature_rotation, rep(45, nrow(spec$data)))
+    expect_identical(layout$key_pch, c(16, 17))
+    expect_identical(layout$key_colors, .plot_group_colors)
+    expect_equal(layout$group_gap_mm, 7, tolerance = 1e-6)
+})
+
 test_that("observed abundance boxes are summarized on the plotted log scale", {
     values <- c(0.01, 0.02, 0.03, 0.04, 0.5, 1, 10)
     z <- log10(values)

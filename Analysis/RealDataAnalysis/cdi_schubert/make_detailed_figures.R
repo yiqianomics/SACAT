@@ -2,7 +2,7 @@
 
 # Create the detailed CDI component and method-intersection figures.
 
-required_packages <- c("ggplot2", "patchwork", "scales", "tidyr")
+required_packages <- c("SACAT", "ggplot2", "patchwork", "scales", "tidyr")
 missing_packages <- required_packages[
     !vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)
 ]
@@ -714,3 +714,23 @@ grDevices::pdf(
 )
 print(component_figure)
 grDevices::dev.off()
+
+fit <- SACAT::sacat(
+    counts = input$counts,
+    metadata = input$metadata,
+    formula = ~ age_z + sex + antibiotics_3mo + group,
+    group = "group",
+    reference = "H",
+    library_size = "library_size",
+    store_plot_data = TRUE
+)
+for (extension in c("svg", "pdf")) {
+    graphics::plot(
+        fit, features = component_taxa,
+        group_labels = c("Healthy", "CDI"),
+        file = file.path(
+            figure_directory, paste0("schubert_cdi_sacat_example.", extension)
+        ),
+        width = 9.5, height = 4.6
+    )
+}

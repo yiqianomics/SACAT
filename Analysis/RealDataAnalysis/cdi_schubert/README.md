@@ -37,5 +37,8 @@ Outputs are `figs/schubert_cdi_component_examples.pdf` and
 `figs/schubert_cdi_method_intersections.pdf`, with numerical summaries and
 intersection membership in `table/`.
 
+The script also fits SACAT and saves the three-taxon package example as
+`figs/schubert_cdi_sacat_example.pdf` and `.svg`.
+
 The combined CDI and spike-in figure is documented in
 [MainFigures](../../MainFigures/README.md).
