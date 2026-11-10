@@ -25,7 +25,11 @@ sequencing depth decreases. Balanced null partitions assess false positives.
   and input stratum. MaAsLin3 and ZINQ also include standardized log library
   size when library sizes vary.
 - **Multiplicity:** Benjamini–Hochberg (BH) adjustment at level 0.05 is applied
-  separately within each 11-taxon method-component family.
+  separately within each 11-taxon method-component family for signal recovery
+  and mechanism-specific false-discovery rates.
+- **Negative-control rejection:** raw p-values below 0.05 determine rejection.
+  Rejection fractions average over all 11 taxa within each of the 111 null
+  partitions, then over partitions; unavailable tests count as non-rejections.
 - **Library size:** the total number of DADA2-denoised forward-read ASV counts
   in a library before reference-taxon selection.
 
@@ -72,7 +76,7 @@ Prepared inputs and intermediate files are written to `processed/` and `work/`.
   `table/rauer_mock_null_results.csv` contain the complete taxon-level results.
 - `table/rauer_mock_native_taxon_summary.csv` and
   `table/rauer_mock_depth_summary.csv` contain the reported numerical
-  summaries.
+  summaries, including raw-p negative-control rejection rates by depth.
 - `figs/rauer_mock_main.pdf` is the benchmark figure.
 
 The combined recovery and CDI figure is in

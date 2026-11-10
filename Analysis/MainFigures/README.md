@@ -1,7 +1,7 @@
 # Main manuscript figures
 
-These two figures bring together the simulation studies and the real-data
-applications. Each script creates one PDF from the saved numerical results.
+These figures bring together the simulation studies and the real-data
+applications. The scripts create PDFs from the saved numerical results.
 
 ## Simulation figure
 
@@ -33,9 +33,25 @@ and *Faecalibacterium* in the Schubert *Clostridioides difficile* infection
 - F shows observed positive abundances and fitted abundance conditional on
   presence, standardized over the cohort's covariates.
 
+The estimated SA and nondetection (ND) shares average posterior zero-source
+probabilities from the fitted model allowing group and covariate effects over
+all samples in each group.
+
 Numerical inputs are in `data/real_data/`. The analyses are described under
 [Schubert CDI](../RealDataAnalysis/cdi_schubert/README.md) and
 [Rauer spike-in benchmark](../RealDataAnalysis/rauer_mock/README.md).
+The separate spike-in figure also reads
+`../RealDataAnalysis/rauer_mock/table/rauer_mock_null_results.csv`.
+After rerunning those analyses, refresh these inputs from the completed
+results and saved CDI fit:
+
+```sh
+Rscript Analysis/MainFigures/refresh_real_data_inputs.R
+```
+
+The exported CSVs contain the plotted zero-source shares, positive abundances,
+fitted abundances, full method-result families, and spike-in recovery counts,
+so generating the manuscript PDFs does not require a saved fit object.
 
 ## Generate the figures
 
@@ -51,3 +67,22 @@ Rscript Analysis/MainFigures/make_real_data_figure.R
 | --- | --- |
 | `make_simulation_figure.R` | `main_simulation_calibrated_bh_power_combined.pdf` |
 | `make_real_data_figure.R` | `main_real_data_combined.pdf` |
+
+### Separate application figures
+
+To save the spike-in experiment and CDI cohort as separate PDFs:
+
+```sh
+Rscript Analysis/MainFigures/make_real_data_figure.R --split
+```
+
+`figures/main_spike_in.pdf` shows target recovery in A–B and negative-control
+rejection rates in C–D. Recovery uses BH-adjusted discoveries. Negative-control
+rates use raw p-values at 0.05, averaging the rejection fraction over all 11
+taxa within each of the 111 partitions; unavailable tests count as
+non-rejections. Both lower panels share a vertical scale and a 5% reference
+line. The partitions enumerate balanced splits of the same 32 libraries, so
+no independence-based confidence intervals are shown.
+
+`figures/main_cdi.pdf` contains the method comparison and component displays
+for the three CDI taxa, labeled A–D.

@@ -8,13 +8,15 @@ suppressPackageStartupMessages({
 
 script <- sub("^--file=", "", grep("^--file=", commandArgs(), value = TRUE)[1L])
 directory <- dirname(normalizePath(script))
+split_applications <- "--split" %in% commandArgs(trailingOnly = TRUE)
 data_directory <- file.path(directory, "data", "real_data")
 read_table <- function(name) {
     read.csv(file.path(data_directory, name), stringsAsFactors = FALSE)
 }
 recovery <- read_table("rauer_mock_recovery.csv")
 results <- read_table("schubert_cdi_figure_method_results.csv")
-samples <- read_table("schubert_cdi_figure_sample_values.csv")
+allocations <- read_table("schubert_cdi_figure_zero_sources.csv")
+observations <- read_table("schubert_cdi_figure_positive_abundance.csv")
 fitted <- read_table("schubert_cdi_figure_fitted_abundance.csv")
 taxa <- c("Coprococcus", "Enterococcus", "Faecalibacterium")
 scale <- 183 / 210
@@ -24,6 +26,9 @@ font_families <- if (requireNamespace("systemfonts", quietly = TRUE)) {
 figure_font <- if ("Arial" %in% font_families) "Arial" else if (
     "Liberation Sans" %in% font_families
 ) "Liberation Sans" else "sans"
+method_colors <- c("SACAT" = "#0072B2", "MaAsLin 3" = "#D55E00",
+                   "ZINQ" = "#009E73")
+method_shapes <- c("SACAT" = 16, "MaAsLin 3" = 17, "ZINQ" = 15)
 
 # Discoveries retain the original 88-taxon BH families.
 for (method in unique(results$method)) {
@@ -35,8 +40,9 @@ for (method in unique(results$method)) {
 stopifnot(nrow(recovery) == 42L,
           max(abs(recovery$recovery_percent - 100 * recovery$n_discoveries /
                   (recovery$n_allocations * recovery$n_targets))) < 1e-10,
-          all(samples$gamma >= 0 & samples$gamma <= 1),
-          all(samples$gamma[samples$count > 0] == 0))
+          nrow(allocations) == 6L,
+          !anyDuplicated(allocations[, c("taxon", "group")]),
+          all(observations$relative_abundance > 0))
 recovery$method[recovery$method == "MaAsLin3"] <- "MaAsLin 3"
 
 components <- do.call(rbind, lapply(c(
@@ -52,19 +58,12 @@ components <- do.call(rbind, lapply(c(
                             lower.tail = FALSE))
 }))
 
-# Zero-source shares average posterior weights over all samples in each group.
-allocations <- do.call(rbind, lapply(taxa, function(taxon) {
-    do.call(rbind, lapply(c("Healthy", "CDI"), function(group) {
-        rows <- samples[samples$taxon == taxon & samples$group == group, ]
-        data.frame(taxon = taxon, group = group,
-                   observed_detection = mean(rows$count > 0),
-                   estimated_sa = mean(rows$gamma),
-                   estimated_nd = mean((rows$count == 0) - rows$gamma))
-    }))
-}))
-stopifnot(max(abs(rowSums(allocations[, 3:5]) - 1)) < 1e-12)
-observations <- samples[samples$count > 0, c("taxon", "group", "count", "library_size")]
-observations$relative_abundance <- 100 * observations$count / observations$library_size
+# Zero-source shares are exported from the same fit as the component tests.
+shares <- as.matrix(allocations[, c(
+    "observed_detection", "estimated_sa", "estimated_nd"
+)])
+stopifnot(all(is.finite(shares)), all(shares >= -1e-12 & shares <= 1 + 1e-12),
+          max(abs(rowSums(shares) - 1)) < 1e-12)
 names(fitted)[names(fitted) == "abundance_percent"] <- "abundance"
 
 # Shared styling
@@ -101,9 +100,6 @@ combined_tag_theme <- function(scale = 1) {
 
 make_mock_panels <- function(mock, scale = 1) {
     depth_levels <- c("native", "1000", "750", "500", "250", "100", "50")
-    method_colors <- c("SACAT" = "#0072B2", "MaAsLin 3" = "#D55E00",
-                       "ZINQ" = "#009E73")
-    method_shapes <- c("SACAT" = 16, "MaAsLin 3" = 17, "ZINQ" = 15)
     mock$depth_position <- match(as.character(mock$depth), depth_levels) - 1L
     mock$method <- factor(mock$method, levels = names(method_colors))
     legend_theme <- combined_text_theme(ggplot2::theme(
@@ -218,6 +214,110 @@ make_mock_panels <- function(mock, scale = 1) {
     patchwork::free(panels, side = "l")
 }
 
+# Spike-in recovery and negative-control rejection rates.
+
+make_spike_in_figure <- function(recovery) {
+    null <- read.csv(file.path(
+        directory, "..", "RealDataAnalysis", "rauer_mock", "table",
+        "rauer_mock_null_results.csv"
+    ), stringsAsFactors = FALSE)
+    tests <- data.frame(
+        method = c("SACAT structural absence", "MaAsLin3 prevalence",
+                   "ZINQ prevalence", "SACAT present-conditional abundance",
+                   "MaAsLin3 abundance", "ZINQ abundance"),
+        display_method = rep(names(method_colors), 2),
+        target = rep(c("Structural", "Abundance"), each = 3)
+    )
+    depths <- c("native", "1000", "750", "500", "250", "100", "50")
+    stopifnot(setequal(unique(null$method), tests$method),
+              setequal(unique(null$depth), depths),
+              !anyDuplicated(null[, c("method", "depth", "allocation_id", "taxon")]),
+              !anyNA(null$available),
+              all(table(null$method, null$depth, null$allocation_id) == 11L),
+              length(unique(null$allocation_id)) == 111L)
+    # Each partition contributes its rejection fraction over all 11 taxa.
+    null$rejected <- null$available & is.finite(null$p_value) & null$p_value < .05
+    by_partition <- aggregate(
+        rejected ~ method + depth + allocation_id, data = null, FUN = mean
+    )
+    rejection <- aggregate(rejected ~ method + depth, data = by_partition, FUN = mean)
+    index <- match(rejection$method, tests$method)
+    rejection$target <- tests$target[index]
+    rejection$method <- tests$display_method[index]
+    rejection$value <- 100 * rejection$rejected
+    recovery$value <- recovery$recovery_percent
+    position_data <- function(data) {
+        data$depth_position <- match(data$depth, depths) - 1L
+        data$method <- factor(data$method, levels = names(method_colors))
+        data
+    }
+    recovery <- position_data(recovery)
+    rejection <- position_data(rejection)
+
+    panel_theme <- theme_classic(base_family = figure_font, base_size = 9) + theme(
+        plot.title = element_text(size = 10, face = "bold", hjust = .5,
+                                  margin = margin(b = 7)),
+        plot.title.position = "panel",
+        plot.tag = element_text(size = 11, face = "bold", hjust = 0, vjust = 1),
+        plot.tag.position = c(0, 1), plot.tag.location = "plot",
+        axis.title = element_text(size = 9),
+        axis.title.x = element_text(margin = margin(t = 5)),
+        axis.title.y = element_text(margin = margin(r = 5), lineheight = 1.05),
+        axis.text = element_text(size = 8, color = "#252525"),
+        axis.line = element_line(linewidth = .35, color = "#333333"),
+        axis.ticks = element_line(linewidth = .3, color = "#333333"),
+        axis.ticks.length = unit(2.5, "pt"),
+        legend.position = "bottom", legend.title = element_blank(),
+        legend.text = element_text(size = 9),
+        legend.key.width = unit(14, "pt"),
+        legend.key.height = unit(10, "pt"),
+        legend.spacing.x = unit(8, "pt"),
+        legend.margin = margin(2, 0, 0, 0),
+        legend.box.margin = margin(0, 0, 2, 0),
+        plot.margin = margin(7, 8, 5, 5)
+    )
+    panel <- function(data, target, title, tag, negative_control = FALSE) {
+        data <- data[data$target == target, ]
+        breaks <- if (negative_control) c(0, 2.5, 5, 7.5) else c(0, 25, 50, 75, 100)
+        limits <- if (negative_control) c(-.25, 8.2) else c(-3, 103)
+        graph <- ggplot(data, aes(depth_position, value, color = method,
+                                  shape = method, group = method)) +
+            annotate("rect", xmin = -.5, xmax = .5, ymin = -Inf, ymax = Inf,
+                     fill = "#F5F5F5", color = NA) +
+            geom_hline(yintercept = breaks, color = "#E5E5E5", linewidth = .3) +
+            geom_vline(xintercept = .5, color = "#C8C8C8", linewidth = .3)
+        if (negative_control) {
+            graph <- graph + geom_hline(yintercept = 5, color = "#4A4A4A",
+                                        linetype = "longdash", linewidth = .65)
+        }
+        graph +
+            geom_line(data = data[data$depth %in% c("native", "1000"), ],
+                      linewidth = .65, linetype = "22", show.legend = FALSE) +
+            geom_line(data = data[data$depth != "native", ], linewidth = .65) +
+            geom_point(size = 2.35, stroke = .65) +
+            scale_x_continuous(breaks = 0:6,
+                labels = c("Native", "1k", "750", "500", "250", "100", "50"),
+                limits = c(-.5, 6.5), expand = c(0, 0)) +
+            scale_y_continuous(limits = limits, breaks = breaks, expand = c(0, 0)) +
+            scale_color_manual(values = method_colors, drop = FALSE) +
+            scale_shape_manual(values = method_shapes, drop = FALSE) +
+            guides(color = guide_legend(nrow = 1, override.aes = list(
+                shape = unname(method_shapes), linewidth = .65, size = 2.35
+            )), shape = "none") +
+            labs(title = title, tag = tag, x = "Reads per sample",
+                 y = if (negative_control) "Negative-control\nrejection rate (%)"
+                     else "Target recovery (%)") + panel_theme
+    }
+    figure <- wrap_plots(
+        panel(recovery, "Structural", "Structural absence and detection", "A"),
+        panel(recovery, "Abundance", "Relative abundance", "B"),
+        panel(rejection, "Structural", NULL, "C", TRUE),
+        panel(rejection, "Abundance", NULL, "D", TRUE),
+        ncol = 2, heights = c(1, 1), guides = "collect", axis_titles = "collect_x"
+    )
+    figure & theme(legend.position = "bottom")
+}
+
 # CDI component statistics
 
 make_component_panel <- function(components, scale = 1) {
@@ -281,7 +381,8 @@ make_component_panel <- function(components, scale = 1) {
             limits = c(-7, 7), breaks = c(-6, -3, 0, 3, 6), expand = c(0, 0)
         ) +
         ggplot2::labs(
-            x = "Signed component\nstatistic", y = NULL, fill = NULL, tag = "D"
+            x = "Signed component\nstatistic", y = NULL, fill = NULL,
+            tag = if (split_applications) "B" else "D"
         ) +
         combined_text_theme(panel_theme, scale) +
         ggplot2::guides(fill = ggplot2::guide_legend(ncol = 1))
@@ -380,7 +481,8 @@ make_cdi_panels <- function(components, allocations, observations, fitted, scale
             limits = c(0.4, 3.6), breaks = allocations$position,
             labels = as.character(allocations$group), expand = c(0, 0)
         ) +
-        ggplot2::labs(x = "Share of\nsamples (%)", y = NULL, tag = "E") +
+        ggplot2::labs(x = "Share of\nsamples (%)", y = NULL,
+                      tag = if (split_applications) "C" else "E") +
         panel_theme + combined_text_theme(ggplot2::theme(
             axis.text.y = ggplot2::element_text(
                 margin = ggplot2::margin(r = 3 * scale)
@@ -427,7 +529,8 @@ make_cdi_panels <- function(components, allocations, observations, fitted, scale
         ggplot2::scale_y_continuous(
             limits = c(0.4, 3.6), breaks = 1:3, expand = c(0, 0)
         ) +
-        ggplot2::labs(x = "Relative abundance (%)\n(log scale)", y = NULL, tag = "F") +
+        ggplot2::labs(x = "Relative abundance (%)\n(log scale)", y = NULL,
+                      tag = if (split_applications) "D" else "F") +
         panel_theme + ggplot2::theme(
             axis.text.y = ggplot2::element_blank(), legend.box = "vertical"
         ) +
@@ -489,7 +592,8 @@ matrix_grob <- function() {
         segmentsGrob(x0 = mm(x0), x1 = mm(x1), y0 = mm(y0), y1 = mm(y1),
                      gp = gpar(col = color, lwd = width * scale))
     }
-    add(text("C", 3, 43, size = 8, face = "bold", just = "left"))
+    add(text(if (split_applications) "A" else "C", 3, 43,
+             size = 8, face = "bold", just = "left"))
     add(rectGrob(x = mm(119), y = mm(23), width = mm(168), height = mm(7),
                  gp = gpar(fill = "#F3F5F6", col = NA)))
     for (group in unique(columns$group)) {
@@ -530,20 +634,38 @@ draw_block <- function(grob, bottom, height) {
 
 output_directory <- file.path(directory, "figures")
 dir.create(output_directory, recursive = TRUE, showWarnings = FALSE)
-output <- file.path(output_directory, "main_real_data_combined.pdf")
-if (capabilities("aqua")) {
-    grDevices::quartz(type = "pdf", file = output, width = 183 / 25.4,
-                     height = 181 * scale / 25.4, family = figure_font, bg = "white",
-                     title = "Signal recovery and CDI associations")
+open_pdf <- function(filename, height_mm, title) {
+    output <- file.path(output_directory, filename)
+    if (capabilities("aqua")) {
+        grDevices::quartz(type = "pdf", file = output, width = 183 / 25.4,
+                         height = height_mm / 25.4, family = figure_font,
+                         bg = "white", title = title)
+    } else {
+        grDevices::cairo_pdf(output, width = 183 / 25.4, height = height_mm / 25.4,
+                            family = figure_font, bg = "white")
+    }
+    output
+}
+cdi_panel_height <- if (split_applications) 97 else 83
+if (split_applications) {
+    output <- open_pdf("main_spike_in.pdf", 142,
+                       "Spike-in target recovery and negative-control rejection")
+    print(make_spike_in_figure(recovery))
+    invisible(dev.off())
+    message("Saved ", output)
+    output <- open_pdf("main_cdi.pdf", (cdi_panel_height + 45) * scale,
+                       "CDI associations")
 } else {
-    grDevices::cairo_pdf(output, width = 183 / 25.4, height = 181 * scale / 25.4,
-                        family = figure_font, bg = "white")
+    output <- open_pdf("main_real_data_combined.pdf", 181 * scale,
+                       "Signal recovery and CDI associations")
 }
 grid.newpage()
-draw_block(patchworkGrob(make_mock_panels(recovery, scale)), 128, 53)
-draw_block(matrix_grob(), 83, 45)
+if (!split_applications) {
+    draw_block(patchworkGrob(make_mock_panels(recovery, scale)), 128, 53)
+}
+draw_block(matrix_grob(), cdi_panel_height, 45)
 draw_block(patchworkGrob(make_cdi_panels(
     components, allocations, observations, fitted, scale
-)), 0, 83)
+)), 0, cdi_panel_height)
 invisible(dev.off())
 message("Saved ", output)

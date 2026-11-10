@@ -259,35 +259,35 @@ library_panel <- ggplot2::ggplot(
         plot.margin = ggplot2::margin(3, 5, 3, 4)
     )
 
-# Complete-null familywise Type I error
+# Negative-control rejection at the raw-p threshold
 
-null_discovery <- stats::aggregate(
-    significant ~ allocation_id + depth + method,
+null_results$rejected <- null_results$available &
+    is.finite(null_results$p_value) & null_results$p_value < 0.05
+null_rejection <- stats::aggregate(
+    rejected ~ allocation_id + depth + method,
     null_results,
-    max
+    mean
 )
-names(null_discovery)[names(null_discovery) == "significant"] <-
-    "any_discovery"
 null_availability <- stats::aggregate(
     available ~ allocation_id + depth + method,
     null_results,
     mean
 )
 null_blocks <- merge(
-    null_discovery,
+    null_rejection,
     null_availability,
     by = c("allocation_id", "depth", "method")
 )
 null_operating <- stats::aggregate(
-    cbind(any_discovery, available) ~ depth + method,
+    cbind(rejected, available) ~ depth + method,
     null_blocks,
     mean
 )
 null_definitions <- data.frame(
     method = method_order,
     method_component = c(
-        "SACAT structural",
-        "SACAT abundance",
+        "SACAT SA",
+        "SACAT RA",
         "MaAsLin3 prevalence",
         "MaAsLin3 abundance",
         "ZINQ prevalence",
@@ -301,19 +301,19 @@ null_definitions <- data.frame(
     stringsAsFactors = FALSE
 )
 null_operating <- merge(null_operating, null_definitions, by = "method")
-null_operating$fwer_percent <- 100 * null_operating$any_discovery
+null_operating$rejection_percent <- 100 * null_operating$rejected
 null_operating$availability_percent <- 100 * null_operating$available
 null_operating$value_label <- ifelse(
     null_operating$method == "SACAT present-conditional abundance",
     sprintf(
         "%.1f (%d%%)",
-        null_operating$fwer_percent,
+        null_operating$rejection_percent,
         round(null_operating$availability_percent)
     ),
-    sprintf("%.1f", null_operating$fwer_percent)
+    sprintf("%.1f", null_operating$rejection_percent)
 )
 null_operating$text_colour <- ifelse(
-    null_operating$fwer_percent >= 8, "white", "black"
+    null_operating$rejection_percent >= 8, "white", "black"
 )
 null_operating$depth <- factor(
     null_operating$depth, levels = depth_levels
@@ -323,20 +323,22 @@ null_operating$method_component <- factor(
     levels = c(
         "ZINQ abundance",
         "MaAsLin3 abundance",
-        "SACAT abundance",
+        "SACAT RA",
         "ZINQ prevalence",
         "MaAsLin3 prevalence",
-        "SACAT structural"
+        "SACAT SA"
     )
 )
 
 type1_panel <- ggplot2::ggplot(
     null_operating,
-    ggplot2::aes(x = depth, y = method_component, fill = fwer_percent)
+    ggplot2::aes(x = depth, y = method_component, fill = rejection_percent)
 ) +
     ggplot2::geom_tile(colour = "white", linewidth = 0.45) +
     ggplot2::geom_tile(
-        data = null_operating[null_operating$fwer_percent > 5, , drop = FALSE],
+        data = null_operating[
+            null_operating$rejection_percent > 5, , drop = FALSE
+        ],
         fill = NA,
         colour = "#A33A2B",
         linewidth = 0.70
@@ -369,7 +371,7 @@ type1_panel <- ggplot2::ggplot(
     ) +
     ggplot2::guides(fill = "none") +
     ggplot2::labs(
-        title = "B   Complete-null familywise Type I error (%)",
+        title = "B   Negative-control rejection rate (%)",
         x = NULL,
         y = NULL
     ) +
@@ -761,16 +763,16 @@ for (target_set in c("Structural targets", "Abundance targets")) {
 for (index in seq_len(nrow(null_definitions))) {
     definition <- null_definitions[index, ]
     append_depth_row(
-        "Complete-null familywise Type I error",
+        "Negative-control rejection rate",
         if (definition$family == "Absence-oriented") {
-            "Structural family"
+            "Structural component"
         } else {
-            "Abundance family"
+            "Abundance component"
         },
         depth_method_name(definition$method),
         depth_values(
             null_operating,
-            "fwer_percent",
+            "rejection_percent",
             null_operating$method == definition$method
         )
     )

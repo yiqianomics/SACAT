@@ -19,10 +19,10 @@
 "microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",0,0,0,"Present-conditional abundance only",0,
 "microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",0,0,0,"Both components",0,
 "microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",0,0,0,"Omnibus only",0,
-"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",55,46,9,"Structural absence only",21,45.65
-"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",55,46,9,"Present-conditional abundance only",22,47.83
-"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",55,46,9,"Both components",3,6.52
-"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",55,46,9,"Omnibus only",0,0
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",51,48,3,"Structural absence only",21,43.75
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",51,48,3,"Present-conditional abundance only",25,52.08
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",51,48,3,"Both components",2,4.17
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",51,48,3,"Omnibus only",0,0
 "ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",24,24,0,"Structural absence only",18,75
 "ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",24,24,0,"Present-conditional abundance only",5,20.83
 "ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",24,24,0,"Both components",1,4.17

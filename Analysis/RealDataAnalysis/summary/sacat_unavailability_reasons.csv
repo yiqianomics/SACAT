@@ -1,14 +1,15 @@
 "sacat_result","result_set","taxon_dataset_results","unavailable_results","unavailable_reason","results_with_reason","percent_of_all_results","percent_of_unavailable_results"
-"Structural absence component","SACAT structural absence",688,55,"Structural-absence nuisance fit was not optimal",18,2.62,32.73
-"Structural absence component","SACAT structural absence",688,55,"Conditional-present fit retained a non-negligible gradient",16,2.33,29.09
-"Structural absence component","SACAT structural absence",688,55,"Structural-absence fit remained on a parameter boundary",16,2.33,29.09
-"Structural absence component","SACAT structural absence",688,55,"Structural-absence inference derivative was unstable",3,0.44,5.45
-"Structural absence component","SACAT structural absence",688,55,"Positive-count model design was rank deficient",2,0.29,3.64
-"Present-conditional abundance component","SACAT present-conditional abundance",688,46,"Conditional-present fit had non-positive information",12,1.74,26.09
-"Present-conditional abundance component","SACAT present-conditional abundance",688,46,"Conditional-present fit retained a non-negligible gradient",11,1.6,23.91
-"Present-conditional abundance component","SACAT present-conditional abundance",688,46,"Conditional-present root refinement did not close",11,1.6,23.91
-"Present-conditional abundance component","SACAT present-conditional abundance",688,46,"Conditional-present root refinement did not improve the objective",8,1.16,17.39
-"Present-conditional abundance component","SACAT present-conditional abundance",688,46,"Positive-count model design was rank deficient",2,0.29,4.35
-"Present-conditional abundance component","SACAT present-conditional abundance",688,46,"abundance profile failed: constrained likelihood exceeds unrestricted likelihood",1,0.15,2.17
-"Present-conditional abundance component","SACAT present-conditional abundance",688,46,"Conditional-present fit did not converge",1,0.15,2.17
-"Combined omnibus test","SACAT combined",688,21,"No SACAT component formed",21,3.05,100
+"Structural absence component","SACAT structural absence",688,58,"Conditional-present fit retained a non-negligible gradient",19,2.76,32.76
+"Structural absence component","SACAT structural absence",688,58,"Structural-absence nuisance fit was not optimal",18,2.62,31.03
+"Structural absence component","SACAT structural absence",688,58,"Structural-absence fit remained on a parameter boundary",15,2.18,25.86
+"Structural absence component","SACAT structural absence",688,58,"Structural-absence inference derivative was unstable",4,0.58,6.9
+"Structural absence component","SACAT structural absence",688,58,"Positive-count model design was rank deficient",2,0.29,3.45
+"Present-conditional abundance component","SACAT present-conditional abundance",688,47,"Conditional-present fit had non-positive information",12,1.74,25.53
+"Present-conditional abundance component","SACAT present-conditional abundance",688,47,"Conditional-present fit retained a non-negligible gradient",11,1.6,23.4
+"Present-conditional abundance component","SACAT present-conditional abundance",688,47,"Conditional-present root refinement did not close",11,1.6,23.4
+"Present-conditional abundance component","SACAT present-conditional abundance",688,47,"Conditional-present root refinement did not improve the objective",8,1.16,17.02
+"Present-conditional abundance component","SACAT present-conditional abundance",688,47,"Positive-count model design was rank deficient",2,0.29,4.26
+"Present-conditional abundance component","SACAT present-conditional abundance",688,47,"abundance profile failed: constrained abundance maximum unavailable",1,0.15,2.13
+"Present-conditional abundance component","SACAT present-conditional abundance",688,47,"abundance profile failed: constrained likelihood exceeds unrestricted likelihood",1,0.15,2.13
+"Present-conditional abundance component","SACAT present-conditional abundance",688,47,"Conditional-present fit did not converge",1,0.15,2.13
+"Combined omnibus test","SACAT combined",688,25,"No SACAT component formed",25,3.63,100

@@ -2,6 +2,15 @@
 
 # Create the detailed CDI component and method-intersection figures.
 
+script_argument <- grep("^--file=", commandArgs(), value = TRUE)
+script_path <- if (length(script_argument)) {
+    sub("^--file=", "", script_argument[[1L]])
+} else {
+    "Analysis/RealDataAnalysis/cdi_schubert/make_detailed_figures.R"
+}
+analysis_directory <- normalizePath(dirname(script_path), mustWork = TRUE)
+local_library <- file.path(dirname(analysis_directory), "R_lib")
+if (dir.exists(local_library)) .libPaths(c(.libPaths(), local_library))
 required_packages <- c("SACAT", "ggplot2", "patchwork", "scales", "tidyr")
 missing_packages <- required_packages[
     !vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)
@@ -13,14 +22,6 @@ if (length(missing_packages)) {
         call. = FALSE
     )
 }
-
-script_argument <- grep("^--file=", commandArgs(), value = TRUE)
-script_path <- if (length(script_argument)) {
-    sub("^--file=", "", script_argument[[1L]])
-} else {
-    "Analysis/RealDataAnalysis/cdi_schubert/make_detailed_figures.R"
-}
-analysis_directory <- normalizePath(dirname(script_path), mustWork = TRUE)
 table_directory <- file.path(analysis_directory, "table")
 figure_directory <- file.path(analysis_directory, "figs")
 input_path <- file.path(
@@ -40,6 +41,11 @@ if (!all(file.exists(required_files))) {
 
 results <- utils::read.csv(result_path, stringsAsFactors = FALSE)
 input <- readRDS(input_path)
+source(file.path(analysis_directory, "load_plot_fit.R"))
+fit <- load_cdi_plot_fit(
+    input, results, file.path(analysis_directory, "work", "sacat_fit.rds"),
+    refit = TRUE
+)
 
 analysis_method_order <- c(
     "SACAT structural absence",
@@ -715,15 +721,6 @@ grDevices::pdf(
 print(component_figure)
 grDevices::dev.off()
 
-fit <- SACAT::sacat(
-    counts = input$counts,
-    metadata = input$metadata,
-    formula = ~ age_z + sex + antibiotics_3mo + group,
-    group = "group",
-    reference = "H",
-    library_size = "library_size",
-    store_plot_data = TRUE
-)
 for (extension in c("svg", "pdf")) {
     graphics::plot(
         fit, features = component_taxa,

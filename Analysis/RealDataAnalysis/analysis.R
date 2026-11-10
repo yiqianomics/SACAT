@@ -553,6 +553,7 @@ run_sacat <- function(counts, metadata, configuration, formulas,
         file = sacat_figure_file
     )
     message("Saved ", sacat_figure_file)
+    saveRDS(fit, file.path(dirname(figure_directory), "sacat_fit.rds"))
 
     list(
         rows = rows,
@@ -2147,14 +2148,16 @@ run_dataset <- function(configuration, plot_only = FALSE) {
             )
         ),
         figure$file,
-        staged_profile_file
+        staged_profile_file,
+        file.path(staging_directory, "sacat_fit.rds")
     )
     if (!all(file.exists(staged_files))) {
         stop("The staged output set is incomplete.", call. = FALSE)
     }
     destinations <- c(
         rep(table_directory, 6L),
-        rep(figure_directory, length(figure$file) + 1L)
+        rep(figure_directory, length(figure$file) + 1L),
+        work_directory
     )
     final_files <- file.path(destinations, basename(staged_files))
     copied <- mapply(

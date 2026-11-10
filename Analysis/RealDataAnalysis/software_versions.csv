@@ -1,7 +1,6 @@
 "software","version","source"
 "R","4.5.0","R Project"
-"SACAT","0.7.1","repository source; Schubert CDI"
-"SACAT","0.6.0","repository source; other human cohorts"
+"SACAT","0.7.1","repository source; all seven human cohorts; refreshed 2026-11-10"
 "maaslin3","1.5.3","GitHub biobakery/maaslin3"
 "ZINQ","2.0","GitHub wdl2459/ZINQ-v2"
 "ANCOMBC","2.10.1","Bioconductor 3.21"

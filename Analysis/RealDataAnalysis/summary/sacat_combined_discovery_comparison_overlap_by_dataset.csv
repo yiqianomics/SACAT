@@ -9,7 +9,7 @@
 "korean_hypertension","Korean hypertension gut microbiome cohort",0,"Not significant in any comparison method",0,
 "microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",0,"Significant in at least one comparison method",0,
 "microbiomehd_zupancic_obesity","Zupancic Old Order Amish obesity",0,"Not significant in any comparison method",0,
-"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",55,"Significant in at least one comparison method",54,98.18
-"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",55,"Not significant in any comparison method",1,1.82
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",51,"Significant in at least one comparison method",51,100
+"qiita_1939_pediatric_crohn","RISK pediatric Crohn's disease",51,"Not significant in any comparison method",0,0
 "ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",24,"Significant in at least one comparison method",24,100
 "ravel_vaginal_ethnicity","Ravel cross-sectional vaginal microbiome cohort",24,"Not significant in any comparison method",0,0
