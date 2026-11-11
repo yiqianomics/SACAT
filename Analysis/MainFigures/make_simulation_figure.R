@@ -25,6 +25,7 @@ if (length(script_argument) != 1L) {
     stop("Run this generator with Rscript path/to/make_simulation_figure.R.", call. = FALSE)
 }
 script_dir <- dirname(normalizePath(sub("^--file=", "", script_argument), mustWork = TRUE))
+split_simulations <- "--split" %in% commandArgs(trailingOnly = TRUE)
 input_files <- file.path(dirname(script_dir),
     c("SimulationInternalValidation", "SimulationMetaSPARSim"), "tables", "main_plot_data.csv")
 output_dir <- file.path(script_dir, "figures")
@@ -194,33 +195,47 @@ draw_text <- function(label, x, y, size = 8, bold = FALSE, just = "left") {
               gp = gpar(fontfamily = font_family, fontsize = size,
                          fontface = if (bold) "bold" else "plain", col = "#222222"))
 }
-draw_figure <- function() {
+draw_figure <- function(panel = NULL) {
     grid.newpage()
     legends <- lapply(list(core_methods, setdiff(methods, core_methods)), make_legend)
     grobs <- lapply(plots, ggplotGrob)
-    draw_text("A", 5, 235, 12, TRUE)
-    draw_grob(grobs[[1L]], 2, 124, 216, 106)
-    draw_text("B", 5, 117, 12, TRUE)
-    draw_grob(grobs[[2L]], 2, 16, 216, 97)
+    if (is.null(panel)) {
+        draw_text("A", 5, 235, 12, TRUE)
+        draw_grob(grobs[[1L]], 2, 124, 216, 106)
+        draw_text("B", 5, 117, 12, TRUE)
+        draw_grob(grobs[[2L]], 2, 16, 216, 97)
+    } else {
+        draw_grob(grobs[[panel]], 2, 16, 216, c(106, 97)[panel])
+    }
     draw_grob(legends[[1L]], 2, 8, 216, 5)
     draw_grob(legends[[2L]], 2, 2.5, 216, 5)
 }
 
 # Use Quartz on macOS and Cairo on other platforms.
-write_figure <- function(path) {
+write_figure <- function(path, panel = NULL) {
+    height <- if (is.null(panel)) 242 else c(124, 115)[panel]
     if (isTRUE(capabilities("aqua"))) {
         grDevices::quartz(type = "pdf", file = path, width = 220 / 25.4,
-            height = 242 / 25.4, family = font_family, bg = "white",
+            height = height / 25.4, family = font_family, bg = "white",
             title = "Simulation component tests and power")
     } else if (isTRUE(capabilities("cairo"))) {
         grDevices::cairo_pdf(filename = path, width = 220 / 25.4,
-            height = 242 / 25.4, family = font_family, bg = "white", onefile = TRUE)
+            height = height / 25.4, family = font_family, bg = "white", onefile = TRUE)
     } else {
         stop("An R installation with Quartz or Cairo PDF support is required.", call. = FALSE)
     }
     on.exit(grDevices::dev.off(), add = TRUE)
-    draw_figure()
+    draw_figure(panel)
 }
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
-write_figure(output_file)
-message("Wrote ", output_file)
+if (split_simulations) {
+    output_files <- file.path(output_dir,
+        c("main_simulation_internal.pdf", "main_simulation_metasparsim.pdf"))
+    for (panel in seq_along(output_files)) {
+        write_figure(output_files[panel], panel)
+        message("Wrote ", output_files[panel])
+    }
+} else {
+    write_figure(output_file)
+    message("Wrote ", output_file)
+}

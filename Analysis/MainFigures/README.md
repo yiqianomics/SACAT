@@ -3,13 +3,12 @@
 These figures bring together the simulation studies and the real-data
 applications. The scripts create PDFs from the saved numerical results.
 
-## Simulation figure
+## Simulation figures
 
-Panel A shows internal model validation at 80 samples per group; Panel B shows
-the metaSPARSim simulations. Together they display component separation and
-signal recovery under model-based and externally generated data.
+The figures show internal model validation at 80 samples per group and
+metaSPARSim simulations, available as combined or separate PDFs.
 
-The figure compares structural-absence (SA), relative-abundance (RA), and
+The comparisons cover structural-absence (SA), relative-abundance (RA), and
 joint results. Component panels use the corresponding SACAT, ZINQ, and
 MaAsLin 3 tests; joint panels also include six abundance methods. Rows
 distinguish settings without and with a covariate. Plotted values use
@@ -20,10 +19,10 @@ Inputs are the `tables/main_plot_data.csv` files in
 [Internal model validation](../SimulationInternalValidation/README.md) and
 [metaSPARSim simulation](../SimulationMetaSPARSim/README.md).
 
-## Real-data figure
+## Real-data figures
 
-Panels A and B show signal recovery in the defined spike-in experiment as
-sequencing depth decreases. Panels C–F examine *Coprococcus*, *Enterococcus*,
+In the combined figure, panels A and B show signal recovery in the spike-in
+experiment as sequencing depth decreases. Panels C–F examine *Coprococcus*, *Enterococcus*,
 and *Faecalibacterium* in the Schubert *Clostridioides difficile* infection
 (CDI) cohort:
 
@@ -68,6 +67,15 @@ Rscript Analysis/MainFigures/make_real_data_figure.R
 | `make_simulation_figure.R` | `main_simulation_calibrated_bh_power_combined.pdf` |
 | `make_real_data_figure.R` | `main_real_data_combined.pdf` |
 
+### Separate simulation figures
+
+```sh
+Rscript Analysis/MainFigures/make_simulation_figure.R --split
+```
+
+The outputs are `figures/main_simulation_internal.pdf` and
+`figures/main_simulation_metasparsim.pdf`.
+
 ### Separate application figures
 
 To save the spike-in experiment and CDI cohort as separate PDFs:
@@ -80,9 +88,7 @@ Rscript Analysis/MainFigures/make_real_data_figure.R --split
 rejection rates in C–D. Recovery uses BH-adjusted discoveries. Negative-control
 rates use raw p-values at 0.05, averaging the rejection fraction over all 11
 taxa within each of the 111 partitions; unavailable tests count as
-non-rejections. Both lower panels share a vertical scale and a 5% reference
-line. The partitions enumerate balanced splits of the same 32 libraries, so
-no independence-based confidence intervals are shown.
+non-rejections. The partitions enumerate balanced splits of the same 32 libraries.
 
 `figures/main_cdi.pdf` contains the method comparison and component displays
 for the three CDI taxa, labeled A–D.

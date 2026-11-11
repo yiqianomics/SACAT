@@ -309,8 +309,8 @@ make_spike_in_figure <- function(recovery) {
                      else "Target recovery (%)") + panel_theme
     }
     figure <- wrap_plots(
-        panel(recovery, "Structural", "Structural absence and detection", "A"),
-        panel(recovery, "Abundance", "Relative abundance", "B"),
+        panel(recovery, "Structural", "Detection of SA", "A"),
+        panel(recovery, "Abundance", "Detection of RA", "B"),
         panel(rejection, "Structural", NULL, "C", TRUE),
         panel(rejection, "Abundance", NULL, "D", TRUE),
         ncol = 2, heights = c(1, 1), guides = "collect", axis_titles = "collect_x"
