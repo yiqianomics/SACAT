@@ -113,7 +113,7 @@ stopifnot(nrow(nonnull) == 52L * 7L * 6L * 11L,
           setequal(nonnull$allocation_id, seq_len(52L)),
           !anyDuplicated(nonnull[, c("method", "depth", "allocation_id", "taxon")]),
           !anyNA(nonnull$available), !anyNA(nonnull$significant),
-          all(nonnull$significant == (nonnull$available & nonnull$q_value <= .05)))
+          all(nonnull$significant == (nonnull$available & nonnull$q_value < .05)))
 blocks <- split(seq_len(nrow(nonnull)), interaction(
     nonnull$allocation_id, nonnull$depth, nonnull$method, drop = TRUE
 ))

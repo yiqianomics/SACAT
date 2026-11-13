@@ -119,7 +119,7 @@ validate_results <- function(results, design, allocations) {
         stop(sprintf("BH adjustment is inconsistent in the %s results.",
                      design), call. = FALSE)
     }
-    expected_significant <- results$available & results$q_value <= 0.05
+    expected_significant <- results$available & results$q_value < 0.05
     if (!identical(as.logical(results$significant), expected_significant)) {
         stop(sprintf("Discovery indicators are inconsistent in the %s results.",
                      design), call. = FALSE)

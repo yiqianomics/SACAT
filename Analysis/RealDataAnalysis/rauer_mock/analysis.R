@@ -552,7 +552,7 @@ run_one_depth <- function(design, allocation_id, allocation,
             adjust_family(rows$p_value[indices], rows$available[indices])
         }
     )
-    rows$significant <- rows$available & rows$q_value <= 0.05
+    rows$significant <- rows$available & rows$q_value < 0.05
     rows$allocation_id <- allocation_id
     rows$design <- design
     rows$depth <- depth_name
