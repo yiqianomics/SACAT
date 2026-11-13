@@ -179,14 +179,7 @@ run_negative_control_summary <- function(root, make_figure = TRUE) {
                 labels = scales::label_percent(accuracy = 1),
                 expand = ggplot2::expansion(mult = c(0.025, 0.035))) +
             ggplot2::scale_y_discrete(expand = ggplot2::expansion(add = 0.7)) +
-            ggplot2::labs(
-                title = "Native-count negative controls",
-                subtitle = "SACAT | 20 cohorts | 100 label randomizations per cohort | 30 genera per replication",
-                x = "Raw-p Type I error", y = NULL,
-                caption = paste(
-                    "Points: mean rejection rate at raw p < 0.05; bars: 95% Monte Carlo intervals.",
-                    "Unavailable tests are retained as p = 1; dashed line: nominal 5%.",
-                    sep = "\n")) +
+            ggplot2::labs(x = "Raw-p Type I error", y = NULL) +
             ggplot2::theme_bw(base_size = 10, base_family = "sans") +
             ggplot2::theme(
                 panel.grid.major.y = ggplot2::element_line(colour = "grey92"),
@@ -200,11 +193,6 @@ run_negative_control_summary <- function(root, make_figure = TRUE) {
                 axis.text.y = ggplot2::element_text(size = 9, colour = "grey15"),
                 axis.text.x = ggplot2::element_text(colour = "grey20"),
                 axis.ticks.y = ggplot2::element_blank(),
-                plot.title = ggplot2::element_text(face = "bold", size = 14),
-                plot.subtitle = ggplot2::element_text(size = 10,
-                    margin = ggplot2::margin(b = 10)),
-                plot.caption = ggplot2::element_text(hjust = 0, size = 9,
-                    margin = ggplot2::margin(t = 10)),
                 plot.margin = ggplot2::margin(12, 14, 10, 10))
         pdf_path <- file.path(output_directory, "negative_control_type1_error.pdf")
         ggplot2::ggsave(pdf_path, plot, device = grDevices::cairo_pdf,
