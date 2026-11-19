@@ -159,6 +159,28 @@ run_negative_control_summary <- function(root, make_figure = TRUE) {
         plot_data <- as.data.frame(dataset_summary)
         plot_data$label <- factor(plot_data$label, levels = rev(catalog$label))
         plot_data$component <- factor(plot_data$component, levels = components)
+        axis_labels <- c(
+            NogueraJulianHIV = "Noguera-Julian HIV",
+            BaxterE_2016 = "Baxter colorectal cancer",
+            HMPV35Throat = "HMP V3\u20135 (throat)",
+            ArtPrize_2015_Forehead = "ArtPrize forehead",
+            cdi_schubert = "Schubert CDI stool",
+            gems_pediatric_diarrhea = "GEMS pediatric diarrhea",
+            korean_hypertension = "Song hypertension (Korea)",
+            qiita_1939_pediatric_crohn = "Pediatric Crohn's (Qiita 1939)",
+            Qiita11993Colombia = "Colombia westernization",
+            Qiita13631ASD = "Dan autism spectrum disorder",
+            NHANESOral_2009_2010 = "NHANES Oral 2009\u20132010",
+            NHANESOral_2011_2012 = "NHANES Oral 2011\u20132012",
+            Goodrich_2014 = "Goodrich twins",
+            Zeevi_2015_16S = "Zeevi personalized nutrition (16S)",
+            Singh_2015_EDD = "Singh enteric infections",
+            AmericanGut_2018 = "American Gut 2018",
+            HillBurns_2017 = "Hill-Burns Parkinson's",
+            Heinzel_2021_TREND = "Heinzel TREND",
+            Wallen_2020_Birmingham = "Wallen Parkinson's (Birmingham)",
+            iMSMS_2022 = "iMSMS 2022 (healthy controls)"
+        )
         strip_labels <- c(SA = "Structural absence (SA)",
                           RA = "Relative abundance (RA)", omnibus = "Omnibus")
         x_max <- max(0.08, ceiling(max(plot_data$mc_upper_95) * 50) / 50)
@@ -178,25 +200,31 @@ run_negative_control_summary <- function(root, make_figure = TRUE) {
                 breaks = seq(0, x_max, by = 0.02),
                 labels = scales::label_percent(accuracy = 1),
                 expand = ggplot2::expansion(mult = c(0.025, 0.035))) +
-            ggplot2::scale_y_discrete(expand = ggplot2::expansion(add = 0.7)) +
+            ggplot2::scale_y_discrete(
+                labels = stats::setNames(axis_labels[catalog$dataset], catalog$label),
+                expand = ggplot2::expansion(add = 0.7)) +
             ggplot2::labs(x = "Raw-p Type I error", y = NULL) +
-            ggplot2::theme_bw(base_size = 10, base_family = "sans") +
+            ggplot2::theme_bw(base_size = 11, base_family = "Times New Roman") +
             ggplot2::theme(
                 panel.grid.major.y = ggplot2::element_line(colour = "grey92"),
                 panel.grid.major.x = ggplot2::element_line(colour = "grey94"),
                 panel.grid.minor = ggplot2::element_blank(),
                 panel.border = ggplot2::element_rect(colour = "grey75"),
-                panel.spacing.x = grid::unit(7, "mm"),
+                panel.spacing.x = grid::unit(5.5, "mm"),
                 strip.background = ggplot2::element_rect(fill = "grey96",
                                                         colour = "grey75"),
-                strip.text = ggplot2::element_text(face = "bold", size = 10),
-                axis.text.y = ggplot2::element_text(size = 9, colour = "grey15"),
-                axis.text.x = ggplot2::element_text(colour = "grey20"),
+                strip.text = ggplot2::element_text(face = "bold", size = 11.5),
+                axis.text.y = ggplot2::element_text(size = 11.25, colour = "grey15",
+                    margin = ggplot2::margin(r = 5)),
+                axis.text.x = ggplot2::element_text(size = 10.5, colour = "grey20",
+                    margin = ggplot2::margin(t = 3)),
+                axis.title.x = ggplot2::element_text(size = 11.5,
+                    margin = ggplot2::margin(t = 5)),
                 axis.ticks.y = ggplot2::element_blank(),
                 plot.margin = ggplot2::margin(12, 14, 10, 10))
         pdf_path <- file.path(output_directory, "negative_control_type1_error.pdf")
         ggplot2::ggsave(pdf_path, plot, device = grDevices::cairo_pdf,
-                       width = 325, height = 210, units = "mm")
+                       width = 250, height = 166, units = "mm")
         figure_paths <- c(pdf = pdf_path)
     }
     cat("Summarized 20 cohorts, 2,000 replications, and 180,000 raw-p tests.\n")
