@@ -64,9 +64,7 @@ linetypes <- setNames(c(rep("solid", 3), rep("dashed", 6)), methods)
 covariate_labels <- c("Without covariate", "With covariate")
 internal_scenarios <- c("observed_prevalence_only", "structural_matched_prevalence",
                         "present_conditional_abundance", "joint_effect")
-internal_titles <- c("Different prevalence,\nsame structural absence",
-                     "Same prevalence,\ndifferent structural absence",
-                     "Abundance effects", "Joint effects")
+internal_titles <- c("(a)", "(b)", "(c)", "(d)")
 external_scenarios <- c("structural_only", "abundance_only", "joint")
 external_titles <- c("Structural effects", "Abundance effects", "Joint effects")
 internal$method <- factor(internal$method, levels = methods)
