@@ -103,10 +103,7 @@ deviations above two trigger a fixed-fit higher-order comparison.}
 \item{store_plot_data}{Logical. If \code{TRUE}, retain observed positive abundances,
 groupwise detection and estimated zero-source shares, and standardized
 fitted abundance summaries used by \code{plot.sacat()}. This option
-requires \code{component = "all"}. Structural companion summaries reuse the
-configured worker pool. Higher-order quadrature comparisons remain
-controlled by \code{full_output}. This setting only controls the stored plotting
-data; the default \code{FALSE} keeps the fitted object compact.}
+requires \code{component = "all"}.}
 }
 \value{
 An object of class \code{sacat} with elements:
@@ -172,8 +169,8 @@ Abundance-component availability is the proportion of retained taxa with
 \code{formed_relative_abundance = TRUE}. The diagnostics record positive-count
 support and the reason for each unavailable test.
 
-Two structural outcomes are nonregular. A taxon with no observed zeros has
-no variation in its absence indicator (\code{no_observed_zeros}). An
+Two structural outcomes are nonregular. When all counts are positive, the
+observed detection indicator is constant (\code{no_observed_zeros}). An
 intercept-only structural nuisance fit at zero absence probability is
 recorded as \code{structural_absence_boundary_at_zero}. Both nonregular statuses
 use an operational p-value of one in the primary family

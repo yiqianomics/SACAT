@@ -22,19 +22,15 @@ SACAT reports two complementary components:
 
 An omnibus test combines SA and RA evidence to identify associated taxa.
 The component results then show whether an association is supported by
-absence, abundance, or both. This connects discovery with an interpretation
-of the underlying community differences.
+absence, abundance, or both.
 
 SACAT accepts raw counts, sequencing depths, and sample metadata, with
-covariate adjustment through an R formula. It returns component and omnibus
-p-values, Benjamini–Hochberg (BH)-adjusted results, and an aligned visualization
-of statistical evidence, observed detection, estimated zero sources, and
-abundance distributions.
+covariate adjustment through an R formula.
 
 ## Installation
 
 ```r
-install.packages(c("Rcpp", "statmod", "remotes"))
+install.packages("remotes")
 remotes::install_github("yiqianomics/SACAT")
 ```
 
@@ -72,11 +68,15 @@ columns, matching sample names to the row names of `metadata`. The first
 factor level is the default reference group; `reference` sets it explicitly.
 Include adjustment variables alongside the group in `formula`.
 
-The results table contains separate SA, RA, and omnibus results; adjusted
-p-value columns begin with `p_adj_`. See `?sacat` for function options and
+The results table gives raw p-values for the SA, RA, and omnibus tests.
+By default, SACAT applies the Benjamini–Hochberg (BH) adjustment across taxa
+separately for each test. Adjusted p-value columns begin with `p_adj_`.
+See `?sacat` for function options and
 `?schubert_cdi` for the example data.
 
 ## Visualize the results
+
+With `store_plot_data = TRUE`, use `plot(fit)` to display selected taxa.
 
 ```r
 plot(

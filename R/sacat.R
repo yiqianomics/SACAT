@@ -241,7 +241,7 @@ count_log_hy_adaptive_ref <- function(y, N, eta, sigma, gh,
          x_node = x_node, mode = mode, curvature = curvature)
 }
 
-# Use the compiled kernel for the final objective evaluations.
+# Use the compiled kernel when only the log probability is needed.
 count_log_hy_adaptive <- function(y, N, eta, sigma, gh,
                                   return_nodes = FALSE) {
     if (isTRUE(return_nodes)) {
@@ -608,8 +608,7 @@ cauchy_combination <- function(ps) {
     )
 }
 
-# Fit the zero-truncated conditional mark model for one taxon.
-
+# Average the fitted group contrast over the observed covariate profiles.
 .sacat_abundance_mark_effect <- function(beta, X_b, gh_effect) {
     p_eta <- ncol(X_b) + 1L
     coefficient <- beta[seq_len(p_eta)]
@@ -3983,8 +3982,8 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' `formed_relative_abundance = TRUE`. The diagnostics record positive-count
 #' support and the reason for each unavailable test.
 #'
-#' Two structural outcomes are nonregular. A taxon with no observed zeros has
-#' no variation in its absence indicator (`no_observed_zeros`). An
+#' Two structural outcomes are nonregular. When all counts are positive, the
+#' observed detection indicator is constant (`no_observed_zeros`). An
 #' intercept-only structural nuisance fit at zero absence probability is
 #' recorded as `structural_absence_boundary_at_zero`. Both nonregular statuses
 #' use an operational p-value of one in the primary family
@@ -4066,10 +4065,7 @@ zt_count_structural_test <- function(y, N, g, z = NULL, Q = 1001L,
 #' @param store_plot_data Logical. If `TRUE`, retain observed positive abundances,
 #'   groupwise detection and estimated zero-source shares, and standardized
 #'   fitted abundance summaries used by `plot.sacat()`. This option
-#'   requires `component = "all"`. Structural companion summaries reuse the
-#'   configured worker pool. Higher-order quadrature comparisons remain
-#'   controlled by `full_output`. This setting only controls the stored plotting
-#'   data; the default `FALSE` keeps the fitted object compact.
+#'   requires `component = "all"`.
 #'
 #' @return An object of class `sacat` with elements:
 #'   \describe{

@@ -1072,12 +1072,10 @@
 #' and whiskers extend to observations within 1.5 interquartile ranges.
 #' Diamonds show the exponentiated mean fitted log relative abundance
 #' conditional on presence, standardized over all observed covariate profiles.
-#' Both are displayed as percentages on a log scale. The diamond contrast
-#' corresponds to the raw abundance contrast; the RA test in Panel A also
-#' includes SACAT's cross-taxon reference correction.
-#'
-#' Plotting uses data prepared by [sacat()] with `store_plot_data = TRUE`.
-#' It does not refit the model or change statistical results.
+#' Both are displayed as percentages on a log scale. The natural log of the
+#' ratio of fitted abundances (comparison group over reference group) gives
+#' the raw abundance contrast. Panel A shows the RA test after cross-taxon
+#' reference correction.
 #'
 #' @param x A `sacat` object fitted with `component = "all"` and
 #'   `store_plot_data = TRUE`.
