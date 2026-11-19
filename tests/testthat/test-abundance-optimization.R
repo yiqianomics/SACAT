@@ -415,7 +415,7 @@ test_that("abundance quadrature sensitivity is a fixed-fit diagnostic", {
     expect_false(failed$quadrature_check_succeeded)
     expect_match(failed$quadrature_check_error, "controlled failure")
 
-    boundary_beta <- c(-38.3, 0, log(3))
+    boundary_beta <- c(-45, 0, log(3))
     boundary_y <- c(0, 1)
     boundary_N <- c(5, 5)
     boundary_group <- 0:1
